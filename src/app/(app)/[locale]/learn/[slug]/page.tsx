@@ -5,10 +5,10 @@ import { useState } from 'react';
 import { Link } from '@/i18n/routing';
 import { SidebarLesson } from '@/components/prototype/CurriculumAccordion';
 import { useToast } from '@/components/providers/ToastProvider';
-import { curriculum, prototypeContent } from '@/lib/content/prototype';
+import { curriculum, prototypeContent } from '@/lib/content';
 import type { Locale } from '@/i18n/routing';
 import { cx } from '@/lib/classNames';
-import styles from '@/components/prototype/Prototype.module.scss';
+import styles from '@/components/player/CoursePlayer.module.scss';
 
 type PlayerTab = 'notes' | 'downloads' | 'overview';
 

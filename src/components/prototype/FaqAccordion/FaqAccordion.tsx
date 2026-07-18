@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { cx } from '@/lib/classNames';
-import styles from './Prototype.module.scss';
+import styles from './FaqAccordion.module.scss';
 
 export function FaqAccordion({ items }: { items: Array<{ question: string; answer: string }> }) {
   const [openItems, setOpenItems] = useState<Set<number>>(() => new Set());

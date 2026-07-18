@@ -3,9 +3,12 @@
 import { useState } from 'react';
 import { useRouter } from '@/i18n/routing';
 import { useToast } from '@/components/providers/ToastProvider';
-import type { CurriculumModule } from '@/lib/content/prototype';
+import type { CurriculumModule } from '@/lib/content';
 import { cx } from '@/lib/classNames';
-import styles from './Prototype.module.scss';
+import playerStyles from '@/components/player/CoursePlayer.module.scss';
+import salesStyles from './CurriculumAccordion.module.scss';
+
+const styles = { ...salesStyles, ...playerStyles };
 
 export function CurriculumAccordion({ modules }: { modules: CurriculumModule[] }) {
   const router = useRouter();

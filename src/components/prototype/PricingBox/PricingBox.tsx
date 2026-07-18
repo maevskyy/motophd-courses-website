@@ -6,8 +6,8 @@ import { useRouter } from '@/i18n/routing';
 import { useAuth } from '@/components/providers/AuthProvider';
 import { useToast } from '@/components/providers/ToastProvider';
 import { cx } from '@/lib/classNames';
-import type { PrototypeContent } from '@/lib/content/prototype';
-import styles from './Prototype.module.scss';
+import type { PrototypeContent } from '@/lib/content';
+import styles from './PricingBox.module.scss';
 
 export function PricingBox({ sales }: { sales: PrototypeContent['sales'] }) {
   const t = useTranslations();

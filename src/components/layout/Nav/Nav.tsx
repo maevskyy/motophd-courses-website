@@ -4,7 +4,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { Link, usePathname } from '@/i18n/routing';
 import { useAuth } from '@/components/providers/AuthProvider';
 import { useToast } from '@/components/providers/ToastProvider';
-import styles from '@/components/prototype/Prototype.module.scss';
+import styles from './Nav.module.scss';
 import type { Locale } from '@/i18n/routing';
 
 export function Nav() {

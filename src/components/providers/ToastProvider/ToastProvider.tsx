@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react';
-import styles from '@/components/prototype/Prototype.module.scss';
+import styles from './ToastProvider.module.scss';
 import { cx } from '@/lib/classNames';
 
 type ToastContextValue = {

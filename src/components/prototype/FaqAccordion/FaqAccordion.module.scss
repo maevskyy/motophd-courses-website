@@ -1,0 +1,363 @@
+.red {
+  color: var(--red);
+}
+.nav__cta,
+.nav__ctaGhost,
+.button,
+.buttonGhost {
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.nav__cta {
+  background: var(--red);
+  border: 0;
+  color: var(--white);
+  padding: 9px 22px;
+}
+
+.nav__cta:hover {
+  opacity: 0.88;
+}
+
+.nav__ctaGhost {
+  background: transparent;
+  border: 1px solid #333;
+  color: var(--white);
+  font-weight: 600;
+  padding: 9px 22px;
+}
+
+.nav__ctaGhost:hover {
+  border-color: var(--white);
+}
+
+.button {
+  background: var(--red);
+  border: 0;
+  color: #fff;
+  font-size: 15px;
+  padding: 16px 32px;
+}
+
+.button:hover {
+  background: #c91a1f;
+  transform: translateY(-1px);
+}
+
+.buttonGhost {
+  background: transparent;
+  border: 1px solid #444;
+  color: var(--white);
+  font-size: 15px;
+  font-weight: 600;
+  padding: 16px 32px;
+}
+
+.buttonGhost:hover {
+  border-color: #888;
+}
+
+.buttonLarge {
+  font-size: 17px;
+  padding: 18px 48px;
+}
+.methodCard,
+.testiCard,
+.dashStat,
+.pdfDownloadCard,
+.profilePanel {
+  background: #0d0d0d;
+  border: 1px solid #1a1a1a;
+  border-radius: 12px;
+}
+
+.methodCard {
+  padding: 32px;
+  text-align: center;
+  transition: border-color 0.3s;
+}
+
+.methodCard:hover {
+  border-color: var(--red);
+}
+
+.methodIcon {
+  font-size: 48px;
+  margin-bottom: 20px;
+}
+
+.methodNum {
+  color: var(--red);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.methodTitle {
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+
+.methodDesc {
+  color: var(--gray);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.testiCard {
+  padding: 28px;
+}
+
+.testiStars {
+  color: var(--red);
+  font-size: 16px;
+  letter-spacing: 2px;
+  margin-bottom: 16px;
+}
+
+.testiQuote {
+  color: var(--light);
+  font-size: 15px;
+  font-style: italic;
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+
+.testiAuthor {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+}
+
+.testiAvatar,
+.dashAvatar {
+  align-items: center;
+  background: var(--red);
+  border-radius: 50%;
+  display: flex;
+  font-weight: 700;
+  justify-content: center;
+}
+
+.testiAvatar {
+  font-size: 16px;
+  height: 40px;
+  width: 40px;
+}
+
+.testiName {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.testiCountry {
+  color: var(--gray);
+  font-size: 12px;
+}
+
+.howSteps {
+  display: grid;
+  gap: 0;
+  grid-template-columns: repeat(5, 1fr);
+  margin-top: 48px;
+  position: relative;
+}
+
+.howSteps::before {
+  background: linear-gradient(90deg, transparent, var(--red), transparent);
+  content: '';
+  height: 1px;
+  left: 10%;
+  position: absolute;
+  right: 10%;
+  top: 32px;
+}
+
+.howStep {
+  padding: 0 16px;
+  position: relative;
+  text-align: center;
+}
+
+.howStep__num {
+  align-items: center;
+  background: var(--dark);
+  border: 2px solid var(--red);
+  border-radius: 50%;
+  color: var(--red);
+  display: flex;
+  font-size: 22px;
+  font-weight: 900;
+  height: 64px;
+  justify-content: center;
+  margin: 0 auto 20px;
+  width: 64px;
+}
+
+.howStep__title {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.howStep__desc {
+  color: var(--gray);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.instructorGrid {
+  align-items: center;
+  display: grid;
+  gap: 60px;
+  grid-template-columns: 1fr 1fr;
+}
+
+.instructorCopy {
+  color: var(--gray);
+  font-size: 16px;
+  line-height: 1.7;
+  margin-bottom: 24px;
+}
+
+.instructorCard {
+  background: #0d0d0d;
+  border: 1px solid #1a1a1a;
+  border-radius: 12px;
+  padding: 40px;
+  text-align: center;
+}
+
+.instructorIcon {
+  font-size: 80px;
+  margin-bottom: 20px;
+}
+
+.instructorName {
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.instructorRole {
+  color: var(--gray);
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+.miniStats {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 1fr 1fr;
+}
+
+.miniStat {
+  background: #111;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.miniStat__num {
+  color: var(--red);
+  font-size: 28px;
+  font-weight: 900;
+}
+
+.miniStat__label {
+  color: var(--gray);
+  font-size: 11px;
+}
+
+.faqList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 40px;
+}
+
+.faqItem {
+  border: 1px solid #1a1a1a;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.faqQuestion {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  color: var(--white);
+  cursor: pointer;
+  display: flex;
+  font-size: 15px;
+  font-weight: 600;
+  justify-content: space-between;
+  padding: 20px 24px;
+  text-align: left;
+  transition: background 0.2s;
+  width: 100%;
+}
+
+.faqQuestion:hover {
+  background: #0d0d0d;
+}
+
+.faqIcon {
+  color: var(--red);
+  flex-shrink: 0;
+  font-size: 20px;
+  transition: transform 0.3s;
+}
+
+.faqItemOpen .faqIcon {
+  transform: rotate(45deg);
+}
+
+.faqAnswer {
+  color: var(--gray);
+  display: none;
+  font-size: 14px;
+  line-height: 1.7;
+  padding: 0 24px 20px;
+}
+
+.faqItemOpen .faqAnswer {
+  display: block;
+}
+
+.ctaSection {
+  background: linear-gradient(135deg, #0d0000, #1a0000);
+  border-bottom: 1px solid #2a0000;
+  border-top: 1px solid #2a0000;
+  padding: 100px 40px;
+  text-align: center;
+}
+
+.ctaTitle {
+  font-size: clamp(32px, 5vw, 60px);
+  font-weight: 900;
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+
+.ctaSub {
+  color: var(--gray);
+  font-size: 18px;
+  margin-bottom: 40px;
+}
+
+
+@media (max-width: 900px) {
+  .methodGrid, .testimonialsGrid, .instructorGrid { grid-template-columns: 1fr; }
+  .howSteps { grid-template-columns: 1fr 1fr; }
+  .howSteps::before { display: none; }
+  .section { padding-left: 20px; padding-right: 20px; }
+}

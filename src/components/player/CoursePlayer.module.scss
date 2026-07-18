@@ -1,0 +1,335 @@
+.red {
+  color: var(--red);
+}
+.progressBar {
+  background: #1a1a1a;
+  border-radius: 2px;
+  height: 4px;
+  margin-bottom: 6px;
+  overflow: hidden;
+}
+
+.progressFill {
+  background: var(--red);
+  border-radius: 2px;
+  height: 100%;
+  width: 40%;
+}
+
+.progressFillSmall {
+  width: 25%;
+}
+
+.pdfDownloadCard {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  gap: 16px;
+  margin-bottom: 12px;
+  padding: 16px;
+  transition: border-color 0.2s;
+  width: 100%;
+}
+
+.pdfDownloadCard:hover {
+  border-color: var(--red);
+}
+
+.pdfIcon {
+  font-size: 32px;
+}
+
+.pdfInfo {
+  flex: 1;
+  text-align: left;
+}
+
+.pdfName {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.pdfSize {
+  color: var(--gray);
+  font-size: 12px;
+}
+
+.pdfBtn {
+  border-radius: 6px;
+  font-size: 12px;
+  padding: 8px 16px;
+}
+
+.playerLayout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  min-height: calc(100vh - 64px);
+  padding-top: 64px;
+}
+
+.playerMain {
+  padding: 0;
+}
+
+.videoContainer {
+  align-items: center;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  display: flex;
+  justify-content: center;
+  max-height: 60vh;
+  overflow: hidden;
+  position: relative;
+}
+
+.videoPlaceholder {
+  color: var(--gray);
+  text-align: center;
+}
+
+.videoPlayBtn {
+  align-items: center;
+  background: var(--red);
+  border: 0;
+  border-radius: 50%;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  font-size: 28px;
+  height: 80px;
+  justify-content: center;
+  margin: 0 auto 16px;
+  transition: transform 0.2s;
+  width: 80px;
+}
+
+.videoPlayBtn:hover {
+  transform: scale(1.1);
+}
+
+.videoTitleSmall {
+  color: var(--gray);
+  font-size: 14px;
+}
+
+.videoMetaSmall {
+  color: #444;
+  font-size: 12px;
+  margin-top: 6px;
+}
+
+.videoInfo {
+  border-bottom: 1px solid #1a1a1a;
+  padding: 24px 32px;
+}
+
+.videoInfo__meta {
+  color: var(--gray);
+  font-size: 11px;
+  margin-bottom: 8px;
+}
+
+.videoInfo h2 {
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.videoInfo p {
+  color: var(--gray);
+  font-size: 14px;
+}
+
+.videoTabs {
+  border-bottom: 1px solid #1a1a1a;
+  display: flex;
+  gap: 0;
+  padding: 0 32px;
+}
+
+.videoTab {
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  color: var(--gray);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 14px 20px;
+  transition: all 0.2s;
+}
+
+.videoTabActive {
+  border-bottom-color: var(--red);
+  color: var(--white);
+}
+
+.videoTabContent {
+  padding: 24px 32px;
+}
+
+.contentNarrow {
+  max-width: 640px;
+}
+
+.lessonHeading {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.takeaways {
+  color: var(--gray);
+  font-size: 14px;
+  line-height: 2;
+  list-style: none;
+}
+
+.callout {
+  background: #0d0d0d;
+  border-left: 3px solid var(--red);
+  border-radius: 0 8px 8px 0;
+  margin-top: 24px;
+  padding: 16px 20px;
+}
+
+.calloutLabel {
+  color: var(--red);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+
+.calloutText {
+  color: var(--light);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.moduleOutcomeBox {
+  background: #0d0d0d;
+  border: 1px solid #1a1a1a;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.playerSidebar {
+  background: #0a0a0a;
+  border-left: 1px solid #1a1a1a;
+  max-height: calc(100vh - 64px);
+  overflow-y: auto;
+  position: sticky;
+  top: 64px;
+}
+
+.playerSidebarTitle {
+  border-bottom: 1px solid #1a1a1a;
+  color: var(--gray);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  padding: 20px 20px 12px;
+  text-transform: uppercase;
+}
+
+.sidebarModule {
+  border-bottom: 1px solid #111;
+}
+
+.sidebarModuleHeader {
+  align-items: center;
+  background: #0d0d0d;
+  color: var(--light);
+  display: flex;
+  font-size: 13px;
+  font-weight: 700;
+  justify-content: space-between;
+  padding: 14px 20px;
+}
+
+.sidebarLesson {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid #0d0d0d;
+  color: var(--gray);
+  cursor: pointer;
+  display: flex;
+  font-size: 12px;
+  gap: 10px;
+  padding: 10px 20px 10px 32px;
+  text-align: left;
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.sidebarLesson:hover {
+  background: #111;
+  color: var(--white);
+}
+
+.sidebarLessonActive {
+  background: #1a0405;
+  color: var(--white);
+}
+
+.sidebarLessonCheck {
+  align-items: center;
+  border: 1px solid #333;
+  border-radius: 50%;
+  display: flex;
+  flex-shrink: 0;
+  font-size: 9px;
+  height: 18px;
+  justify-content: center;
+  width: 18px;
+}
+
+.sidebarLessonCheckDone {
+  background: var(--red);
+  border-color: var(--red);
+}
+
+.sidebarProgress {
+  padding: 20px;
+}
+
+.sidebarProgressCard {
+  background: #0d0d0d;
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.sidebarProgressLabel,
+.sidebarProgressText {
+  color: var(--gray);
+  font-size: 11px;
+}
+
+.sidebarProgressLabel {
+  margin-bottom: 8px;
+}
+
+.sidebarProgressText {
+  margin-top: 6px;
+}
+
+.sidebarBack {
+  background: transparent;
+  border: 1px solid #333;
+  border-radius: 6px;
+  color: var(--gray);
+  cursor: pointer;
+  font-size: 12px;
+  margin-top: 12px;
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .playerLayout { grid-template-columns: 1fr; }
+  .playerSidebar { max-height: none; position: static; }
+}

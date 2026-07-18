@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 import { Link, useRouter } from '@/i18n/routing';
 import { useAuth } from '@/components/providers/AuthProvider';
 import { useToast } from '@/components/providers/ToastProvider';
-import styles from '@/components/prototype/Prototype.module.scss';
+import styles from '@/components/login/LoginPage.module.scss';
 
 export default function LoginPage() {
   const t = useTranslations();

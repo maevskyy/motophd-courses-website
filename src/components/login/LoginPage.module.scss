@@ -1,0 +1,91 @@
+.red {
+  color: var(--red);
+}
+.courseBtn,
+.courseBtnGhost,
+.btnContinue,
+.btnUnlock,
+.pdfBtn,
+.btnLogin,
+.btnEnroll {
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: opacity 0.2s;
+}
+
+.courseBtn,
+.pdfBtn,
+.btnLogin,
+.btnEnroll,
+.btnContinue {
+  background: var(--red);
+  border: 0;
+  color: #fff;
+}
+
+.loginPage {
+  align-items: center;
+  background: linear-gradient(135deg, #000, #0a0000);
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.loginCard {
+  background: #0d0d0d;
+  border: 1px solid #1e1e1e;
+  border-radius: 16px;
+  max-width: 420px;
+  padding: 48px;
+  width: 100%;
+}
+
+.loginLogo {
+  font-size: 24px;
+  font-weight: 900;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.loginTagline {
+  color: var(--gray);
+  font-size: 13px;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.loginNote {
+  background: #111;
+  border-radius: 6px;
+  color: var(--gray);
+  font-size: 12px;
+  margin-bottom: 20px;
+  padding: 10px;
+  text-align: center;
+}
+
+.btnLogin {
+  border-radius: 8px;
+  font-size: 15px;
+  margin-bottom: 16px;
+  padding: 15px;
+  width: 100%;
+}
+
+.loginBack {
+  background: transparent;
+  border: 0;
+  color: var(--gray);
+  cursor: pointer;
+  display: block;
+  font-size: 13px;
+  text-align: center;
+  text-decoration: none;
+  width: 100%;
+}
+
+.loginBack:hover {
+  color: var(--white);
+}

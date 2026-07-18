@@ -3,9 +3,9 @@ import { Link, redirect } from '@/i18n/routing';
 import { CurriculumAccordion } from '@/components/prototype/CurriculumAccordion';
 import { Footer } from '@/components/prototype/Footer';
 import { PricingBox } from '@/components/prototype/PricingBox';
-import { curriculum, prototypeContent } from '@/lib/content/prototype';
+import { curriculum, prototypeContent } from '@/lib/content';
 import type { Locale } from '@/i18n/routing';
-import styles from '@/components/prototype/Prototype.module.scss';
+import styles from '@/components/courseSales/CourseSalesPage.module.scss';
 
 export default async function CourseSalesPage({
   params

@@ -3,7 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
 import { useToast } from '@/components/providers/ToastProvider';
-import styles from './Prototype.module.scss';
+import styles from './Footer.module.scss';
 
 export function Footer({ compact = false }: { compact?: boolean }) {
   const t = useTranslations();

@@ -1,0 +1,142 @@
+.red {
+  color: var(--red);
+}
+
+.nav {
+  align-items: center;
+  backdrop-filter: blur(12px);
+  background: rgba(0, 0, 0, 0.95);
+  border-bottom: 1px solid #1a1a1a;
+  display: flex;
+  height: 64px;
+  justify-content: space-between;
+  left: 0;
+  padding: 0 40px;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 1000;
+}
+
+.nav__logo {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.nav__logoText {
+  color: var(--white);
+  font-size: 22px;
+  font-weight: 900;
+}
+
+.nav__links {
+  align-items: center;
+  display: flex;
+  gap: 32px;
+}
+
+.nav__link {
+  background: transparent;
+  border: 0;
+  color: var(--light);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.nav__link:hover {
+  color: var(--white);
+}
+
+.nav__lang {
+  border: 1px solid #333;
+  border-radius: 4px;
+  color: var(--gray);
+  cursor: pointer;
+  font-size: 13px;
+  padding: 4px 10px;
+  text-decoration: none;
+}
+
+.nav__langActive {
+  color: var(--white);
+  font-weight: 700;
+}
+
+.nav__cta,
+.nav__ctaGhost,
+.button,
+.buttonGhost {
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.nav__cta {
+  background: var(--red);
+  border: 0;
+  color: var(--white);
+  padding: 9px 22px;
+}
+
+.nav__cta:hover {
+  opacity: 0.88;
+}
+
+.nav__ctaGhost {
+  background: transparent;
+  border: 1px solid #333;
+  color: var(--white);
+  font-weight: 600;
+  padding: 9px 22px;
+}
+
+.nav__ctaGhost:hover {
+  border-color: var(--white);
+}
+
+.button {
+  background: var(--red);
+  border: 0;
+  color: #fff;
+  font-size: 15px;
+  padding: 16px 32px;
+}
+
+.button:hover {
+  background: #c91a1f;
+  transform: translateY(-1px);
+}
+
+.buttonGhost {
+  background: transparent;
+  border: 1px solid #444;
+  color: var(--white);
+  font-size: 15px;
+  font-weight: 600;
+  padding: 16px 32px;
+}
+
+.buttonGhost:hover {
+  border-color: #888;
+}
+
+.buttonLarge {
+  font-size: 17px;
+  padding: 18px 48px;
+}
+
+@media (max-width: 900px) {
+  .nav { padding: 0 20px; }
+  .nav__links { gap: 12px; }
+  .nav__link { display: none; }
+}

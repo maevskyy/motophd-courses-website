@@ -1,8 +1,8 @@
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
-import type { Course } from '@/lib/content/prototype';
+import type { Course } from '@/lib/content';
 import { cx } from '@/lib/classNames';
-import styles from './Prototype.module.scss';
+import styles from './CourseCard.module.scss';
 
 type CourseCardProps = {
   course: Course;
