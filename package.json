@@ -9,15 +9,24 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
+    "payload": "payload",
+    "generate:types": "payload generate:types",
+    "db:up": "docker compose -f docker-compose.dev.yml up -d",
     "format": "prettier --check .",
     "format:write": "prettier --write ."
   },
   "dependencies": {
+    "@payloadcms/db-postgres": "^3.86.0",
+    "@payloadcms/next": "^3.86.0",
+    "@payloadcms/richtext-lexical": "^3.86.0",
+    "graphql": "^17.0.2",
     "next": "^15.5.6",
     "next-intl": "^4.3.4",
+    "payload": "^3.86.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "sass": "^1.93.2"
+    "sass": "^1.93.2",
+    "sharp": "^0.35.3"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
