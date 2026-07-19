@@ -5,6 +5,7 @@ import { routing } from '@/i18n/routing';
 import { AuthProvider } from '@/components/providers/AuthProvider';
 import { ToastProvider } from '@/components/providers/ToastProvider';
 import { Nav } from '@/components/layout/Nav';
+import '../../globals.scss';
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
