@@ -6,6 +6,11 @@ import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import { buildConfig, type SharpDependency } from 'payload';
 import sharp from 'sharp';
 
+import { Courses } from './collections/Courses';
+import { LegalPages } from './collections/LegalPages';
+import { Lessons } from './collections/Lessons';
+import { Media } from './collections/Media';
+import { Purchases } from './collections/Purchases';
 import { Users } from './collections/Users';
 
 const filename = fileURLToPath(import.meta.url);
@@ -19,7 +24,7 @@ export default buildConfig({
     },
     user: Users.slug
   },
-  collections: [Users],
+  collections: [Users, Media, Courses, Lessons, LegalPages, Purchases],
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URI

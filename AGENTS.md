@@ -30,9 +30,10 @@ docker compose -f docker-compose.dev.yml up -d
 pnpm dev
 pnpm payload
 pnpm generate:types
+pnpm seed
 pnpm lint
 pnpm typecheck
 pnpm build
 ```
 
-Текущая версия — порт HTML-прототипа в Next с локальным Payload/Postgres/admin-скелетом. Доменные коллекции, серверные интеграции и реальные тест-раннеры добавляются последующими задачами.
+Текущая версия — порт HTML-прототипа в Next с локальным Payload/Postgres/admin-скелетом, доменными коллекциями и seed курсов. Подключение сайта к Payload, серверные интеграции и реальные тест-раннеры добавляются последующими задачами.

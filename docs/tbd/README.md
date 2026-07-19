@@ -8,7 +8,6 @@
 
 | Черновик | Про что |
 |---|---|
-| task_content_model_2 | коллекции, локализация, доступ, seed |
 | task_vps_bootstrap_3 | VPS, Caddy, домены, Cloudflare, Access |
 | task_cicd_4 | CI, образ→GHCR, деплой-кнопка, rollback |
 | task_media_stream_5 | R2 + Cloudflare Stream + signed playback |

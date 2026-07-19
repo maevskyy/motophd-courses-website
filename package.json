@@ -11,6 +11,7 @@
     "typecheck": "tsc --noEmit",
     "payload": "payload",
     "generate:types": "payload generate:types",
+    "seed": "payload run src/seed/seed.ts",
     "db:up": "docker compose -f docker-compose.dev.yml up -d",
     "format": "prettier --check .",
     "format:write": "prettier --write ."
