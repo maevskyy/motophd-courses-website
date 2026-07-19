@@ -6,10 +6,10 @@ import { useRouter } from '@/i18n/routing';
 import { useAuth } from '@/components/providers/AuthProvider';
 import { useToast } from '@/components/providers/ToastProvider';
 import { cx } from '@/lib/classNames';
-import type { PrototypeContent } from '@/lib/content';
+import type { SalesContent } from '@/lib/data';
 import styles from './PricingBox.module.scss';
 
-export function PricingBox({ sales }: { sales: PrototypeContent['sales'] }) {
+export function PricingBox({ courseSlug, sales }: { courseSlug: string; sales: SalesContent }) {
   const t = useTranslations();
   const router = useRouter();
   const { isLoggedIn } = useAuth();
@@ -35,7 +35,7 @@ export function PricingBox({ sales }: { sales: PrototypeContent['sales'] }) {
     }
 
     showToast(t('toast.enrolled'));
-    setTimeout(() => router.push('/learn/lean'), 800);
+    setTimeout(() => router.push(`/learn/${courseSlug}`), 800);
   }
 
   return (

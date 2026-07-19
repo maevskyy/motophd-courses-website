@@ -1,6 +1,6 @@
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
-import type { Course } from '@/lib/content';
+import type { CourseCardCourse } from '@/lib/data';
 import { cx } from '@/lib/classNames';
 import styles from './Dashboard.module.scss';
 
@@ -16,14 +16,20 @@ export function DashStat({ label, suffix = '', value }: { label: string; suffix?
   );
 }
 
-export function PurchasedDashCourse({ compact, courseTitle }: { compact?: boolean; courseTitle: string }) {
+export function PurchasedDashCourse({
+  compact,
+  course
+}: {
+  compact?: boolean;
+  course: CourseCardCourse;
+}) {
   const t = useTranslations();
 
   return (
-    <Link className={styles.dashCourseCard} href="/learn/lean">
+    <Link className={styles.dashCourseCard} href={`/learn/${course.slug}`}>
       <div className={`${styles.dashCourseThumb} ${styles.dashCourseThumbRed}`}>🏍️</div>
       <div className={styles.dashCourseBody}>
-        <div className={styles.dashCourseTitle}>{courseTitle}</div>
+        <div className={styles.dashCourseTitle}>{course.title}</div>
         <div className={styles.progressBar}>
           <div className={styles.progressFill} />
         </div>
@@ -41,11 +47,11 @@ export function PurchasedDashCourse({ compact, courseTitle }: { compact?: boolea
   );
 }
 
-export function LockedDashCourse({ course }: { course: Course }) {
+export function LockedDashCourse({ course }: { course: CourseCardCourse }) {
   const t = useTranslations();
 
   return (
-    <Link className={`${styles.dashCourseCard} ${styles.dashCourseCardLocked}`} href="/courses/lean">
+    <Link className={`${styles.dashCourseCard} ${styles.dashCourseCardLocked}`} href={`/courses/${course.slug}`}>
       <div
         className={cx(
           styles.dashCourseThumb,
@@ -62,7 +68,7 @@ export function LockedDashCourse({ course }: { course: Course }) {
           <span>{t('dashboard.notPurchased')}</span>
         </div>
         <div className={styles.dashCourseAction}>
-          <span className={styles.btnUnlock}>{t('actions.unlockCourse')} — €29</span>
+          <span className={styles.btnUnlock}>{t('actions.unlockCourse')} — €{course.priceStandard}</span>
         </div>
       </div>
     </Link>

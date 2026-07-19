@@ -66,6 +66,38 @@
   text-align: center;
 }
 
+.formGroup {
+  margin-bottom: 18px;
+}
+
+.formLabel {
+  color: var(--white);
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.formInput {
+  background: #050505;
+  border: 1px solid #2a2a2a;
+  border-radius: 8px;
+  color: var(--white);
+  font-family: inherit;
+  font-size: 15px;
+  outline: none;
+  padding: 14px;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+  width: 100%;
+}
+
+.formInput:focus {
+  border-color: var(--red);
+  box-shadow: 0 0 0 3px rgb(237 28 36 / 15%);
+}
+
 .btnLogin {
   border-radius: 8px;
   font-size: 15px;

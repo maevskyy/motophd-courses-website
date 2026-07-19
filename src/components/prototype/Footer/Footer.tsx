@@ -1,14 +1,9 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
-import { useToast } from '@/components/providers/ToastProvider';
 import styles from './Footer.module.scss';
 
 export function Footer({ compact = false }: { compact?: boolean }) {
-  const t = useTranslations();
-  const { showToast } = useToast();
-
   return (
     <footer className={styles.footer}>
       <div className={styles.footer__inner}>
@@ -49,18 +44,18 @@ export function Footer({ compact = false }: { compact?: boolean }) {
             </div>
             <div>
               <h4 className={styles.footer__heading}>Legal</h4>
-              <button className={styles.footer__link} onClick={() => showToast(t('toast.privacy'))} type="button">
+              <Link className={styles.footer__link} href="/privacy">
                 Privacy Policy
-              </button>
-              <button className={styles.footer__link} onClick={() => showToast(t('toast.terms'))} type="button">
+              </Link>
+              <Link className={styles.footer__link} href="/terms">
                 Terms & Conditions
-              </button>
-              <button className={styles.footer__link} onClick={() => showToast(t('toast.refund'))} type="button">
+              </Link>
+              <Link className={styles.footer__link} href="/refund">
                 Refund Policy
-              </button>
-              <button className={styles.footer__link} onClick={() => showToast(t('toast.riding'))} type="button">
-                Riding Disclaimer
-              </button>
+              </Link>
+              <Link className={styles.footer__link} href="/contact">
+                Contact
+              </Link>
             </div>
           </div>
         ) : null}

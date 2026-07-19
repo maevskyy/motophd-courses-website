@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from '@/i18n/routing';
 import { useToast } from '@/components/providers/ToastProvider';
-import type { CurriculumModule } from '@/lib/content';
+import type { CurriculumModule } from '@/lib/data';
 import { cx } from '@/lib/classNames';
 import playerStyles from '@/components/player/CoursePlayer.module.scss';
 import salesStyles from './CurriculumAccordion.module.scss';

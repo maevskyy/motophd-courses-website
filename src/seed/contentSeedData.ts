@@ -1,9 +1,9 @@
-import { salesContent } from '@/lib/content/coursePages';
-import { localizedCourses } from '@/lib/content/courses';
-import { curriculum } from '@/lib/content/curriculum';
-import { playerContent } from '@/lib/content/player';
-import type { Course } from '@/lib/content/types';
 import type { Lesson } from '@/payload-types';
+import { salesContent } from './fixtures/coursePages';
+import { localizedCourses } from './fixtures/courses';
+import { curriculum } from './fixtures/curriculum';
+import { playerContent } from './fixtures/player';
+import type { Course } from './fixtures/types';
 
 export type Locale = 'en' | 'ru';
 
@@ -12,7 +12,66 @@ export type CourseSeed = {
   ru: Course;
 };
 
+export type LegalPageSeed = {
+  slug: 'privacy' | 'terms' | 'refund' | 'contact';
+  en: {
+    title: string;
+    body: string;
+  };
+  ru: {
+    title: string;
+    body: string;
+  };
+};
+
 export const locales: Locale[] = ['en', 'ru'];
+
+export const legalPageSeeds: LegalPageSeed[] = [
+  {
+    slug: 'privacy',
+    en: {
+      title: 'Privacy Policy',
+      body: 'MotoPhD collects only the data required to provide course access, student support, and purchase records. Full legal text will be finalized before production launch.'
+    },
+    ru: {
+      title: 'Политика конфиденциальности',
+      body: 'MotoPhD собирает только данные, необходимые для доступа к курсам, поддержки студентов и истории покупок. Полный юридический текст будет финализирован перед запуском.'
+    }
+  },
+  {
+    slug: 'terms',
+    en: {
+      title: 'Terms & Conditions',
+      body: 'MotoPhD courses are educational materials. Riding a motorcycle involves risk, and each rider is responsible for their own safety when applying course material.'
+    },
+    ru: {
+      title: 'Условия использования',
+      body: 'Курсы MotoPhD являются образовательными материалами. Езда на мотоцикле связана с риском, и каждый райдер сам отвечает за свою безопасность при применении материалов курса.'
+    }
+  },
+  {
+    slug: 'refund',
+    en: {
+      title: 'Refund Policy',
+      body: 'Digital course access is provided immediately after purchase. Refund terms and the explicit EU digital-content waiver will be finalized before production checkout.'
+    },
+    ru: {
+      title: 'Политика возврата',
+      body: 'Доступ к цифровому курсу предоставляется сразу после покупки. Условия возврата и явный отказ от права возврата для цифрового контента ЕС будут финализированы перед production checkout.'
+    }
+  },
+  {
+    slug: 'contact',
+    en: {
+      title: 'Contact',
+      body: 'For questions about MotoPhD courses, payments, or access, contact the MotoPhD team. Production contact details will be added before launch.'
+    },
+    ru: {
+      title: 'Контакты',
+      body: 'По вопросам курсов MotoPhD, оплаты или доступа свяжитесь с командой MotoPhD. Production-контакты будут добавлены перед запуском.'
+    }
+  }
+];
 
 export const toRichText = (text: string): NonNullable<Lesson['body']> => ({
   root: {

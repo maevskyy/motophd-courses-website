@@ -10,6 +10,7 @@ import {
   getLessonType,
   getOutcomes,
   getWhatYouShouldFeel,
+  legalPageSeeds,
   locales,
   toRichText
 } from './contentSeedData';
@@ -145,7 +146,47 @@ const seedCourses = async () => {
       }
     }
 
-    payload.logger.info('Seed complete: courses and lessons are up to date.');
+    for (const legalPage of legalPageSeeds) {
+      for (const locale of locales) {
+        const existing = await payload.find({
+          collection: 'legalPages',
+          depth: 0,
+          limit: 1,
+          locale,
+          overrideAccess: true,
+          where: {
+            slug: {
+              equals: legalPage.slug
+            }
+          }
+        });
+
+        const data = {
+          slug: legalPage.slug,
+          title: legalPage[locale].title,
+          body: toRichText(legalPage[locale].body)
+        };
+
+        if (existing.docs[0]) {
+          await payload.update({
+            collection: 'legalPages',
+            data,
+            id: existing.docs[0].id,
+            locale,
+            overrideAccess: true
+          });
+        } else {
+          await payload.create({
+            collection: 'legalPages',
+            data,
+            locale,
+            overrideAccess: true
+          });
+        }
+      }
+    }
+
+    payload.logger.info('Seed complete: courses, lessons, and legal pages are up to date.');
   } finally {
     await payload.destroy();
   }

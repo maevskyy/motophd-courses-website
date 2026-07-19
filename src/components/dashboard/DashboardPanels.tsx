@@ -1,12 +1,12 @@
 import { useTranslations } from 'next-intl';
 import { useToast } from '@/components/providers/ToastProvider';
-import type { Course, PrototypeContent } from '@/lib/content';
+import type { CourseCardCourse, DashboardContent } from '@/lib/data';
 import { DashStat, LockedDashCourse, PurchasedDashCourse } from './DashboardCards';
 import styles from './Dashboard.module.scss';
 
 interface PanelProps {
-  content: PrototypeContent;
-  courses: Course[];
+  content: DashboardContent;
+  courses: CourseCardCourse[];
   email: string;
 }
 
@@ -27,7 +27,7 @@ export function OverviewPanel({ courses }: PanelProps) {
       </div>
       <div className={styles.dashSectionTitle}>{t('dashboard.myCourses')}</div>
       <div className={styles.dashCourses}>
-        <PurchasedDashCourse courseTitle={purchasedCourse.title} />
+        {purchasedCourse ? <PurchasedDashCourse course={purchasedCourse} /> : null}
         {courses.slice(1).map((course) => (
           <LockedDashCourse course={course} key={course.slug} />
         ))}
@@ -47,7 +47,7 @@ export function CoursesPanel({ courses }: PanelProps) {
       </div>
       <div className={styles.dashSectionTitle}>{t('dashboard.activeEnrollments')}</div>
       <div className={styles.dashCourses}>
-        <PurchasedDashCourse compact courseTitle={courses[0].title} />
+        {courses[0] ? <PurchasedDashCourse compact course={courses[0]} /> : null}
       </div>
       <div className={styles.dashSectionTitle}>{t('dashboard.availableToPurchase')}</div>
       <div className={styles.dashCourses}>

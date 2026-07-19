@@ -1,27 +1,29 @@
 'use client';
 
-import { useLocale, useTranslations } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Link, useRouter } from '@/i18n/routing';
 import { useAuth } from '@/components/providers/AuthProvider';
 import { useToast } from '@/components/providers/ToastProvider';
-import { localizedCourses, prototypeContent } from '@/lib/content';
-import type { Locale } from '@/i18n/routing';
+import type { CourseCardCourse, DashboardContent } from '@/lib/data';
 import { cx } from '@/lib/classNames';
 import { CoursesPanel, DownloadsPanel, OverviewPanel, ProfilePanel } from './DashboardPanels';
 import styles from './Dashboard.module.scss';
 
 type DashboardTab = 'overview' | 'courses' | 'downloads' | 'profile';
 
-export function DashboardClient() {
-  const locale = useLocale() as Locale;
+export function DashboardClient({
+  content,
+  courses
+}: {
+  content: DashboardContent;
+  courses: CourseCardCourse[];
+}) {
   const t = useTranslations();
   const router = useRouter();
   const { email, logout } = useAuth();
   const { showToast } = useToast();
   const [tab, setTab] = useState<DashboardTab>('overview');
-  const content = prototypeContent[locale];
-  const courses = localizedCourses[locale];
 
   function signOut() {
     logout();

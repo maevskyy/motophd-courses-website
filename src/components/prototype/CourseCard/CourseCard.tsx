@@ -1,11 +1,11 @@
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
-import type { Course } from '@/lib/content';
+import type { CourseCardCourse } from '@/lib/data';
 import { cx } from '@/lib/classNames';
 import styles from './CourseCard.module.scss';
 
 type CourseCardProps = {
-  course: Course;
+  course: CourseCardCourse;
   catalog?: boolean;
 };
 
@@ -15,7 +15,7 @@ export function CourseCard({ course, catalog = false }: CourseCardProps) {
   return (
     <Link
       className={cx(styles.courseCard, course.featured && styles.courseCardFeatured)}
-      href="/courses/lean"
+      href={`/courses/${course.slug}`}
     >
       <div
         className={cx(
@@ -43,7 +43,7 @@ export function CourseCard({ course, catalog = false }: CourseCardProps) {
         ) : null}
         <div className={styles.coursePriceRow}>
           <div className={styles.coursePrice}>
-            €29 {!catalog ? <small>/ lifetime</small> : null}
+            €{course.priceStandard} {!catalog ? <small>/ lifetime</small> : null}
           </div>
           <span className={course.featured ? styles.courseBtn : styles.courseBtnGhost}>
             {course.featured ? t('enrollNow') : t('viewCourse')}

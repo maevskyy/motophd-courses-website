@@ -1,27 +1,41 @@
 import { getTranslations } from 'next-intl/server';
-import { Link, redirect } from '@/i18n/routing';
+import { notFound } from 'next/navigation';
+import { connection } from 'next/server';
+import { Link } from '@/i18n/routing';
 import { CurriculumAccordion } from '@/components/prototype/CurriculumAccordion';
 import { Footer } from '@/components/prototype/Footer';
 import { PricingBox } from '@/components/prototype/PricingBox';
-import { curriculum, prototypeContent } from '@/lib/content';
+import {
+  getCourseBySlug,
+  getCourseLessons,
+  toAppLocale,
+  toCurriculumModules,
+  toSalesContent
+} from '@/lib/data';
 import type { Locale } from '@/i18n/routing';
 import styles from '@/components/courseSales/CourseSalesPage.module.scss';
+
+export const dynamic = 'force-dynamic';
 
 export default async function CourseSalesPage({
   params
 }: {
   params: Promise<{ slug: string; locale: string }>;
 }) {
-  const { slug } = await params;
-  const locale = (await params).locale;
-  const safeLocale = (locale === 'ru' ? 'ru' : 'en') satisfies Locale;
+  await connection();
 
-  if (slug !== 'lean') {
-    redirect({ href: '/courses/lean', locale: safeLocale });
+  const { locale, slug } = await params;
+  const safeLocale = toAppLocale(locale) satisfies Locale;
+  const course = await getCourseBySlug(slug, safeLocale);
+
+  if (!course) {
+    notFound();
   }
 
   const t = await getTranslations({ locale: safeLocale, namespace: 'actions' });
-  const sales = prototypeContent[safeLocale].sales;
+  const lessons = await getCourseLessons(course.id, safeLocale);
+  const sales = toSalesContent(course, safeLocale);
+  const curriculum = toCurriculumModules(course, lessons);
 
   return (
     <>
@@ -29,7 +43,7 @@ export default async function CourseSalesPage({
         <div className={styles.salesHero__inner}>
           <div>
             <Link className={styles.salesBreadcrumb} href="/courses">
-              ← <span className={styles.red}>{sales.breadcrumb}</span> / Stop Being Afraid to Lean
+              ← <span className={styles.red}>{sales.breadcrumb}</span> / {course.title}
             </Link>
             <div className={styles.salesTag}>{sales.tag}</div>
             <h1 className={styles.salesTitle}>
@@ -49,7 +63,7 @@ export default async function CourseSalesPage({
               ))}
             </div>
           </div>
-          <PricingBox sales={sales} />
+          <PricingBox courseSlug={course.slug} sales={sales} />
         </div>
       </section>
 
@@ -57,7 +71,7 @@ export default async function CourseSalesPage({
         <h2 className={styles.salesSection__title}>Course Curriculum</h2>
         <p className={styles.section__sub}>{sales.curriculumIntro}</p>
         <div className={styles.hero__buttons}>
-          <Link className={styles.buttonGhost} href="/learn/lean">
+          <Link className={styles.buttonGhost} href={`/learn/${course.slug}`}>
             Preview player
           </Link>
         </div>
@@ -75,8 +89,8 @@ export default async function CourseSalesPage({
           <span className={styles.red}>{sales.bottomAccent}</span>
         </h2>
         <p className={styles.ctaSub}>{sales.bottomSub}</p>
-        <Link className={`${styles.button} ${styles.buttonLarge}`} href="/courses/lean">
-          {t('enrollNow')} — €29
+        <Link className={`${styles.button} ${styles.buttonLarge}`} href={`/courses/${course.slug}`}>
+          {t('enrollNow')} — €{course.priceStandard}
         </Link>
       </section>
 

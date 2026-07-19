@@ -1,11 +1,12 @@
 import { Link } from '@/i18n/routing';
 import { CourseCard } from '@/components/prototype/CourseCard';
-import type { Course, HomeContent } from '@/lib/content';
+import type { HomeContent } from '@/lib/content';
+import type { CourseCardCourse } from '@/lib/data';
 import { landingStyles as styles } from './styles';
 
 interface Props {
   content: HomeContent;
-  courses: Course[];
+  courses: CourseCardCourse[];
   labels: {
     startLearning: string;
     viewCourses: string;
