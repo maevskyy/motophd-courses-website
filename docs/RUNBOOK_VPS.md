@@ -44,11 +44,30 @@ Manual owner steps for the first production box.
 
 Install Docker Engine and the compose plugin from Docker's official Ubuntu repository.
 
+```bash
+sudo apt-get update
+sudo apt-get install -y ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" |
+  sudo tee /etc/apt/sources.list.d/docker.list >/dev/null
+sudo apt-get update
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+sudo usermod -aG docker "$USER"
+sudo systemctl enable --now docker
+```
+
+Log out and reconnect after adding the user to the `docker` group.
+
 Verify:
 
 ```bash
 docker --version
 docker compose version
+docker info >/dev/null
 ```
 
 ## App Files
@@ -79,8 +98,12 @@ PAYLOAD_SECRET=...
 Generate secrets locally with:
 
 ```bash
-openssl rand -base64 48
+openssl rand -hex 32
 ```
+
+Use the hex value for `POSTGRES_PASSWORD` and insert the exact same value into
+`DATABASE_URI`. Hex avoids URL-reserved characters. Generate `PAYLOAD_SECRET`
+separately with the same command.
 
 ## GHCR Access
 
@@ -99,16 +122,18 @@ Also add GitHub repository secrets:
 
 ## First Deploy
 
-Run GitHub Actions workflow `Deploy` without a tag.
+Run GitHub Actions workflow `Deploy` without a tag. Enable the `seed` input only
+for the first deployment or when intentionally restoring the fixture content.
 
 It will:
 
-1. Build the Docker image in GitHub Actions.
-2. Push `latest` and `sha-xxxxxxx` tags to GHCR.
-3. SSH to the server.
-4. Pull the image.
-5. Run `docker compose -f docker-compose.prod.yml up -d`.
-6. Check `http://127.0.0.1/api/health`.
+1. Verify required GitHub secrets and all VPS prerequisites before building.
+2. Build the Docker image with the GitHub Actions layer cache.
+3. Push `latest` and `sha-xxxxxxx` tags to GHCR.
+4. Pull the image and start Postgres.
+5. Apply Payload migrations.
+6. Optionally run the idempotent seed.
+7. Start the app and check `http://127.0.0.1/api/health`.
 
 Verify on the server:
 
@@ -118,16 +143,9 @@ docker compose -f docker-compose.prod.yml ps
 curl -fsS http://127.0.0.1/api/health
 ```
 
-## Seed
+## Manual Seed
 
-After the first successful deploy, run migrations once:
-
-```bash
-cd ~/motophd
-docker compose -f docker-compose.prod.yml run --rm app pnpm payload migrate
-```
-
-Then seed content:
+The workflow applies migrations on every deployment. To seed manually:
 
 ```bash
 cd ~/motophd
