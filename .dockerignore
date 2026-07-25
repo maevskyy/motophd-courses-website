@@ -1,0 +1,16 @@
+.env
+.env.*
+.git
+.github
+.next
+.turbo
+coverage
+deploy
+docs
+motophd-demo.html
+node_modules
+npm-debug.log*
+pnpm-debug.log*
+README.md
+*.MP4
+*.mp4
