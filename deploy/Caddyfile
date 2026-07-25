@@ -1,0 +1,5 @@
+motophd.com, www.motophd.com {
+	tls /certs/origin.pem /certs/origin.key
+	encode gzip
+	reverse_proxy app:3000
+}
