@@ -42,6 +42,16 @@ services:
       retries: 12
       start_period: 20s
 
+  grafana:
+    image: grafana/grafana:latest
+    restart: unless-stopped
+    environment:
+      GF_SERVER_ROOT_URL: https://grafana.motophd.com
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:?GRAFANA_ADMIN_PASSWORD is required}
+    volumes:
+      - grafana_data:/var/lib/grafana
+
   caddy:
     image: caddy:2-alpine
     restart: unless-stopped
@@ -55,8 +65,10 @@ services:
       - caddy_config:/config
     depends_on:
       - app
+      - grafana
 
 volumes:
   postgres_data:
+  grafana_data:
   caddy_data:
   caddy_config:

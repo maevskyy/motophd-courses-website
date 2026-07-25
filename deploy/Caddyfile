@@ -3,3 +3,9 @@ motophd.com, www.motophd.com {
 	encode gzip
 	reverse_proxy app:3000
 }
+
+grafana.motophd.com {
+	tls /certs/origin.pem /certs/origin.key
+	encode gzip
+	reverse_proxy grafana:3000
+}
