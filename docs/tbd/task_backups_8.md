@@ -1,11 +1,11 @@
 # Task 8 — Бэкапы: pg_dump → offsite + restore-тест
 
-**Depends on:** 3
+**Depends on:** 3 (done — VPS по факту OVH, не Hetzner)
 **Goal:** Смерть VPS не теряет данные: правило 3-2-1, восстановление проверено руками.
 
 ## Scope
 
-- Offsite-хранилище: Hetzner Storage Box (или Backblaze B2).
+- Offsite-хранилище: выбрать — Cloudflare R2 (уже в стеке, ADR-3) / Backblaze B2 / OVH Object Storage. Главное — не тот же OVH-датацентр, что VPS.
 - Крон-контейнер (или systemd-timer): ночной `pg_dump -Fc` → gzip → rclone/scp в offsite; retention 14 дней; локальная копия последних 3.
 - Уведомление об ошибке бэкапа (алерт из task 7 или простой healthcheck-пинг типа healthchecks.io).
 - `docs/RESTORE.md`: пошаговое восстановление с нуля (новый VPS → compose → restore дампа → переключение DNS) — написан так, чтобы сработал в панике.

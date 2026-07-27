@@ -8,15 +8,16 @@
 
 | Черновик | Про что |
 |---|---|
-| task_vps_bootstrap_3 | VPS, Caddy, домены, Cloudflare, Access |
-| task_cicd_4 | CI, образ→GHCR, деплой-кнопка, rollback |
 | task_media_stream_5 | R2 + Cloudflare Stream + signed playback |
 | task_payments_skeleton_6 | PaymentProvider, mock, вебхук, идемпотентность |
-| task_monitoring_7 | Grafana/Prometheus/Loki/uptime |
+| task_monitoring_7 | начинка мониторинга: Prometheus/Loki/дашборды/алерты (Grafana-хост уже поднят) |
 | task_backups_8 | pg_dump → offsite + restore-тест |
+| task_infra_leftovers_13 | хвосты после 3+4: изоляция админки+Access, branch protection, худой образ, rollback-тест, инструкция Ане |
+
+Закрыты 26.07 и переехали в `../kanban/done/`: task_vps_bootstrap_3, task_cicd_4.
 
 ## Фронт-скоуп (Аня)
 
 | Черновик | Про что |
 |---|---|
-| task_rebuild_prototype_10 | пересобрать HTML-прототип в Next 1:1 (первая задача Ани; грумминг на созвоне) |
+| task_rebuild_prototype_10 | УСТАРЕЛА — порт уже сделан (task 1+11); первую задачу Ани формулируем заново |

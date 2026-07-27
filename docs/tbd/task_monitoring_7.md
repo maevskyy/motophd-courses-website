@@ -1,11 +1,14 @@
 # Task 7 — Мониторинг: Grafana + Prometheus + Loki
 
-**Depends on:** 3
+**Depends on:** 3 (done)
+**Статус черновика:** частично перекрыта 26.07 — grafana-контейнер уже живёт в прод-компоузе
+за Caddy (`https://grafana.motophd.com`, admin-пароль из env на боксе). Осталась вся начинка:
+prometheus/loki/promtail/exporters, дашборды, алерты, retention. Access — в task_infra_leftovers_13.
 **Goal:** `grafana.motophd.com` отвечает на вопрос «всё ли живо» за 10 секунд.
 
 ## Scope
 
-- В прод-compose: prometheus, grafana, loki, promtail, node-exporter, cadvisor, blackbox-exporter (или Uptime Kuma).
+- В прод-compose: prometheus, loki, promtail, node-exporter, cadvisor, blackbox-exporter (или Uptime Kuma). Grafana уже есть.
 - Caddy metrics-эндпоинт → Prometheus.
 - Retention: Prometheus ~15d, Loki ~30d (диск не жрём).
 - Дашборды: (1) хост — CPU/RAM/диск; (2) контейнеры — RSS/CPU/рестарты (memory leak виден здесь); (3) HTTP через Caddy — RPS/коды/латентность; (4) логи Loki; (5) uptime + TLS-срок.

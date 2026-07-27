@@ -23,5 +23,7 @@ docs/tbd/            — бэклог на грумминг (в работу н�
 - [task_refactor_colocation_11](./done/task_refactor_colocation_11.md) — рефактор порта под CODE_STYLE (колокация стилей, размеры файлов)
 - [task_payload_db_admin_12](./done/task_payload_db_admin_12.md) — Payload 3 + Postgres + `/admin` внутри текущего Next-приложения
 - [task_content_model_2](./done/task_content_model_2.md) — доменные Payload-коллекции, базовый доступ, seed курсов
+- [task_vps_bootstrap_3](./done/task_vps_bootstrap_3.md) — OVH VPS + hardening, Cloudflare DNS/TLS (Full strict + origin-cert), Caddy, прод-compose
+- [task_cicd_4](./done/task_cicd_4.md) — ci.yml + deploy.yml: образ→GHCR, деплой/rollback кнопкой, миграции и seed в пайплайне
 
 Остальной бэклог — черновиками в [../tbd/](../tbd/README.md), формулируются в задачи вручную.
