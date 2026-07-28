@@ -103,12 +103,69 @@ jobs:
             test "$available_kb" -ge 5242880 || { echo "Less than 5 GiB is available on the VPS"; exit 1; }
             echo "${{ secrets.GHCR_READ_TOKEN }}" | docker login ghcr.io -u "${{ github.repository_owner }}" --password-stdin
 
+  tests:
+    name: Unit + E2E Gate
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URI: postgres://motophd:motophd@localhost:5432/motophd
+      PAYLOAD_SECRET: ci-only-payload-secret
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: motophd
+          POSTGRES_USER: motophd
+          POSTGRES_PASSWORD: motophd
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U motophd -d motophd"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.10.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Unit and component tests
+        run: pnpm test
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Apply migrations
+        run: pnpm payload migrate
+
+      - name: Seed content
+        run: pnpm seed
+
+      - name: Build
+        run: pnpm build
+
+      - name: Run e2e smoke tests
+        run: pnpm test:e2e
+
   build:
     name: Build and Push Image
     needs:
       - resolve-tag
       - preflight
-    if: ${{ inputs.tag == '' }}
+      - tests
+    if: ${{ inputs.tag == '' && needs.tests.result == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -140,8 +197,9 @@ jobs:
     needs:
       - resolve-tag
       - preflight
+      - tests
       - build
-    if: ${{ always() && needs.resolve-tag.result == 'success' && needs.preflight.result == 'success' && (needs.build.result == 'success' || needs.build.result == 'skipped') }}
+    if: ${{ always() && needs.resolve-tag.result == 'success' && needs.preflight.result == 'success' && needs.tests.result == 'success' && (needs.build.result == 'success' || needs.build.result == 'skipped') }}
     runs-on: ubuntu-latest
     steps:
       - name: Deploy image over SSH
@@ -162,3 +220,10 @@ jobs:
             fi
             IMAGE_TAG="${{ needs.resolve-tag.outputs.image_tag }}" docker compose -f docker-compose.prod.yml up -d --remove-orphans
             curl -fsS --retry 30 --retry-delay 3 --retry-all-errors http://127.0.0.1:3000/api/health
+
+      - name: Production smoke check
+        run: |
+          curl -fsS --retry 5 --retry-delay 3 https://motophd.com/api/health
+          homepage=$(curl -fsS --retry 5 --retry-delay 3 https://motophd.com/en)
+          echo "$homepage" | grep -q "/en/courses/" || { echo "::error::Homepage is up but course cards are missing"; exit 1; }
+          curl -fsS -o /dev/null https://motophd.com/admin

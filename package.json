@@ -13,6 +13,9 @@
     "generate:types": "payload generate:types",
     "seed": "payload run src/seed/seed.ts",
     "db:up": "docker compose -f docker-compose.dev.yml up -d",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
     "format": "prettier --check .",
     "format:write": "prettier --write ."
   },
@@ -31,13 +34,20 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
+    "@playwright/test": "^1.62.0",
+    "@testing-library/jest-dom": "^7.0.0",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
     "@types/node": "^24.8.1",
     "@types/react": "^19.1.13",
     "@types/react-dom": "^19.1.9",
+    "@vitejs/plugin-react": "^6.0.4",
     "eslint": "^9.37.0",
     "eslint-config-next": "^15.5.6",
+    "jsdom": "^29.1.1",
     "prettier": "^3.6.2",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.10"
   },
   "packageManager": "pnpm@11.10.0"
 }
