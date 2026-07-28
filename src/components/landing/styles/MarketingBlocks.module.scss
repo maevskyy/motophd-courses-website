@@ -67,6 +67,20 @@
   font-size: 17px;
   padding: 18px 48px;
 }
+
+.ctaButton {
+  background: #ff2a30;
+  border-radius: 8px;
+  box-shadow: 0 8px 30px rgba(227, 30, 36, 0.45);
+  font-size: 20px;
+  letter-spacing: 0.2px;
+  padding: 22px 58px;
+}
+
+.ctaButton:hover {
+  background: #ff4046;
+  box-shadow: 0 10px 36px rgba(227, 30, 36, 0.6);
+}
 .methodCard,
 .testiCard,
 .dashStat,
@@ -360,4 +374,5 @@
   .howSteps { grid-template-columns: 1fr 1fr; }
   .howSteps::before { display: none; }
   .section { padding-left: 20px; padding-right: 20px; }
+  .ctaButton { font-size: 18px; padding: 20px 36px; }
 }

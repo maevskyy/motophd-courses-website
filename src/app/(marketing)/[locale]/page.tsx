@@ -27,7 +27,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       />
       <LandingBottom
         content={content}
-        labels={{ browseAllCourses: t('browseAllCourses'), enrollNow: t('enrollNow') }}
+        labels={{ browseAllCourses: t('browseAllCourses'), enrollCta: t('enrollCourse') }}
       />
     </>
   );
