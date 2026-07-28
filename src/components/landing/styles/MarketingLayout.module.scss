@@ -1,37 +1,6 @@
 .red {
   color: var(--red);
 }
-.authority {
-  background: #0d0d0d;
-  border-bottom: 1px solid #1a1a1a;
-  border-top: 1px solid #1a1a1a;
-  padding: 32px 40px;
-}
-
-.authority__inner {
-  display: grid;
-  gap: 0;
-  grid-template-columns: repeat(4, 1fr);
-  margin: 0 auto;
-  max-width: 1200px;
-}
-
-.authority__item {
-  border-right: 1px solid #1a1a1a;
-  padding: 16px;
-  text-align: center;
-}
-
-.authority__item:last-child {
-  border: 0;
-}
-
-.authority__num {
-  color: var(--white);
-  font-size: 40px;
-  font-weight: 900;
-}
-
 .section {
   margin: 0 auto;
   max-width: 1200px;
@@ -78,7 +47,7 @@
 
 
 @media (max-width: 900px) {
-  .authority__inner, .howSteps { grid-template-columns: 1fr 1fr; }
+  .howSteps { grid-template-columns: 1fr 1fr; }
   .howSteps::before { display: none; }
   .section { padding-left: 20px; padding-right: 20px; }
 }
