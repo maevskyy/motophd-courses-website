@@ -24,6 +24,16 @@ test('home page renders in Russian', async ({ page }) => {
   ).toBeVisible();
 });
 
+test('home page ends with the enroll call to action', async ({ page }) => {
+  await page.goto('/ru');
+
+  await expect(page.getByRole('link', { name: 'Записаться на курс' })).toBeVisible();
+
+  await page.goto('/en');
+
+  await expect(page.getByRole('link', { name: 'Join the Course' })).toBeVisible();
+});
+
 test('language switcher toggles the locale', async ({ page }) => {
   await page.goto('/en');
   await page.getByRole('link', { name: /EN.*RU/ }).click();

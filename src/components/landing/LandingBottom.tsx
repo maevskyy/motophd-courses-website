@@ -8,7 +8,7 @@ interface Props {
   content: HomeContent;
   labels: {
     browseAllCourses: string;
-    enrollNow: string;
+    enrollCta: string;
   };
 }
 
@@ -92,8 +92,8 @@ export function LandingBottom({ content, labels }: Props) {
           <span className={styles.red}>{content.ctaAccent}</span>
         </h2>
         <p className={styles.ctaSub}>{content.ctaSub}</p>
-        <Link className={`${styles.button} ${styles.buttonLarge}`} href="/courses">
-          {labels.enrollNow}
+        <Link className={`${styles.button} ${styles.ctaButton}`} href="/courses">
+          {labels.enrollCta}
         </Link>
       </section>
       <Footer />
