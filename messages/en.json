@@ -37,6 +37,10 @@
     "submitting": "Signing in...",
     "back": "Back to MotoPhD Online"
   },
+  "access": {
+    "loginRequired": "Please sign in to access your courses.",
+    "courseDenied": "This course is not included in your purchases."
+  },
   "dashboard": {
     "overview": "Overview",
     "myCourses": "My Courses",

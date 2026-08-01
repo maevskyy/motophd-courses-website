@@ -86,6 +86,53 @@ test('direct login opens the dashboard', async ({ page }) => {
   await expect(page).toHaveURL(/\/en\/dashboard$/);
 });
 
+test('anonymous visitors return to the exact private page after signing in', async ({ page }) => {
+  await page.goto('/en/dashboard');
+
+  await expect(page).toHaveURL(/\/en\/login\?/);
+  expect(new URL(page.url()).searchParams.get('next')).toBe('/en/dashboard');
+
+  await page.goto('/en/learn/lean');
+
+  await expect(page).toHaveURL(/\/en\/login\?/);
+  expect(new URL(page.url()).searchParams.get('next')).toBe('/en/learn/lean');
+});
+
+test('guest without a purchase is returned to the course page', async ({ page }) => {
+  await page.goto('/en/login?next=%2Fen%2Flearn%2Flean');
+  await page.locator('#login-email').fill('guest@motophd.com');
+  await page.locator('#login-password').fill('guest1234');
+  await page.getByRole('button', { name: 'Sign In to My Dashboard' }).click();
+
+  await expect(page).toHaveURL(/\/en\/courses\/lean\?access=denied$/);
+  await expect(page.getByText('This course is not included in your purchases.')).toBeVisible();
+});
+
+test('student with a purchase can open the course player', async ({ page }) => {
+  await page.goto('/en/login?next=%2Fen%2Flearn%2Flean');
+  await page.locator('#login-email').fill('student@motophd.com');
+  await page.locator('#login-password').fill('student1234');
+  await page.getByRole('button', { name: 'Sign In to My Dashboard' }).click();
+
+  await expect(page).toHaveURL(/\/en\/learn\/lean$/);
+  await expect(page.getByText('Lesson Notes')).toBeVisible();
+});
+
+test('logout removes access to private pages', async ({ page }) => {
+  await page.goto('/en/login');
+  await page.locator('#login-email').fill('student@motophd.com');
+  await page.locator('#login-password').fill('student1234');
+  await page.getByRole('button', { name: 'Sign In to My Dashboard' }).click();
+  await expect(page).toHaveURL(/\/en\/dashboard$/);
+
+  await page.getByRole('button', { name: 'Sign Out' }).click();
+  await expect(page).toHaveURL(/\/en$/);
+
+  await page.goto('/en/dashboard');
+  await expect(page).toHaveURL(/\/en\/login\?/);
+  expect(new URL(page.url()).searchParams.get('next')).toBe('/en/dashboard');
+});
+
 test('invalid login shows a generic error message', async ({ page }) => {
   await page.goto('/en/login');
   await page.locator('#login-email').fill('student@motophd.com');

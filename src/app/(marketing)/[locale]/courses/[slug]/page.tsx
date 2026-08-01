@@ -19,22 +19,31 @@ import styles from '@/components/courseSales/CourseSalesPage.module.scss';
 export const dynamic = 'force-dynamic';
 
 export default async function CourseSalesPage({
-  params
+  params,
+  searchParams
 }: {
   params: Promise<{ slug: string; locale: string }>;
+  searchParams: Promise<{ access?: string }>;
 }) {
   await connection();
 
-  const [{ locale, slug }, user] = await Promise.all([params, getCurrentUser()]);
+  const [{ locale, slug }, user, { access }] = await Promise.all([
+    params,
+    getCurrentUser(),
+    searchParams
+  ]);
   const safeLocale = toAppLocale(locale) satisfies Locale;
-  const course = await getCourseBySlug(slug, safeLocale);
+  const course = await getCourseBySlug(slug, safeLocale, user || undefined);
 
   if (!course) {
     notFound();
   }
 
-  const t = await getTranslations({ locale: safeLocale, namespace: 'actions' });
-  const lessons = await getCourseLessons(course.id, safeLocale);
+  const [t, accessT] = await Promise.all([
+    getTranslations({ locale: safeLocale, namespace: 'actions' }),
+    getTranslations({ locale: safeLocale, namespace: 'access' })
+  ]);
+  const lessons = await getCourseLessons(course.id, safeLocale, user || undefined);
   const sales = toSalesContent(course, safeLocale);
   const curriculum = toCurriculumModules(course, lessons);
 
@@ -46,6 +55,11 @@ export default async function CourseSalesPage({
             <Link className={styles.salesBreadcrumb} href="/courses">
               ← <span className={styles.red}>{sales.breadcrumb}</span> / {course.title}
             </Link>
+            {access === 'denied' ? (
+              <p className={styles.salesAccessNotice} role="alert">
+                {accessT('courseDenied')}
+              </p>
+            ) : null}
             <div className={styles.salesTag}>{sales.tag}</div>
             <h1 className={styles.salesTitle}>
               {sales.title.map((line) => (

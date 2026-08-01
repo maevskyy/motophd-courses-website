@@ -37,6 +37,10 @@
     "submitting": "Входим...",
     "back": "На главную MotoPhD Online"
   },
+  "access": {
+    "loginRequired": "Войди, чтобы открыть свои курсы.",
+    "courseDenied": "Этот курс не входит в твои покупки."
+  },
   "dashboard": {
     "overview": "Обзор",
     "myCourses": "Мои курсы",

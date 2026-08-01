@@ -1,6 +1,8 @@
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { connection } from 'next/server';
 import { CoursePlayerClient } from '@/components/player/CoursePlayerClient';
+import { hasPaidAccess } from '@/lib/access/hasPaidAccess';
+import { requireUser } from '@/lib/auth';
 import {
   getCourseBySlug,
   getCourseLessons,
@@ -8,6 +10,7 @@ import {
   toCurriculumModules,
   toPlayerContent
 } from '@/lib/data';
+import { getPayloadClient } from '@/lib/data/payload';
 
 export const dynamic = 'force-dynamic';
 
@@ -20,13 +23,22 @@ export default async function CoursePlayerPage({
 
   const { locale, slug } = await params;
   const safeLocale = toAppLocale(locale);
-  const course = await getCourseBySlug(slug, safeLocale);
+  const user = await requireUser(
+    `/${safeLocale}/login?next=${encodeURIComponent(`/${safeLocale}/learn/${slug}`)}`
+  );
+  const course = await getCourseBySlug(slug, safeLocale, user);
 
   if (!course) {
     notFound();
   }
 
-  const lessons = await getCourseLessons(course.id, safeLocale);
+  const payload = await getPayloadClient();
+
+  if (!(await hasPaidAccess(payload, user, course))) {
+    redirect(`/${safeLocale}/courses/${course.slug}?access=denied`);
+  }
+
+  const lessons = await getCourseLessons(course.id, safeLocale, user);
   const curriculum = toCurriculumModules(course, lessons);
   const player = toPlayerContent(course, lessons);
 
