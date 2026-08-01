@@ -56,14 +56,20 @@
   text-align: center;
 }
 
-.loginNote {
+.loginError {
   background: #111;
   border-radius: 6px;
   color: var(--gray);
+  display: grid;
   font-size: 12px;
+  gap: 4px;
   margin-bottom: 20px;
   padding: 10px;
   text-align: center;
+}
+
+.loginError strong {
+  color: var(--white);
 }
 
 .formGroup {
@@ -104,6 +110,11 @@
   margin-bottom: 16px;
   padding: 15px;
   width: 100%;
+}
+
+.btnLogin:disabled {
+  cursor: wait;
+  opacity: 0.7;
 }
 
 .loginBack {

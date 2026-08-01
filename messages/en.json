@@ -32,7 +32,9 @@
     "password": "Password",
     "emailPlaceholder": "your@email.com",
     "passwordPlaceholder": "Your password",
-    "note": "Demo mode: Enter any email + password and click Sign In to access the dashboard. No real login required.",
+    "invalidCredentials": "Incorrect email or password",
+    "accessHint": "Access is sent by email after purchasing a course.",
+    "submitting": "Signing in...",
     "back": "Back to MotoPhD Online"
   },
   "dashboard": {

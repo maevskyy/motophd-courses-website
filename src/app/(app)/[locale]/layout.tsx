@@ -1,9 +1,9 @@
 import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
-import { AuthProvider } from '@/components/providers/AuthProvider';
 import { ToastProvider } from '@/components/providers/ToastProvider';
 import { Nav } from '@/components/layout/Nav';
+import { getCurrentUser } from '@/lib/auth';
 import '../../globals.scss';
 
 export const dynamic = 'force-dynamic';
@@ -21,18 +21,16 @@ export default async function AppLocaleLayout({
     notFound();
   }
 
-  const messages = await getMessages({ locale });
+  const [messages, user] = await Promise.all([getMessages({ locale }), getCurrentUser()]);
 
   return (
     <html lang={locale}>
       <body>
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <AuthProvider>
-            <ToastProvider>
-              <Nav />
-              {children}
-            </ToastProvider>
-          </AuthProvider>
+          <ToastProvider>
+            <Nav isLoggedIn={Boolean(user)} />
+            {children}
+          </ToastProvider>
         </NextIntlClientProvider>
       </body>
     </html>

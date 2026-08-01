@@ -63,6 +63,42 @@ test('login page shows the form', async ({ page }) => {
 
   await expect(page.locator('#login-email')).toBeVisible();
   await expect(page.locator('#login-password')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Sign In to My Dashboard' })).toBeVisible();
+  await expect(page.locator('#login-email')).toHaveValue('');
+});
+
+test('student can sign in and returns to the requested page', async ({ page }) => {
+  await page.goto('/en/login?next=%2Fen%2Fcourses');
+  await page.locator('#login-email').fill('student@motophd.com');
+  await page.locator('#login-password').fill('student1234');
+  await page.getByRole('button', { name: 'Sign In to My Dashboard' }).click();
+
+  await expect(page).toHaveURL(/\/en\/courses$/);
+  await expect(page.getByRole('navigation').getByRole('link', { name: 'My Dashboard' })).toBeVisible();
+});
+
+test('direct login opens the dashboard', async ({ page }) => {
+  await page.goto('/en/login');
+  await page.locator('#login-email').fill('guest@motophd.com');
+  await page.locator('#login-password').fill('guest1234');
+  await page.getByRole('button', { name: 'Sign In to My Dashboard' }).click();
+
+  await expect(page).toHaveURL(/\/en\/dashboard$/);
+});
+
+test('invalid login shows a generic error message', async ({ page }) => {
+  await page.goto('/en/login');
+  await page.locator('#login-email').fill('student@motophd.com');
+  await page.locator('#login-password').fill('wrong-password');
+  await page.getByRole('button', { name: 'Sign In to My Dashboard' }).click();
+
+  await expect(page).toHaveURL(/\/en\/login$/);
+  const loginError = page.locator('form [role="alert"]');
+
+  await expect(loginError).toContainText('Incorrect email or password');
+  await expect(loginError).toContainText(
+    'Access is sent by email after purchasing a course.'
+  );
 });
 
 test('legal page renders content from Payload', async ({ page }) => {

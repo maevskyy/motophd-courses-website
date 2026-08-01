@@ -5,6 +5,7 @@ import { Link } from '@/i18n/routing';
 import { CurriculumAccordion } from '@/components/prototype/CurriculumAccordion';
 import { Footer } from '@/components/prototype/Footer';
 import { PricingBox } from '@/components/prototype/PricingBox';
+import { getCurrentUser } from '@/lib/auth';
 import {
   getCourseBySlug,
   getCourseLessons,
@@ -24,7 +25,7 @@ export default async function CourseSalesPage({
 }) {
   await connection();
 
-  const { locale, slug } = await params;
+  const [{ locale, slug }, user] = await Promise.all([params, getCurrentUser()]);
   const safeLocale = toAppLocale(locale) satisfies Locale;
   const course = await getCourseBySlug(slug, safeLocale);
 
@@ -63,7 +64,12 @@ export default async function CourseSalesPage({
               ))}
             </div>
           </div>
-          <PricingBox courseSlug={course.slug} sales={sales} />
+          <PricingBox
+            courseSlug={course.slug}
+            isLoggedIn={Boolean(user)}
+            loginHref={`/${safeLocale}/login?next=${encodeURIComponent(`/${safeLocale}/courses/${course.slug}`)}`}
+            sales={sales}
+          />
         </div>
       </section>
 
