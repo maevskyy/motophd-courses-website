@@ -1,5 +1,5 @@
 import type { Course, Lesson } from '@/payload-types';
-import { richTextToText } from './richText';
+import type { CourseCurriculumLesson } from './courses';
 import type {
   AppLocale,
   CourseCardCourse,
@@ -106,7 +106,7 @@ export const toSalesContent = (course: Course, locale: AppLocale): SalesContent 
   };
 };
 
-const lessonDuration = (lesson: Lesson) => {
+const lessonDuration = (lesson: CourseCurriculumLesson) => {
   if (lesson.durationSec) {
     return `${Math.round(lesson.durationSec / 60)} min`;
   }
@@ -114,7 +114,7 @@ const lessonDuration = (lesson: Lesson) => {
   return lesson.type === 'pdf' ? 'PDF' : 'Reading';
 };
 
-const lessonIcon = (lesson: Lesson) => {
+const lessonIcon = (lesson: CourseCurriculumLesson) => {
   if (lesson.type === 'pdf') {
     return '📄';
   }
@@ -122,28 +122,27 @@ const lessonIcon = (lesson: Lesson) => {
   return lesson.type === 'video' ? '🎥' : '📝';
 };
 
-const getModuleTitle = (lesson: Lesson, fallback: string) =>
-  richTextToText(lesson.body).split('\n').find(Boolean) || fallback;
-
-export const toCurriculumModules = (course: Course, lessons: Lesson[]): CurriculumModule[] => {
-  const modules = new Map<string, Lesson[]>();
-
-  for (const lesson of lessons) {
-    const moduleTitle = getModuleTitle(lesson, course.title);
-    modules.set(moduleTitle, [...(modules.get(moduleTitle) || []), lesson]);
+export const toCurriculumModules = (
+  course: Course,
+  lessons: CourseCurriculumLesson[]
+): CurriculumModule[] => {
+  if (lessons.length === 0) {
+    return [];
   }
 
-  return Array.from(modules.entries()).map(([title, moduleLessons], index) => ({
-    number: String(index + 1),
-    title,
-    meta: `${moduleLessons.length} lessons`,
-    open: index === 0,
-    lessons: moduleLessons.map((lesson) => ({
-      icon: lessonIcon(lesson),
-      name: lesson.title,
-      duration: lessonDuration(lesson)
-    }))
-  }));
+  return [
+    {
+      number: '1',
+      title: course.title,
+      meta: `${lessons.length} lessons`,
+      open: true,
+      lessons: lessons.map((lesson) => ({
+        icon: lessonIcon(lesson),
+        name: lesson.title,
+        duration: lessonDuration(lesson)
+      }))
+    }
+  ];
 };
 
 export const toPlayerContent = (course: Course, lessons: Lesson[]): PlayerContent => {
@@ -153,7 +152,9 @@ export const toPlayerContent = (course: Course, lessons: Lesson[]): PlayerConten
   return {
     title: currentLesson?.title || course.title,
     subtitle: course.keyPoint || course.description || '',
-    videoMeta: currentLesson?.durationSec ? `${Math.round(currentLesson.durationSec / 60)}:00 · MotoPhD Online` : 'MotoPhD Online',
+    videoMeta: currentLesson?.durationSec
+      ? `${Math.round(currentLesson.durationSec / 60)}:00 · MotoPhD Online`
+      : 'MotoPhD Online',
     notes,
     feel: course.whatYouShouldFeel || '',
     overviewTitle: course.title,

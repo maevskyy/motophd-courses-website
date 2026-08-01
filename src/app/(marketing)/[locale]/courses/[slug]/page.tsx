@@ -8,7 +8,7 @@ import { PricingBox } from '@/components/prototype/PricingBox';
 import { getCurrentUser } from '@/lib/auth';
 import {
   getCourseBySlug,
-  getCourseLessons,
+  getCourseCurriculum,
   toAppLocale,
   toCurriculumModules,
   toSalesContent
@@ -43,7 +43,7 @@ export default async function CourseSalesPage({
     getTranslations({ locale: safeLocale, namespace: 'actions' }),
     getTranslations({ locale: safeLocale, namespace: 'access' })
   ]);
-  const lessons = await getCourseLessons(course.id, safeLocale, user || undefined);
+  const lessons = await getCourseCurriculum(course.id, safeLocale, user || undefined);
   const sales = toSalesContent(course, safeLocale);
   const curriculum = toCurriculumModules(course, lessons);
 

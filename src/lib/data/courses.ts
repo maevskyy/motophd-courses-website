@@ -1,4 +1,4 @@
-import type { LegalPage, User } from '@/payload-types';
+import type { LegalPage, Lesson, User } from '@/payload-types';
 import { getPayloadClient } from './payload';
 import type { AppLocale } from './types';
 
@@ -66,6 +66,44 @@ export const getCourseLessons = async (courseId: number, locale: AppLocale, user
     limit: 100,
     locale,
     overrideAccess: false,
+    sort: 'order',
+    user,
+    where: {
+      course: {
+        equals: courseId
+      }
+    }
+  });
+
+  return lessons.docs;
+};
+
+export type CourseCurriculumLesson = Pick<
+  Lesson,
+  'id' | 'order' | 'type' | 'title' | 'durationSec' | 'isFreePreview'
+>;
+
+export const getCourseCurriculum = async (
+  courseId: number,
+  locale: AppLocale,
+  user?: User
+): Promise<CourseCurriculumLesson[]> => {
+  const payload = await getPayloadClient();
+
+  const lessons = await payload.find({
+    collection: 'lessons',
+    depth: 0,
+    fallbackLocale: 'en',
+    limit: 100,
+    locale,
+    overrideAccess: false,
+    select: {
+      durationSec: true,
+      isFreePreview: true,
+      order: true,
+      title: true,
+      type: true
+    },
     sort: 'order',
     user,
     where: {

@@ -50,6 +50,51 @@ test('catalog lists seeded courses', async ({ page }) => {
   await expect(page.locator('a[href*="/en/courses/"]').first()).toBeVisible();
 });
 
+test('lesson API exposes protected content only to previews or paid students', async ({
+  request
+}) => {
+  const courseResponse = await request.get('/api/courses?where[slug][equals]=lean&limit=1&depth=0');
+  const courseId = (await courseResponse.json()).docs[0].id;
+  const lockedLessonsUrl =
+    `/api/lessons?where[course][equals]=${courseId}` +
+    '&where[isFreePreview][equals]=false&limit=1&depth=0';
+  const previewLessonsUrl =
+    `/api/lessons?where[course][equals]=${courseId}` +
+    '&where[isFreePreview][equals]=true&limit=1&depth=0';
+  const lockedResponse = await request.get(lockedLessonsUrl);
+  const lockedLesson = (await lockedResponse.json()).docs[0];
+
+  expect(lockedResponse.ok()).toBe(true);
+  expect(lockedLesson).not.toHaveProperty('streamVideoId');
+  expect(lockedLesson).not.toHaveProperty('body');
+  expect(lockedLesson).not.toHaveProperty('pdf');
+
+  const previewResponse = await request.get(previewLessonsUrl);
+  const previewLesson = (await previewResponse.json()).docs[0];
+
+  expect(previewResponse.ok()).toBe(true);
+  expect(previewLesson).toHaveProperty('streamVideoId');
+  expect(previewLesson).toHaveProperty('body');
+
+  const loginResponse = await request.post('/api/users/login', {
+    data: {
+      email: 'student@motophd.com',
+      password: 'student1234'
+    }
+  });
+  const { token } = await loginResponse.json();
+  const paidResponse = await request.get(lockedLessonsUrl, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+  const paidLesson = (await paidResponse.json()).docs[0];
+
+  expect(paidResponse.ok()).toBe(true);
+  expect(paidLesson).toHaveProperty('streamVideoId');
+  expect(paidLesson).toHaveProperty('body');
+});
+
 test('course page opens from the catalog', async ({ page }) => {
   await page.goto('/en/courses');
   await page.locator('a[href*="/en/courses/"]').first().click();
@@ -74,7 +119,9 @@ test('student can sign in and returns to the requested page', async ({ page }) =
   await page.getByRole('button', { name: 'Sign In to My Dashboard' }).click();
 
   await expect(page).toHaveURL(/\/en\/courses$/);
-  await expect(page.getByRole('navigation').getByRole('link', { name: 'My Dashboard' })).toBeVisible();
+  await expect(
+    page.getByRole('navigation').getByRole('link', { name: 'My Dashboard' })
+  ).toBeVisible();
 });
 
 test('direct login opens the dashboard', async ({ page }) => {
@@ -143,9 +190,7 @@ test('invalid login shows a generic error message', async ({ page }) => {
   const loginError = page.locator('form [role="alert"]');
 
   await expect(loginError).toContainText('Incorrect email or password');
-  await expect(loginError).toContainText(
-    'Access is sent by email after purchasing a course.'
-  );
+  await expect(loginError).toContainText('Access is sent by email after purchasing a course.');
 });
 
 test('legal page renders content from Payload', async ({ page }) => {

@@ -11,7 +11,7 @@ vi.mock('./payload', () => ({
   getPayloadClient: mocks.getPayloadClient
 }));
 
-import { getDashboardCourses, getPublishedCourses } from './courses';
+import { getCourseCurriculum, getDashboardCourses, getPublishedCourses } from './courses';
 
 const user = {
   collection: 'users',
@@ -42,6 +42,29 @@ describe('course data access', () => {
     );
   });
 
+  it('loads the public curriculum without protected lesson fields', async () => {
+    mocks.find.mockResolvedValue({ docs: [] });
+
+    await getCourseCurriculum(11, 'ru', user);
+
+    expect(mocks.find).toHaveBeenCalledWith(
+      expect.objectContaining({
+        collection: 'lessons',
+        depth: 0,
+        locale: 'ru',
+        overrideAccess: false,
+        select: {
+          durationSec: true,
+          isFreePreview: true,
+          order: true,
+          title: true,
+          type: true
+        },
+        user
+      })
+    );
+  });
+
   it('returns no dashboard courses when the user has no paid purchases', async () => {
     mocks.find.mockResolvedValueOnce({ docs: [] });
 
@@ -58,9 +81,11 @@ describe('course data access', () => {
     );
   });
 
-  it('loads only courses from the user\'s paid purchases', async () => {
+  it("loads only courses from the user's paid purchases", async () => {
     const courses = [{ id: 11, slug: 'lean' }];
-    mocks.find.mockResolvedValueOnce({ docs: [{ course: 11 }] }).mockResolvedValueOnce({ docs: courses });
+    mocks.find
+      .mockResolvedValueOnce({ docs: [{ course: 11 }] })
+      .mockResolvedValueOnce({ docs: courses });
 
     await expect(getDashboardCourses('ru', user)).resolves.toEqual(courses);
 
