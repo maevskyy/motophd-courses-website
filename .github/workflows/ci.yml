@@ -5,17 +5,19 @@ on:
   push:
     branches:
       - main
+      - dev
 
 permissions:
   contents: read
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   checks:
-    name: Lint, Typecheck, Build
+    name: Lint, Typecheck, Unit
     runs-on: ubuntu-latest
-    env:
-      DATABASE_URI: postgres://motophd:motophd@localhost:5432/motophd
-      PAYLOAD_SECRET: ci-only-payload-secret
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -42,9 +44,6 @@ jobs:
 
       - name: Unit and component tests
         run: pnpm test
-
-      - name: Build
-        run: pnpm build
 
   e2e:
     name: E2E (Playwright)
@@ -84,8 +83,34 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Resolve Playwright version
+        id: pw
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Playwright browsers
+        id: pw-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.pw.outputs.version }}
+
       - name: Install Playwright browser
         run: npx playwright install --with-deps chromium
+        if: steps.pw-cache.outputs.cache-hit != 'true'
+
+      - name: Install Playwright system deps
+        run: npx playwright install-deps chromium
+        if: steps.pw-cache.outputs.cache-hit == 'true'
+
+      # Кэш сборки Next: инкрементальная пересборка вместо полной на каждый прогон.
+      - name: Cache Next build
+        uses: actions/cache@v4
+        with:
+          path: .next/cache
+          key: next-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
+          restore-keys: |
+            next-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-
+            next-${{ runner.os }}-
 
       - name: Apply migrations
         run: pnpm payload migrate
