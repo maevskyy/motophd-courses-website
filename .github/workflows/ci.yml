@@ -9,6 +9,10 @@ on:
 
 permissions:
   contents: read
+  packages: write
+
+env:
+  IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/motophd
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -45,11 +49,62 @@ jobs:
       - name: Unit and component tests
         run: pnpm test
 
+  # Образ собирается на КАЖДЫЙ пуш в dev — заранее, в фоне.
+  # Кнопка Deploy потом просто берёт готовый тег, ничего не собирая.
+  build:
+    name: Build and Push Image
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/dev' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push app image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          target: runner
+          push: true
+          provenance: false
+          cache-from: type=gha,scope=app
+          cache-to: type=gha,mode=max,scope=app
+          tags: |
+            ${{ env.IMAGE_NAME }}:sha-${{ github.sha }}
+            ${{ env.IMAGE_NAME }}:latest
+
+      - name: Build and push ops image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          target: ops
+          push: true
+          provenance: false
+          cache-from: |
+            type=gha,scope=app
+            type=gha,scope=ops
+          cache-to: type=gha,mode=max,scope=ops
+          tags: |
+            ${{ env.IMAGE_NAME }}:sha-${{ github.sha }}-ops
+            ${{ env.IMAGE_NAME }}:latest-ops
+
   e2e:
-    name: E2E (Playwright)
+    name: E2E
+    needs: build
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/dev' }}
     runs-on: ubuntu-latest
     env:
-      DATABASE_URI: postgres://motophd:motophd@localhost:5432/motophd
+      DATABASE_URI: postgres://motophd:motophd@127.0.0.1:5432/motophd
+      E2E_BASE_URL: http://127.0.0.1:3100
       PAYLOAD_SECRET: ci-only-payload-secret
     services:
       postgres:
@@ -102,27 +157,36 @@ jobs:
         run: npx playwright install-deps chromium
         if: steps.pw-cache.outputs.cache-hit == 'true'
 
-      # Кэш сборки Next: инкрементальная пересборка вместо полной на каждый прогон.
-      - name: Cache Next build
-        uses: actions/cache@v4
-        with:
-          path: .next/cache
-          key: next-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
-          restore-keys: |
-            next-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-
-            next-${{ runner.os }}-
-
+      # Миграции и seed — из исходников (зависимости уже стоят ради Playwright).
+      # Тянуть ради этого полуторагигабайтный ops-образ — расточительство.
       - name: Apply migrations
         run: pnpm payload migrate
 
       - name: Seed content
         run: pnpm seed
 
-      - name: Build
-        run: pnpm build
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Start app container
+        run: |
+          docker run -d --name motophd-e2e --network host \
+            -e DATABASE_URI="$DATABASE_URI" \
+            -e PAYLOAD_SECRET="$PAYLOAD_SECRET" \
+            -e PORT=3100 \
+            "$IMAGE_NAME:sha-${{ github.sha }}"
+          curl -fsS --retry 30 --retry-delay 2 --retry-all-errors "$E2E_BASE_URL/api/health"
 
       - name: Run e2e smoke tests
         run: pnpm test:e2e
+
+      - name: App logs on failure
+        if: failure()
+        run: docker logs motophd-e2e
 
       - name: Upload traces on failure
         if: failure()

@@ -1,10 +1,13 @@
 name: Deploy
 
+# Деплой НИЧЕГО не собирает и не тестирует: образ и проверки уже сделаны CI на пуше.
+# Здесь только: дождаться зелёного CI этого коммита → pull → миграции → up → смоук.
+
 on:
   workflow_dispatch:
     inputs:
       tag:
-        description: Existing GHCR image tag to deploy. Leave empty to build the current commit.
+        description: Existing GHCR image tag to deploy (e.g. sha-<full-sha>). Leave empty to deploy the current commit.
         required: false
         type: string
       seed:
@@ -15,7 +18,9 @@ on:
 
 permissions:
   contents: read
-  packages: write
+  packages: read
+  actions: read
+  checks: read
 
 env:
   IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/motophd
@@ -30,6 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       image_tag: ${{ steps.tag.outputs.image_tag }}
+      sha: ${{ steps.tag.outputs.sha }}
     steps:
       - name: Resolve tag
         id: tag
@@ -44,9 +50,42 @@ jobs:
                 ;;
             esac
             echo "image_tag=$REQUESTED_TAG" >> "$GITHUB_OUTPUT"
+            echo "sha=${REQUESTED_TAG#sha-}" >> "$GITHUB_OUTPUT"
           else
-            echo "image_tag=sha-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+            echo "image_tag=sha-${GITHUB_SHA}" >> "$GITHUB_OUTPUT"
+            echo "sha=${GITHUB_SHA}" >> "$GITHUB_OUTPUT"
           fi
+
+  # Ждём, пока CI пуша (сборка + e2e) станет зелёным. Если он уже прошёл —
+  # это один API-запрос на несколько секунд. Красный CI = деплой не начнётся.
+  await-ci:
+    name: Await Green CI
+    needs: resolve-tag
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      SHA: ${{ needs.resolve-tag.outputs.sha }}
+    steps:
+      - name: Wait for CI of this commit
+        run: |
+          for i in $(seq 1 60); do
+            run=$(gh api "repos/${{ github.repository }}/actions/workflows/ci.yml/runs?head_sha=$SHA&per_page=1" \
+              --jq '.workflow_runs[0] | if . == null then "none none" else "\(.status) \(.conclusion)" end')
+            status=${run% *}; conclusion=${run#* }
+            echo "CI: status=$status conclusion=$conclusion (attempt $i)"
+            if [ "$status" = "completed" ]; then
+              [ "$conclusion" = "success" ] && exit 0
+              echo "::error::CI for $SHA finished with '$conclusion' — fix it before deploying"
+              exit 1
+            fi
+            if [ "$status" = "none" ] && [ "$i" -ge 6 ]; then
+              echo "::error::No CI run found for $SHA — push the commit first"
+              exit 1
+            fi
+            sleep 10
+          done
+          echo "::error::Timed out waiting for CI of $SHA"
+          exit 1
 
   preflight:
     name: Preflight VPS
@@ -74,238 +113,20 @@ jobs:
             set -eu
             command -v docker >/dev/null || { echo "Docker is not installed"; exit 1; }
             docker info >/dev/null || { echo "Docker daemon is unavailable for the deploy user"; exit 1; }
-            docker compose version
             test -s ~/motophd/docker-compose.prod.yml || { echo "~/motophd/docker-compose.prod.yml is missing"; exit 1; }
             test -s ~/motophd/.env || { echo "~/motophd/.env is missing"; exit 1; }
             cd ~/motophd
             docker compose -f docker-compose.prod.yml config --quiet
-            docker compose -f docker-compose.prod.yml config --format json | python3 -c '
-            import json
-            import sys
-            from urllib.parse import unquote, urlsplit
-
-            config = json.load(sys.stdin)
-            app_env = config["services"]["app"]["environment"]
-            postgres_env = config["services"]["postgres"]["environment"]
-            uri = urlsplit(app_env["DATABASE_URI"])
-            checks = (
-                uri.scheme in ("postgres", "postgresql"),
-                uri.username == postgres_env["POSTGRES_USER"],
-                unquote(uri.password or "") == postgres_env["POSTGRES_PASSWORD"],
-                uri.hostname == "postgres",
-                uri.path == "/" + postgres_env["POSTGRES_DB"],
-                uri.port == 5432,
-            )
-            if not all(checks):
-                raise SystemExit("DATABASE_URI does not match the Postgres service configuration")
-            '
             available_kb=$(df -Pk ~/motophd | awk 'NR == 2 { print $4 }')
             test "$available_kb" -ge 5242880 || { echo "Less than 5 GiB is available on the VPS"; exit 1; }
             echo "${{ secrets.GHCR_READ_TOKEN }}" | docker login ghcr.io -u "${{ github.repository_owner }}" --password-stdin
-
-  checks:
-    name: Lint, Typecheck, Unit
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 11.10.0
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Lint
-        run: pnpm lint
-
-      - name: Typecheck
-        run: pnpm typecheck
-
-      - name: Unit and component tests
-        run: pnpm test
-
-  build:
-    name: Build and Push Image
-    needs:
-      - resolve-tag
-    if: ${{ inputs.tag == '' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Login to GHCR
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      # Тонкий рантайм сайта: только .next/standalone, без полного node_modules.
-      - name: Build and push app image
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          target: runner
-          push: true
-          cache-from: type=gha,scope=app
-          cache-to: type=gha,mode=max,scope=app
-          tags: |
-            ${{ env.IMAGE_NAME }}:${{ needs.resolve-tag.outputs.image_tag }}
-            ${{ env.IMAGE_NAME }}:latest
-
-      # Образ для миграций и seed. Стадии deps/build переиспользуются из кэша выше.
-      - name: Build and push ops image
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          target: ops
-          push: true
-          cache-from: |
-            type=gha,scope=app
-            type=gha,scope=ops
-          cache-to: type=gha,mode=max,scope=ops
-          tags: |
-            ${{ env.IMAGE_NAME }}:${{ needs.resolve-tag.outputs.image_tag }}-ops
-            ${{ env.IMAGE_NAME }}:latest-ops
-
-  e2e:
-    name: E2E against built image
-    needs:
-      - resolve-tag
-      - build
-    if: ${{ always() && needs.resolve-tag.result == 'success' && (needs.build.result == 'success' || needs.build.result == 'skipped') }}
-    runs-on: ubuntu-latest
-    env:
-      DATABASE_URI: postgres://motophd:motophd@127.0.0.1:5432/motophd
-      E2E_BASE_URL: http://127.0.0.1:3100
-      IMAGE_TAG: ${{ needs.resolve-tag.outputs.image_tag }}
-      PAYLOAD_SECRET: ci-only-payload-secret
-    services:
-      postgres:
-        image: postgres:16-alpine
-        env:
-          POSTGRES_DB: motophd
-          POSTGRES_USER: motophd
-          POSTGRES_PASSWORD: motophd
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U motophd -d motophd"
-          --health-interval 5s
-          --health-timeout 5s
-          --health-retries 10
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 11.10.0
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Resolve Playwright version
-        id: pw
-        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
-
-      - name: Cache Playwright browsers
-        id: pw-cache
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ steps.pw.outputs.version }}
-
-      - name: Install Playwright browser
-        run: npx playwright install --with-deps chromium
-        if: steps.pw-cache.outputs.cache-hit != 'true'
-
-      - name: Install Playwright system deps
-        run: npx playwright install-deps chromium
-        if: steps.pw-cache.outputs.cache-hit == 'true'
-
-      - name: Login to GHCR
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Pull images
-        run: |
-          docker pull "$IMAGE_NAME:$IMAGE_TAG"
-          docker pull "$IMAGE_NAME:$IMAGE_TAG-ops"
-
-      - name: Apply migrations
-        run: |
-          docker run --rm --network host \
-            -e DATABASE_URI="$DATABASE_URI" \
-            -e PAYLOAD_SECRET="$PAYLOAD_SECRET" \
-            "$IMAGE_NAME:$IMAGE_TAG-ops" pnpm payload migrate
-
-      # NODE_ENV не production — иначе seed пропускает демо-аккаунты (src/seed/seed.ts),
-      # и e2e на вход/доступ падают.
-      - name: Seed content
-        run: |
-          docker run --rm --network host \
-            -e DATABASE_URI="$DATABASE_URI" \
-            -e PAYLOAD_SECRET="$PAYLOAD_SECRET" \
-            -e NODE_ENV=development \
-            "$IMAGE_NAME:$IMAGE_TAG-ops" pnpm seed
-
-      - name: Start app container
-        run: |
-          docker run -d --name motophd-e2e --network host \
-            -e DATABASE_URI="$DATABASE_URI" \
-            -e PAYLOAD_SECRET="$PAYLOAD_SECRET" \
-            -e PORT=3100 \
-            "$IMAGE_NAME:$IMAGE_TAG"
-          curl -fsS --retry 30 --retry-delay 2 --retry-all-errors "$E2E_BASE_URL/api/health"
-
-      - name: Run e2e smoke tests
-        run: pnpm test:e2e
-
-      - name: App logs on failure
-        if: failure()
-        run: docker logs motophd-e2e
-
-      - name: Upload traces on failure
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-traces
-          path: test-results/
-          retention-days: 7
 
   deploy:
     name: Deploy to VPS
     needs:
       - resolve-tag
+      - await-ci
       - preflight
-      - checks
-      - build
-      - e2e
-    if: ${{ always() && needs.resolve-tag.result == 'success' && needs.preflight.result == 'success' && needs.checks.result == 'success' && needs.e2e.result == 'success' && (needs.build.result == 'success' || needs.build.result == 'skipped') }}
     runs-on: ubuntu-latest
     steps:
       - name: Deploy image over SSH
