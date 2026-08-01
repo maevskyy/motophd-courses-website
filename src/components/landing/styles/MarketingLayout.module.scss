@@ -47,7 +47,6 @@
 
 
 @media (max-width: 900px) {
-  .howSteps { grid-template-columns: 1fr 1fr; }
-  .howSteps::before { display: none; }
+  .coursesGrid, .methodGrid, .testimonialsGrid { grid-template-columns: 1fr; }
   .section { padding-left: 20px; padding-right: 20px; }
 }

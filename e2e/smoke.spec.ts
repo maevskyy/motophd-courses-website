@@ -50,6 +50,35 @@ test('catalog lists seeded courses', async ({ page }) => {
   await expect(page.locator('a[href*="/en/courses/"]').first()).toBeVisible();
 });
 
+test('home page blocks stay centred instead of sticking to the left edge', async ({ page }) => {
+  await page.setViewportSize({ height: 900, width: 1440 });
+  await page.goto('/en');
+
+  const blocks = await page.evaluate(() => {
+    const viewportWidth = document.documentElement.clientWidth;
+
+    return [...document.querySelectorAll('section')]
+      .filter((section) => section.querySelector('h2'))
+      .map((section) => {
+        const box = section.getBoundingClientRect();
+        const { paddingLeft, paddingRight } = getComputedStyle(section);
+
+        return {
+          label: section.querySelector('h2')?.textContent?.slice(0, 30) ?? '',
+          left: Math.round(box.left + parseFloat(paddingLeft)),
+          right: Math.round(viewportWidth - box.right + parseFloat(paddingRight))
+        };
+      });
+  });
+
+  expect(blocks.length).toBeGreaterThan(0);
+
+  for (const { label, left, right } of blocks) {
+    expect(left, `"${label}" touches the left edge`).toBeGreaterThan(0);
+    expect(Math.abs(left - right), `"${label}" is off centre`).toBeLessThanOrEqual(2);
+  }
+});
+
 test('lesson API exposes protected content only to previews or paid students', async ({
   request
 }) => {
