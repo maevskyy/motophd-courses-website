@@ -3,16 +3,21 @@
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useRouter } from '@/i18n/routing';
-import { useAuth } from '@/components/providers/AuthProvider';
 import { useToast } from '@/components/providers/ToastProvider';
 import { cx } from '@/lib/classNames';
 import type { SalesContent } from '@/lib/data';
 import styles from './PricingBox.module.scss';
 
-export function PricingBox({ courseSlug, sales }: { courseSlug: string; sales: SalesContent }) {
+interface Props {
+  courseSlug: string;
+  isLoggedIn: boolean;
+  loginHref: string;
+  sales: SalesContent;
+}
+
+export function PricingBox({ courseSlug, isLoggedIn, loginHref, sales }: Props) {
   const t = useTranslations();
   const router = useRouter();
-  const { isLoggedIn } = useAuth();
   const { showToast } = useToast();
   const [selected, setSelected] = useState(0);
   const [accepted, setAccepted] = useState(false);
@@ -30,7 +35,7 @@ export function PricingBox({ courseSlug, sales }: { courseSlug: string; sales: S
 
     if (!isLoggedIn) {
       showToast(t('toast.checkout'));
-      setTimeout(() => router.push('/login'), 1000);
+      setTimeout(() => router.push(loginHref), 1000);
       return;
     }
 

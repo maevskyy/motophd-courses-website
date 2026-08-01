@@ -1,10 +1,10 @@
-import type { LegalPage } from '@/payload-types';
+import type { LegalPage, Lesson, User } from '@/payload-types';
 import { getPayloadClient } from './payload';
 import type { AppLocale } from './types';
 
 export const toAppLocale = (locale: string): AppLocale => (locale === 'ru' ? 'ru' : 'en');
 
-export const getPublishedCourses = async (locale: AppLocale) => {
+export const getPublishedCourses = async (locale: AppLocale, user?: User) => {
   const payload = await getPayloadClient();
 
   const courses = await payload.find({
@@ -15,6 +15,7 @@ export const getPublishedCourses = async (locale: AppLocale) => {
     locale,
     overrideAccess: false,
     sort: 'order',
+    user,
     where: {
       status: {
         equals: 'published'
@@ -25,7 +26,7 @@ export const getPublishedCourses = async (locale: AppLocale) => {
   return courses.docs;
 };
 
-export const getCourseBySlug = async (slug: string, locale: AppLocale) => {
+export const getCourseBySlug = async (slug: string, locale: AppLocale, user?: User) => {
   const payload = await getPayloadClient();
 
   const courses = await payload.find({
@@ -35,6 +36,7 @@ export const getCourseBySlug = async (slug: string, locale: AppLocale) => {
     limit: 1,
     locale,
     overrideAccess: false,
+    user,
     where: {
       and: [
         {
@@ -54,7 +56,7 @@ export const getCourseBySlug = async (slug: string, locale: AppLocale) => {
   return courses.docs[0] || null;
 };
 
-export const getCourseLessons = async (courseId: number, locale: AppLocale) => {
+export const getCourseLessons = async (courseId: number, locale: AppLocale, user?: User) => {
   const payload = await getPayloadClient();
 
   const lessons = await payload.find({
@@ -65,6 +67,7 @@ export const getCourseLessons = async (courseId: number, locale: AppLocale) => {
     locale,
     overrideAccess: false,
     sort: 'order',
+    user,
     where: {
       course: {
         equals: courseId
@@ -75,9 +78,104 @@ export const getCourseLessons = async (courseId: number, locale: AppLocale) => {
   return lessons.docs;
 };
 
-export const getDashboardCourses = getPublishedCourses;
+export type CourseCurriculumLesson = Pick<
+  Lesson,
+  'id' | 'order' | 'type' | 'title' | 'durationSec' | 'isFreePreview'
+>;
 
-export const getLegalPage = async (slug: LegalPage['slug'], locale: AppLocale) => {
+export const getCourseCurriculum = async (
+  courseId: number,
+  locale: AppLocale,
+  user?: User
+): Promise<CourseCurriculumLesson[]> => {
+  const payload = await getPayloadClient();
+
+  const lessons = await payload.find({
+    collection: 'lessons',
+    depth: 0,
+    fallbackLocale: 'en',
+    limit: 100,
+    locale,
+    overrideAccess: false,
+    select: {
+      durationSec: true,
+      isFreePreview: true,
+      order: true,
+      title: true,
+      type: true
+    },
+    sort: 'order',
+    user,
+    where: {
+      course: {
+        equals: courseId
+      }
+    }
+  });
+
+  return lessons.docs;
+};
+
+export const getDashboardCourses = async (locale: AppLocale, user: User) => {
+  const payload = await getPayloadClient();
+  const purchases = await payload.find({
+    collection: 'purchases',
+    depth: 0,
+    limit: 100,
+    overrideAccess: true,
+    user,
+    where: {
+      and: [
+        {
+          user: {
+            equals: user.id
+          }
+        },
+        {
+          status: {
+            equals: 'paid'
+          }
+        }
+      ]
+    }
+  });
+  const courseIds = purchases.docs.flatMap(({ course }) =>
+    typeof course === 'number' ? [course] : course ? [course.id] : []
+  );
+
+  if (courseIds.length === 0) {
+    return [];
+  }
+
+  const courses = await payload.find({
+    collection: 'courses',
+    depth: 1,
+    fallbackLocale: 'en',
+    limit: 100,
+    locale,
+    overrideAccess: false,
+    sort: 'order',
+    user,
+    where: {
+      and: [
+        {
+          id: {
+            in: courseIds
+          }
+        },
+        {
+          status: {
+            equals: 'published'
+          }
+        }
+      ]
+    }
+  });
+
+  return courses.docs;
+};
+
+export const getLegalPage = async (slug: LegalPage['slug'], locale: AppLocale, user?: User) => {
   const payload = await getPayloadClient();
 
   const pages = await payload.find({
@@ -87,6 +185,7 @@ export const getLegalPage = async (slug: LegalPage['slug'], locale: AppLocale) =
     limit: 1,
     locale,
     overrideAccess: false,
+    user,
     where: {
       slug: {
         equals: slug

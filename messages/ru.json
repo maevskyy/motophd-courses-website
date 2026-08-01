@@ -32,8 +32,14 @@
     "password": "Пароль",
     "emailPlaceholder": "your@email.com",
     "passwordPlaceholder": "Пароль",
-    "note": "Демо-режим: введи любой email + пароль и нажми «Войти». Реальный логин не нужен.",
+    "invalidCredentials": "Неверный email или пароль",
+    "accessHint": "Доступ приходит на почту после покупки курса.",
+    "submitting": "Входим...",
     "back": "На главную MotoPhD Online"
+  },
+  "access": {
+    "loginRequired": "Войди, чтобы открыть свои курсы.",
+    "courseDenied": "Этот курс не входит в твои покупки."
   },
   "dashboard": {
     "overview": "Обзор",

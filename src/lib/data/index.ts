@@ -1,5 +1,6 @@
 export {
   getCourseBySlug,
+  getCourseCurriculum,
   getCourseLessons,
   getDashboardCourses,
   getLegalPage,
@@ -22,3 +23,4 @@ export type {
   PlayerContent,
   SalesContent
 } from './types';
+export type { CourseCurriculumLesson } from './courses';

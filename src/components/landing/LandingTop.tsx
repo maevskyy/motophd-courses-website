@@ -61,19 +61,6 @@ export function LandingTop({ content, courses, labels }: Props) {
           </div>
         </div>
       </section>
-      <div className={styles.authority}>
-        <div className={styles.authority__inner}>
-          {content.stats.map((stat) => (
-            <div className={styles.authority__item} key={stat.label}>
-              <div className={styles.authority__num}>
-                {stat.accent ? <span className={styles.red}>{stat.accent}</span> : stat.value}
-                {stat.accent ? stat.value.replace(stat.accent, '') : null}
-              </div>
-              <div className={styles.authority__label}>{stat.label}</div>
-            </div>
-          ))}
-        </div>
-      </div>
       <section className={styles.section}>
         <div className={styles.section__label}>{content.coursesLabel}</div>
         <h2 className={styles.section__title}>

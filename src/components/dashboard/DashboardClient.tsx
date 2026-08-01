@@ -2,9 +2,8 @@
 
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { Link, useRouter } from '@/i18n/routing';
-import { useAuth } from '@/components/providers/AuthProvider';
-import { useToast } from '@/components/providers/ToastProvider';
+import { Link } from '@/i18n/routing';
+import { logoutAction } from '@/lib/auth/actions';
 import type { CourseCardCourse, DashboardContent } from '@/lib/data';
 import { cx } from '@/lib/classNames';
 import { CoursesPanel, DownloadsPanel, OverviewPanel, ProfilePanel } from './DashboardPanels';
@@ -14,22 +13,17 @@ type DashboardTab = 'overview' | 'courses' | 'downloads' | 'profile';
 
 export function DashboardClient({
   content,
-  courses
+  courses,
+  email,
+  locale
 }: {
   content: DashboardContent;
   courses: CourseCardCourse[];
+  email: string;
+  locale: 'en' | 'ru';
 }) {
   const t = useTranslations();
-  const router = useRouter();
-  const { email, logout } = useAuth();
-  const { showToast } = useToast();
   const [tab, setTab] = useState<DashboardTab>('overview');
-
-  function signOut() {
-    logout();
-    showToast(t('toast.logout'));
-    setTimeout(() => router.push('/'), 600);
-  }
 
   return (
     <main className={styles.dashboardLayout}>
@@ -61,9 +55,12 @@ export function DashboardClient({
           <Link className={styles.dashSidebarLink} href="/">
             ← {t('actions.backToWebsite')}
           </Link>
-          <button className={styles.dashSidebarLink} onClick={signOut} type="button">
-            {t('actions.signOut')}
-          </button>
+          <form action={logoutAction}>
+            <input name="locale" type="hidden" value={locale} />
+            <button className={styles.dashSidebarLink} type="submit">
+              {t('actions.signOut')}
+            </button>
+          </form>
         </div>
       </aside>
       <section className={styles.dashboardMain}>

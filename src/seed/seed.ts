@@ -1,5 +1,5 @@
 import config from '@payload-config';
-import { getPayload, type DefaultDocumentIDType } from 'payload';
+import { getPayload, type DefaultDocumentIDType, type Payload } from 'payload';
 
 import {
   getCommonMistakes,
@@ -15,12 +15,119 @@ import {
   toRichText
 } from './contentSeedData';
 
+const upsertDemoUser = async (payload: Payload, email: string, password: string) => {
+  const existing = await payload.find({
+    collection: 'users',
+    depth: 0,
+    limit: 1,
+    overrideAccess: true,
+    where: {
+      email: {
+        equals: email
+      }
+    }
+  });
+
+  const data = { email, password, role: 'student' as const };
+  const user = existing.docs[0]
+    ? await payload.update({
+        collection: 'users',
+        data,
+        id: existing.docs[0].id,
+        overrideAccess: true
+      })
+    : await payload.create({
+        collection: 'users',
+        data,
+        overrideAccess: true
+      });
+
+  if (user.role === 'student') {
+    return user;
+  }
+
+  return payload.update({
+    collection: 'users',
+    data: { role: 'student' },
+    id: user.id,
+    overrideAccess: true
+  });
+};
+
+const seedDemoAccounts = async (payload: Payload, firstCourseId: DefaultDocumentIDType) => {
+  if (process.env.NODE_ENV === 'production') {
+    return;
+  }
+
+  const student = await upsertDemoUser(payload, 'student@motophd.com', 'student1234');
+  const guest = await upsertDemoUser(payload, 'guest@motophd.com', 'guest1234');
+
+  await payload.delete({
+    collection: 'purchases',
+    overrideAccess: true,
+    where: {
+      user: {
+        equals: guest.id
+      }
+    }
+  });
+
+  const existingPurchase = await payload.find({
+    collection: 'purchases',
+    depth: 0,
+    limit: 1,
+    overrideAccess: true,
+    where: {
+      and: [
+        {
+          user: {
+            equals: student.id
+          }
+        },
+        {
+          course: {
+            equals: firstCourseId
+          }
+        }
+      ]
+    }
+  });
+
+  const purchase = {
+    amount: 0,
+    course: firstCourseId,
+    currency: 'EUR' as const,
+    provider: 'manual' as const,
+    providerTxnId: 'seed-student-first-course',
+    status: 'paid' as const,
+    tier: 'standard' as const,
+    user: student.id
+  };
+
+  if (existingPurchase.docs[0]) {
+    await payload.update({
+      collection: 'purchases',
+      data: purchase,
+      id: existingPurchase.docs[0].id,
+      overrideAccess: true
+    });
+  } else {
+    await payload.create({
+      collection: 'purchases',
+      data: purchase,
+      overrideAccess: true
+    });
+  }
+};
+
 const seedCourses = async () => {
   const payload = await getPayload({ config });
   const courseSeeds = getCourseSeeds();
   const flatLessons = getFlatLessons();
 
   try {
+    let firstCourseId: DefaultDocumentIDType | undefined;
+
     for (const [courseIndex, courseSeed] of courseSeeds.entries()) {
       let courseId: DefaultDocumentIDType | undefined;
 
@@ -80,6 +187,10 @@ const seedCourses = async () => {
 
       if (!courseId) {
         throw new Error(`Could not upsert course "${courseSeed.en.slug}"`);
+      }
+
+      if (courseIndex === 0) {
+        firstCourseId = courseId;
       }
 
       for (const [lessonIndex, lesson] of flatLessons.entries()) {
@@ -186,7 +297,13 @@ const seedCourses = async () => {
       }
     }
 
-    payload.logger.info('Seed complete: courses, lessons, and legal pages are up to date.');
+    if (!firstCourseId) {
+      throw new Error('Could not seed the first course for the demo student');
+    }
+
+    await seedDemoAccounts(payload, firstCourseId);
+
+    payload.logger.info('Seed complete: courses, lessons, legal pages, and demo accounts are up to date.');
   } finally {
     await payload.destroy();
   }

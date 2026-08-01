@@ -99,6 +99,17 @@
   margin-bottom: 20px;
 }
 
+.salesAccessNotice {
+  background: rgba(227, 30, 36, 0.1);
+  border: 1px solid rgba(227, 30, 36, 0.35);
+  border-radius: 6px;
+  color: var(--light);
+  font-size: 13px;
+  line-height: 1.5;
+  margin-bottom: 20px;
+  padding: 12px;
+}
+
 .salesTag {
   background: rgba(227, 30, 36, 0.1);
   border: 1px solid rgba(227, 30, 36, 0.3);

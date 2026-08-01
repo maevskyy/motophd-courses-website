@@ -1,6 +1,39 @@
-import type { Access, CollectionConfig } from 'payload';
+import type { Access, CollectionConfig, FieldAccess } from 'payload';
 
 import { hasPaidAccess, isAdminUser } from '@/lib/access/hasPaidAccess';
+import type { Lesson } from '@/payload-types';
+
+const contentAccessByRequest = new WeakMap<object, Map<number, Promise<boolean>>>();
+
+const getCourseId = (course: Lesson['course']) => (typeof course === 'number' ? course : course.id);
+
+export const canReadLessonContent: FieldAccess<Lesson> = async ({ doc, req }) => {
+  if (isAdminUser(req.user) || doc?.isFreePreview) {
+    return true;
+  }
+
+  const courseId = doc?.course && getCourseId(doc.course);
+
+  if (!req.user || !courseId) {
+    return false;
+  }
+
+  let courseAccess = contentAccessByRequest.get(req);
+
+  if (!courseAccess) {
+    courseAccess = new Map();
+    contentAccessByRequest.set(req, courseAccess);
+  }
+
+  let canRead = courseAccess.get(courseId);
+
+  if (!canRead) {
+    canRead = hasPaidAccess(req.payload, req.user, courseId);
+    courseAccess.set(courseId, canRead);
+  }
+
+  return canRead;
+};
 
 const canReadLessons: Access = async ({ id, req }) => {
   if (isAdminUser(req.user)) {
@@ -127,6 +160,9 @@ export const Lessons: CollectionConfig = {
       name: 'streamVideoId',
       type: 'text',
       localized: true,
+      access: {
+        read: canReadLessonContent
+      },
       label: {
         en: 'Stream video ID',
         ru: 'ID Stream-видео'
@@ -137,6 +173,9 @@ export const Lessons: CollectionConfig = {
       type: 'upload',
       localized: true,
       relationTo: 'media',
+      access: {
+        read: canReadLessonContent
+      },
       label: {
         en: 'PDF',
         ru: 'PDF'
@@ -146,6 +185,9 @@ export const Lessons: CollectionConfig = {
       name: 'body',
       type: 'richText',
       localized: true,
+      access: {
+        read: canReadLessonContent
+      },
       label: {
         en: 'Body',
         ru: 'Текст урока'
