@@ -42,6 +42,23 @@ services:
       retries: 12
       start_period: 20s
 
+  # Разовые операции (миграции, seed). Отдельный образ, потому что им нужен payload CLI
+  # и полный node_modules — в основной образ это не тащим, он от этого раздувался вчетверо.
+  # Профиль ops → на `up -d` не поднимается, запускается только явным `run`.
+  migrate:
+    image: ${GHCR_IMAGE:-ghcr.io/maevskyy/motophd}:${IMAGE_TAG:-latest}-ops
+    profiles:
+      - ops
+    env_file:
+      - ${APP_ENV_FILE:-.env}
+    environment:
+      DATABASE_URI: ${DATABASE_URI:?DATABASE_URI is required}
+      NODE_ENV: production
+      PAYLOAD_SECRET: ${PAYLOAD_SECRET:?PAYLOAD_SECRET is required}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
   grafana:
     image: grafana/grafana:latest
     restart: unless-stopped
