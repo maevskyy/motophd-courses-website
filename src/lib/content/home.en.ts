@@ -18,10 +18,10 @@ export const homeEn: HomeContent = {
     },
     { value: 'YouTube', label: '@MotoPhD', href: 'https://www.youtube.com/@MotoPhD' }
   ],
-  coursesLabel: 'The MotoPhD Curriculum',
-  coursesTitle: ['One course. One fear.', 'One transformation.'],
+  coursesLabel: 'MotoPhD Courses',
+  coursesTitle: ['One course. One goal.', 'One transformation.'],
   coursesSub:
-    'Each course solves a specific problem that holds riders back. No fluff, no filler — just practical riding knowledge that you apply on the road.',
+    'Each course solves a specific problem that holds riders back. No fluff, no filler — just real riding techniques that you apply on the road.',
   methodLabel: 'The MotoPhD Method',
   methodTitle: 'Why this system works',
   methodSub:
