@@ -200,6 +200,16 @@
   margin-top: 6px;
 }
 
+.stat__link {
+  display: block;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.stat__link:hover {
+  opacity: 0.8;
+}
+
 
 @media (max-width: 900px) {
   .hero__content { padding-left: 20px; padding-right: 20px; }

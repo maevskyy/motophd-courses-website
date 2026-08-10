@@ -43,34 +43,50 @@ export function LandingTop({ content, courses, labels }: Props) {
             </Link>
           </div>
           <div className={styles.hero__stats}>
-            {content.stats.map((stat) => (
-              <div key={stat.label}>
-                <div className={styles.stat__num}>
-                  {stat.accent ? (
-                    <>
-                      <span className={styles.red}>{stat.accent}</span>
-                      {stat.value.replace(stat.accent, '')}
-                    </>
-                  ) : (
-                    stat.value
-                  )}
-                </div>
-                <div className={styles.stat__label}>{stat.label}</div>
-                {stat.note ? (
-                  <div className={styles.stat__note}>
-                    {stat.noteAccent ? (
+            {content.stats.map((stat) => {
+              const body = (
+                <>
+                  <div className={styles.stat__num}>
+                    {stat.accent ? (
                       <>
-                        {stat.note.split(stat.noteAccent)[0]}
-                        <span className={styles.red}>{stat.noteAccent}</span>
-                        {stat.note.split(stat.noteAccent)[1]}
+                        <span className={styles.red}>{stat.accent}</span>
+                        {stat.value.replace(stat.accent, '')}
                       </>
                     ) : (
-                      stat.note
+                      stat.value
                     )}
                   </div>
-                ) : null}
-              </div>
-            ))}
+                  <div className={styles.stat__label}>{stat.label}</div>
+                  {stat.note ? (
+                    <div className={styles.stat__note}>
+                      {stat.noteAccent ? (
+                        <>
+                          {stat.note.split(stat.noteAccent)[0]}
+                          <span className={styles.red}>{stat.noteAccent}</span>
+                          {stat.note.split(stat.noteAccent)[1]}
+                        </>
+                      ) : (
+                        stat.note
+                      )}
+                    </div>
+                  ) : null}
+                </>
+              );
+
+              return stat.href ? (
+                <a
+                  className={styles.stat__link}
+                  href={stat.href}
+                  key={stat.label}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  {body}
+                </a>
+              ) : (
+                <div key={stat.label}>{body}</div>
+              );
+            })}
           </div>
         </div>
       </section>

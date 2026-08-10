@@ -8,16 +8,15 @@ export const homeRu: HomeContent = {
   heroSub:
     'Те же методы и упражнения, что помогли тысячам райдеров на персональных тренировках — теперь доступны онлайн, на нашей платформе, из любой точки мира.',
   stats: [
-    { value: '5,000+', accent: '5,000', label: 'Обученных райдеров' },
-    { value: '10+ yrs', accent: '10', label: 'Лет опыта' },
+    { value: '5,000+', label: 'Обученных райдеров' },
+    { value: '10+', label: 'Лет опыта' },
     {
       value: '4',
-      accent: '4',
       label: 'Курса на старте',
       note: '2 доступны сейчас · 2 скоро',
       noteAccent: '2 скоро'
     },
-    { value: 'YT', label: '@MotoPhD' }
+    { value: 'YouTube', label: '@MOTOSOMMELIER', href: 'https://www.youtube.com/@MOTOSOMMELIER' }
   ],
   coursesLabel: 'Программа MotoPhD',
   coursesTitle: ['Один курс. Один страх.', 'Одна трансформация.'],

@@ -8,16 +8,15 @@ export const homeEn: HomeContent = {
   heroSub:
     'The same methods that transformed riders in our motoschool — now available online, at our platform, from anywhere in the world.',
   stats: [
-    { value: '5,000+', accent: '5,000', label: 'Riders Coached' },
-    { value: '10+ yrs', accent: '10', label: 'Coaching Experience' },
+    { value: '5,000+', label: 'Riders Coached' },
+    { value: '10+', label: 'Years Coaching' },
     {
       value: '4',
-      accent: '4',
       label: 'Courses at Launch',
       note: '2 live now · 2 coming soon',
       noteAccent: '2 coming soon'
     },
-    { value: 'YT', label: '@MotoPhD' }
+    { value: 'YouTube', label: '@MotoPhD', href: 'https://www.youtube.com/@MotoPhD' }
   ],
   coursesLabel: 'The MotoPhD Curriculum',
   coursesTitle: ['One course. One fear.', 'One transformation.'],
