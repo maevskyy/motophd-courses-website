@@ -1,7 +1,7 @@
 import type { HomeContent } from './types';
 
 export const homeRu: HomeContent = {
-  heroBadge: 'Образовательная платформа для мотоциклистов',
+  heroBadge: 'Онлайн платформа мастерства управления байком',
   heroTitle: ['Более 5 000 райдеров', 'улучшили управление', 'мотоциклом благодаря'],
   heroRed: 'моему коучингу.',
   heroAfterRed: 'Теперь твоя очередь.',
