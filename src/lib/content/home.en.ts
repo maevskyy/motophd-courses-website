@@ -1,7 +1,7 @@
 import type { HomeContent } from './types';
 
 export const homeEn: HomeContent = {
-  heroBadge: 'Motorcycle Performance Education System',
+  heroBadge: 'Motorcycle Educational Platform',
   heroTitle: ['More than 5,000 riders', 'have improved their', 'motorcycle'],
   heroRed: 'control.',
   heroAfterRed: "Now it's your turn.",
