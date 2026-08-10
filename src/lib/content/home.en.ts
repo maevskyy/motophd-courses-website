@@ -6,7 +6,7 @@ export const homeEn: HomeContent = {
   heroRed: 'control.',
   heroAfterRed: "Now it's your turn.",
   heroSub:
-    'The same principles that transformed riders in person — now available online, at your pace, from anywhere in the world.',
+    'The same methods that transformed riders in our motoschool — now available online, at our platform, from anywhere in the world.',
   stats: [
     { value: '5,000+', accent: '5,000', label: 'Riders Coached' },
     { value: '10+ yrs', accent: '10', label: 'Coaching Experience' },
