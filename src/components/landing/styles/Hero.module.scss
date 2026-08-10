@@ -194,6 +194,12 @@
   text-transform: uppercase;
 }
 
+.stat__note {
+  color: var(--gray);
+  font-size: 12px;
+  margin-top: 6px;
+}
+
 
 @media (max-width: 900px) {
   .hero__content { padding-left: 20px; padding-right: 20px; }

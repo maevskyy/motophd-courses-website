@@ -56,6 +56,19 @@ export function LandingTop({ content, courses, labels }: Props) {
                   )}
                 </div>
                 <div className={styles.stat__label}>{stat.label}</div>
+                {stat.note ? (
+                  <div className={styles.stat__note}>
+                    {stat.noteAccent ? (
+                      <>
+                        {stat.note.split(stat.noteAccent)[0]}
+                        <span className={styles.red}>{stat.noteAccent}</span>
+                        {stat.note.split(stat.noteAccent)[1]}
+                      </>
+                    ) : (
+                      stat.note
+                    )}
+                  </div>
+                ) : null}
               </div>
             ))}
           </div>

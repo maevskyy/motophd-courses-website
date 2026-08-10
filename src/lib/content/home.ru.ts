@@ -10,7 +10,13 @@ export const homeRu: HomeContent = {
   stats: [
     { value: '5,000+', accent: '5,000', label: 'Обученных райдеров' },
     { value: '10+ yrs', accent: '10', label: 'Лет опыта' },
-    { value: '3', accent: '3', label: 'Курса на старте' },
+    {
+      value: '4',
+      accent: '4',
+      label: 'Курса на старте',
+      note: '2 доступны сейчас · 2 скоро',
+      noteAccent: '2 скоро'
+    },
     { value: 'YT', label: '@MotoPhD' }
   ],
   coursesLabel: 'Программа MotoPhD',

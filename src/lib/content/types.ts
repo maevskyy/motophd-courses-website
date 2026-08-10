@@ -6,7 +6,7 @@ export type HomeContent = {
   heroRed: string;
   heroAfterRed: string;
   heroSub: string;
-  stats: Array<{ value: string; accent?: string; label: string }>;
+  stats: Array<{ value: string; accent?: string; label: string; note?: string; noteAccent?: string }>;
   coursesLabel: string;
   coursesTitle: string[];
   coursesSub: string;

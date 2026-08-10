@@ -10,7 +10,13 @@ export const homeEn: HomeContent = {
   stats: [
     { value: '5,000+', accent: '5,000', label: 'Riders Coached' },
     { value: '10+ yrs', accent: '10', label: 'Coaching Experience' },
-    { value: '3', accent: '3', label: 'Courses at Launch' },
+    {
+      value: '4',
+      accent: '4',
+      label: 'Courses at Launch',
+      note: '2 live now · 2 coming soon',
+      noteAccent: '2 coming soon'
+    },
     { value: 'YT', label: '@MotoPhD' }
   ],
   coursesLabel: 'The MotoPhD Curriculum',
