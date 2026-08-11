@@ -25,23 +25,29 @@ export const homeEn: HomeContent = {
   methodLabel: 'The MotoPhD Method',
   methodTitle: 'Why this system works',
   methodSub:
-    'Most riders pick up bad habits because nobody explained the physics. MotoPhD fixes that — for good.',
+    'Most riders have some fears because of a lack of knowledge. That lack of knowledge leads to the wrong feel for the bike. MotoPhD fixes that in four simple steps.',
   method: [
     {
       icon: '🧠',
       num: 'Step 01',
       title: 'Understand',
-      desc: 'Before you ride, you understand exactly what your motorcycle is doing — and why. Physics, grip, lean dynamics explained in plain language.'
+      desc: 'Before you ride, you understand exactly what your motorcycle is doing — and why. Physics, tactics and all dynamics explained in plain language.'
+    },
+    {
+      icon: '🔧',
+      num: 'Step 02',
+      title: 'Prepare',
+      desc: 'Check the bike and learn the main technique for your course before you start practicing.'
     },
     {
       icon: '🏍️',
-      num: 'Step 02',
+      num: 'Step 03',
       title: 'Train',
       desc: 'Structured exercises. Progressive drills. No guesswork. Each module builds the next. Clear outcome at every stage.'
     },
     {
       icon: '✅',
-      num: 'Step 03',
+      num: 'Step 04',
       title: 'Apply',
       desc: 'Real confidence on real roads. You apply what you learn immediately, and feel the difference in your very next ride.'
     }
