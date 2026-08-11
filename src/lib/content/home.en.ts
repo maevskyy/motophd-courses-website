@@ -125,9 +125,9 @@ export const homeEn: HomeContent = {
   howTitle: ['From purchase to', 'better riding — in minutes'],
   steps: [
     { num: '1', title: 'Choose Course', desc: 'Pick the skill you want to build' },
-    { num: '2', title: 'Purchase Access', desc: 'Secure checkout, instant access' },
-    { num: '3', title: 'Get Account', desc: 'Login credentials delivered by email' },
-    { num: '4', title: 'Learn', desc: 'Video + PDF at your own pace' },
+    { num: '2', title: 'Purchase', desc: 'Secure checkout, personal account access' },
+    { num: '3', title: 'Learn', desc: 'Video + PDF at your own pace' },
+    { num: '4', title: 'Practice', desc: 'Build new skills through practice' },
     { num: '5', title: 'Ride Better', desc: 'Apply on the road. Lifetime access.' }
   ],
   instructorLabel: 'The Instructor',
