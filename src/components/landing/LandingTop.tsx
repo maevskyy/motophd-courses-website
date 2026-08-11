@@ -141,10 +141,7 @@ export function LandingTop({ content, courses, labels }: Props) {
               <blockquote className={styles.testiQuote}>“{testimonial.quote}”</blockquote>
               <div className={styles.testiAuthor}>
                 <div className={styles.testiAvatar}>{testimonial.initial}</div>
-                <div>
-                  <div className={styles.testiName}>{testimonial.name}</div>
-                  <div className={styles.testiCountry}>{testimonial.country}</div>
-                </div>
+                <div className={styles.testiName}>{testimonial.name}</div>
               </div>
             </article>
           ))}

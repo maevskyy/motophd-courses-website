@@ -23,7 +23,7 @@ export type HomeContent = {
   method: Array<{ icon: string; num: string; title: string; desc: string }>;
   testimonialsLabel: string;
   testimonialsTitle: string[];
-  testimonials: Array<{ initial: string; name: string; country: string; quote: string }>;
+  testimonials: Array<{ initial: string; name: string; quote: string }>;
   howLabel: string;
   howTitle: string[];
   steps: Array<{ num: string; title: string; desc: string }>;

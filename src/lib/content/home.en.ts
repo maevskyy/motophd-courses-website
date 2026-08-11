@@ -56,25 +56,69 @@ export const homeEn: HomeContent = {
   testimonialsTitle: ['What riders say', 'after MotoPhD'],
   testimonials: [
     {
-      initial: 'M',
-      name: 'Marco T.',
-      country: 'Italy',
+      initial: 'E',
+      name: 'Evgeny Mataev',
       quote:
-        'I was terrified of corners for 3 years. After the lean angle course I rode the mountain pass I had been avoiding. Completely changed my riding.'
+        "Not only these guys have talent and experience to teach within entire spectrum of levels (noob->pro), but also they are great people and run a handful of various side activities, such as city-escape tours to Canary Islands. So, be sure you will be both leveled-up as a rider and entertained as a 'kid'."
     },
     {
-      initial: 'S',
-      name: 'Sarah K.',
-      country: 'United Kingdom',
+      initial: 'M',
+      name: 'Mike Chernelia',
       quote:
-        'Finally someone explained WHY the bike leans — not just how to do it. That understanding changed everything for me. I feel in control now.'
+        'The best place !!! If you want to learn how to ride or improve your moto skills - this place for you. Vlad amazing coach.'
+    },
+    {
+      initial: 'M',
+      name: 'Magomed Magomedrasulov',
+      quote:
+        'Great school regardless of your experience and needs. For me they helped to start my motorcycling journey, and after the year we still have a lot to work on, but now on the track. Truly the school that can become your friend and support you throughout the years.'
+    },
+    {
+      initial: 'Y',
+      name: 'Yaroslav Maiboroda',
+      quote:
+        "Nice and professional. Vlad and his team have been helping me with track days at many European circuits since 2023, more than 20 so far, including in Spain, Italy, and Portugal. He's a great coach, and I really appreciate the telemetry and video debriefs, they're very helpful. I also like the full trackside support: I just need to show up and ride, and Vlad takes care of everything else."
+    },
+    {
+      initial: 'O',
+      name: 'Oksana Fedorenko',
+      quote:
+        "I'm an experienced rider with high expectations. I value a structured way of improving my weaknesses, an adaptive coaching style that responds to my mindset and fears, and technical support at every stage of the track days. The Ride White school delivers it all! From support and understanding my strengths to taking my safety and bike readiness under control, so that I can do my job — achieve my goals, whatever they are. Thank you guys, you are definitely the best!"
     },
     {
       initial: 'A',
-      name: 'Alex R.',
-      country: 'Germany',
+      name: 'Artem Metelov',
       quote:
-        "The drills are so practical. I did the first exercise in a parking lot and felt results immediately. Best €29 I've spent on riding."
+        'I was lucky to have a lesson with Vlad, and I can assure this was a perfect experience. Vlad high professional with personal touch and friendly vibe!'
+    },
+    {
+      initial: 'D',
+      name: 'David Goldberg',
+      quote: 'Vlad is very experienced.'
+    },
+    {
+      initial: 'M',
+      name: '@MonkexGames',
+      quote:
+        "Moto PhD is saving lives!!! I just started riding a month ago and found your channel, and I bet it's saving lives!! No one should ride a motorcycle without learning these essentials. Thank you so much — please keep doing what you're doing."
+    },
+    {
+      initial: 'J',
+      name: '@JC-eh8ct',
+      quote:
+        "Brother I love your videos! I'm a beginner and your theory explanation is top."
+    },
+    {
+      initial: 'N',
+      name: '@nicholaskrueger6770',
+      quote:
+        'Honestly, this is some of the best instruction on YouTube. Not just explaining theory, but teaching practical technique that riders can implement right away. Thank you!'
+    },
+    {
+      initial: 'O',
+      name: '@oneup3576',
+      quote:
+        'Thanks for giving us practical exercises, most channels only talk and never teach actual exercises.'
     }
   ],
   howLabel: 'How It Works',

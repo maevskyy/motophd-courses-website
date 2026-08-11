@@ -128,28 +128,28 @@
 }
 
 .testiCard {
-  padding: 28px;
+  padding: 20px;
 }
 
 .testiStars {
   color: var(--red);
-  font-size: 16px;
+  font-size: 13px;
   letter-spacing: 2px;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 }
 
 .testiQuote {
   color: var(--light);
-  font-size: 15px;
+  font-size: 13px;
   font-style: italic;
-  line-height: 1.7;
-  margin-bottom: 20px;
+  line-height: 1.6;
+  margin-bottom: 14px;
 }
 
 .testiAuthor {
   align-items: center;
   display: flex;
-  gap: 12px;
+  gap: 10px;
 }
 
 .testiAvatar,
@@ -163,19 +163,15 @@
 }
 
 .testiAvatar {
-  font-size: 16px;
-  height: 40px;
-  width: 40px;
+  flex-shrink: 0;
+  font-size: 13px;
+  height: 30px;
+  width: 30px;
 }
 
 .testiName {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
-}
-
-.testiCountry {
-  color: var(--gray);
-  font-size: 12px;
 }
 
 .howSteps {
