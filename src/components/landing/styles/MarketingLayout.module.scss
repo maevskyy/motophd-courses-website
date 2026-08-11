@@ -8,12 +8,23 @@
 }
 
 .section__label {
+  align-items: center;
   color: var(--red);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 3px;
-  margin-bottom: 16px;
+  display: inline-flex;
+  font-size: 14px;
+  font-weight: 800;
+  gap: 10px;
+  letter-spacing: 2px;
+  margin-bottom: 20px;
   text-transform: uppercase;
+}
+
+.section__label::before {
+  background: var(--red);
+  content: '';
+  display: inline-block;
+  height: 2px;
+  width: 28px;
 }
 
 .section__title {
