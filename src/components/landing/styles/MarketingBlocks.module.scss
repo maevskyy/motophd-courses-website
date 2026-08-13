@@ -226,10 +226,18 @@
 }
 
 .instructorGrid {
-  align-items: center;
+  align-items: start;
+  column-gap: 60px;
   display: grid;
-  gap: 60px;
   grid-template-columns: 1fr 1fr;
+  row-gap: 40px;
+}
+
+.instructorActionPhoto {
+  aspect-ratio: 3 / 2;
+  border-radius: 12px;
+  object-fit: cover;
+  width: 100%;
 }
 
 .instructorCopy {
@@ -244,13 +252,11 @@
   border: 1px solid #1a1a1a;
   border-radius: 12px;
   padding: 40px;
-  text-align: center;
 }
 
 .instructorPhoto {
   aspect-ratio: 3 / 4;
   border-radius: 12px;
-  margin-bottom: 20px;
   object-fit: cover;
   width: 100%;
 }

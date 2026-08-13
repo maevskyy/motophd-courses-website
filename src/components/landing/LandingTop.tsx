@@ -129,6 +129,19 @@ export function LandingTop({ content, courses, labels }: Props) {
       <section className={styles.section}>
         <div className={styles.section__label}>{content.instructorLabel}</div>
         <div className={styles.instructorGrid}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img alt={content.instructorName} className={styles.instructorPhoto} src="/vlad.jpg" />
+          <div className={styles.instructorCard}>
+            <div className={styles.instructorName}>{content.instructorName}</div>
+            <div className={styles.instructorRole}>{content.instructorRole}</div>
+            {content.instructorCredentials ? (
+              <ul className={styles.instructorCredentials}>
+                {content.instructorCredentials.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            ) : null}
+          </div>
           <div>
             <h2 className={styles.section__title}>
               {content.instructorTitle.map((line) => (
@@ -147,19 +160,12 @@ export function LandingTop({ content, courses, labels }: Props) {
               {labels.browseAllCourses}
             </Link>
           </div>
-          <div className={styles.instructorCard}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img alt={content.instructorName} className={styles.instructorPhoto} src="/vlad.jpg" />
-            <div className={styles.instructorName}>{content.instructorName}</div>
-            <div className={styles.instructorRole}>{content.instructorRole}</div>
-            {content.instructorCredentials ? (
-              <ul className={styles.instructorCredentials}>
-                {content.instructorCredentials.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            ) : null}
-          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            alt={content.instructorName}
+            className={styles.instructorActionPhoto}
+            src="/vlad-training.jpg"
+          />
         </div>
       </section>
       <hr className={styles.divider} />
