@@ -12,6 +12,10 @@ vi.mock('@/i18n/routing', () => ({
   )
 }));
 
+vi.mock('next-intl', () => ({
+  useTranslations: () => (key: string) => key
+}));
+
 describe('LandingBottom', () => {
   it('renders the community call-to-action when a label is provided', () => {
     render(<LandingBottom content={homeContent.en} labels={{ joinCommunity: 'Join our MotoPhD Community' }} />);

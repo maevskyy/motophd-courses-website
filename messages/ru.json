@@ -98,5 +98,24 @@
     "opening": "Открываем: {name}",
     "nowPlaying": "Сейчас воспроизводится этот урок",
     "markingComplete": "Отмечаем урок готовым"
+  },
+  "footer": {
+    "tagline": "Премиальное онлайн-образование по управлению мотоциклом. Учись ездить уверенно, осознанно и точно.",
+    "coursesHeading": "Курсы",
+    "course1": "Победи страх наклона",
+    "course2": "Контр-руление",
+    "course3": "Экстренное торможение",
+    "platformHeading": "Платформа",
+    "studentLogin": "Вход для студентов",
+    "myDashboard": "Личный кабинет",
+    "about": "О нас",
+    "legalHeading": "Правовая информация",
+    "privacyPolicy": "Политика конфиденциальности",
+    "terms": "Условия использования",
+    "refundPolicy": "Политика возврата",
+    "contact": "Контакты",
+    "copy": "© 2026 MotoPhD Online. Все права защищены. Образовательный контент предоставлен исключительно в информационных целях.",
+    "youtubeHandle": "@MOTOSOMMELIER",
+    "youtubeUrl": "https://www.youtube.com/@MOTOSOMMELIER"
   }
 }

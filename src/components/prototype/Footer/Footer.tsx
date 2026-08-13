@@ -1,9 +1,12 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
 import styles from './Footer.module.scss';
 
 export function Footer({ compact = false }: { compact?: boolean }) {
+  const t = useTranslations('footer');
+
   return (
     <footer className={styles.footer}>
       <div className={styles.footer__inner}>
@@ -13,58 +16,59 @@ export function Footer({ compact = false }: { compact?: boolean }) {
               <div className={styles.footer__logo}>
                 MOTO<span className={styles.red}>PhD</span>
               </div>
-              <p className={styles.footer__copyText}>
-                Premium online motorcycle education. Learn to ride with confidence, understanding,
-                and precision.
-              </p>
+              <p className={styles.footer__copyText}>{t('tagline')}</p>
             </div>
             <div>
-              <h4 className={styles.footer__heading}>Courses</h4>
+              <h4 className={styles.footer__heading}>{t('coursesHeading')}</h4>
               <Link className={styles.footer__link} href="/courses/lean">
-                Stop Being Afraid to Lean
+                {t('course1')}
               </Link>
               <Link className={styles.footer__link} href="/courses/lean">
-                Counter Steering
+                {t('course2')}
               </Link>
               <Link className={styles.footer__link} href="/courses/lean">
-                Emergency Braking
+                {t('course3')}
               </Link>
             </div>
             <div>
-              <h4 className={styles.footer__heading}>Platform</h4>
+              <h4 className={styles.footer__heading}>{t('platformHeading')}</h4>
               <Link className={styles.footer__link} href="/login">
-                Student Login
+                {t('studentLogin')}
               </Link>
               <Link className={styles.footer__link} href="/dashboard">
-                My Dashboard
+                {t('myDashboard')}
               </Link>
               <Link className={styles.footer__link} href="/">
-                About
+                {t('about')}
               </Link>
             </div>
             <div>
-              <h4 className={styles.footer__heading}>Legal</h4>
+              <h4 className={styles.footer__heading}>{t('legalHeading')}</h4>
               <Link className={styles.footer__link} href="/privacy">
-                Privacy Policy
+                {t('privacyPolicy')}
               </Link>
               <Link className={styles.footer__link} href="/terms">
-                Terms & Conditions
+                {t('terms')}
               </Link>
               <Link className={styles.footer__link} href="/refund">
-                Refund Policy
+                {t('refundPolicy')}
               </Link>
               <Link className={styles.footer__link} href="/contact">
-                Contact
+                {t('contact')}
               </Link>
             </div>
           </div>
         ) : null}
         <div className={styles.footer__bottom}>
-          <div className={styles.footer__copy}>
-            © 2026 MotoPhD Online. All rights reserved. Educational content for informational
-            purposes only.
-          </div>
-          <div className={styles.footer__copy}>YouTube: @MotoPhD</div>
+          <div className={styles.footer__copy}>{t('copy')}</div>
+          <a
+            className={styles.footer__copy}
+            href={t('youtubeUrl')}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            YouTube: {t('youtubeHandle')}
+          </a>
         </div>
       </div>
     </footer>
