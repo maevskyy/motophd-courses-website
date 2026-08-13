@@ -29,7 +29,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           browseAllCourses: t('browseAllCourses')
         }}
       />
-      <LandingBottom content={content} labels={{ enrollCta: t('enrollCourse') }} />
+      <LandingBottom content={content} labels={{ joinCommunity: t('joinCommunity') }} />
     </>
   );
 }

@@ -7,7 +7,7 @@ import { landingStyles as styles } from './styles';
 interface Props {
   content: HomeContent;
   labels: {
-    enrollCta: string;
+    joinCommunity?: string;
   };
 }
 
@@ -51,9 +51,11 @@ export function LandingBottom({ content, labels }: Props) {
           <span className={styles.red}>{content.ctaAccent}</span>
         </h2>
         <p className={styles.ctaSub}>{content.ctaSub}</p>
-        <Link className={`${styles.button} ${styles.ctaButton}`} href="/courses">
-          {labels.enrollCta}
-        </Link>
+        {labels.joinCommunity ? (
+          <Link className={`${styles.button} ${styles.ctaButton}`} href="/courses">
+            {labels.joinCommunity}
+          </Link>
+        ) : null}
       </section>
       <Footer />
     </>

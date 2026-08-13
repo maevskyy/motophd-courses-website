@@ -12,14 +12,16 @@ vi.mock('@/i18n/routing', () => ({
   )
 }));
 
-const labels = { enrollCta: 'Записаться на курс' };
-
 describe('LandingBottom', () => {
-  it('renders the final call-to-action label and links to the catalog', () => {
-    render(<LandingBottom content={homeContent.ru} labels={labels} />);
+  it('renders the community call-to-action when a label is provided', () => {
+    render(<LandingBottom content={homeContent.en} labels={{ joinCommunity: 'Join our MotoPhD Community' }} />);
 
-    const cta = screen.getByRole('link', { name: 'Записаться на курс' });
+    expect(screen.getByRole('link', { name: 'Join our MotoPhD Community' })).toBeInTheDocument();
+  });
 
-    expect(cta).toHaveAttribute('href', '/courses');
+  it('renders nothing when the community label is empty', () => {
+    render(<LandingBottom content={homeContent.ru} labels={{ joinCommunity: '' }} />);
+
+    expect(screen.queryByRole('link', { name: /community|сообществ/i })).not.toBeInTheDocument();
   });
 });

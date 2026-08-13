@@ -181,7 +181,7 @@ export const homeEn: HomeContent = {
         'As these are digital products, we do not offer refunds once course access has been granted. By completing your purchase you acknowledge and accept this policy.'
     }
   ],
-  ctaTitle: ['Ride Safer.', 'Ride Faster.'],
-  ctaAccent: 'Understand Your Motorcycle.',
+  ctaTitle: ['Explore Your Limits.', 'Move Your Borders.'],
+  ctaAccent: 'Ride And Enjoy.',
   ctaSub: "Join thousands of riders who've already made the transformation."
 };
