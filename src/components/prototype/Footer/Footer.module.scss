@@ -74,3 +74,9 @@
 @media (max-width: 900px) {
   .footer__top { grid-template-columns: 1fr 1fr; }
 }
+
+@media (max-width: 480px) {
+  .footer { padding: 32px 16px 20px; }
+  .footer__top { grid-template-columns: 1fr; gap: 28px; }
+  .footer__bottom { align-items: flex-start; flex-direction: column; gap: 8px; }
+}

@@ -136,3 +136,11 @@
   .nav__links { gap: 12px; }
   .nav__link { display: none; }
 }
+
+@media (max-width: 480px) {
+  .nav { padding: 0 10px; }
+  .nav__links { gap: 4px; }
+  .nav__lang { font-size: 10px; padding: 2px 5px; }
+  .nav__ctaGhost { font-size: 11px; padding: 5px 8px; }
+  .nav__cta { display: none; }
+}

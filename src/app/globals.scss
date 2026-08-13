@@ -3,6 +3,7 @@
 * {
   box-sizing: border-box;
   margin: 0;
+  min-width: 0;
   padding: 0;
 }
 
@@ -15,6 +16,13 @@ body {
   color: var(--white);
   font-family: var(--font-body), 'Segoe UI', system-ui, sans-serif;
   overflow-x: hidden;
+}
+
+h1,
+h2,
+h3 {
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 button,
