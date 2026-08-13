@@ -10,6 +10,7 @@ interface Props {
   labels: {
     startLearning: string;
     viewCourses: string;
+    browseAllCourses: string;
   };
 }
 
@@ -121,6 +122,44 @@ export function LandingTop({ content, courses, labels }: Props) {
               <div className={styles.methodDesc}>{item.desc}</div>
             </div>
           ))}
+        </div>
+      </section>
+      <div id="about-anchor" />
+      <hr className={styles.divider} />
+      <section className={styles.section}>
+        <div className={styles.section__label}>{content.instructorLabel}</div>
+        <div className={styles.instructorGrid}>
+          <div>
+            <h2 className={styles.section__title}>
+              {content.instructorTitle.map((line) => (
+                <span key={line}>
+                  {line}
+                  <br />
+                </span>
+              ))}
+            </h2>
+            {content.instructorCopy.map((paragraph) => (
+              <p className={styles.instructorCopy} key={paragraph}>
+                {paragraph}
+              </p>
+            ))}
+            <Link className={styles.button} href="/courses">
+              {labels.browseAllCourses}
+            </Link>
+          </div>
+          <div className={styles.instructorCard}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img alt={content.instructorName} className={styles.instructorPhoto} src="/vlad.jpg" />
+            <div className={styles.instructorName}>{content.instructorName}</div>
+            <div className={styles.instructorRole}>{content.instructorRole}</div>
+            {content.instructorCredentials ? (
+              <ul className={styles.instructorCredentials}>
+                {content.instructorCredentials.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            ) : null}
+          </div>
         </div>
       </section>
       <hr className={styles.divider} />

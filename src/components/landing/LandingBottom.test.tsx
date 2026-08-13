@@ -12,7 +12,7 @@ vi.mock('@/i18n/routing', () => ({
   )
 }));
 
-const labels = { browseAllCourses: 'Смотреть все курсы', enrollCta: 'Записаться на курс' };
+const labels = { enrollCta: 'Записаться на курс' };
 
 describe('LandingBottom', () => {
   it('renders the final call-to-action label and links to the catalog', () => {
@@ -21,12 +21,5 @@ describe('LandingBottom', () => {
     const cta = screen.getByRole('link', { name: 'Записаться на курс' });
 
     expect(cta).toHaveAttribute('href', '/courses');
-  });
-
-  it('keeps the instructor link separate from the final call to action', () => {
-    render(<LandingBottom content={homeContent.ru} labels={labels} />);
-
-    expect(screen.getByRole('link', { name: 'Смотреть все курсы' })).toBeInTheDocument();
-    expect(screen.getAllByRole('link', { name: 'Записаться на курс' })).toHaveLength(1);
   });
 });

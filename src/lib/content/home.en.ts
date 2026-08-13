@@ -136,8 +136,17 @@ export const homeEn: HomeContent = {
     "More than 5,000 riders have improved their motorcycle control through my offline coaching. Now I'm bringing the same system online — so riders anywhere in the world can learn the same principles.",
     "I don't teach just theory. I always make focus on your feelings from the bike. Every concept in MotoPhD has been tested with real riders on real roads. That's why we have such clear structure of trainings that delivers a result."
   ],
-  instructorName: 'MotoPhD Instructor',
-  instructorRole: 'Motorcycle Performance Coach',
+  instructorName: 'Vlad White',
+  instructorRole: 'Professional Racer & Motorcycle Coach',
+  instructorCredentials: [
+    'Professional racer from Ukraine',
+    'Master of Sports',
+    'Multi-time champion in Motocross, Supermoto & Superbike racing',
+    'Former mechanic for the factory BMW Motorrad team',
+    'Licensed coach with 10+ years of experience',
+    'Owner of Ride White Motoschool',
+    'YouTuber & content creator'
+  ],
   faqLabel: 'FAQ',
   faqTitle: 'Common Questions',
   faq: [

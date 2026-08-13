@@ -32,6 +32,7 @@ export type HomeContent = {
   instructorCopy: string[];
   instructorName: string;
   instructorRole: string;
+  instructorCredentials?: string[];
   faqLabel: string;
   faqTitle: string;
   faq: Array<{ question: string; answer: string }>;
