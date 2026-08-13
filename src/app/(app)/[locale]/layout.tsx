@@ -1,5 +1,5 @@
 import { hasLocale, NextIntlClientProvider } from 'next-intl';
-import { getMessages } from 'next-intl/server';
+import { getMessages, setRequestLocale } from 'next-intl/server';
 import { Unbounded } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import { ToastProvider } from '@/components/providers/ToastProvider';
@@ -27,6 +27,8 @@ export default async function AppLocaleLayout({
   if (!hasLocale(['en', 'ru'], locale)) {
     notFound();
   }
+
+  setRequestLocale(locale);
 
   const [messages, user] = await Promise.all([getMessages({ locale }), getCurrentUser()]);
 
