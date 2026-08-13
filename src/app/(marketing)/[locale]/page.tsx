@@ -24,7 +24,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         content={content}
         courses={courses}
         labels={{
-          startLearning: t('startLearning'),
           viewCourses: t('viewCourses'),
           browseAllCourses: t('browseAllCourses')
         }}

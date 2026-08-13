@@ -8,7 +8,6 @@ interface Props {
   content: HomeContent;
   courses: CourseCardCourse[];
   labels: {
-    startLearning: string;
     viewCourses: string;
     browseAllCourses: string;
   };
@@ -37,9 +36,6 @@ export function LandingTop({ content, courses, labels }: Props) {
           <p className={styles.hero__sub}>{content.heroSub}</p>
           <div className={styles.hero__buttons}>
             <Link className={styles.button} href="/courses">
-              {labels.startLearning}
-            </Link>
-            <Link className={styles.buttonGhost} href="/courses">
               {labels.viewCourses}
             </Link>
           </div>

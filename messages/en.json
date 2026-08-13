@@ -7,7 +7,6 @@
     "cta": "Start Learning"
   },
   "actions": {
-    "startLearning": "Start Learning",
     "viewCourses": "View Courses",
     "enrollNow": "Enroll Now",
     "enrollCourse": "Join the Course",

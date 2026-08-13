@@ -13,7 +13,6 @@ vi.mock('@/i18n/routing', () => ({
 }));
 
 const labels = {
-  startLearning: 'Начать обучение',
   viewCourses: 'Смотреть курсы',
   browseAllCourses: 'Смотреть все курсы'
 };
