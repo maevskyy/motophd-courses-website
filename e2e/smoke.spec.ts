@@ -12,7 +12,7 @@ test('home page renders in English', async ({ page }) => {
   const nav = page.getByRole('navigation');
 
   await expect(nav.getByRole('link', { exact: true, name: 'Courses' })).toBeVisible();
-  await expect(nav).toContainText('MOTO');
+  await expect(nav.getByRole('link', { name: 'MotoPhD' })).toBeVisible();
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
 });
 
@@ -24,14 +24,18 @@ test('home page renders in Russian', async ({ page }) => {
   ).toBeVisible();
 });
 
-test('home page ends with the enroll call to action', async ({ page }) => {
+test('home page ends with a call to action into the courses', async ({ page }) => {
   await page.goto('/ru');
 
-  await expect(page.getByRole('link', { name: 'Записаться на курс' })).toBeVisible();
+  const ruCta = page.locator('a[class*="ctaButton"]');
+  await expect(ruCta).toBeVisible();
+  await expect(ruCta).toHaveAttribute('href', /\/ru\/courses$/);
 
   await page.goto('/en');
 
-  await expect(page.getByRole('link', { name: 'Join the Course' })).toBeVisible();
+  const enCta = page.locator('a[class*="ctaButton"]');
+  await expect(enCta).toBeVisible();
+  await expect(enCta).toHaveAttribute('href', /\/en\/courses$/);
 });
 
 test('language switcher toggles the locale', async ({ page }) => {
