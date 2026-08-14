@@ -57,7 +57,7 @@ export function LandingBottom({ content, labels }: Props) {
           </Link>
         ) : null}
       </section>
-      <Footer />
+      <Footer socialLinks={content.socialLinks} />
     </>
   );
 }

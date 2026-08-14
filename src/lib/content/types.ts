@@ -14,6 +14,7 @@ export type HomeContent = {
     noteAccent?: string;
     href?: string;
   }>;
+  socialLinks: Array<{ platform: 'youtube' | 'instagram'; href: string; label: string }>;
   coursesLabel: string;
   coursesTitle: string[];
   coursesSub: string;

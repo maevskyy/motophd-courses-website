@@ -15,8 +15,20 @@ export const homeRu: HomeContent = {
       label: 'Курса на старте',
       note: '2 доступны сейчас · 2 скоро',
       noteAccent: '2 скоро'
+    }
+  ],
+  socialLinks: [
+    {
+      platform: 'instagram',
+      href: 'https://www.instagram.com/ridewhitemoto/',
+      label: 'Instagram'
     },
-    { value: 'YouTube', label: '@MOTOSOMMELIER', href: 'https://www.youtube.com/@MOTOSOMMELIER' }
+    {
+      platform: 'instagram',
+      href: 'https://www.instagram.com/vladwhite_97/',
+      label: 'Влад — Instagram'
+    },
+    { platform: 'youtube', href: 'https://www.youtube.com/@motosommelier', label: 'YouTube' }
   ],
   coursesLabel: 'Программа MotoPhD',
   coursesTitle: ['Один курс. Один страх.', 'Одна трансформация.'],

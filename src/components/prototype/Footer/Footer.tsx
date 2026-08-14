@@ -2,9 +2,34 @@
 
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
+import type { HomeContent } from '@/lib/content';
 import styles from './Footer.module.scss';
 
-export function Footer({ compact = false }: { compact?: boolean }) {
+function SocialIcon({ platform }: { platform: 'youtube' | 'instagram' }) {
+  if (platform === 'youtube') {
+    return (
+      <svg fill="none" height="18" viewBox="0 0 24 24" width="18">
+        <rect height="14" rx="4" stroke="currentColor" strokeWidth="1.6" width="20" x="2" y="5" />
+        <path d="M10 9l5 3-5 3V9z" fill="currentColor" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg fill="none" height="18" viewBox="0 0 24 24" width="18">
+      <rect height="18" rx="5" stroke="currentColor" strokeWidth="1.6" width="18" x="3" y="3" />
+      <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.6" />
+      <circle cx="17.3" cy="6.7" fill="currentColor" r="1.1" />
+    </svg>
+  );
+}
+
+interface Props {
+  compact?: boolean;
+  socialLinks?: HomeContent['socialLinks'];
+}
+
+export function Footer({ compact = false, socialLinks }: Props) {
   const t = useTranslations('footer');
 
   return (
@@ -61,14 +86,23 @@ export function Footer({ compact = false }: { compact?: boolean }) {
         ) : null}
         <div className={styles.footer__bottom}>
           <div className={styles.footer__copy}>{t('copy')}</div>
-          <a
-            className={styles.footer__copy}
-            href={t('youtubeUrl')}
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            YouTube: {t('youtubeHandle')}
-          </a>
+          {socialLinks && socialLinks.length > 0 ? (
+            <div className={styles.footer__social}>
+              {socialLinks.map((item) => (
+                <a
+                  aria-label={item.label}
+                  className={styles.footer__socialLink}
+                  href={item.href}
+                  key={item.href}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                  title={item.label}
+                >
+                  <SocialIcon platform={item.platform} />
+                </a>
+              ))}
+            </div>
+          ) : null}
         </div>
       </div>
     </footer>

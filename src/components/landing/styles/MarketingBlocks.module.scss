@@ -380,7 +380,12 @@
 
 @media (max-width: 900px) {
   .instructorGrid { grid-template-columns: 1fr; }
-  .howSteps { grid-template-columns: 1fr 1fr; }
+  .howSteps { grid-template-columns: 1fr 1fr; row-gap: 40px; }
   .howSteps::before { display: none; }
   .ctaButton { font-size: 18px; padding: 20px 36px; }
+  .ctaSection { padding: 80px 20px; }
+}
+
+@media (max-width: 480px) {
+  .howSteps { grid-template-columns: 1fr; row-gap: 32px; }
 }

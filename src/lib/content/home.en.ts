@@ -15,8 +15,16 @@ export const homeEn: HomeContent = {
       label: 'Courses at Launch',
       note: '2 live now · 2 coming soon',
       noteAccent: '2 coming soon'
-    },
-    { value: 'YouTube', label: '@MotoPhD', href: 'https://www.youtube.com/@MotoPhD' }
+    }
+  ],
+  socialLinks: [
+    { platform: 'youtube', href: 'https://www.youtube.com/@MotoPhD', label: 'YouTube' },
+    { platform: 'instagram', href: 'https://www.instagram.com/motophd/', label: 'Instagram' },
+    {
+      platform: 'instagram',
+      href: 'https://www.instagram.com/vladwhite_97/',
+      label: "Vlad's Instagram"
+    }
   ],
   coursesLabel: 'MotoPhD Courses',
   coursesTitle: ['One course. One goal.', 'One transformation.'],
