@@ -8,8 +8,8 @@ interface Props {
   content: HomeContent;
   courses: CourseCardCourse[];
   labels: {
-    startLearning: string;
     viewCourses: string;
+    browseAllCourses: string;
   };
 }
 
@@ -36,28 +36,54 @@ export function LandingTop({ content, courses, labels }: Props) {
           <p className={styles.hero__sub}>{content.heroSub}</p>
           <div className={styles.hero__buttons}>
             <Link className={styles.button} href="/courses">
-              {labels.startLearning}
-            </Link>
-            <Link className={styles.buttonGhost} href="/courses">
               {labels.viewCourses}
             </Link>
           </div>
           <div className={styles.hero__stats}>
-            {content.stats.map((stat) => (
-              <div key={stat.label}>
-                <div className={styles.stat__num}>
-                  {stat.accent ? (
-                    <>
-                      <span className={styles.red}>{stat.accent}</span>
-                      {stat.value.replace(stat.accent, '')}
-                    </>
-                  ) : (
-                    stat.value
-                  )}
-                </div>
-                <div className={styles.stat__label}>{stat.label}</div>
-              </div>
-            ))}
+            {content.stats.map((stat) => {
+              const body = (
+                <>
+                  <div className={styles.stat__num}>
+                    {stat.accent ? (
+                      <>
+                        <span className={styles.red}>{stat.accent}</span>
+                        {stat.value.replace(stat.accent, '')}
+                      </>
+                    ) : (
+                      stat.value
+                    )}
+                  </div>
+                  <div className={styles.stat__label}>{stat.label}</div>
+                  {stat.note ? (
+                    <div className={styles.stat__note}>
+                      {stat.noteAccent ? (
+                        <>
+                          {stat.note.split(stat.noteAccent)[0]}
+                          <span className={styles.red}>{stat.noteAccent}</span>
+                          {stat.note.split(stat.noteAccent)[1]}
+                        </>
+                      ) : (
+                        stat.note
+                      )}
+                    </div>
+                  ) : null}
+                </>
+              );
+
+              return stat.href ? (
+                <a
+                  className={styles.stat__link}
+                  href={stat.href}
+                  key={stat.label}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  {body}
+                </a>
+              ) : (
+                <div key={stat.label}>{body}</div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -94,6 +120,50 @@ export function LandingTop({ content, courses, labels }: Props) {
           ))}
         </div>
       </section>
+      <div id="about-anchor" />
+      <hr className={styles.divider} />
+      <section className={styles.section}>
+        <div className={styles.section__label}>{content.instructorLabel}</div>
+        <div className={styles.instructorGrid}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img alt={content.instructorName} className={styles.instructorPhoto} src="/vlad.jpg" />
+          <div className={styles.instructorCard}>
+            <div className={styles.instructorName}>{content.instructorName}</div>
+            <div className={styles.instructorRole}>{content.instructorRole}</div>
+            {content.instructorCredentials ? (
+              <ul className={styles.instructorCredentials}>
+                {content.instructorCredentials.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            ) : null}
+          </div>
+          <div>
+            <h2 className={styles.section__title}>
+              {content.instructorTitle.map((line) => (
+                <span key={line}>
+                  {line}
+                  <br />
+                </span>
+              ))}
+            </h2>
+            {content.instructorCopy.map((paragraph) => (
+              <p className={styles.instructorCopy} key={paragraph}>
+                {paragraph}
+              </p>
+            ))}
+            <Link className={styles.button} href="/courses">
+              {labels.browseAllCourses}
+            </Link>
+          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            alt={content.instructorName}
+            className={styles.instructorActionPhoto}
+            src="/vlad-training.jpg"
+          />
+        </div>
+      </section>
       <hr className={styles.divider} />
       <section className={styles.section}>
         <div className={styles.section__label}>{content.testimonialsLabel}</div>
@@ -112,10 +182,7 @@ export function LandingTop({ content, courses, labels }: Props) {
               <blockquote className={styles.testiQuote}>“{testimonial.quote}”</blockquote>
               <div className={styles.testiAuthor}>
                 <div className={styles.testiAvatar}>{testimonial.initial}</div>
-                <div>
-                  <div className={styles.testiName}>{testimonial.name}</div>
-                  <div className={styles.testiCountry}>{testimonial.country}</div>
-                </div>
+                <div className={styles.testiName}>{testimonial.name}</div>
               </div>
             </article>
           ))}

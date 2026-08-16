@@ -12,21 +12,20 @@ vi.mock('@/i18n/routing', () => ({
   )
 }));
 
-const labels = { browseAllCourses: 'Смотреть все курсы', enrollCta: 'Записаться на курс' };
+vi.mock('next-intl', () => ({
+  useTranslations: () => (key: string) => key
+}));
 
 describe('LandingBottom', () => {
-  it('renders the final call-to-action label and links to the catalog', () => {
-    render(<LandingBottom content={homeContent.ru} labels={labels} />);
+  it('renders the community call-to-action when a label is provided', () => {
+    render(<LandingBottom content={homeContent.en} labels={{ joinCommunity: 'Join our MotoPhD Community' }} />);
 
-    const cta = screen.getByRole('link', { name: 'Записаться на курс' });
-
-    expect(cta).toHaveAttribute('href', '/courses');
+    expect(screen.getByRole('link', { name: 'Join our MotoPhD Community' })).toBeInTheDocument();
   });
 
-  it('keeps the instructor link separate from the final call to action', () => {
-    render(<LandingBottom content={homeContent.ru} labels={labels} />);
+  it('renders nothing when the community label is empty', () => {
+    render(<LandingBottom content={homeContent.ru} labels={{ joinCommunity: '' }} />);
 
-    expect(screen.getByRole('link', { name: 'Смотреть все курсы' })).toBeInTheDocument();
-    expect(screen.getAllByRole('link', { name: 'Записаться на курс' })).toHaveLength(1);
+    expect(screen.queryByRole('link', { name: /community|сообществ/i })).not.toBeInTheDocument();
   });
 });

@@ -7,10 +7,10 @@
     "cta": "Start Learning"
   },
   "actions": {
-    "startLearning": "Start Learning",
     "viewCourses": "View Courses",
     "enrollNow": "Enroll Now",
     "enrollCourse": "Join the Course",
+    "joinCommunity": "Join our MotoPhD Community",
     "viewCourse": "View Course",
     "browseAllCourses": "Browse All Courses",
     "backToHome": "Back to Home",
@@ -97,5 +97,22 @@
     "opening": "Opening: {name}",
     "nowPlaying": "Now playing this lesson",
     "markingComplete": "Marking lesson complete"
+  },
+  "footer": {
+    "tagline": "Premium online motorcycle education. Learn to ride with confidence, understanding, and precision.",
+    "coursesHeading": "Courses",
+    "course1": "Stop Being Afraid to Lean",
+    "course2": "Counter Steering",
+    "course3": "Emergency Braking",
+    "platformHeading": "Platform",
+    "studentLogin": "Student Login",
+    "myDashboard": "My Dashboard",
+    "about": "About",
+    "legalHeading": "Legal",
+    "privacyPolicy": "Privacy Policy",
+    "terms": "Terms & Conditions",
+    "refundPolicy": "Refund Policy",
+    "contact": "Contact",
+    "copy": "© 2026 MotoPhD Online. All rights reserved. Educational content for informational purposes only."
   }
 }

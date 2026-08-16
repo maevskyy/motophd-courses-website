@@ -23,12 +23,12 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       <LandingTop
         content={content}
         courses={courses}
-        labels={{ startLearning: t('startLearning'), viewCourses: t('viewCourses') }}
+        labels={{
+          viewCourses: t('viewCourses'),
+          browseAllCourses: t('browseAllCourses')
+        }}
       />
-      <LandingBottom
-        content={content}
-        labels={{ browseAllCourses: t('browseAllCourses'), enrollCta: t('enrollCourse') }}
-      />
+      <LandingBottom content={content} labels={{ joinCommunity: t('joinCommunity') }} />
     </>
   );
 }

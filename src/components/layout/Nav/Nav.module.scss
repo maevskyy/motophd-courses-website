@@ -1,11 +1,7 @@
-.red {
-  color: var(--red);
-}
-
 .nav {
   align-items: center;
   backdrop-filter: blur(12px);
-  background: rgba(0, 0, 0, 0.95);
+  background: rgba(29, 29, 27, 0.95);
   border-bottom: 1px solid #1a1a1a;
   display: flex;
   height: 64px;
@@ -26,10 +22,10 @@
   text-decoration: none;
 }
 
-.nav__logoText {
-  color: var(--white);
-  font-size: 22px;
-  font-weight: 900;
+.nav__logoImg {
+  display: block;
+  height: 36px;
+  width: auto;
 }
 
 .nav__links {
@@ -139,4 +135,12 @@
   .nav { padding: 0 20px; }
   .nav__links { gap: 12px; }
   .nav__link { display: none; }
+}
+
+@media (max-width: 480px) {
+  .nav { padding: 0 10px; }
+  .nav__links { gap: 4px; }
+  .nav__lang { font-size: 10px; padding: 2px 5px; }
+  .nav__ctaGhost { font-size: 11px; padding: 5px 8px; }
+  .nav__cta { display: none; }
 }

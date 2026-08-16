@@ -128,28 +128,28 @@
 }
 
 .testiCard {
-  padding: 28px;
+  padding: 20px;
 }
 
 .testiStars {
   color: var(--red);
-  font-size: 16px;
+  font-size: 13px;
   letter-spacing: 2px;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 }
 
 .testiQuote {
   color: var(--light);
-  font-size: 15px;
+  font-size: 13px;
   font-style: italic;
-  line-height: 1.7;
-  margin-bottom: 20px;
+  line-height: 1.6;
+  margin-bottom: 14px;
 }
 
 .testiAuthor {
   align-items: center;
   display: flex;
-  gap: 12px;
+  gap: 10px;
 }
 
 .testiAvatar,
@@ -163,19 +163,15 @@
 }
 
 .testiAvatar {
-  font-size: 16px;
-  height: 40px;
-  width: 40px;
+  flex-shrink: 0;
+  font-size: 13px;
+  height: 30px;
+  width: 30px;
 }
 
 .testiName {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
-}
-
-.testiCountry {
-  color: var(--gray);
-  font-size: 12px;
 }
 
 .howSteps {
@@ -230,10 +226,18 @@
 }
 
 .instructorGrid {
-  align-items: center;
+  align-items: start;
+  column-gap: 60px;
   display: grid;
-  gap: 60px;
   grid-template-columns: 1fr 1fr;
+  row-gap: 40px;
+}
+
+.instructorActionPhoto {
+  aspect-ratio: 3 / 2;
+  border-radius: 12px;
+  object-fit: cover;
+  width: 100%;
 }
 
 .instructorCopy {
@@ -248,12 +252,13 @@
   border: 1px solid #1a1a1a;
   border-radius: 12px;
   padding: 40px;
-  text-align: center;
 }
 
-.instructorIcon {
-  font-size: 80px;
-  margin-bottom: 20px;
+.instructorPhoto {
+  aspect-ratio: 3 / 4;
+  border-radius: 12px;
+  object-fit: cover;
+  width: 100%;
 }
 
 .instructorName {
@@ -268,28 +273,31 @@
   margin-bottom: 24px;
 }
 
-.miniStats {
+.instructorCredentials {
   display: grid;
-  gap: 16px;
-  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  text-align: left;
 }
 
-.miniStat {
-  background: #111;
-  border-radius: 8px;
-  padding: 16px;
+.instructorCredentials li {
+  color: var(--light);
+  font-size: 14px;
+  line-height: 1.5;
+  padding-left: 22px;
+  position: relative;
 }
 
-.miniStat__num {
+.instructorCredentials li::before {
   color: var(--red);
-  font-size: 28px;
-  font-weight: 900;
+  content: '•';
+  font-weight: 700;
+  left: 6px;
+  position: absolute;
 }
 
-.miniStat__label {
-  color: var(--gray);
-  font-size: 11px;
-}
 
 .faqList {
   display: flex;
@@ -369,9 +377,15 @@
 }
 
 
+
 @media (max-width: 900px) {
   .instructorGrid { grid-template-columns: 1fr; }
-  .howSteps { grid-template-columns: 1fr 1fr; }
+  .howSteps { grid-template-columns: 1fr 1fr; row-gap: 40px; }
   .howSteps::before { display: none; }
   .ctaButton { font-size: 18px; padding: 20px 36px; }
+  .ctaSection { padding: 80px 20px; }
+}
+
+@media (max-width: 480px) {
+  .howSteps { grid-template-columns: 1fr; row-gap: 32px; }
 }

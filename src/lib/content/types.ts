@@ -6,7 +6,15 @@ export type HomeContent = {
   heroRed: string;
   heroAfterRed: string;
   heroSub: string;
-  stats: Array<{ value: string; accent?: string; label: string }>;
+  stats: Array<{
+    value: string;
+    accent?: string;
+    label: string;
+    note?: string;
+    noteAccent?: string;
+    href?: string;
+  }>;
+  socialLinks: Array<{ platform: 'youtube' | 'instagram'; href: string; label: string }>;
   coursesLabel: string;
   coursesTitle: string[];
   coursesSub: string;
@@ -16,7 +24,7 @@ export type HomeContent = {
   method: Array<{ icon: string; num: string; title: string; desc: string }>;
   testimonialsLabel: string;
   testimonialsTitle: string[];
-  testimonials: Array<{ initial: string; name: string; country: string; quote: string }>;
+  testimonials: Array<{ initial: string; name: string; quote: string }>;
   howLabel: string;
   howTitle: string[];
   steps: Array<{ num: string; title: string; desc: string }>;
@@ -25,6 +33,7 @@ export type HomeContent = {
   instructorCopy: string[];
   instructorName: string;
   instructorRole: string;
+  instructorCredentials?: string[];
   faqLabel: string;
   faqTitle: string;
   faq: Array<{ question: string; answer: string }>;

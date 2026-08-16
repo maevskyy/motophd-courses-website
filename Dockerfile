@@ -38,6 +38,8 @@ ENV PORT=3000
 
 COPY --from=build /app/.next/standalone ./
 COPY --from=build /app/.next/static ./.next/static
+# standalone НЕ включает public/ сам — копируем вручную, иначе логотип, фото и favicon отдают 404.
+COPY --from=build /app/public ./public
 
 EXPOSE 3000
 

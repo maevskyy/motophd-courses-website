@@ -21,9 +21,8 @@ export function Nav({ isLoggedIn }: Props) {
   return (
     <nav className={styles.nav}>
       <Link className={styles.nav__logo} href="/">
-        <span className={styles.nav__logoText}>
-          MOTO<span className={styles.red}>PhD</span>
-        </span>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img alt="MotoPhD" className={styles.nav__logoImg} height={36} src="/logo.png" width={130} />
       </Link>
       <div className={styles.nav__links}>
         <Link className={styles.nav__link} href="/courses">
