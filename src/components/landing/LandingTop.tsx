@@ -32,23 +32,25 @@ export function LandingTop({ content, courses, labels }: Props) {
         <div className={styles.hero__grid} />
         <div className={styles.hero__glow} />
         <div className={styles.hero__content}>
-          <div className={styles.hero__badge}>{content.heroBadge}</div>
-          <h1 className={styles.hero__title}>
-            {content.heroTitle.map((line) => (
-              <span key={line}>
-                {line}
-                <br />
-              </span>
-            ))}
-            <span className={styles.red}>{content.heroRed}</span>
-            <br />
-            {content.heroAfterRed}
-          </h1>
-          <p className={styles.hero__sub}>{content.heroSub}</p>
-          <div className={styles.hero__buttons}>
-            <Link className={styles.button} href="/courses">
-              {labels.viewCourses}
-            </Link>
+          <div className={styles.hero__intro}>
+            <div className={styles.hero__badge}>{content.heroBadge}</div>
+            <h1 className={styles.hero__title}>
+              {content.heroTitle.map((line) => (
+                <span key={line}>
+                  {line}
+                  <br />
+                </span>
+              ))}
+              <span className={styles.red}>{content.heroRed}</span>
+              <br />
+              {content.heroAfterRed}
+            </h1>
+            <p className={styles.hero__sub}>{content.heroSub}</p>
+            <div className={styles.hero__buttons}>
+              <Link className={styles.button} href="/courses">
+                {labels.viewCourses}
+              </Link>
+            </div>
           </div>
           <div className={styles.hero__stats}>
             {content.stats.map((stat) => {
