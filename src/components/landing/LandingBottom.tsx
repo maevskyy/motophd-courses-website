@@ -48,7 +48,7 @@ export function LandingBottom({ content, labels }: Props) {
               <br />
             </span>
           ))}
-          <span className={styles.red}>{content.ctaAccent}</span>
+          <span className={styles.ctaAccent}>{content.ctaAccent}</span>
         </h2>
         <p className={styles.ctaSub}>{content.ctaSub}</p>
         {labels.joinCommunity ? (
