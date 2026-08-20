@@ -150,14 +150,16 @@ export function LandingTop({ content, courses, labels }: Props) {
             ) : null}
           </div>
           <div>
-            <h2 className={styles.section__title}>
-              {content.instructorTitle.map((line) => (
-                <span key={line}>
-                  {line}
-                  <br />
-                </span>
-              ))}
-            </h2>
+            {content.instructorTitle.length > 0 ? (
+              <h2 className={styles.section__title}>
+                {content.instructorTitle.map((line) => (
+                  <span key={line}>
+                    {line}
+                    <br />
+                  </span>
+                ))}
+              </h2>
+            ) : null}
             {content.instructorCopy.map((paragraph) => (
               <p className={styles.instructorCopy} key={paragraph}>
                 {paragraph}
