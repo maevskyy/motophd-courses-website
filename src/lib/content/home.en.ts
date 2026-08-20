@@ -33,7 +33,7 @@ export const homeEn: HomeContent = {
   methodLabel: 'The MotoPhD Method',
   methodTitle: 'Why this system works',
   methodSub:
-    'Most riders have some fears because of a lack of knowledge. That lack of knowledge leads to the wrong feel for the bike. MotoPhD fixes that in four simple steps.',
+    'Most riders have some fears because of a lack of knowledge. That lack of knowledge leads to wrong feelings from the bike. MotoPhD fixes that in four simple steps.',
   method: [
     {
       icon: '🧠',
