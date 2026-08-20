@@ -17,6 +17,17 @@ export function LandingTop({ content, courses, labels }: Props) {
   return (
     <>
       <section className={styles.hero}>
+        <video
+          autoPlay
+          className={styles.hero__video}
+          loop
+          muted
+          playsInline
+          poster="/hero-poster.jpg"
+          preload="auto"
+        >
+          <source src="/hero-loop.mp4" type="video/mp4" />
+        </video>
         <div className={styles.hero__bg} />
         <div className={styles.hero__grid} />
         <div className={styles.hero__glow} />
