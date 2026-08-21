@@ -60,7 +60,7 @@ export const homeEn: HomeContent = {
       desc: 'Real confidence on real roads. You apply what you learn immediately, and feel the difference in your very next ride.'
     }
   ],
-  testimonialsLabel: 'Student Results',
+  testimonialsLabel: 'Student Feedback',
   testimonialsTitle: ['What riders say', 'after MotoPhD'],
   testimonials: [
     {
