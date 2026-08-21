@@ -38,7 +38,7 @@ export function CourseCard({ course, catalog = false }: CourseCardProps) {
         <div className={styles.courseDesc}>{course.description}</div>
         {catalog ? (
           <div className={styles.includes}>
-            <div className={styles.includes__title}>What&apos;s included:</div>
+            <div className={styles.includes__title}>{t('whatsIncluded')}</div>
             {course.includes.map((item) => (
               <div className={styles.includes__item} key={item}>
                 ✓ {item}
