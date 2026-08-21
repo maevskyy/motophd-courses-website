@@ -138,7 +138,7 @@ export const homeEn: HomeContent = {
     { num: '4', title: 'Practice', desc: 'Build new skills through practice' },
     { num: '5', title: 'Ride Better', desc: 'Apply on the road. Lifetime access.' }
   ],
-  instructorLabel: 'The Instructor',
+  instructorLabel: 'The Coach',
   instructorTitle: ['Built by a coach', "who's been there."],
   instructorCopy: [
     "More than 5,000 riders have improved their motorcycle control through my offline coaching. Now I'm bringing the same system online — so riders anywhere in the world can learn the same principles.",
