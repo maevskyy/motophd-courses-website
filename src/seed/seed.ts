@@ -123,7 +123,6 @@ const seedDemoAccounts = async (payload: Payload, firstCourseId: DefaultDocument
 const seedCourses = async () => {
   const payload = await getPayload({ config });
   const courseSeeds = getCourseSeeds();
-  const flatLessons = getFlatLessons();
 
   try {
     let firstCourseId: DefaultDocumentIDType | undefined;
@@ -193,7 +192,13 @@ const seedCourses = async () => {
         firstCourseId = courseId;
       }
 
-      for (const [lessonIndex, lesson] of flatLessons.entries()) {
+      const flatLessonsByLocale = {
+        en: getFlatLessons(courseSeed.en.slug, 'en'),
+        ru: getFlatLessons(courseSeed.ru.slug, 'ru')
+      };
+      const canonicalLessons = flatLessonsByLocale.en;
+
+      for (const [lessonIndex, lesson] of canonicalLessons.entries()) {
         const order = lessonIndex + 1;
         const existingLesson = await payload.find({
           collection: 'lessons',
@@ -221,17 +226,18 @@ const seedCourses = async () => {
 
         for (const locale of locales) {
           const localizedCourse = courseSeed[locale];
+          const localizedLesson = flatLessonsByLocale[locale][lessonIndex];
           const data = {
             course: courseId,
             order,
             type: getLessonType(lesson),
-            title: lesson.name,
+            title: localizedLesson.name,
             durationSec: getDurationSec(lesson.duration),
             streamVideoId:
               getLessonType(lesson) === 'video'
                 ? `${localizedCourse.slug}-${locale}-lesson-${order}`
                 : undefined,
-            body: toRichText(`${lesson.moduleTitle}\n\n${lesson.name}`),
+            body: toRichText(`${localizedLesson.moduleTitle}\n\n${localizedLesson.name}`),
             isFreePreview: order === 1
           };
 

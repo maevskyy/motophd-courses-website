@@ -41,7 +41,6 @@ export function CurriculumAccordion({ modules }: { modules: CurriculumModule[] }
             <div className={styles.moduleNum}>{module.number}</div>
             <div className={styles.moduleInfo}>
               <div className={styles.moduleTitle}>{module.title}</div>
-              <div className={styles.moduleMeta}>{module.meta}</div>
             </div>
             <span className={styles.moduleArrow}>›</span>
           </button>
@@ -53,7 +52,6 @@ export function CurriculumAccordion({ modules }: { modules: CurriculumModule[] }
                 onClick={() => router.push('/learn/lean')}
                 type="button"
               >
-                <span className={styles.lessonIcon}>{lesson.icon}</span>
                 <span className={styles.lessonName}>{lesson.name}</span>
                 <span className={styles.lessonDuration}>{lesson.duration}</span>
               </button>

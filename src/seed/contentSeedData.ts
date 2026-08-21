@@ -1,7 +1,7 @@
 import type { Lesson } from '@/payload-types';
 import { salesContent } from './fixtures/coursePages';
 import { localizedCourses } from './fixtures/courses';
-import { curriculum } from './fixtures/curriculum';
+import { getCurriculumForCourse } from './fixtures/curriculum';
 import { playerContent } from './fixtures/player';
 import type { Course } from './fixtures/types';
 
@@ -146,8 +146,8 @@ export const getLessonType = (lesson: { icon: string; name: string }) => {
   return 'text' as const;
 };
 
-export const getFlatLessons = () =>
-  curriculum.flatMap((module) =>
+export const getFlatLessons = (courseSlug: string, locale: Locale) =>
+  getCurriculumForCourse(courseSlug)[locale].flatMap((module) =>
     module.lessons.map((lesson) => ({
       moduleTitle: module.title,
       ...lesson

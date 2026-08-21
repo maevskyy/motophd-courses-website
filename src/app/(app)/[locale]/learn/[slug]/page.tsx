@@ -39,7 +39,7 @@ export default async function CoursePlayerPage({
   }
 
   const lessons = await getCourseLessons(course.id, safeLocale, user);
-  const curriculum = toCurriculumModules(course, lessons);
+  const curriculum = toCurriculumModules(course, lessons, safeLocale);
   const player = toPlayerContent(course, lessons);
 
   return <CoursePlayerClient curriculum={curriculum} player={player} />;

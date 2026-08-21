@@ -249,11 +249,21 @@
 }
 
 .btnEnroll {
+  background: var(--red);
+  border: 0;
   border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
   font-size: 15px;
+  font-weight: 700;
   margin-bottom: 12px;
   padding: 16px;
+  transition: all 0.2s;
   width: 100%;
+}
+
+.btnEnroll:hover {
+  background: #c91a1f;
 }
 
 .salesGuarantee {
