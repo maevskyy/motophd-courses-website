@@ -112,6 +112,7 @@
 }
 
 .courseBtn,
+.courseBtnGhost,
 .pdfBtn,
 .btnLogin,
 .btnEnroll,
@@ -121,21 +122,16 @@
   color: #fff;
 }
 
-.courseBtn {
+.courseBtn,
+.courseBtnGhost {
   font-size: 13px;
   padding: 10px 20px;
 }
 
-.courseBtnGhost,
 .btnUnlock {
   background: transparent;
   border: 1px solid #333;
   color: var(--light);
-}
-
-.courseBtnGhost {
-  font-size: 13px;
-  padding: 10px 20px;
 }
 
 .courseBtn:hover,
