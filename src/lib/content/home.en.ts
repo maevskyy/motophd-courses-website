@@ -141,7 +141,7 @@ export const homeEn: HomeContent = {
   instructorLabel: 'The Coach',
   instructorTitle: ['Built by a coach', "who's been there."],
   instructorCopy: [
-    "More than 5,000 riders have improved their motorcycle control through my offline coaching. Now I'm bringing the same system online — so riders anywhere in the world can learn the same principles.",
+    "More than 5,000 riders have improved their motorcycle control through my PERSONAL coaching. Now I'm bringing the same system online — so riders anywhere in the world can learn the same principles.",
     "I don't teach just theory. I always make focus on your feelings from the bike. Every concept in MotoPhD has been tested with real riders on real roads. That's why we have such clear structure of trainings that delivers a result."
   ],
   instructorName: 'Vlad White',
