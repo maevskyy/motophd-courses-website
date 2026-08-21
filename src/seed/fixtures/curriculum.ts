@@ -6,14 +6,14 @@ const leanCurriculumEn: CurriculumModule[] = [
     title: 'Level 01 — Theory',
     meta: '1 video · Theory foundation',
     open: true,
-    lessons: [{ icon: '🎥', name: 'Video', duration: '' }]
+    lessons: [{ icon: '🎥', name: 'Video Tutorial', duration: '' }]
   },
   {
     number: '02',
     title: 'Level 02 — Preparation',
     meta: '1 video · 3 PDFs · Getting bike and body ready',
     lessons: [
-      { icon: '🎥', name: 'Video', duration: '' },
+      { icon: '🎥', name: 'Video Tutorial', duration: '' },
       { icon: '📄', name: 'Motorcycle Preparation', duration: 'PDF' },
       { icon: '📄', name: 'Tire Condition Check', duration: 'PDF' },
       { icon: '📄', name: 'Practicing Proper Body Position', duration: 'PDF' }
@@ -24,7 +24,7 @@ const leanCurriculumEn: CurriculumModule[] = [
     title: 'Level 03 — Hanging Off',
     meta: '1 video · 2 PDFs · Hanging-off fundamentals',
     lessons: [
-      { icon: '🎥', name: 'Video', duration: '' },
+      { icon: '🎥', name: 'Video Tutorial', duration: '' },
       { icon: '📄', name: 'Hanging-Off Technique', duration: 'PDF' },
       { icon: '📄', name: 'Flick Technique', duration: 'PDF' }
     ]
@@ -34,7 +34,7 @@ const leanCurriculumEn: CurriculumModule[] = [
     title: 'Level 04 — Trajectory & Deep Lean',
     meta: '1 video · 2 PDFs · Line choice and throttle control',
     lessons: [
-      { icon: '🎥', name: 'Video', duration: '' },
+      { icon: '🎥', name: 'Video Tutorial', duration: '' },
       { icon: '📄', name: 'Turn-In Points & Trajectory Work', duration: 'PDF' },
       { icon: '📄', name: 'Throttle Phase Work', duration: 'PDF' }
     ]
@@ -44,7 +44,7 @@ const leanCurriculumEn: CurriculumModule[] = [
     title: 'Level 05 — Mixing Different Steering Methods',
     meta: '1 video · 3 PDFs · Combining every tool',
     lessons: [
-      { icon: '🎥', name: 'Video', duration: '' },
+      { icon: '🎥', name: 'Video Tutorial', duration: '' },
       { icon: '📄', name: 'Footwork', duration: 'PDF' },
       { icon: '📄', name: 'Countersteering + Body', duration: 'PDF' },
       { icon: '📄', name: 'MotoPhD Challenge', duration: 'PDF' }
