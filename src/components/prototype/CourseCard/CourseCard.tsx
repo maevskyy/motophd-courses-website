@@ -11,7 +11,6 @@ type CourseCardProps = {
 
 export function CourseCard({ course, catalog = false }: CourseCardProps) {
   const t = useTranslations('actions');
-  const showEnroll = !catalog || course.featured;
 
   return (
     <Link
@@ -48,9 +47,7 @@ export function CourseCard({ course, catalog = false }: CourseCardProps) {
         ) : null}
         <div className={styles.coursePriceRow}>
           <div className={styles.coursePrice}>€{course.priceStandard}</div>
-          <span className={showEnroll ? styles.courseBtn : styles.courseBtnGhost}>
-            {showEnroll ? t('enrollNow') : t('viewCourse')}
-          </span>
+          <span className={styles.courseBtn}>{catalog ? t('viewCourse') : t('enrollNow')}</span>
         </div>
       </div>
     </Link>
