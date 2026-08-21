@@ -114,7 +114,7 @@ const curriculumLevelsByCourse: Record<string, Record<AppLocale, Array<{ title: 
       { title: 'Level 02 — Preparation', count: 4 },
       { title: 'Level 03 — Hanging Off', count: 3 },
       { title: 'Level 04 — Trajectory & Deep Lean', count: 3 },
-      { title: 'Level 05 — Mixing Different Steering Tools', count: 4 }
+      { title: 'Level 05 — Mixing Different Steering Methods', count: 4 }
     ],
     ru: [
       { title: 'Уровень 01 — Теория', count: 1 },

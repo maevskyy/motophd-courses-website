@@ -41,7 +41,7 @@ const leanCurriculumEn: CurriculumModule[] = [
   },
   {
     number: '05',
-    title: 'Level 05 — Mixing Different Steering Tools',
+    title: 'Level 05 — Mixing Different Steering Methods',
     meta: '1 video · 3 PDFs · Combining every tool',
     lessons: [
       { icon: '🎥', name: 'Video', duration: '' },
