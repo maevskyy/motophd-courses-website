@@ -5,7 +5,7 @@ export type AppLocale = 'en' | 'ru';
 export type CourseCardCourse = {
   slug: string;
   icon: string;
-  badge?: string;
+  image?: string;
   imageTone: 'red' | 'green' | 'blue';
   featured?: boolean;
   pain: string;

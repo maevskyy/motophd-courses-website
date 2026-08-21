@@ -20,7 +20,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
     `/${safeLocale}/login?next=${encodeURIComponent(`/${safeLocale}/dashboard`)}`
   );
   const payloadCourses = await getDashboardCourses(safeLocale, user);
-  const courses = payloadCourses.map((course, index) => toCourseCardCourse(course, index, safeLocale));
+  const courses = payloadCourses.map((course, index) => toCourseCardCourse(course, index));
   const lessons = payloadCourses[0]
     ? await getCourseLessons(payloadCourses[0].id, safeLocale, user)
     : [];

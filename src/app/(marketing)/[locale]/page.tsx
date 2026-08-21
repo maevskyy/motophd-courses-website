@@ -16,7 +16,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const t = await getTranslations({ locale: safeLocale, namespace: 'actions' });
   const content = homeContent[safeLocale];
   const payloadCourses = await getPublishedCourses(safeLocale);
-  const courses = payloadCourses.map((course, index) => toCourseCardCourse(course, index, safeLocale));
+  const courses = payloadCourses.map((course, index) => toCourseCardCourse(course, index));
 
   return (
     <>

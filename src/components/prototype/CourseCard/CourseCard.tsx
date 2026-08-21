@@ -24,8 +24,12 @@ export function CourseCard({ course, catalog = false }: CourseCardProps) {
           course.imageTone === 'blue' && styles.courseImgBlue
         )}
       >
-        <span className={styles.courseImg__icon}>{course.icon}</span>
-        {course.badge ? <div className={styles.courseImg__badge}>{course.badge}</div> : null}
+        {course.image ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img alt={course.title} className={styles.courseImg__photo} src={course.image} />
+        ) : (
+          <span className={styles.courseImg__icon}>{course.icon}</span>
+        )}
       </div>
       <div className={styles.courseBody}>
         <div className={styles.coursePain}>{course.pain}</div>

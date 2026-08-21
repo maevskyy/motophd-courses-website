@@ -10,9 +10,9 @@ import type {
 } from './types';
 
 const visualByIndex = [
-  { icon: '🏍️', imageTone: 'red' as const },
-  { icon: '⚡', imageTone: 'green' as const },
-  { icon: '🛑', imageTone: 'blue' as const }
+  { icon: '🏍️', imageTone: 'red' as const, image: '/course-lean.jpg' },
+  { icon: '⚡', imageTone: 'green' as const, image: '/course-braking.jpg' },
+  { icon: '🛑', imageTone: 'blue' as const, image: undefined }
 ];
 
 const localized = {
@@ -52,8 +52,7 @@ const localized = {
 
 export const toCourseCardCourse = (
   course: Course,
-  index = Number(course.order || 1) - 1,
-  locale: AppLocale = 'en'
+  index = Number(course.order || 1) - 1
 ): CourseCardCourse => {
   const visual = visualByIndex[index % visualByIndex.length] || visualByIndex[0];
   const includes = course.outcomes?.map(({ text }) => text).filter(Boolean) || [];
@@ -61,7 +60,7 @@ export const toCourseCardCourse = (
   return {
     slug: course.slug,
     icon: visual.icon,
-    badge: index === 0 ? (locale === 'ru' ? 'Флагман' : 'Flagship') : undefined,
+    image: visual.image,
     imageTone: visual.imageTone,
     featured: index === 0,
     pain: course.pain || '',
