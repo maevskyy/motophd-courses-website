@@ -6,7 +6,7 @@ const leanCurriculumEn: CurriculumModule[] = [
     title: 'Level 01 — Theory',
     meta: '1 video · Theory foundation',
     open: true,
-    lessons: [{ icon: '🎥', name: 'Video Tutorial', duration: '' }]
+    lessons: [{ icon: '🎥', name: 'Video Lesson', duration: '' }]
   },
   {
     number: '02',
