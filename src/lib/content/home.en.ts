@@ -159,14 +159,24 @@ export const homeEn: HomeContent = {
   faqTitle: 'Common Questions',
   faq: [
     {
-      question: 'Is this for beginners or experienced riders?',
+      question: 'Are your courses for beginners or experienced riders?',
       answer:
-        "MotoPhD courses are designed for riders of all levels. Whether you've been riding 6 months or 6 years, if you have a specific fear or skill gap — there's a course for it."
+        "MotoPhD courses work for riders of any level. Whether you've been riding for 6 months or 6 years — if you have a specific fear or skill gap, there's a course for you."
     },
     {
-      question: 'Do I need a specific type of motorcycle?',
+      question: 'Can I learn to ride from scratch with your courses?',
       answer:
-        'No. The principles taught in MotoPhD courses apply to any motorcycle — sports bikes, naked bikes, adventure bikes, tourers. The physics are universal.'
+        "No, our courses don't cover the basics of motorcycle control. For that, we recommend professional offline schools like Ride White Moto."
+    },
+    {
+      question: 'Do I need a specific type of motorcycle to train?',
+      answer:
+        "No. MotoPhD's principles apply to any motorcycle. The physics is universal. You can always learn the specifics of handling your own bike in the course with feedback."
+    },
+    {
+      question: 'What format are the courses in?',
+      answer:
+        'Each course includes video lessons and PDF guides. Total video runtime per course is around 60 minutes. All courses are broken into structured, step-by-step levels.'
     },
     {
       question: 'How long do I have access after purchase?',
@@ -174,19 +184,17 @@ export const homeEn: HomeContent = {
         "Lifetime access. Once you purchase a course, it's yours forever. No subscription, no expiry. Watch it as many times as you need."
     },
     {
-      question: 'What format are the courses in?',
-      answer:
-        'Each course includes a combination of video lessons and downloadable PDF guides. Videos range from 5–10 minutes. Everything is designed to watch, pause, and apply on the road.'
-    },
-    {
       question: 'What languages are available?',
-      answer:
-        'Courses are currently available in English and Russian. Spanish will be added in a future update.'
+      answer: 'Courses are available in English and Russian. Spanish is coming later.'
     },
     {
       question: 'What is your refund policy?',
       answer:
         'As these are digital products, we do not offer refunds once course access has been granted. By completing your purchase you acknowledge and accept this policy.'
+    },
+    {
+      question: 'Can I add feedback after completing a course?',
+      answer: 'Yes, just reach out to us at support@motophd.com'
     }
   ],
   ctaTitle: ['Explore Your Limits.', 'Move Your Borders.'],
