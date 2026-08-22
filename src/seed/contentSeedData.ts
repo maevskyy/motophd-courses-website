@@ -64,37 +64,35 @@ export const legalPageSeeds: LegalPageSeed[] = [
     slug: 'contact',
     en: {
       title: 'Contact',
-      body: 'For questions about MotoPhD courses, payments, or access, contact the MotoPhD team - support@motophd.com'
+      body: 'For questions about MotoPhD courses, payments, or access, contact the MotoPhD team -\n\nsupport@motophd.com'
     },
     ru: {
       title: 'Контакты',
-      body: 'По вопросам курсов MotoPhD, оплаты или доступа свяжитесь с командой MotoPhD - support@motophd.com'
+      body: 'По вопросам курсов MotoPhD, оплаты или доступа свяжитесь с командой MotoPhD -\n\nsupport@motophd.com'
     }
   }
 ];
 
 export const toRichText = (text: string): NonNullable<Lesson['body']> => ({
   root: {
-    children: [
-      {
-        children: [
-          {
-            detail: 0,
-            format: 0,
-            mode: 'normal',
-            style: '',
-            text,
-            type: 'text',
-            version: 1
-          }
-        ],
-        direction: 'ltr' as const,
-        format: '' as const,
-        indent: 0,
-        type: 'paragraph',
-        version: 1
-      }
-    ],
+    children: text.split('\n\n').map((paragraph) => ({
+      children: [
+        {
+          detail: 0,
+          format: 0,
+          mode: 'normal',
+          style: '',
+          text: paragraph,
+          type: 'text',
+          version: 1
+        }
+      ],
+      direction: 'ltr' as const,
+      format: '' as const,
+      indent: 0,
+      type: 'paragraph',
+      version: 1
+    })),
     direction: 'ltr' as const,
     format: '' as const,
     indent: 0,

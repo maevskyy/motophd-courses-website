@@ -30,6 +30,10 @@
   max-width: 560px;
 }
 
+.section__sub p:not(:last-child) {
+  margin-bottom: 12px;
+}
+
 .divider {
   border: 0;
   border-top: 1px solid #1a1a1a;
