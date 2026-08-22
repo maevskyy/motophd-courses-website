@@ -78,9 +78,9 @@ export function Footer({ compact = false, socialLinks }: Props) {
               <Link className={styles.footer__link} href="/refund">
                 {t('refundPolicy')}
               </Link>
-              <a className={styles.footer__link} href="mailto:support@motophd.com">
-                support@motophd.com
-              </a>
+              <Link className={styles.footer__link} href="/contact">
+                {t('contact')}
+              </Link>
             </div>
           </div>
         ) : null}

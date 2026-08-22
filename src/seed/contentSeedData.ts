@@ -64,11 +64,11 @@ export const legalPageSeeds: LegalPageSeed[] = [
     slug: 'contact',
     en: {
       title: 'Contact',
-      body: 'For questions about MotoPhD courses, payments, or access, contact the MotoPhD team. Production contact details will be added before launch.'
+      body: 'To ask something about payment, access, or anything else — contact our team at support@motophd.com'
     },
     ru: {
       title: 'Контакты',
-      body: 'По вопросам курсов MotoPhD, оплаты или доступа свяжитесь с командой MotoPhD. Production-контакты будут добавлены перед запуском.'
+      body: 'Чтобы уточнить что-то по поводу оплаты или доступа и т.д. — свяжитесь с командой: support@motophd.com'
     }
   }
 ];
