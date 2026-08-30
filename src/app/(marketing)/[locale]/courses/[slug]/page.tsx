@@ -8,11 +8,10 @@ import { PricingBox } from '@/components/prototype/PricingBox';
 import {
   getCourseBySlug,
   getCourseCurriculum,
-  toAppLocale,
   toCurriculumModules,
   toSalesContent
 } from '@/lib/data';
-import type { Locale } from '@/i18n/routing';
+import { requireLocale } from '@/i18n/requireLocale';
 import styles from '@/components/courseSales/CourseSalesPage.module.scss';
 
 export const revalidate = 300;
@@ -30,7 +29,7 @@ export default async function CourseSalesPage({
   params: Promise<{ slug: string; locale: string }>;
 }) {
   const { locale, slug } = await params;
-  const safeLocale = toAppLocale(locale) satisfies Locale;
+  const safeLocale = requireLocale(locale);
   const course = await getCourseBySlug(slug, safeLocale);
 
   if (!course) {

@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { Footer } from '@/components/prototype/Footer';
-import { getLegalPage, richTextToParagraphs, toAppLocale } from '@/lib/data';
+import { getLegalPage, richTextToParagraphs } from '@/lib/data';
+import { requireLocale } from '@/i18n/requireLocale';
 import type { LegalPage } from '@/payload-types';
 import styles from '@/components/catalog/CatalogPage.module.scss';
 
@@ -23,12 +24,11 @@ export default async function LegalPageRoute({
   params: Promise<{ locale: string; legalSlug: string }>;
 }) {
   const { legalSlug, locale } = await params;
+  const safeLocale = requireLocale(locale);
 
   if (!isLegalSlug(legalSlug)) {
     notFound();
   }
-
-  const safeLocale = toAppLocale(locale);
   const page = await getLegalPage(legalSlug, safeLocale);
 
   if (!page) {

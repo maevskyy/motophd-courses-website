@@ -1,7 +1,7 @@
 import { CourseCard } from '@/components/prototype/CourseCard';
 import { Footer } from '@/components/prototype/Footer';
-import { getPublishedCourses, toAppLocale, toCourseCardCourse } from '@/lib/data';
-import type { Locale } from '@/i18n/routing';
+import { getPublishedCourses, toCourseCardCourse } from '@/lib/data';
+import { requireLocale } from '@/i18n/requireLocale';
 import styles from '@/components/catalog/CatalogPage.module.scss';
 
 export const revalidate = 300;
@@ -27,7 +27,7 @@ const catalogContent = {
 
 export default async function CoursesPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-  const safeLocale = toAppLocale(locale) satisfies Locale;
+  const safeLocale = requireLocale(locale);
   const content = catalogContent[safeLocale];
   const payloadCourses = await getPublishedCourses(safeLocale);
   const courses = payloadCourses.map((course, index) => toCourseCardCourse(course, index, safeLocale));

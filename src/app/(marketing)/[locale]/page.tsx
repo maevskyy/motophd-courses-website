@@ -2,8 +2,8 @@ import { getTranslations } from 'next-intl/server';
 import { LandingBottom } from '@/components/landing/LandingBottom';
 import { LandingTop } from '@/components/landing/LandingTop';
 import { homeContent } from '@/lib/content';
-import { getPublishedCourses, toAppLocale, toCourseCardCourse } from '@/lib/data';
-import type { Locale } from '@/i18n/routing';
+import { getPublishedCourses, toCourseCardCourse } from '@/lib/data';
+import { requireLocale } from '@/i18n/requireLocale';
 
 export const revalidate = 300;
 
@@ -15,7 +15,7 @@ export function generateStaticParams() {
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-  const safeLocale = toAppLocale(locale) satisfies Locale;
+  const safeLocale = requireLocale(locale);
   const t = await getTranslations({ locale: safeLocale, namespace: 'actions' });
   const content = homeContent[safeLocale];
   const payloadCourses = await getPublishedCourses(safeLocale);
