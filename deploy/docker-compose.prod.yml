@@ -74,16 +74,22 @@ services:
     restart: unless-stopped
     logging: *default-logging
     mem_limit: 512m
+    entrypoint:
+      - /bin/sh
+      - -c
+      - 'test -n "$$GF_SECURITY_ADMIN_PASSWORD" || { echo "grafana: GRAFANA_ADMIN_PASSWORD is empty — set it in ~/motophd/.env (MOT-4)"; exit 1; }; exec /run.sh'
     # env_file здесь НЕ используем: Grafana доступна из интернета, а прод-.env
     # содержит PAYLOAD_SECRET, POSTGRES_PASSWORD, DATABASE_URI и ключи R2/Resend.
     # Пробрасываем ровно две переменные, нужные контакт-поинту Telegram.
     environment:
       GF_SERVER_ROOT_URL: https://grafana.motophd.com
       GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
-      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:?GRAFANA_ADMIN_PASSWORD is required}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-}
+      # Пустой пароль означал бы дефолтный admin/admin наружу, поэтому без
+      # GRAFANA_ADMIN_PASSWORD контейнер не стартует (см. entrypoint).
       GF_AUTH_ANONYMOUS_ENABLED: 'false'
-      TG_BOT_TOKEN: ${TG_BOT_TOKEN:?TG_BOT_TOKEN is required}
-      TG_CHAT_ID: ${TG_CHAT_ID:?TG_CHAT_ID is required}
+      TG_BOT_TOKEN: ${TG_BOT_TOKEN:-}
+      TG_CHAT_ID: ${TG_CHAT_ID:-}
     volumes:
       - grafana_data:/var/lib/grafana
       - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
@@ -171,17 +177,20 @@ services:
     restart: unless-stopped
     logging: *default-logging
     mem_limit: 512m
+    # BACKUP_*-переменные с пустым дефолтом: compose интерполирует ВЕСЬ файл
+    # на любой команде, и «:?» ронял деплой приложения, пока бэкапы (MOT-5)
+    # не заведены. Строгую проверку делает сам backup.sh при запуске.
     environment:
       PGHOST: postgres
       PGPORT: 5432
       PGDATABASE: ${POSTGRES_DB:?POSTGRES_DB is required}
       PGUSER: ${POSTGRES_USER:?POSTGRES_USER is required}
       PGPASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
-      BACKUP_R2_ENDPOINT: ${BACKUP_R2_ENDPOINT:?BACKUP_R2_ENDPOINT is required}
-      BACKUP_R2_ACCESS_KEY_ID: ${BACKUP_R2_ACCESS_KEY_ID:?BACKUP_R2_ACCESS_KEY_ID is required}
-      BACKUP_R2_SECRET_ACCESS_KEY: ${BACKUP_R2_SECRET_ACCESS_KEY:?BACKUP_R2_SECRET_ACCESS_KEY is required}
+      BACKUP_R2_ENDPOINT: ${BACKUP_R2_ENDPOINT:-}
+      BACKUP_R2_ACCESS_KEY_ID: ${BACKUP_R2_ACCESS_KEY_ID:-}
+      BACKUP_R2_SECRET_ACCESS_KEY: ${BACKUP_R2_SECRET_ACCESS_KEY:-}
       BACKUP_R2_BUCKET: ${BACKUP_R2_BUCKET:-motophd-backups}
-      HEALTHCHECKS_BACKUP_URL: ${HEALTHCHECKS_BACKUP_URL:?HEALTHCHECKS_BACKUP_URL is required}
+      HEALTHCHECKS_BACKUP_URL: ${HEALTHCHECKS_BACKUP_URL:-}
       TZ: ${TZ:-UTC}
     volumes:
       - backup_data:/backups

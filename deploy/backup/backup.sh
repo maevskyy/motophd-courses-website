@@ -9,6 +9,17 @@
 set -eu
 set -o pipefail
 
+# Compose передаёт эти переменные с пустым дефолтом, чтобы не ронять деплой
+# приложения до включения бэкапов (MOT-5). Здесь — граница: без ключей
+# бэкап падает громко и понятно, а не загадочной ошибкой rclone.
+for required in BACKUP_R2_ENDPOINT BACKUP_R2_ACCESS_KEY_ID BACKUP_R2_SECRET_ACCESS_KEY; do
+  eval "required_value=\${${required}:-}"
+  if [ -z "${required_value}" ]; then
+    echo "backup: ${required} is empty — fill it in ~/motophd/.env (see .env.prod.example, MOT-5)" >&2
+    exit 1
+  fi
+done
+
 backup_dir=/backups
 timestamp=$(date -u +%Y-%m-%dT%H-%M-%SZ)
 backup_name="motophd-postgres-${timestamp}.dump.gz"
