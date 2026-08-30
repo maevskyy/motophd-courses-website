@@ -1,11 +1,16 @@
-import { connection } from 'next/server';
 import { CourseCard } from '@/components/prototype/CourseCard';
 import { Footer } from '@/components/prototype/Footer';
 import { getPublishedCourses, toAppLocale, toCourseCardCourse } from '@/lib/data';
 import type { Locale } from '@/i18n/routing';
 import styles from '@/components/catalog/CatalogPage.module.scss';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 300;
+
+// Пустой список: страницы рендерятся при первом заходе и кэшируются (ISR),
+// чтобы сборка в CI обходилась без работающей базы.
+export function generateStaticParams() {
+  return [];
+}
 
 const catalogContent = {
   en: {
@@ -21,8 +26,6 @@ const catalogContent = {
 };
 
 export default async function CoursesPage({ params }: { params: Promise<{ locale: string }> }) {
-  await connection();
-
   const { locale } = await params;
   const safeLocale = toAppLocale(locale) satisfies Locale;
   const content = catalogContent[safeLocale];

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useRouter } from '@/i18n/routing';
+import { useAuthStatus } from '@/components/providers/AuthStatusProvider';
 import { useToast } from '@/components/providers/ToastProvider';
 import { cx } from '@/lib/classNames';
 import type { SalesContent } from '@/lib/data';
@@ -10,12 +11,12 @@ import styles from './PricingBox.module.scss';
 
 interface Props {
   courseSlug: string;
-  isLoggedIn: boolean;
   loginHref: string;
   sales: SalesContent;
 }
 
-export function PricingBox({ courseSlug, isLoggedIn, loginHref, sales }: Props) {
+export function PricingBox({ courseSlug, loginHref, sales }: Props) {
+  const isLoggedIn = useAuthStatus();
   const t = useTranslations();
   const router = useRouter();
   const { showToast } = useToast();

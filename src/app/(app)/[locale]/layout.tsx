@@ -2,6 +2,7 @@ import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { Unbounded } from 'next/font/google';
 import { notFound } from 'next/navigation';
+import { AuthStatusProvider } from '@/components/providers/AuthStatusProvider';
 import { ToastProvider } from '@/components/providers/ToastProvider';
 import { Consent } from '@/components/consent';
 import { Nav } from '@/components/layout/Nav';
@@ -37,11 +38,13 @@ export default async function AppLocaleLayout({
     <html lang={locale}>
       <body className={unbounded.variable}>
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <ToastProvider>
-            <Nav isLoggedIn={Boolean(user)} />
-            {children}
-            <Consent />
-          </ToastProvider>
+          <AuthStatusProvider initialLoggedIn={Boolean(user)}>
+            <ToastProvider>
+              <Nav />
+              {children}
+              <Consent />
+            </ToastProvider>
+          </AuthStatusProvider>
         </NextIntlClientProvider>
       </body>
     </html>

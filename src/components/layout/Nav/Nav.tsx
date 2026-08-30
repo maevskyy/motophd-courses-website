@@ -2,15 +2,13 @@
 
 import { useLocale, useTranslations } from 'next-intl';
 import { Link, usePathname } from '@/i18n/routing';
+import { useAuthStatus } from '@/components/providers/AuthStatusProvider';
 import { useToast } from '@/components/providers/ToastProvider';
 import styles from './Nav.module.scss';
 import type { Locale } from '@/i18n/routing';
 
-interface Props {
-  isLoggedIn: boolean;
-}
-
-export function Nav({ isLoggedIn }: Props) {
+export function Nav() {
+  const isLoggedIn = useAuthStatus();
   const t = useTranslations();
   const locale = useLocale() as Locale;
   const pathname = usePathname();

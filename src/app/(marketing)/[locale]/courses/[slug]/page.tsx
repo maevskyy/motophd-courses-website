@@ -1,11 +1,10 @@
 import { getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
-import { connection } from 'next/server';
 import { Link } from '@/i18n/routing';
+import { AccessNotice } from '@/components/courseSales/AccessNotice';
 import { CurriculumAccordion } from '@/components/prototype/CurriculumAccordion';
 import { Footer } from '@/components/prototype/Footer';
 import { PricingBox } from '@/components/prototype/PricingBox';
-import { getCurrentUser } from '@/lib/auth';
 import {
   getCourseBySlug,
   getCourseCurriculum,
@@ -16,34 +15,30 @@ import {
 import type { Locale } from '@/i18n/routing';
 import styles from '@/components/courseSales/CourseSalesPage.module.scss';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 300;
+
+// Пустой список: страницы рендерятся при первом заходе и кэшируются (ISR),
+// чтобы сборка в CI обходилась без работающей базы. Персональное (логин,
+// ?access=denied) добирают клиентские AccessNotice и PricingBox.
+export function generateStaticParams() {
+  return [];
+}
 
 export default async function CourseSalesPage({
-  params,
-  searchParams
+  params
 }: {
   params: Promise<{ slug: string; locale: string }>;
-  searchParams: Promise<{ access?: string }>;
 }) {
-  await connection();
-
-  const [{ locale, slug }, user, { access }] = await Promise.all([
-    params,
-    getCurrentUser(),
-    searchParams
-  ]);
+  const { locale, slug } = await params;
   const safeLocale = toAppLocale(locale) satisfies Locale;
-  const course = await getCourseBySlug(slug, safeLocale, user || undefined);
+  const course = await getCourseBySlug(slug, safeLocale);
 
   if (!course) {
     notFound();
   }
 
-  const [t, accessT] = await Promise.all([
-    getTranslations({ locale: safeLocale, namespace: 'actions' }),
-    getTranslations({ locale: safeLocale, namespace: 'access' })
-  ]);
-  const lessons = await getCourseCurriculum(course.id, safeLocale, user || undefined);
+  const t = await getTranslations({ locale: safeLocale, namespace: 'actions' });
+  const lessons = await getCourseCurriculum(course.id, safeLocale);
   const sales = toSalesContent(course, safeLocale);
   const curriculum = toCurriculumModules(course, lessons);
 
@@ -55,11 +50,7 @@ export default async function CourseSalesPage({
             <Link className={styles.salesBreadcrumb} href="/courses">
               ← <span className={styles.red}>{sales.breadcrumb}</span> / {course.title}
             </Link>
-            {access === 'denied' ? (
-              <p className={styles.salesAccessNotice} role="alert">
-                {accessT('courseDenied')}
-              </p>
-            ) : null}
+            <AccessNotice />
             <div className={styles.salesTag}>{sales.tag}</div>
             <h1 className={styles.salesTitle}>
               {sales.title.map((line) => (
@@ -80,7 +71,6 @@ export default async function CourseSalesPage({
           </div>
           <PricingBox
             courseSlug={course.slug}
-            isLoggedIn={Boolean(user)}
             loginHref={`/${safeLocale}/login?next=${encodeURIComponent(`/${safeLocale}/courses/${course.slug}`)}`}
             sales={sales}
           />

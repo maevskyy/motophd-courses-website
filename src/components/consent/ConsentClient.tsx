@@ -9,6 +9,7 @@ import {
   CONSENT_COOKIE_MAX_AGE,
   CONSENT_COOKIE_NAME,
   CONSENT_READY_EVENT,
+  parseConsentDecision,
   type ConsentDecision,
   type TrackingConfig
 } from './consentConfig';
@@ -77,7 +78,7 @@ function saveDecision(decision: ConsentDecision) {
   document.cookie = `${CONSENT_COOKIE_NAME}=${decision}; Max-Age=${CONSENT_COOKIE_MAX_AGE}; Path=/; SameSite=Lax${secure}`;
 }
 
-export function ConsentClient({ initialDecision, trackingConfig }: Props) {
+function ConsentContent({ initialDecision, trackingConfig }: Props) {
   const [decision, setDecision] = useState(initialDecision);
   const [isBannerOpen, setIsBannerOpen] = useState(initialDecision === null);
   const [isConsentModeReady, setIsConsentModeReady] = useState(false);
@@ -132,4 +133,29 @@ export function ConsentClient({ initialDecision, trackingConfig }: Props) {
       {isBannerOpen ? <ConsentBanner onChoose={chooseDecision} /> : null}
     </>
   );
+}
+
+function readStoredDecision() {
+  const entry = document.cookie
+    .split(';')
+    .map((part) => part.trim())
+    .find((part) => part.startsWith(`${CONSENT_COOKIE_NAME}=`));
+
+  return parseConsentDecision(entry?.slice(CONSENT_COOKIE_NAME.length + 1));
+}
+
+// Кука согласия читается в браузере: серверный рендер маркетинга статичен,
+// один и тот же HTML уходит всем посетителям, cookies() там недоступны.
+export function ConsentClient({ trackingConfig }: { trackingConfig: TrackingConfig }) {
+  const [storedDecision, setStoredDecision] = useState<ConsentDecision | null>();
+
+  useEffect(() => {
+    setStoredDecision(readStoredDecision());
+  }, []);
+
+  if (storedDecision === undefined) {
+    return null;
+  }
+
+  return <ConsentContent initialDecision={storedDecision} trackingConfig={trackingConfig} />;
 }

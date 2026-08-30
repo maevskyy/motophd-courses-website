@@ -1,16 +1,14 @@
-import { cookies } from 'next/headers';
 import { ConsentClient } from './ConsentClient';
-import { CONSENT_COOKIE_NAME, getTrackingConfig, parseConsentDecision } from './consentConfig';
+import { getTrackingConfig } from './consentConfig';
 
-export async function Consent() {
+// Куку согласия здесь читать нельзя: маркетинг раздаётся статикой и один
+// рендер уходит всем посетителям. Решение по куке принимает ConsentClient.
+export function Consent() {
   const trackingConfig = getTrackingConfig();
 
   if (!trackingConfig) {
     return null;
   }
 
-  const cookieStore = await cookies();
-  const initialDecision = parseConsentDecision(cookieStore.get(CONSENT_COOKIE_NAME)?.value);
-
-  return <ConsentClient initialDecision={initialDecision} trackingConfig={trackingConfig} />;
+  return <ConsentClient trackingConfig={trackingConfig} />;
 }

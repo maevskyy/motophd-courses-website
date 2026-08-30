@@ -1,16 +1,19 @@
 import { getTranslations } from 'next-intl/server';
-import { connection } from 'next/server';
 import { LandingBottom } from '@/components/landing/LandingBottom';
 import { LandingTop } from '@/components/landing/LandingTop';
 import { homeContent } from '@/lib/content';
 import { getPublishedCourses, toAppLocale, toCourseCardCourse } from '@/lib/data';
 import type { Locale } from '@/i18n/routing';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 300;
+
+// Пустой список: страницы рендерятся при первом заходе и кэшируются (ISR),
+// чтобы сборка в CI обходилась без работающей базы.
+export function generateStaticParams() {
+  return [];
+}
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
-  await connection();
-
   const { locale } = await params;
   const safeLocale = toAppLocale(locale) satisfies Locale;
   const t = await getTranslations({ locale: safeLocale, namespace: 'actions' });

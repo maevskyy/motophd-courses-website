@@ -44,9 +44,13 @@ const denied = {
 };
 
 function renderConsent(initialDecision: 'accepted' | 'necessary' | null = null) {
+  if (initialDecision) {
+    document.cookie = `${CONSENT_COOKIE_NAME}=${initialDecision}; Path=/`;
+  }
+
   return render(
     <NextIntlClientProvider locale="en" messages={messages}>
-      <ConsentClient initialDecision={initialDecision} trackingConfig={trackingConfig} />
+      <ConsentClient trackingConfig={trackingConfig} />
     </NextIntlClientProvider>
   );
 }

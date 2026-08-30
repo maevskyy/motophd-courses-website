@@ -2,10 +2,10 @@ import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { Unbounded } from 'next/font/google';
 import { notFound } from 'next/navigation';
+import { AuthStatusProvider } from '@/components/providers/AuthStatusProvider';
 import { ToastProvider } from '@/components/providers/ToastProvider';
 import { Consent } from '@/components/consent';
 import { Nav } from '@/components/layout/Nav';
-import { getCurrentUser } from '@/lib/auth';
 import '../../globals.scss';
 
 const unbounded = Unbounded({
@@ -14,8 +14,8 @@ const unbounded = Unbounded({
   weight: ['400', '500', '600', '700', '800', '900']
 });
 
-export const dynamic = 'force-dynamic';
-
+// Маркетинг раздаётся статикой (ISR), поэтому здесь нельзя читать куки и
+// заголовки: статус логина для нава добирает AuthStatusProvider на клиенте.
 export default async function LocaleLayout({
   children,
   params
@@ -31,17 +31,19 @@ export default async function LocaleLayout({
 
   setRequestLocale(locale);
 
-  const [messages, user] = await Promise.all([getMessages({ locale }), getCurrentUser()]);
+  const messages = await getMessages({ locale });
 
   return (
     <html lang={locale}>
       <body className={unbounded.variable}>
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <ToastProvider>
-            <Nav isLoggedIn={Boolean(user)} />
-            {children}
-            <Consent />
-          </ToastProvider>
+          <AuthStatusProvider>
+            <ToastProvider>
+              <Nav />
+              {children}
+              <Consent />
+            </ToastProvider>
+          </AuthStatusProvider>
         </NextIntlClientProvider>
       </body>
     </html>

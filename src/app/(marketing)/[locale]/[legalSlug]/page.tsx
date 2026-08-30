@@ -1,11 +1,16 @@
 import { notFound } from 'next/navigation';
-import { connection } from 'next/server';
 import { Footer } from '@/components/prototype/Footer';
 import { getLegalPage, richTextToParagraphs, toAppLocale } from '@/lib/data';
 import type { LegalPage } from '@/payload-types';
 import styles from '@/components/catalog/CatalogPage.module.scss';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 300;
+
+// Пустой список: страницы рендерятся при первом заходе и кэшируются (ISR),
+// чтобы сборка в CI обходилась без работающей базы.
+export function generateStaticParams() {
+  return [];
+}
 
 const legalSlugs = ['privacy', 'terms', 'refund', 'contact'] satisfies LegalPage['slug'][];
 
@@ -17,8 +22,6 @@ export default async function LegalPageRoute({
 }: {
   params: Promise<{ locale: string; legalSlug: string }>;
 }) {
-  await connection();
-
   const { legalSlug, locale } = await params;
 
   if (!isLegalSlug(legalSlug)) {
