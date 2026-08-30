@@ -61,7 +61,8 @@ test('home page blocks stay centred instead of sticking to the left edge', async
   const blocks = await page.evaluate(() => {
     const viewportWidth = document.documentElement.clientWidth;
 
-    return [...document.querySelectorAll('section')]
+    // Cookie-баннер — тоже section с h2, но он фиксированный и по центру не идёт.
+    return [...document.querySelectorAll('section:not([role="dialog"])')]
       .filter((section) => section.querySelector('h2'))
       .map((section) => {
         const box = section.getBoundingClientRect();
@@ -131,8 +132,10 @@ test('lesson API exposes protected content only to previews or paid students', a
 test('PDF lessons are served only through the protected lesson route', async ({ request }) => {
   const courseResponse = await request.get('/api/courses?where[slug][equals]=lean&limit=1&depth=0');
   const courseId = (await courseResponse.json()).docs[0].id;
+  // Именно платный урок: у тизера (isFreePreview) доступ открыт всем,
+  // на нём отказ анониму не проверить.
   const lessonsResponse = await request.get(
-    `/api/lessons?where[course][equals]=${courseId}&where[type][equals]=pdf&limit=1&depth=0`
+    `/api/lessons?where[course][equals]=${courseId}&where[type][equals]=pdf&where[isFreePreview][not_equals]=true&sort=order&limit=1&depth=0`
   );
   const lesson = (await lessonsResponse.json()).docs[0];
   const pdfUrl = `/api/lessons/${lesson.id}/pdf?locale=en`;
