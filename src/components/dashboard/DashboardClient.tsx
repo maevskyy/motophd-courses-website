@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Link } from '@/i18n/routing';
 import { logoutAction } from '@/lib/auth/actions';
-import type { CourseCardCourse, DashboardContent } from '@/lib/data';
+import type { CourseCardCourse, DashboardContent, PurchaseHistoryItem } from '@/lib/data';
 import { cx } from '@/lib/classNames';
 import { CoursesPanel, DownloadsPanel, OverviewPanel, ProfilePanel } from './DashboardPanels';
 import styles from './Dashboard.module.scss';
@@ -18,7 +18,8 @@ export function DashboardClient({
   email,
   locale,
   name,
-  availableCourses
+  availableCourses,
+  purchases
 }: {
   availableCourses: CourseCardCourse[];
   content: DashboardContent;
@@ -29,6 +30,7 @@ export function DashboardClient({
   email: string;
   locale: 'en' | 'ru';
   name: string;
+  purchases: PurchaseHistoryItem[];
 }) {
   const t = useTranslations();
   const [tab, setTab] = useState<DashboardTab>('overview');
@@ -88,7 +90,7 @@ export function DashboardClient({
           <DownloadsPanel content={content} courses={courses} email={email} name={displayName} />
         ) : null}
         {tab === 'profile' ? (
-          <ProfilePanel content={content} courses={courses} email={email} name={name} />
+          <ProfilePanel content={content} courses={courses} email={email} name={name} purchases={purchases} />
         ) : null}
       </section>
     </main>

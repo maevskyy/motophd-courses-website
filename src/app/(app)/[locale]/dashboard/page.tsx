@@ -5,6 +5,7 @@ import {
   getCourseLessons,
   getDashboardCourses,
   getPublishedCourses,
+  getPurchaseHistory,
   toAppLocale,
   toCourseCardCourse,
   toDashboardContent
@@ -20,9 +21,10 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
   const user = await requireUser(
     `/${safeLocale}/login?next=${encodeURIComponent(`/${safeLocale}/dashboard`)}`
   );
-  const [payloadCourses, publishedCourses] = await Promise.all([
+  const [payloadCourses, publishedCourses, purchases] = await Promise.all([
     getDashboardCourses(safeLocale, user),
-    getPublishedCourses(safeLocale, user)
+    getPublishedCourses(safeLocale, user),
+    getPurchaseHistory(safeLocale, user)
   ]);
   const purchasedCourseIds = new Set(payloadCourses.map((course) => course.id));
   const courses = payloadCourses.map((course, index) => toCourseCardCourse(course, index, safeLocale));
@@ -46,6 +48,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
       // В форму профиля пустое имя, а не email: иначе первое же сохранение
       // записывало email покупателя в поле «Имя» навсегда.
       name={user.name || ''}
+      purchases={purchases}
     />
   );
 }

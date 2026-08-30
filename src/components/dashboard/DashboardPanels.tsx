@@ -1,8 +1,9 @@
 import { useTranslations } from 'next-intl';
 import { useToast } from '@/components/providers/ToastProvider';
-import type { CourseCardCourse, DashboardContent } from '@/lib/data';
+import type { CourseCardCourse, DashboardContent, PurchaseHistoryItem } from '@/lib/data';
 import { AccountProfileForm } from './AccountProfileForm';
 import { ChangePasswordForm } from './ChangePasswordForm';
+import { PurchaseHistory } from './PurchaseHistory';
 import { DashStat, LockedDashCourse, PurchasedDashCourse } from './DashboardCards';
 import styles from './Dashboard.module.scss';
 
@@ -12,6 +13,7 @@ interface PanelProps {
   courses: CourseCardCourse[];
   email: string;
   name: string;
+  purchases?: PurchaseHistoryItem[];
 }
 
 export function OverviewPanel({ courses, name }: PanelProps) {
@@ -92,7 +94,7 @@ export function DownloadsPanel({ content }: PanelProps) {
   );
 }
 
-export function ProfilePanel({ email, name }: PanelProps) {
+export function ProfilePanel({ email, name, purchases = [] }: PanelProps) {
   const t = useTranslations();
 
   return (
@@ -102,6 +104,7 @@ export function ProfilePanel({ email, name }: PanelProps) {
       </div>
       <AccountProfileForm email={email} name={name} />
       <ChangePasswordForm />
+      <PurchaseHistory purchases={purchases} />
     </>
   );
 }

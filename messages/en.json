@@ -67,7 +67,16 @@
     "passwordWrongCurrent": "Current password is incorrect.",
     "passwordMismatch": "New passwords do not match.",
     "passwordTooShort": "New password must be at least 8 characters.",
-    "passwordChangeError": "We could not change your password. Please try again."
+    "passwordChangeError": "We could not change your password. Please try again.",
+    "purchaseHistory": "Purchase History",
+    "purchaseHistoryEmpty": "No purchases yet.",
+    "tierStandard": "Standard",
+    "tierFeedback": "Feedback",
+    "tierFeedbackUpgrade": "Feedback upgrade",
+    "statusPaid": "Paid",
+    "statusPending": "Pending",
+    "statusFailed": "Failed",
+    "statusRefunded": "Refunded"
   },
   "player": {
     "notes": "Lesson Notes",

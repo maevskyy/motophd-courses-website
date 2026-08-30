@@ -16,6 +16,8 @@ export {
   toPlayerDownloads,
   toSalesContent
 } from './adapters';
+export { getPurchaseHistory } from './purchases';
+export type { PurchaseHistoryItem } from './purchases';
 export { richTextToParagraphs, richTextToText } from './richText';
 export type {
   AppLocale,

@@ -21,7 +21,23 @@ export const Purchases: CollectionConfig = {
   access: {
     create: ({ req: { user } }) => isAdminUser(user),
     delete: ({ req: { user } }) => isAdminUser(user),
-    read: ({ req: { user } }) => isAdminUser(user),
+    // Студент читает только свои покупки (история в кабинете ходит сюда от
+    // имени юзера, без overrideAccess); писать по-прежнему может лишь админ.
+    read: ({ req: { user } }) => {
+      if (isAdminUser(user)) {
+        return true;
+      }
+
+      if (!user) {
+        return false;
+      }
+
+      return {
+        user: {
+          equals: user.id
+        }
+      };
+    },
     update: ({ req: { user } }) => isAdminUser(user)
   },
   fields: [

@@ -67,7 +67,16 @@
     "passwordWrongCurrent": "Текущий пароль неверный.",
     "passwordMismatch": "Новые пароли не совпадают.",
     "passwordTooShort": "Новый пароль должен быть не короче 8 символов.",
-    "passwordChangeError": "Не получилось изменить пароль. Попробуйте ещё раз."
+    "passwordChangeError": "Не получилось изменить пароль. Попробуйте ещё раз.",
+    "purchaseHistory": "История покупок",
+    "purchaseHistoryEmpty": "Покупок пока нет.",
+    "tierStandard": "Стандарт",
+    "tierFeedback": "С обратной связью",
+    "tierFeedbackUpgrade": "Докупка обратной связи",
+    "statusPaid": "Оплачено",
+    "statusPending": "В обработке",
+    "statusFailed": "Не прошла",
+    "statusRefunded": "Возврат"
   },
   "player": {
     "notes": "Заметки урока",
