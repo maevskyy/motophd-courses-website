@@ -2,15 +2,8 @@
 
 import { revalidatePath } from 'next/cache';
 import { getPayloadClient } from '@/lib/data/payload';
+import type { UpdateProfileFormState } from './accountFormState';
 import { getCurrentUser } from './currentUser';
-
-export type UpdateProfileFormState = {
-  status: 'error' | 'idle' | 'success';
-};
-
-export const initialUpdateProfileFormState: UpdateProfileFormState = {
-  status: 'idle'
-};
 
 export async function updateProfileAction(
   _previousState: UpdateProfileFormState,

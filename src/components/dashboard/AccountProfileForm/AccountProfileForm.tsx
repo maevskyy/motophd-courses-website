@@ -2,10 +2,8 @@
 
 import { useActionState } from 'react';
 import { useTranslations } from 'next-intl';
-import {
-  initialUpdateProfileFormState,
-  updateProfileAction
-} from '@/lib/auth/account';
+import { updateProfileAction } from '@/lib/auth/account';
+import { initialUpdateProfileFormState } from '@/lib/auth/accountFormState';
 import styles from './AccountProfileForm.module.scss';
 
 interface Props {

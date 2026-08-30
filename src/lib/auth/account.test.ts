@@ -15,7 +15,8 @@ vi.mock('@/lib/data/payload', () => ({
   getPayloadClient: vi.fn().mockResolvedValue({ update: mocks.update })
 }));
 
-import { initialUpdateProfileFormState, updateProfileAction } from './account';
+import { updateProfileAction } from './account';
+import { initialUpdateProfileFormState } from './accountFormState';
 
 const user = {
   collection: 'users',

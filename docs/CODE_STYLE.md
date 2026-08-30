@@ -73,7 +73,6 @@ components/CourseCard/
 | Файл | Строк | Что сделать |
 |---|---|---|
 | `components/prototype/Prototype.module.scss` | 1952 | разнести по компонентам, по одному `*.module.scss` |
-| `app/(app)/[locale]/dashboard/page.tsx` | 237 | разбить на подкомпоненты (табы/секции) |
 | `app/(marketing)/[locale]/page.tsx` | 236 | лендинг → секции-компоненты |
 | `lib/content/prototype.ts` | 590 | разложить по доменам (courses / testimonials / faq / …) |
 

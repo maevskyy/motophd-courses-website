@@ -7,7 +7,6 @@ vi.mock('next-intl', () => ({
 }));
 
 vi.mock('@/lib/auth/account', () => ({
-  initialUpdateProfileFormState: { status: 'idle' },
   updateProfileAction: vi.fn()
 }));
 
