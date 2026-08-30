@@ -129,6 +129,23 @@ jobs:
       - preflight
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Конфиги (compose, Caddyfile, monitoring, backup) едут на бокс каждым
+      # деплоем: правка в репо не требует ручного scp. .env не трогается —
+      # он не лежит в deploy/.
+      - name: Sync deploy configs to VPS
+        uses: appleboy/scp-action@v1.0.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          source: deploy
+          target: /home/${{ secrets.VPS_USER }}/motophd
+          strip_components: 1
+          overwrite: true
+
       - name: Deploy image over SSH
         uses: appleboy/ssh-action@v1.2.2
         with:
@@ -148,6 +165,7 @@ jobs:
               docker compose -f docker-compose.prod.yml --profile ops run --rm migrate pnpm seed
             fi
             docker compose -f docker-compose.prod.yml up -d --remove-orphans
+            docker compose -f docker-compose.prod.yml exec -T caddy caddy reload --config /etc/caddy/Caddyfile || docker compose -f docker-compose.prod.yml restart caddy
             curl -fsS --retry 30 --retry-delay 3 --retry-all-errors http://127.0.0.1:3000/api/health
 
       - name: Production smoke check

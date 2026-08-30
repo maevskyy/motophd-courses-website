@@ -164,7 +164,14 @@ sha-1a2b3c4
 
 The server should pull that tag and restart the app with the previous image.
 
-## M2 / M3 Follow-Up
+## Config Sync
 
-- M2: Cloudflare DNS, Caddy, HTTPS.
-- M3: public `/admin` isolation, `admin.motophd.com` behind Cloudflare Access, migration button.
+Deploy workflow копирует `deploy/` (compose, Caddyfile, monitoring, backup) в
+`~/motophd` на каждом деплое и перезагружает Caddy. Правка конфига = коммит в
+main + кнопка Deploy; ручной scp не нужен. `~/motophd/.env` синк не трогает.
+
+## Admin Isolation
+
+`motophd.com/admin*` отвечает 404 (Caddyfile), админка живёт на
+`admin.motophd.com`. Доступ к ней закрывается Cloudflare Access — шаги в
+`deploy/monitoring/APPLY.md` (раздел про Zero Trust → Access).

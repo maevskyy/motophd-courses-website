@@ -49,11 +49,11 @@ jobs:
       - name: Unit and component tests
         run: pnpm test
 
-  # Образ собирается на КАЖДЫЙ пуш в dev — заранее, в фоне.
+  # Образ собирается на КАЖДЫЙ пуш в main и dev — заранее, в фоне.
   # Кнопка Deploy потом просто берёт готовый тег, ничего не собирая.
   build:
     name: Build and Push Image
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/dev' }}
+    if: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -100,7 +100,7 @@ jobs:
   e2e:
     name: E2E
     needs: build
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/dev' }}
+    if: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev') }}
     runs-on: ubuntu-latest
     env:
       DATABASE_URI: postgres://motophd:motophd@127.0.0.1:5432/motophd
