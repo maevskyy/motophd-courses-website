@@ -18,3 +18,11 @@ export type ChangePasswordFormState = {
 export const initialChangePasswordFormState: ChangePasswordFormState = {
   status: 'idle'
 };
+
+export type DeleteAccountFormState = {
+  status: 'confirmMismatch' | 'error' | 'idle';
+};
+
+export const initialDeleteAccountFormState: DeleteAccountFormState = {
+  status: 'idle'
+};

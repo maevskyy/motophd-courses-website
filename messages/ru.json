@@ -22,7 +22,8 @@
     "download": "Скачать",
     "saveChanges": "Сохранить",
     "backToDashboard": "Назад в кабинет",
-    "changePassword": "Изменить пароль"
+    "changePassword": "Изменить пароль",
+    "deleteAccount": "Удалить аккаунт"
   },
   "login": {
     "tagline": "Портал студента — Войти",
@@ -76,7 +77,12 @@
     "statusPaid": "Оплачено",
     "statusPending": "В обработке",
     "statusFailed": "Не прошла",
-    "statusRefunded": "Возврат"
+    "statusRefunded": "Возврат",
+    "deleteAccount": "Удаление аккаунта",
+    "deleteAccountWarning": "Доступ и личные данные будут удалены безвозвратно. Записи о покупках сохраняются для бухгалтерии. Действие нельзя отменить.",
+    "deleteAccountConfirmLabel": "Введите свой email для подтверждения",
+    "deleteAccountMismatch": "Email не совпадает с аккаунтом.",
+    "deleteAccountError": "Не получилось удалить аккаунт. Попробуйте ещё раз."
   },
   "player": {
     "notes": "Заметки урока",

@@ -1,11 +1,17 @@
 'use server';
 
+import { randomBytes } from 'node:crypto';
 import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 import { getPayloadClient } from '@/lib/data/payload';
 import { MIN_PASSWORD_LENGTH } from './accountFormState';
-import type { ChangePasswordFormState, UpdateProfileFormState } from './accountFormState';
-import { setAuthCookie } from './authCookie';
+import type {
+  ChangePasswordFormState,
+  DeleteAccountFormState,
+  UpdateProfileFormState
+} from './accountFormState';
+import { AUTH_COOKIE, setAuthCookie } from './authCookie';
 import { getCurrentUser } from './currentUser';
 
 export async function updateProfileAction(
@@ -105,4 +111,51 @@ export async function changePasswordAction(
   }
 
   return { status: 'success' };
+}
+
+export async function deleteAccountAction(
+  _previousState: DeleteAccountFormState,
+  formData: FormData
+): Promise<DeleteAccountFormState> {
+  const confirmEmail = String(formData.get('confirmEmail') || '')
+    .trim()
+    .toLowerCase();
+  const locale = formData.get('locale') === 'ru' ? 'ru' : 'en';
+
+  const user = await getCurrentUser();
+
+  if (!user) {
+    return { status: 'error' };
+  }
+
+  if (confirmEmail !== user.email.toLowerCase()) {
+    return { status: 'confirmMismatch' };
+  }
+
+  try {
+    const payload = await getPayloadClient();
+
+    // GDPR-удаление = анонимизация: PII стирается, строка юзера и покупки
+    // остаются как обезличенный финансовый учёт. Жёсткий DELETE невозможен
+    // без изменения схемы purchases (user обязателен), и терять записи об
+    // оплатах нельзя. Логин мёртв: email заменён, пароль — случайный.
+    await payload.update({
+      collection: 'users',
+      data: {
+        email: `deleted-${user.id}@anonymized.invalid`,
+        name: '',
+        password: randomBytes(24).toString('base64url')
+      },
+      id: user.id,
+      overrideAccess: false,
+      user
+    });
+  } catch {
+    return { status: 'error' };
+  }
+
+  const cookieStore = await cookies();
+
+  cookieStore.delete(AUTH_COOKIE);
+  redirect(`/${locale}/`);
 }

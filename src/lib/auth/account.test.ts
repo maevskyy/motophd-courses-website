@@ -2,9 +2,11 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { User } from '@/payload-types';
 
 const mocks = vi.hoisted(() => ({
+  cookieDelete: vi.fn(),
   cookieSet: vi.fn(),
   getCurrentUser: vi.fn(),
   login: vi.fn(),
+  redirect: vi.fn(),
   revalidatePath: vi.fn(),
   update: vi.fn()
 }));
@@ -12,8 +14,10 @@ const mocks = vi.hoisted(() => ({
 vi.mock('next/cache', () => ({ revalidatePath: mocks.revalidatePath }));
 
 vi.mock('next/headers', () => ({
-  cookies: vi.fn().mockResolvedValue({ set: mocks.cookieSet })
+  cookies: vi.fn().mockResolvedValue({ delete: mocks.cookieDelete, set: mocks.cookieSet })
 }));
+
+vi.mock('next/navigation', () => ({ redirect: mocks.redirect }));
 
 vi.mock('@/lib/auth/currentUser', () => ({ getCurrentUser: mocks.getCurrentUser }));
 
@@ -21,9 +25,10 @@ vi.mock('@/lib/data/payload', () => ({
   getPayloadClient: vi.fn().mockResolvedValue({ login: mocks.login, update: mocks.update })
 }));
 
-import { changePasswordAction, updateProfileAction } from './account';
+import { changePasswordAction, deleteAccountAction, updateProfileAction } from './account';
 import {
   initialChangePasswordFormState,
+  initialDeleteAccountFormState,
   initialUpdateProfileFormState
 } from './accountFormState';
 
@@ -151,5 +156,53 @@ describe('changePasswordAction', () => {
       'fresh-session',
       expect.objectContaining({ httpOnly: true })
     );
+  });
+});
+
+describe('deleteAccountAction', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  const createDeleteFormData = (confirmEmail: string) => {
+    const formData = new FormData();
+
+    formData.set('confirmEmail', confirmEmail);
+    formData.set('locale', 'en');
+
+    return formData;
+  };
+
+  it('refuses to delete without the exact email confirmation', async () => {
+    mocks.getCurrentUser.mockResolvedValue(user);
+
+    await expect(
+      deleteAccountAction(initialDeleteAccountFormState, createDeleteFormData('someone@else.com'))
+    ).resolves.toEqual({ status: 'confirmMismatch' });
+
+    expect(mocks.update).not.toHaveBeenCalled();
+    expect(mocks.cookieDelete).not.toHaveBeenCalled();
+  });
+
+  it('anonymizes the account so the old credentials stop working, then signs out', async () => {
+    mocks.getCurrentUser.mockResolvedValue(user);
+    mocks.update.mockResolvedValue({});
+
+    await deleteAccountAction(initialDeleteAccountFormState, createDeleteFormData('Student@MotoPhD.com'));
+
+    const updateArgs = mocks.update.mock.calls[0][0];
+
+    // Старый email исчезает, пароль заменяется длинным случайным — пара для
+    // логина перестаёт существовать; строка юзера и покупки остаются.
+    expect(updateArgs).toMatchObject({
+      collection: 'users',
+      data: { email: 'deleted-7@anonymized.invalid', name: '' },
+      id: user.id,
+      overrideAccess: false,
+      user
+    });
+    expect(updateArgs.data.password.length).toBeGreaterThanOrEqual(24);
+    expect(mocks.cookieDelete).toHaveBeenCalledWith('payload-token');
+    expect(mocks.redirect).toHaveBeenCalledWith('/en/');
   });
 });

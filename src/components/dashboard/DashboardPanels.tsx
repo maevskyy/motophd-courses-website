@@ -3,6 +3,7 @@ import { useToast } from '@/components/providers/ToastProvider';
 import type { CourseCardCourse, DashboardContent, PurchaseHistoryItem } from '@/lib/data';
 import { AccountProfileForm } from './AccountProfileForm';
 import { ChangePasswordForm } from './ChangePasswordForm';
+import { DeleteAccountSection } from './DeleteAccountSection';
 import { PurchaseHistory } from './PurchaseHistory';
 import { DashStat, LockedDashCourse, PurchasedDashCourse } from './DashboardCards';
 import styles from './Dashboard.module.scss';
@@ -105,6 +106,7 @@ export function ProfilePanel({ email, name, purchases = [] }: PanelProps) {
       <AccountProfileForm email={email} name={name} />
       <ChangePasswordForm />
       <PurchaseHistory purchases={purchases} />
+      <DeleteAccountSection />
     </>
   );
 }

@@ -22,7 +22,8 @@
     "download": "Download",
     "saveChanges": "Save Changes",
     "backToDashboard": "Back to Dashboard",
-    "changePassword": "Change Password"
+    "changePassword": "Change Password",
+    "deleteAccount": "Delete my account"
   },
   "login": {
     "tagline": "Student Portal — Sign In",
@@ -76,7 +77,12 @@
     "statusPaid": "Paid",
     "statusPending": "Pending",
     "statusFailed": "Failed",
-    "statusRefunded": "Refunded"
+    "statusRefunded": "Refunded",
+    "deleteAccount": "Delete Account",
+    "deleteAccountWarning": "This permanently removes your access and personal data. Purchase records are kept for accounting. This cannot be undone.",
+    "deleteAccountConfirmLabel": "Type your email to confirm",
+    "deleteAccountMismatch": "Email does not match your account.",
+    "deleteAccountError": "We could not delete the account. Please try again."
   },
   "player": {
     "notes": "Lesson Notes",
