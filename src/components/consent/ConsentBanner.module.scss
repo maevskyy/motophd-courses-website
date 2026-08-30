@@ -48,9 +48,11 @@
   padding: 0 14px;
 }
 
+/* Обе кнопки одинаково заметны: неравнозначные «принять» и «отклонить» —
+   тёмный паттерн, по которому и идут жалобы регуляторам (EDPB 03/2022). */
 .banner__necessary {
-  background: transparent;
-  border-color: #555;
+  background: #303030;
+  border-color: #303030;
   color: var(--white);
 }
 
@@ -60,11 +62,17 @@
 }
 
 .banner__necessary:hover {
-  border-color: var(--white);
+  background: #3d3d3d;
+  border-color: #3d3d3d;
 }
 
 .banner__accept:hover {
   background: #e51e2b;
+}
+
+.banner__link {
+  color: var(--white);
+  text-decoration: underline;
 }
 
 @media (max-width: 620px) {

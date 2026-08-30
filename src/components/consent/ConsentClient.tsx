@@ -8,6 +8,7 @@ import {
   CONSENT_CHANGE_EVENT,
   CONSENT_COOKIE_MAX_AGE,
   CONSENT_COOKIE_NAME,
+  CONSENT_READY_EVENT,
   type ConsentDecision,
   type TrackingConfig
 } from './consentConfig';
@@ -28,17 +29,47 @@ function createConsentModeScript(decision: ConsentDecision | null) {
   return `window.dataLayer=window.dataLayer||[];function gtag(){window.dataLayer.push(arguments)}window.gtag=window.gtag||gtag;gtag('consent','default',${consent});${update}`;
 }
 
+// Пишем в dataLayer напрямую: window.gtag может ещё не существовать, и тогда
+// вызов через ?. молча терялся — согласие оставалось denied навсегда.
 function updateGoogleConsent(decision: ConsentDecision) {
-  if (decision !== 'accepted') {
-    return;
-  }
+  const value = decision === 'accepted' ? 'granted' : 'denied';
 
-  window.gtag?.('consent', 'update', {
-    ad_personalization: 'granted',
-    ad_storage: 'granted',
-    ad_user_data: 'granted',
-    analytics_storage: 'granted'
-  });
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push([
+    'consent',
+    'update',
+    {
+      ad_personalization: value,
+      ad_storage: value,
+      ad_user_data: value,
+      analytics_storage: value
+    }
+  ]);
+}
+
+const TRACKING_COOKIE_PATTERN = /^(_ga|_gid|_fbp|_fbc)/;
+
+// GDPR ст. 7(3): отзыв должен реально прекращать обработку, а не только
+// перестать грузить скрипты при следующем визите.
+function clearTrackingCookies() {
+  const { hostname } = window.location;
+  const domains = ['', `; Domain=${hostname}`, `; Domain=.${hostname}`];
+
+  document.cookie
+    .split(';')
+    .map((entry) => entry.split('=')[0].trim())
+    .filter((name) => TRACKING_COOKIE_PATTERN.test(name))
+    .forEach((name) => {
+      domains.forEach((domain) => {
+        document.cookie = `${name}=; Max-Age=0; Path=/${domain}`;
+      });
+    });
+}
+
+function revokeConsent() {
+  updateGoogleConsent('necessary');
+  window.fbq?.('consent', 'revoke');
+  clearTrackingCookies();
 }
 
 function saveDecision(decision: ConsentDecision) {
@@ -57,8 +88,13 @@ export function ConsentClient({ initialDecision, trackingConfig }: Props) {
     }
 
     window.addEventListener(CONSENT_CHANGE_EVENT, openBanner);
+    window.__motophdConsentReady = true;
+    window.dispatchEvent(new Event(CONSENT_READY_EVENT));
 
-    return () => window.removeEventListener(CONSENT_CHANGE_EVENT, openBanner);
+    return () => {
+      window.removeEventListener(CONSENT_CHANGE_EVENT, openBanner);
+      window.__motophdConsentReady = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -66,10 +102,21 @@ export function ConsentClient({ initialDecision, trackingConfig }: Props) {
   }, []);
 
   function chooseDecision(nextDecision: ConsentDecision) {
+    const isRevoking = decision === 'accepted' && nextDecision !== 'accepted';
+
     saveDecision(nextDecision);
-    updateGoogleConsent(nextDecision);
     setDecision(nextDecision);
     setIsBannerOpen(false);
+
+    if (!isRevoking) {
+      updateGoogleConsent(nextDecision);
+      return;
+    }
+
+    // Размонтировать <Script> недостаточно: уже загруженные gtag.js и
+    // fbevents.js продолжают работать, поэтому страницу перезагружаем.
+    revokeConsent();
+    window.location.reload();
   }
 
   return (

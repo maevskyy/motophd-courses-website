@@ -1,6 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/routing';
 import styles from './ConsentBanner.module.scss';
 import type { ConsentDecision } from './consentConfig';
 
@@ -23,7 +24,12 @@ export function ConsentBanner({ onChoose }: Props) {
     <section aria-label={t('title')} className={styles.banner} role="dialog">
       <div className={styles.banner__content}>
         <h2 className={styles.banner__title}>{t('title')}</h2>
-        <p className={styles.banner__description}>{t('description')}</p>
+        <p className={styles.banner__description}>
+          {t('description')}{' '}
+          <Link className={styles.banner__link} href="/privacy">
+            {t('privacyLink')}
+          </Link>
+        </p>
       </div>
       <div className={styles.banner__actions}>
         <button className={styles.banner__necessary} onClick={acceptNecessaryOnly} type="button">

@@ -7,14 +7,6 @@ interface Props {
   trackingConfig: TrackingConfig;
 }
 
-declare global {
-  interface Window {
-    dataLayer?: unknown[];
-    fbq?: (...args: unknown[]) => void;
-    gtag?: (...args: unknown[]) => void;
-  }
-}
-
 function initializeGoogleAnalytics(trackingId: string) {
   window.gtag?.('js', new Date());
   window.gtag?.('config', trackingId);

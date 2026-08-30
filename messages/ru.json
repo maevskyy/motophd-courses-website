@@ -9,11 +9,9 @@
   "actions": {
     "viewCourses": "Смотреть курсы",
     "enrollNow": "Записаться",
-    "enrollCourse": "Записаться на курс",
     "joinCommunity": "Присоединяйся к нашему комьюнити",
     "viewCourse": "Смотреть курс",
     "browseAllCourses": "Смотреть все курсы",
-    "backToHome": "На главную",
     "allCourses": "Все курсы",
     "backToWebsite": "На сайт",
     "signOut": "Выйти",
@@ -38,7 +36,6 @@
     "back": "На главную MotoPhD Online"
   },
   "access": {
-    "loginRequired": "Войди, чтобы открыть свои курсы.",
     "courseDenied": "Этот курс не входит в твои покупки."
   },
   "dashboard": {
@@ -52,15 +49,14 @@
     "activeEnrollments": "Активные курсы",
     "availableToPurchase": "Можно купить",
     "purchasedContent": "Твой купленный контент.",
-    "downloadsSub": "PDF курса с водяным знаком твоего email.",
+    "downloadsSub": "Материалы всех купленных тобой курсов.",
     "availablePdfs": "Доступные PDF",
     "profileSettings": "Настройки профиля",
     "fullName": "Имя",
     "emailReadOnly": "Здесь нельзя изменить email.",
     "profileSaveError": "Не удалось сохранить профиль. Попробуй ещё раз.",
     "profileSaveSuccess": "Профиль сохранён.",
-    "notPurchased": "Не куплен",
-    "morePdfs": "Дополнительные PDF откроются по мере прохождения модулей. Купи больше курсов, чтобы получить больше материалов."
+    "notPurchased": "Не куплен"
   },
   "player": {
     "notes": "Заметки урока",
@@ -90,14 +86,9 @@
     "terms": "Terms & Conditions — появится в production",
     "refund": "Refund Policy — появится в production",
     "riding": "Riding Disclaimer — появится в production",
-    "profileSaved": "Профиль сохранён",
     "loadingLesson": "Загружаем урок...",
-    "videoPlaying": "Воспроизводим видео: Why Your Bike Can Lean Far More Than You Think",
-    "pdfDownloaded": "PDF скачан: {name}",
-    "downloading": "Скачиваем: {name}",
     "opening": "Открываем: {name}",
-    "nowPlaying": "Сейчас воспроизводится этот урок",
-    "markingComplete": "Отмечаем урок готовым"
+    "nowPlaying": "Сейчас воспроизводится этот урок"
   },
   "footer": {
     "tagline": "Премиальное онлайн-образование по управлению мотоциклом. Учись ездить уверенно, осознанно и точно.",
@@ -118,9 +109,10 @@
   },
   "consent": {
     "title": "Ваша приватность важна",
-    "description": "Мы используем необязательные аналитические cookie, чтобы понимать, как пользуются сайтом, и улучшать его.",
+    "description": "Мы используем необязательные cookie для аналитики (Google Analytics) и рекламы (Meta Pixel). Решение можно изменить или отозвать в любой момент.",
     "necessaryOnly": "Только необходимые",
     "acceptAll": "Принять все",
-    "change": "Настройки cookie"
+    "change": "Настройки cookie",
+    "privacyLink": "Политика конфиденциальности"
   }
 }

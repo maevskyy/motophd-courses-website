@@ -9,11 +9,9 @@
   "actions": {
     "viewCourses": "View Courses",
     "enrollNow": "Enroll Now",
-    "enrollCourse": "Join the Course",
     "joinCommunity": "Join our MotoPhD Community",
     "viewCourse": "View Course",
     "browseAllCourses": "Browse All Courses",
-    "backToHome": "Back to Home",
     "allCourses": "All Courses",
     "backToWebsite": "Back to Website",
     "signOut": "Sign Out",
@@ -38,7 +36,6 @@
     "back": "Back to MotoPhD Online"
   },
   "access": {
-    "loginRequired": "Please sign in to access your courses.",
     "courseDenied": "This course is not included in your purchases."
   },
   "dashboard": {
@@ -52,15 +49,14 @@
     "activeEnrollments": "Active Enrollments",
     "availableToPurchase": "Available to Purchase",
     "purchasedContent": "Your purchased content.",
-    "downloadsSub": "Your course PDFs. Watermarked with your email.",
+    "downloadsSub": "Course materials from every course you own.",
     "availablePdfs": "Available PDFs",
     "profileSettings": "Profile Settings",
     "fullName": "Full Name",
     "emailReadOnly": "Email address cannot be changed here.",
     "profileSaveError": "We could not save your profile. Please try again.",
     "profileSaveSuccess": "Profile saved.",
-    "notPurchased": "Not purchased",
-    "morePdfs": "Additional PDFs unlock as you complete each module. Purchase more courses to access more downloads."
+    "notPurchased": "Not purchased"
   },
   "player": {
     "notes": "Lesson Notes",
@@ -90,14 +86,9 @@
     "terms": "Terms & Conditions — coming in production",
     "refund": "Refund Policy — coming in production",
     "riding": "Riding Disclaimer — coming in production",
-    "profileSaved": "Profile saved successfully",
     "loadingLesson": "Loading lesson...",
-    "videoPlaying": "Video playing: Why Your Bike Can Lean Far More Than You Think",
-    "pdfDownloaded": "PDF downloaded: {name}",
-    "downloading": "Downloading: {name}",
     "opening": "Opening: {name}",
-    "nowPlaying": "Now playing this lesson",
-    "markingComplete": "Marking lesson complete"
+    "nowPlaying": "Now playing this lesson"
   },
   "footer": {
     "tagline": "Premium online motorcycle education. Learn to ride with confidence, understanding, and precision.",
@@ -118,9 +109,10 @@
   },
   "consent": {
     "title": "Your privacy matters",
-    "description": "We use optional analytics cookies to understand how the site is used and improve it.",
+    "description": "We use optional cookies for analytics (Google Analytics) and advertising (Meta Pixel). You can change or withdraw your choice at any time.",
     "necessaryOnly": "Necessary only",
     "acceptAll": "Accept all",
-    "change": "Cookie settings"
+    "change": "Cookie settings",
+    "privacyLink": "Privacy Policy"
   }
 }
