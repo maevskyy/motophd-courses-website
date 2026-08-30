@@ -120,6 +120,14 @@ Also add GitHub repository secrets:
 - `VPS_SSH_KEY`
 - `GHCR_READ_TOKEN`
 
+## Branches
+
+Прод деплоится ТОЛЬКО с main. Аня (frontend) работает в dev; перед каждым
+деплоем dev вливается в main (`git merge origin/dev`), конфликты решаются
+осознанно, полный прогон тестов обязателен. Урок 30.08: прод какое-то время
+жил на dev-образах, переход деплоя на main молча снёс 31 контентный коммит
+с прода — всё лежало в dev, но выглядело как потеря.
+
 ## First Deploy
 
 Run GitHub Actions workflow `Deploy` without a tag. Enable the `seed` input only
