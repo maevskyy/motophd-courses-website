@@ -39,6 +39,8 @@ log() {
 }
 
 ping() {
+  # Healthchecks не заведён (MOT-5 шаг 4) — молча пропускаем, это опционально.
+  [ -n "${HEALTHCHECKS_BACKUP_URL}" ] || return 0
   curl --fail --max-time 10 --retry 2 --silent --show-error "$1" >/dev/null
 }
 
@@ -74,7 +76,9 @@ test "${archive_readable}" = yes || fail "dump is not a readable pg_dump archive
 
 log "dump ok: $(wc -c <"${backup_path}") bytes"
 
-rclone copyto "${backup_path}" "${remote}/${backup_name}" || fail "upload to R2 failed"
+# --s3-no-check-bucket: скоуп-токен видит только содержимое бакета, а без
+# флага rclone пытается HeadBucket/CreateBucket и ловит 403 AccessDenied.
+rclone copyto --s3-no-check-bucket "${backup_path}" "${remote}/${backup_name}" || fail "upload to R2 failed"
 log "uploaded ${backup_name}"
 
 # Дальше — уборка. Бэкап уже лежит в R2, поэтому падение любого шага ниже
