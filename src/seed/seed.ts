@@ -15,8 +15,10 @@ import {
   toRichText
 } from './contentSeedData';
 
+// Payload требует у PDF заголовок, xref-таблицу и %%EOF (utilities/validatePDF).
+// Смещения в xref соответствуют этой строке — менять её только вместе с ними.
 const fixturePdf = Buffer.from(
-  '%PDF-1.4\n1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n2 0 obj\n<< /Type /Pages /Count 0 /Kids [] >>\nendobj\ntrailer\n<< /Root 1 0 R >>\n%%EOF\n'
+  '%PDF-1.4\n1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n2 0 obj\n<< /Type /Pages /Count 0 /Kids [] >>\nendobj\nxref\n0 3\n0000000000 65535 f \n0000000009 00000 n \n0000000058 00000 n \ntrailer\n<< /Size 3 /Root 1 0 R >>\nstartxref\n110\n%%EOF\n'
 );
 
 const seedFixturePdf = async (payload: Payload, lessonId: DefaultDocumentIDType) => {
@@ -51,17 +53,17 @@ const seedFixturePdf = async (payload: Payload, lessonId: DefaultDocumentIDType)
       overrideAccess: true
     }));
 
-  await Promise.all(
-    locales.map((locale) =>
-      payload.update({
-        collection: 'lessons',
-        data: { pdf: pdf.id },
-        id: lessonId,
-        locale,
-        overrideAccess: true
-      })
-    )
-  );
+  // Последовательно: параллельные update одного документа по разным локалям
+  // затирают друг друга, и PDF оставался привязанным только к одной из них.
+  for (const locale of locales) {
+    await payload.update({
+      collection: 'lessons',
+      data: { pdf: pdf.id },
+      id: lessonId,
+      locale,
+      overrideAccess: true
+    });
+  }
 };
 
 const upsertDemoUser = async (payload: Payload, email: string, password: string) => {
@@ -103,10 +105,45 @@ const upsertDemoUser = async (payload: Payload, email: string, password: string)
   });
 };
 
+// Users.access.create разрешён только админу (и самому первому пользователю),
+// поэтому на чистой локальной базе админа иначе взять негде.
+const seedAdminUser = async (payload: Payload) => {
+  const admins = await payload.find({
+    collection: 'users',
+    depth: 0,
+    limit: 1,
+    overrideAccess: true,
+    where: { role: { equals: 'admin' } }
+  });
+
+  if (admins.docs[0]) {
+    return;
+  }
+
+  const existing = await payload.find({
+    collection: 'users',
+    depth: 0,
+    limit: 1,
+    overrideAccess: true,
+    where: { email: { equals: 'admin@motophd.com' } }
+  });
+
+  const data = { email: 'admin@motophd.com', password: 'admin1234', role: 'admin' as const };
+
+  if (existing.docs[0]) {
+    await payload.update({ collection: 'users', data, id: existing.docs[0].id, overrideAccess: true });
+    return;
+  }
+
+  await payload.create({ collection: 'users', data, overrideAccess: true });
+};
+
 const seedDemoAccounts = async (payload: Payload, firstCourseId: DefaultDocumentIDType) => {
   if (process.env.NODE_ENV === 'production') {
     return;
   }
+
+  await seedAdminUser(payload);
 
   const student = await upsertDemoUser(payload, 'student@motophd.com', 'student1234');
   const guest = await upsertDemoUser(payload, 'guest@motophd.com', 'guest1234');
@@ -177,6 +214,9 @@ const seedCourses = async () => {
   try {
     let firstCourseId: DefaultDocumentIDType | undefined;
     let firstPdfLessonId: DefaultDocumentIDType | undefined;
+    // Второй PDF — на платном уроке: без него e2e не может проверить отказ
+    // непокупателю, у тизера доступ открыт всем.
+    let firstPaidPdfLessonId: DefaultDocumentIDType | undefined;
 
     for (const [courseIndex, courseSeed] of courseSeeds.entries()) {
       let courseId: DefaultDocumentIDType | undefined;
@@ -305,8 +345,15 @@ const seedCourses = async () => {
           }
         }
 
-        if (!firstPdfLessonId && courseIndex === 0 && getLessonType(lesson) === 'pdf') {
-          firstPdfLessonId = lessonId;
+        if (courseIndex === 0 && getLessonType(lesson) === 'pdf') {
+          if (!firstPdfLessonId) {
+            firstPdfLessonId = lessonId;
+          }
+
+          // isFreePreview выставляется выше как order === 1.
+          if (order !== 1 && !firstPaidPdfLessonId) {
+            firstPaidPdfLessonId = lessonId;
+          }
         }
       }
     }
@@ -357,8 +404,10 @@ const seedCourses = async () => {
 
     await seedDemoAccounts(payload, firstCourseId);
 
-    if (firstPdfLessonId) {
-      await seedFixturePdf(payload, firstPdfLessonId);
+    for (const lessonId of [firstPdfLessonId, firstPaidPdfLessonId]) {
+      if (lessonId) {
+        await seedFixturePdf(payload, lessonId);
+      }
     }
 
     payload.logger.info('Seed complete: courses, lessons, legal pages, and demo accounts are up to date.');
