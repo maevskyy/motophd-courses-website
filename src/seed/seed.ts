@@ -148,6 +148,11 @@ const seedDemoAccounts = async (payload: Payload, firstCourseId: DefaultDocument
   const student = await upsertDemoUser(payload, 'student@motophd.com', 'student1234');
   const guest = await upsertDemoUser(payload, 'guest@motophd.com', 'guest1234');
 
+  // Отдельные аккаунты для e2e rate-limit: у локаута и счётчиков свои
+  // жертвы, чтобы не запирать student/guest для остальных тестов.
+  await upsertDemoUser(payload, 'lockout@motophd.com', 'lockout1234');
+  await upsertDemoUser(payload, 'ratelimit@motophd.com', 'ratelimit1234');
+
   await payload.delete({
     collection: 'purchases',
     overrideAccess: true,

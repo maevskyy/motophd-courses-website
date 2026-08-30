@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mocks = vi.hoisted(() => ({
+  consumeRateLimit: vi.fn(),
   cookieStore: {
     delete: vi.fn(),
     set: vi.fn()
@@ -14,7 +15,14 @@ const mocks = vi.hoisted(() => ({
 const { cookieStore, login } = mocks;
 
 vi.mock('next/headers', () => ({
-  cookies: vi.fn().mockResolvedValue(mocks.cookieStore)
+  cookies: vi.fn().mockResolvedValue(mocks.cookieStore),
+  headers: vi.fn().mockResolvedValue(new Headers({ 'x-forwarded-for': '203.0.113.7' }))
+}));
+
+vi.mock('@/lib/rateLimit', () => ({
+  RATE_LIMITS: { loginEmail: { limit: 10, windowMs: 1 }, loginIp: { limit: 30, windowMs: 1 } },
+  consumeRateLimit: mocks.consumeRateLimit,
+  getClientIp: (headers: Headers) => headers.get('x-forwarded-for') || 'unknown'
 }));
 
 vi.mock('next/navigation', () => ({ redirect: mocks.redirect }));
@@ -37,6 +45,20 @@ const createFormData = (values: Record<string, string>) => {
 describe('loginAction', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mocks.consumeRateLimit.mockReturnValue({ allowed: true, retryAfterSec: 0 });
+  });
+
+  it('отвечает rateLimited и не пытается логиниться сверх лимита', async () => {
+    mocks.consumeRateLimit.mockReturnValue({ allowed: false, retryAfterSec: 60 });
+
+    const state = await loginAction(
+      initialLoginFormState,
+      createFormData({ email: 'student@motophd.com', locale: 'en', password: 'student1234' })
+    );
+
+    expect(state).toEqual({ error: true, rateLimited: true });
+    expect(login).not.toHaveBeenCalled();
+    expect(cookieStore.set).not.toHaveBeenCalled();
   });
 
   it('sets the httpOnly token cookie and returns to a safe path after login', async () => {

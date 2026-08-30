@@ -31,6 +31,7 @@
     "emailPlaceholder": "your@email.com",
     "passwordPlaceholder": "Пароль",
     "invalidCredentials": "Неверный email или пароль",
+    "tooManyAttempts": "Слишком много попыток. Подожди пару минут и попробуй снова.",
     "accessHint": "Доступ приходит на почту после покупки курса.",
     "submitting": "Входим...",
     "back": "На главную MotoPhD Online"

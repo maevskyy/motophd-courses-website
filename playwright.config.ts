@@ -4,7 +4,14 @@ const baseURL = process.env.E2E_BASE_URL ?? 'http://127.0.0.1:3100';
 const analyticsTestEnvironment = {
   ...process.env,
   NEXT_PUBLIC_GA4_ID: 'G-TEST123',
-  NEXT_PUBLIC_META_PIXEL_ID: '123456789'
+  NEXT_PUBLIC_META_PIXEL_ID: '123456789',
+  // Все тесты ходят с одного IP и юзают одни аккаунты: общие лимиты подняты,
+  // иначе повторные прогоны в течение окна начинают ловить 429. Лимит
+  // pdf-per-user не поднят: его превышение проверяет rateLimit.spec
+  // на выделенном аккаунте ratelimit@motophd.com.
+  RATE_LIMIT_LOGIN_EMAIL: '10000',
+  RATE_LIMIT_LOGIN_IP: '10000',
+  RATE_LIMIT_PDF_ANON_IP: '10000'
 };
 
 export default defineConfig({

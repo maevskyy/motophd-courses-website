@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mocks = vi.hoisted(() => ({
+  consumeRateLimit: vi.fn(),
   getCurrentUser: vi.fn(),
   getPayloadClient: vi.fn(),
   hasPaidAccess: vi.fn(),
@@ -11,6 +12,11 @@ vi.mock('@/lib/access/hasPaidAccess', () => ({ hasPaidAccess: mocks.hasPaidAcces
 vi.mock('@/lib/auth', () => ({ getCurrentUser: mocks.getCurrentUser }));
 vi.mock('@/lib/data/payload', () => ({ getPayloadClient: mocks.getPayloadClient }));
 vi.mock('@/lib/media', () => ({ readMediaObject: mocks.readMediaObject }));
+vi.mock('@/lib/rateLimit', () => ({
+  RATE_LIMITS: { pdfAnonIp: { limit: 30, windowMs: 1 }, pdfUser: { limit: 30, windowMs: 1 } },
+  consumeRateLimit: mocks.consumeRateLimit,
+  getClientIp: () => 'unknown'
+}));
 
 import { GET } from './route';
 
@@ -27,8 +33,23 @@ const lesson = {
 describe('GET /api/lessons/[id]/pdf', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mocks.consumeRateLimit.mockReturnValue({ allowed: true, retryAfterSec: 0 });
     mocks.getPayloadClient.mockResolvedValue({ findByID: vi.fn().mockResolvedValue(lesson) });
     mocks.readMediaObject.mockResolvedValue(new ReadableStream());
+  });
+
+  it('отвечает 429 с Retry-After сверх лимита и не читает файл', async () => {
+    mocks.getCurrentUser.mockResolvedValue({ id: 8, role: 'student' });
+    mocks.consumeRateLimit.mockReturnValue({ allowed: false, retryAfterSec: 42 });
+
+    const response = await GET(new Request('http://localhost/api/lessons/2/pdf?locale=en'), {
+      params: Promise.resolve({ id: '2' })
+    });
+
+    expect(response.status).toBe(429);
+    expect(response.headers.get('Retry-After')).toBe('42');
+    expect(mocks.consumeRateLimit).toHaveBeenCalledWith('pdf:user:8', expect.anything());
+    expect(mocks.readMediaObject).not.toHaveBeenCalled();
   });
 
   it('refuses anonymous visitors before reading the file', async () => {

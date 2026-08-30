@@ -5,6 +5,7 @@ import { getCurrentUser } from '@/lib/auth';
 import { toAppLocale } from '@/lib/data';
 import { getPayloadClient } from '@/lib/data/payload';
 import { readMediaObject } from '@/lib/media';
+import { consumeRateLimit, getClientIp, RATE_LIMITS } from '@/lib/rateLimit';
 import type { Course, Lesson, Media } from '@/payload-types';
 
 const isLocale = (value: string | null): value is 'en' | 'ru' => value === 'en' || value === 'ru';
@@ -34,6 +35,20 @@ export async function GET(
   }
 
   const [{ id }, user, payload] = await Promise.all([params, getCurrentUser(), getPayloadClient()]);
+
+  // Залогиненных считаем по пользователю, не по IP: за одним NAT сидит
+  // много студентов, а выкачивают материалы конкретным аккаунтом.
+  const limitDecision = user
+    ? consumeRateLimit(`pdf:user:${user.id}`, RATE_LIMITS.pdfUser)
+    : consumeRateLimit(`pdf:ip:${getClientIp(request.headers)}`, RATE_LIMITS.pdfAnonIp);
+
+  if (!limitDecision.allowed) {
+    return new NextResponse(null, {
+      headers: { 'Retry-After': String(limitDecision.retryAfterSec) },
+      status: 429
+    });
+  }
+
   let lesson: Lesson;
 
   try {

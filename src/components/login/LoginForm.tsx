@@ -28,7 +28,7 @@ export function LoginForm({ locale, nextPath }: Props) {
         <div className={styles.loginTagline}>{t('tagline')}</div>
         {state.error ? (
           <div className={styles.loginError} role="alert">
-            <strong>{t('invalidCredentials')}</strong>
+            <strong>{state.rateLimited ? t('tooManyAttempts') : t('invalidCredentials')}</strong>
             <span>{t('accessHint')}</span>
           </div>
         ) : null}
