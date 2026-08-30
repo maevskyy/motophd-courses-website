@@ -103,6 +103,23 @@ jobs:
           test -n "$VPS_SSH_KEY" || { echo "::error::VPS_SSH_KEY is missing"; exit 1; }
           test -n "$GHCR_READ_TOKEN" || { echo "::error::GHCR_READ_TOKEN is missing"; exit 1; }
 
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Конфиги (compose, Caddyfile, monitoring, backup) едут на бокс каждым
+      # деплоем: правка в репо не требует ручного scp. .env не трогается —
+      # он не лежит в deploy/.
+      - name: Sync deploy configs to VPS
+        uses: appleboy/scp-action@v1.0.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          source: deploy
+          target: /home/${{ secrets.VPS_USER }}/motophd
+          strip_components: 1
+          overwrite: true
+
       - name: Verify VPS prerequisites
         uses: appleboy/ssh-action@v1.2.2
         with:
@@ -129,23 +146,6 @@ jobs:
       - preflight
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      # Конфиги (compose, Caddyfile, monitoring, backup) едут на бокс каждым
-      # деплоем: правка в репо не требует ручного scp. .env не трогается —
-      # он не лежит в deploy/.
-      - name: Sync deploy configs to VPS
-        uses: appleboy/scp-action@v1.0.0
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          source: deploy
-          target: /home/${{ secrets.VPS_USER }}/motophd
-          strip_components: 1
-          overwrite: true
-
       - name: Deploy image over SSH
         uses: appleboy/ssh-action@v1.2.2
         with:
