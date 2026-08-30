@@ -39,7 +39,7 @@ export default async function CourseSalesPage({
   const t = await getTranslations({ locale: safeLocale, namespace: 'actions' });
   const lessons = await getCourseCurriculum(course.id, safeLocale);
   const sales = toSalesContent(course, safeLocale);
-  const curriculum = toCurriculumModules(course, lessons);
+  const curriculum = toCurriculumModules(course, lessons, safeLocale);
 
   return (
     <>
@@ -77,29 +77,13 @@ export default async function CourseSalesPage({
       </section>
 
       <section className={styles.salesSection}>
-        <h2 className={styles.salesSection__title}>Course Curriculum</h2>
-        <p className={styles.section__sub}>{sales.curriculumIntro}</p>
-        <div className={styles.hero__buttons}>
-          <Link className={styles.buttonGhost} href={`/learn/${course.slug}`}>
-            Preview player
-          </Link>
-        </div>
+        <h2 className={styles.salesSection__title}>{sales.modulesTitle}</h2>
         <CurriculumAccordion modules={curriculum} />
       </section>
 
       <section className={styles.ctaSection}>
-        <h2 className={styles.ctaTitle}>
-          {sales.bottomTitle.map((line) => (
-            <span key={line}>
-              {line}
-              <br />
-            </span>
-          ))}
-          <span className={styles.red}>{sales.bottomAccent}</span>
-        </h2>
-        <p className={styles.ctaSub}>{sales.bottomSub}</p>
-        <Link className={`${styles.button} ${styles.buttonLarge}`} href={`/courses/${course.slug}`}>
-          {t('enrollNow')} — €{course.priceStandard}
+        <Link className={styles.button} href={`/courses/${course.slug}`}>
+          {sales.enrollCta}
         </Link>
       </section>
 

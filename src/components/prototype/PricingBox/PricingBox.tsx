@@ -46,9 +46,7 @@ export function PricingBox({ courseSlug, loginHref, sales }: Props) {
 
   return (
     <aside className={styles.salesSticky}>
-      <div className={styles.salesPrice}>
-        {sales.options[selected].price} <small>/ lifetime</small>
-      </div>
+      <div className={styles.salesPrice}>{sales.options[selected].price}</div>
       <p className={styles.salesNote}>{sales.priceNote}</p>
       <div className={styles.priceOptions}>
         {sales.options.map((option, index) => (
@@ -78,7 +76,7 @@ export function PricingBox({ courseSlug, loginHref, sales }: Props) {
         </label>
       </div>
       <button className={styles.btnEnroll} onClick={enroll} type="button">
-        {t('actions.enrollNow')} — {sales.options[selected].price}
+        {t('actions.pay')}
       </button>
       <div className={styles.salesGuarantee}>✓ {sales.guarantee}</div>
     </aside>

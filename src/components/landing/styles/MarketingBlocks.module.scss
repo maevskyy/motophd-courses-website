@@ -370,6 +370,15 @@
   margin-bottom: 16px;
 }
 
+.ctaAccent {
+  color: var(--red);
+  display: block;
+  font-size: clamp(16px, 2.2vw, 22px);
+  font-weight: 700;
+  line-height: 1.4;
+  margin-top: 10px;
+}
+
 .ctaSub {
   color: var(--gray);
   font-size: 18px;
@@ -379,11 +388,12 @@
 
 
 @media (max-width: 900px) {
-  .instructorGrid { grid-template-columns: 1fr; }
-  .howSteps { grid-template-columns: 1fr 1fr; row-gap: 40px; }
+  .instructorGrid { grid-template-columns: 1fr; row-gap: 24px; }
+  .instructorCard { padding: 24px; }
+  .howSteps { grid-template-columns: 1fr 1fr; row-gap: 40px; margin-top: 32px; }
   .howSteps::before { display: none; }
   .ctaButton { font-size: 18px; padding: 20px 36px; }
-  .ctaSection { padding: 80px 20px; }
+  .ctaSection { padding: 56px 20px; }
 }
 
 @media (max-width: 480px) {

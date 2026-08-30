@@ -288,6 +288,13 @@
   margin-bottom: 32px;
 }
 
+.ctaSection {
+  margin: 0 auto;
+  max-width: 1200px;
+  padding: 60px 40px 80px;
+  text-align: center;
+}
+
 .curriculumList {
   display: flex;
   flex-direction: column;
@@ -405,4 +412,5 @@
 @media (max-width: 900px) {
   .salesHero__inner { grid-template-columns: 1fr; }
   .salesSection { padding-left: 20px; padding-right: 20px; }
+  .ctaSection { padding-left: 20px; padding-right: 20px; }
 }

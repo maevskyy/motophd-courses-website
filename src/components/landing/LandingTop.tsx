@@ -17,27 +17,40 @@ export function LandingTop({ content, courses, labels }: Props) {
   return (
     <>
       <section className={styles.hero}>
+        <video
+          autoPlay
+          className={styles.hero__video}
+          loop
+          muted
+          playsInline
+          poster="/hero-poster.jpg"
+          preload="auto"
+        >
+          <source src="/hero-loop.mp4" type="video/mp4" />
+        </video>
         <div className={styles.hero__bg} />
         <div className={styles.hero__grid} />
         <div className={styles.hero__glow} />
         <div className={styles.hero__content}>
-          <div className={styles.hero__badge}>{content.heroBadge}</div>
-          <h1 className={styles.hero__title}>
-            {content.heroTitle.map((line) => (
-              <span key={line}>
-                {line}
-                <br />
-              </span>
-            ))}
-            <span className={styles.red}>{content.heroRed}</span>
-            <br />
-            {content.heroAfterRed}
-          </h1>
-          <p className={styles.hero__sub}>{content.heroSub}</p>
-          <div className={styles.hero__buttons}>
-            <Link className={styles.button} href="/courses">
-              {labels.viewCourses}
-            </Link>
+          <div className={styles.hero__intro}>
+            <div className={styles.hero__badge}>{content.heroBadge}</div>
+            <h1 className={styles.hero__title}>
+              {content.heroTitle.map((line) => (
+                <span key={line}>
+                  {line}
+                  <br />
+                </span>
+              ))}
+              <span className={styles.red}>{content.heroRed}</span>
+              <br />
+              {content.heroAfterRed}
+            </h1>
+            <p className={styles.hero__sub}>{content.heroSub}</p>
+            <div className={styles.hero__buttons}>
+              <Link className={styles.button} href="/courses">
+                {labels.viewCourses}
+              </Link>
+            </div>
           </div>
           <div className={styles.hero__stats}>
             {content.stats.map((stat) => {
@@ -139,14 +152,16 @@ export function LandingTop({ content, courses, labels }: Props) {
             ) : null}
           </div>
           <div>
-            <h2 className={styles.section__title}>
-              {content.instructorTitle.map((line) => (
-                <span key={line}>
-                  {line}
-                  <br />
-                </span>
-              ))}
-            </h2>
+            {content.instructorTitle.length > 0 ? (
+              <h2 className={styles.section__title}>
+                {content.instructorTitle.map((line) => (
+                  <span key={line}>
+                    {line}
+                    <br />
+                  </span>
+                ))}
+              </h2>
+            ) : null}
             {content.instructorCopy.map((paragraph) => (
               <p className={styles.instructorCopy} key={paragraph}>
                 {paragraph}

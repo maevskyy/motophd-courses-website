@@ -30,7 +30,7 @@ export default async function CoursesPage({ params }: { params: Promise<{ locale
   const safeLocale = requireLocale(locale);
   const content = catalogContent[safeLocale];
   const payloadCourses = await getPublishedCourses(safeLocale);
-  const courses = payloadCourses.map((course, index) => toCourseCardCourse(course, index, safeLocale));
+  const courses = payloadCourses.map((course, index) => toCourseCardCourse(course, index));
 
   return (
     <>

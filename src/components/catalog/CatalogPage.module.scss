@@ -27,7 +27,11 @@
   color: var(--gray);
   font-size: 16px;
   line-height: 1.6;
-  max-width: 560px;
+  max-width: 600px;
+}
+
+.section__sub p:not(:last-child) {
+  margin-bottom: 12px;
 }
 
 .divider {

@@ -357,13 +357,16 @@
 
 .lessonItem {
   align-items: center;
+  background: transparent;
+  border: 0;
   border-bottom: 1px solid #111;
   color: var(--gray);
   cursor: pointer;
   display: flex;
   font-size: 13px;
   gap: 12px;
-  padding: 12px 24px 12px 74px;
+  padding: 12px 24px;
+  text-align: left;
   transition: background 0.2s;
 }
 

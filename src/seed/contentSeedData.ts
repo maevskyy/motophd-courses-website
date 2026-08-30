@@ -1,7 +1,7 @@
 import type { Lesson } from '@/payload-types';
 import { salesContent } from './fixtures/coursePages';
 import { localizedCourses } from './fixtures/courses';
-import { curriculum } from './fixtures/curriculum';
+import { getCurriculumForCourse } from './fixtures/curriculum';
 import { playerContent } from './fixtures/player';
 import type { Course } from './fixtures/types';
 
@@ -64,37 +64,35 @@ export const legalPageSeeds: LegalPageSeed[] = [
     slug: 'contact',
     en: {
       title: 'Contact',
-      body: 'For questions about MotoPhD courses, payments, or access, contact the MotoPhD team. Production contact details will be added before launch.'
+      body: 'For questions about MotoPhD courses, payments, or access, contact the MotoPhD team - support@motophd.com'
     },
     ru: {
       title: 'Контакты',
-      body: 'По вопросам курсов MotoPhD, оплаты или доступа свяжитесь с командой MotoPhD. Production-контакты будут добавлены перед запуском.'
+      body: 'По вопросам курсов MotoPhD, оплаты или доступа свяжитесь с командой MotoPhD - support@motophd.com'
     }
   }
 ];
 
 export const toRichText = (text: string): NonNullable<Lesson['body']> => ({
   root: {
-    children: [
-      {
-        children: [
-          {
-            detail: 0,
-            format: 0,
-            mode: 'normal',
-            style: '',
-            text,
-            type: 'text',
-            version: 1
-          }
-        ],
-        direction: 'ltr' as const,
-        format: '' as const,
-        indent: 0,
-        type: 'paragraph',
-        version: 1
-      }
-    ],
+    children: text.split('\n\n').map((paragraph) => ({
+      children: [
+        {
+          detail: 0,
+          format: 0,
+          mode: 'normal',
+          style: '',
+          text: paragraph,
+          type: 'text',
+          version: 1
+        }
+      ],
+      direction: 'ltr' as const,
+      format: '' as const,
+      indent: 0,
+      type: 'paragraph',
+      version: 1
+    })),
     direction: 'ltr' as const,
     format: '' as const,
     indent: 0,
@@ -146,8 +144,8 @@ export const getLessonType = (lesson: { icon: string; name: string }) => {
   return 'text' as const;
 };
 
-export const getFlatLessons = () =>
-  curriculum.flatMap((module) =>
+export const getFlatLessons = (courseSlug: string, locale: Locale) =>
+  getCurriculumForCourse(courseSlug)[locale].flatMap((module) =>
     module.lessons.map((lesson) => ({
       moduleTitle: module.title,
       ...lesson

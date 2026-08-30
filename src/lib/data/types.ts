@@ -5,7 +5,7 @@ export type AppLocale = 'en' | 'ru';
 export type CourseCardCourse = {
   slug: string;
   icon: string;
-  badge?: string;
+  image?: string;
   imageTone: 'red' | 'green' | 'blue';
   featured?: boolean;
   pain: string;
@@ -20,10 +20,8 @@ export type CourseCardCourse = {
 export type CurriculumModule = {
   number: string;
   title: string;
-  meta: string;
   open?: boolean;
   lessons: Array<{
-    icon: string;
     name: string;
     duration: string;
   }>;
@@ -39,10 +37,8 @@ export type SalesContent = {
   options: Array<{ name: string; price: string; desc: string }>;
   disclaimer: string;
   guarantee: string;
-  curriculumIntro: string;
-  bottomTitle: string[];
-  bottomAccent: string;
-  bottomSub: string;
+  modulesTitle: string;
+  enrollCta: string;
 };
 
 export type DashboardContent = {

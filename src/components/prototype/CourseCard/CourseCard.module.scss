@@ -46,18 +46,10 @@
   opacity: 0.6;
 }
 
-.courseImg__badge {
-  background: var(--red);
-  border-radius: 4px;
-  color: #fff;
-  font-size: 10px;
-  font-weight: 700;
-  left: 12px;
-  letter-spacing: 1px;
-  padding: 4px 10px;
-  position: absolute;
-  text-transform: uppercase;
-  top: 12px;
+.courseImg__photo {
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
 }
 
 .courseBody {
@@ -107,7 +99,6 @@
 }
 
 .courseBtn,
-.courseBtnGhost,
 .btnContinue,
 .btnUnlock,
 .pdfBtn,
@@ -134,16 +125,10 @@
   padding: 10px 20px;
 }
 
-.courseBtnGhost,
 .btnUnlock {
   background: transparent;
   border: 1px solid #333;
   color: var(--light);
-}
-
-.courseBtnGhost {
-  font-size: 13px;
-  padding: 10px 20px;
 }
 
 .courseBtn:hover,

@@ -11,9 +11,9 @@ import type {
 } from './types';
 
 const visualByIndex = [
-  { icon: '🏍️', imageTone: 'red' as const },
-  { icon: '⚡', imageTone: 'green' as const },
-  { icon: '🛑', imageTone: 'blue' as const }
+  { icon: '🏍️', imageTone: 'red' as const, image: '/course-lean.jpg' },
+  { icon: '⚡', imageTone: 'green' as const, image: '/course-braking.jpg' },
+  { icon: '🛑', imageTone: 'blue' as const, image: undefined }
 ];
 
 const localized = {
@@ -27,10 +27,9 @@ const localized = {
     lifetime: 'Lifetime access. No subscription.',
     disclaimer:
       'I understand that motorcycle riding involves risk and I am responsible for my own safety when applying course material.',
-    curriculumIntro: 'Theory + practice lessons. Each lesson has a clear, measurable outcome.',
-    ready: 'Ready to ride',
-    withoutFear: 'with more confidence?',
-    bottomSub: 'One course. One transformation. Lifetime access.'
+    modulesTitle: 'COURSE MODULES',
+    enrollCta: 'ENROLL FOR TRAINING',
+    studentName: 'Demo Student'
   },
   ru: {
     allCourses: 'Все курсы',
@@ -42,17 +41,15 @@ const localized = {
     lifetime: 'Доступ навсегда. Без подписки.',
     disclaimer:
       'Я понимаю, что езда на мотоцикле связана с риском, и сам отвечаю за безопасность при применении материалов курса.',
-    curriculumIntro: 'Теория + практика. У каждого урока понятный результат.',
-    ready: 'Готов ехать',
-    withoutFear: 'увереннее?',
-    bottomSub: 'Один курс. Одна трансформация. Доступ навсегда.'
+    modulesTitle: 'МОДУЛИ КУРСА',
+    enrollCta: 'ЗАПИСАТЬСЯ НА ОБУЧЕНИЕ',
+    studentName: 'Demo Student'
   }
 };
 
 export const toCourseCardCourse = (
   course: Course,
-  index = Number(course.order || 1) - 1,
-  locale: AppLocale = 'en'
+  index = Number(course.order || 1) - 1
 ): CourseCardCourse => {
   const visual = visualByIndex[index % visualByIndex.length] || visualByIndex[0];
   const includes = course.outcomes?.map(({ text }) => text).filter(Boolean) || [];
@@ -60,7 +57,7 @@ export const toCourseCardCourse = (
   return {
     slug: course.slug,
     icon: visual.icon,
-    badge: index === 0 ? (locale === 'ru' ? 'Флагман' : 'Flagship') : undefined,
+    image: visual.image,
     imageTone: visual.imageTone,
     featured: index === 0,
     pain: course.pain || '',
@@ -98,50 +95,80 @@ export const toSalesContent = (course: Course, locale: AppLocale): SalesContent 
     ],
     disclaimer: text.disclaimer,
     guarantee: text.guarantee,
-    curriculumIntro: text.curriculumIntro,
-    bottomTitle: [text.ready],
-    bottomAccent: text.withoutFear,
-    bottomSub: text.bottomSub
+    modulesTitle: text.modulesTitle,
+    enrollCta: text.enrollCta
   };
 };
 
-const lessonDuration = (lesson: CourseCurriculumLesson) => {
-  if (lesson.durationSec) {
-    return `${Math.round(lesson.durationSec / 60)} min`;
+const lessonDuration = (lesson: CourseCurriculumLesson, locale: AppLocale) => {
+  if (lesson.type === 'video' || lesson.type === 'pdf') {
+    return '';
   }
 
-  return lesson.type === 'pdf' ? 'PDF' : 'Reading';
+  return locale === 'ru' ? 'Чтение' : 'Reading';
 };
 
-const lessonIcon = (lesson: CourseCurriculumLesson) => {
-  if (lesson.type === 'pdf') {
-    return '📄';
+const curriculumLevelsByCourse: Record<string, Record<AppLocale, Array<{ title: string; count: number }>>> = {
+  lean: {
+    en: [
+      { title: 'Level 01 — Theory', count: 1 },
+      { title: 'Level 02 — Preparation', count: 4 },
+      { title: 'Level 03 — Hanging Off', count: 3 },
+      { title: 'Level 04 — Trajectory & Deep Lean', count: 3 },
+      { title: 'Level 05 — Mixing Different Steering Methods', count: 4 }
+    ],
+    ru: [
+      { title: 'Уровень 01 — Теория', count: 1 },
+      { title: 'Уровень 02 — Подготовка', count: 4 },
+      { title: 'Уровень 03 — Свешивание', count: 3 },
+      { title: 'Уровень 04 — Траектория и глубокий наклон', count: 3 },
+      { title: 'Уровень 05 — Микс разных инструментов руления', count: 4 }
+    ]
   }
-
-  return lesson.type === 'video' ? '🎥' : '📝';
 };
 
 export const toCurriculumModules = (
   course: Course,
-  lessons: CourseCurriculumLesson[]
+  lessons: CourseCurriculumLesson[],
+  locale: AppLocale
 ): CurriculumModule[] => {
   if (lessons.length === 0) {
     return [];
   }
 
-  return [
-    {
-      number: '1',
-      title: course.title,
-      meta: `${lessons.length} lessons`,
-      open: true,
-      lessons: lessons.map((lesson) => ({
-        icon: lessonIcon(lesson),
+  const levels = curriculumLevelsByCourse[course.slug]?.[locale];
+  const totalLevelLessons = levels?.reduce((sum, level) => sum + level.count, 0);
+
+  if (!levels || totalLevelLessons !== lessons.length) {
+    return [
+      {
+        number: '1',
+        title: course.title,
+        open: true,
+        lessons: lessons.map((lesson) => ({
+          name: lesson.title,
+          duration: lessonDuration(lesson, locale)
+        }))
+      }
+    ];
+  }
+
+  let cursor = 0;
+
+  return levels.map((level, levelIndex) => {
+    const levelLessons = lessons.slice(cursor, cursor + level.count);
+    cursor += level.count;
+
+    return {
+      number: String(levelIndex + 1).padStart(2, '0'),
+      title: level.title,
+      open: levelIndex === 0,
+      lessons: levelLessons.map((lesson) => ({
         name: lesson.title,
-        duration: lessonDuration(lesson)
+        duration: lessonDuration(lesson, locale)
       }))
-    }
-  ];
+    };
+  });
 };
 
 export const getPlayerLesson = (lessons: Lesson[]) =>

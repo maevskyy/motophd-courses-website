@@ -49,11 +49,8 @@ export function Footer({ compact = false, socialLinks }: Props) {
               <Link className={styles.footer__link} href="/courses/lean">
                 {t('course1')}
               </Link>
-              <Link className={styles.footer__link} href="/courses/lean">
+              <Link className={styles.footer__link} href="/courses/counter-steering">
                 {t('course2')}
-              </Link>
-              <Link className={styles.footer__link} href="/courses/lean">
-                {t('course3')}
               </Link>
             </div>
             <div>

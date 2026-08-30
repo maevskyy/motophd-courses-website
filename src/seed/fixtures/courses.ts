@@ -8,7 +8,7 @@ const coursesEn: Course[] = [
     imageTone: 'red',
     featured: true,
     pain: 'Fear → Confidence',
-    title: 'Stop Being Afraid to Lean Your Motorcycle',
+    title: 'Motorcycle Leaning Without Fear',
     description:
       'Learn why your motorcycle can lean far more than you think — and gain the confidence to corner safely, smoothly and consistently.',
     includes: [
@@ -23,7 +23,7 @@ const coursesEn: Course[] = [
     icon: '⚡',
     imageTone: 'green',
     pain: 'Confusion → Mastery',
-    title: 'Counter Steering',
+    title: 'The Art of Braking',
     description:
       'Master the technique that separates confident riders from anxious ones. Understand exactly what your hands do in a corner.',
     includes: [
@@ -58,7 +58,7 @@ const coursesRu: Course[] = [
     imageTone: 'red',
     featured: true,
     pain: 'Страх → Уверенность',
-    title: 'Перестань бояться наклонять мотоцикл',
+    title: 'Как перестать бояться наклонять мотоцикл',
     description:
       'Узнай, почему твой мотоцикл может наклоняться гораздо больше, чем ты думаешь — и научись проходить повороты уверенно, плавно и стабильно.',
     includes: [
@@ -73,7 +73,7 @@ const coursesRu: Course[] = [
     icon: '⚡',
     imageTone: 'green',
     pain: 'Растерянность → Мастерство',
-    title: 'Контрруление',
+    title: 'Искусство торможения',
     description:
       'Освой технику, которая отличает уверенных райдеров от нервных. Пойми, что именно делают твои руки в повороте.',
     includes: ['Теория', 'Упражнения', 'Частые ошибки', 'Доступ навсегда']

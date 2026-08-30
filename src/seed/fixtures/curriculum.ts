@@ -1,6 +1,110 @@
-import type { CurriculumModule } from './types';
+import type { CurriculumModule, LocalizedContent } from './types';
 
-export const curriculum: CurriculumModule[] = [
+const leanCurriculumEn: CurriculumModule[] = [
+  {
+    number: '01',
+    title: 'Level 01 — Theory',
+    meta: '1 video · Theory foundation',
+    open: true,
+    lessons: [{ icon: '🎥', name: 'Video Lesson', duration: '' }]
+  },
+  {
+    number: '02',
+    title: 'Level 02 — Preparation',
+    meta: '1 video · 3 PDFs · Getting bike and body ready',
+    lessons: [
+      { icon: '🎥', name: 'Video Tutorial', duration: '' },
+      { icon: '📄', name: 'Motorcycle Preparation', duration: 'PDF' },
+      { icon: '📄', name: 'Tire Condition Check', duration: 'PDF' },
+      { icon: '📄', name: 'Practicing Proper Body Position', duration: 'PDF' }
+    ]
+  },
+  {
+    number: '03',
+    title: 'Level 03 — Hanging Off',
+    meta: '1 video · 2 PDFs · Hanging-off fundamentals',
+    lessons: [
+      { icon: '🎥', name: 'Video Tutorial', duration: '' },
+      { icon: '📄', name: 'Hanging-Off Technique', duration: 'PDF' },
+      { icon: '📄', name: 'Flick Technique', duration: 'PDF' }
+    ]
+  },
+  {
+    number: '04',
+    title: 'Level 04 — Trajectory & Deep Lean',
+    meta: '1 video · 2 PDFs · Line choice and throttle control',
+    lessons: [
+      { icon: '🎥', name: 'Video Tutorial', duration: '' },
+      { icon: '📄', name: 'Turn-In Points & Trajectory Work', duration: 'PDF' },
+      { icon: '📄', name: 'Throttle Phase Work', duration: 'PDF' }
+    ]
+  },
+  {
+    number: '05',
+    title: 'Level 05 — Mixing Different Steering Methods',
+    meta: '1 video · 3 PDFs · Combining every tool',
+    lessons: [
+      { icon: '🎥', name: 'Video Tutorial', duration: '' },
+      { icon: '📄', name: 'Footwork', duration: 'PDF' },
+      { icon: '📄', name: 'Countersteering + Body', duration: 'PDF' },
+      { icon: '📄', name: 'MotoPhD Challenge', duration: 'PDF' }
+    ]
+  }
+];
+
+const leanCurriculumRu: CurriculumModule[] = [
+  {
+    number: '01',
+    title: 'Уровень 01 — Теория',
+    meta: '1 видео · Теоретическая база',
+    open: true,
+    lessons: [{ icon: '🎥', name: 'Видеоролик', duration: '' }]
+  },
+  {
+    number: '02',
+    title: 'Уровень 02 — Подготовка',
+    meta: '1 видео · 3 PDF · Подготовка байка и тела',
+    lessons: [
+      { icon: '🎥', name: 'Видеоролик', duration: '' },
+      { icon: '📄', name: 'Подготовка мотоцикла', duration: 'PDF' },
+      { icon: '📄', name: 'Проверка состояния резины', duration: 'PDF' },
+      { icon: '📄', name: 'Отработка правильного положения тела', duration: 'PDF' }
+    ]
+  },
+  {
+    number: '03',
+    title: 'Уровень 03 — Свешивание',
+    meta: '1 видео · 2 PDF · Основы свешивания',
+    lessons: [
+      { icon: '🎥', name: 'Видеоролик', duration: '' },
+      { icon: '📄', name: 'Техника свешивания', duration: 'PDF' },
+      { icon: '📄', name: 'Техника перекладки', duration: 'PDF' }
+    ]
+  },
+  {
+    number: '04',
+    title: 'Уровень 04 — Траектория и глубокий наклон',
+    meta: '1 видео · 2 PDF · Выбор траектории и газ',
+    lessons: [
+      { icon: '🎥', name: 'Видеоролик', duration: '' },
+      { icon: '📄', name: 'Работа над точками руления и траекторией', duration: 'PDF' },
+      { icon: '📄', name: 'Работа над фазами газа', duration: 'PDF' }
+    ]
+  },
+  {
+    number: '05',
+    title: 'Уровень 05 — Микс разных инструментов руления',
+    meta: '1 видео · 3 PDF · Соединяем всё вместе',
+    lessons: [
+      { icon: '🎥', name: 'Видеоролик', duration: '' },
+      { icon: '📄', name: 'Работа ног', duration: 'PDF' },
+      { icon: '📄', name: 'Контр руление + тело', duration: 'PDF' },
+      { icon: '📄', name: 'Челлендж от MotoPhD', duration: 'PDF' }
+    ]
+  }
+];
+
+const legacyCurriculum: CurriculumModule[] = [
   {
     number: '1',
     title: 'Understanding Lean Angle',
@@ -46,3 +150,12 @@ export const curriculum: CurriculumModule[] = [
     ]
   }
 ];
+
+export const curriculumByCourse: Record<string, LocalizedContent<CurriculumModule[]>> = {
+  lean: { en: leanCurriculumEn, ru: leanCurriculumRu },
+  'counter-steering': { en: legacyCurriculum, ru: legacyCurriculum },
+  'emergency-braking': { en: legacyCurriculum, ru: legacyCurriculum }
+};
+
+export const getCurriculumForCourse = (slug: string): LocalizedContent<CurriculumModule[]> =>
+  curriculumByCourse[slug] || { en: legacyCurriculum, ru: legacyCurriculum };

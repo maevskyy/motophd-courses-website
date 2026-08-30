@@ -24,8 +24,12 @@ export function CourseCard({ course, catalog = false }: CourseCardProps) {
           course.imageTone === 'blue' && styles.courseImgBlue
         )}
       >
-        <span className={styles.courseImg__icon}>{course.icon}</span>
-        {course.badge ? <div className={styles.courseImg__badge}>{course.badge}</div> : null}
+        {course.image ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img alt={course.title} className={styles.courseImg__photo} src={course.image} />
+        ) : (
+          <span className={styles.courseImg__icon}>{course.icon}</span>
+        )}
       </div>
       <div className={styles.courseBody}>
         <div className={styles.coursePain}>{course.pain}</div>
@@ -33,7 +37,7 @@ export function CourseCard({ course, catalog = false }: CourseCardProps) {
         <div className={styles.courseDesc}>{course.description}</div>
         {catalog ? (
           <div className={styles.includes}>
-            <div className={styles.includes__title}>What&apos;s included:</div>
+            <div className={styles.includes__title}>{t('whatsIncluded')}</div>
             {course.includes.map((item) => (
               <div className={styles.includes__item} key={item}>
                 ✓ {item}
@@ -42,12 +46,8 @@ export function CourseCard({ course, catalog = false }: CourseCardProps) {
           </div>
         ) : null}
         <div className={styles.coursePriceRow}>
-          <div className={styles.coursePrice}>
-            €{course.priceStandard} {!catalog ? <small>/ lifetime</small> : null}
-          </div>
-          <span className={course.featured ? styles.courseBtn : styles.courseBtnGhost}>
-            {course.featured ? t('enrollNow') : t('viewCourse')}
-          </span>
+          <div className={styles.coursePrice}>€{course.priceStandard}</div>
+          <span className={styles.courseBtn}>{catalog ? t('viewCourse') : t('enrollNow')}</span>
         </div>
       </div>
     </Link>

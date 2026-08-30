@@ -27,10 +27,10 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
     getPurchaseHistory(safeLocale, user)
   ]);
   const purchasedCourseIds = new Set(payloadCourses.map((course) => course.id));
-  const courses = payloadCourses.map((course, index) => toCourseCardCourse(course, index, safeLocale));
+  const courses = payloadCourses.map((course, index) => toCourseCardCourse(course, index));
   const availableCourses = publishedCourses
     .filter((course) => !purchasedCourseIds.has(course.id))
-    .map((course, index) => toCourseCardCourse(course, index, safeLocale));
+    .map((course, index) => toCourseCardCourse(course, index));
   // Материалы по всем купленным курсам: раньше брался только первый.
   const lessonsPerCourse = await Promise.all(
     payloadCourses.map((course) => getCourseLessons(course.id, safeLocale, user))
