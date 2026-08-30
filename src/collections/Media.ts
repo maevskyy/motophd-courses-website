@@ -25,19 +25,12 @@ export const Media: CollectionConfig = {
         return true;
       }
 
+      // Allowlist, а не «всё кроме PDF»: при denylist любой файл с другим
+      // mimeType (пустой, application/x-pdf, будущий docx) становился публичным.
       return {
-        or: [
-          {
-            mimeType: {
-              not_equals: 'application/pdf'
-            }
-          },
-          {
-            mimeType: {
-              exists: false
-            }
-          }
-        ]
+        mimeType: {
+          like: 'image/'
+        }
       };
     },
     update: ({ req: { user } }) => isAdminUser(user)

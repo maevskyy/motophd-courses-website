@@ -17,14 +17,11 @@ describe('media read access', () => {
     expect(read?.({ req: { user: { role: 'admin' } } } as never)).toBe(true);
   });
 
-  it('hides PDFs from visitors while keeping images public', async () => {
+  it('lets visitors read images only, so any other file stays private', async () => {
     mocks.isAdminUser.mockReturnValue(false);
 
     expect(read?.({ req: { user: null } } as never)).toEqual({
-      or: [
-        { mimeType: { not_equals: 'application/pdf' } },
-        { mimeType: { exists: false } }
-      ]
+      mimeType: { like: 'image/' }
     });
   });
 });

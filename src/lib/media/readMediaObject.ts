@@ -1,5 +1,6 @@
 import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { createReadStream } from 'node:fs';
+import { stat } from 'node:fs/promises';
 import path from 'node:path';
 import { Readable } from 'node:stream';
 
@@ -10,7 +11,8 @@ const localMediaDirectory = path.resolve(process.cwd(), 'media');
 const getSafeFilename = (filename: string) => {
   const safeFilename = path.basename(filename);
 
-  if (!safeFilename || safeFilename !== filename) {
+  // path.basename('..') === '..', поэтому явно отсекаем обход каталогов.
+  if (!safeFilename || safeFilename !== filename || safeFilename === '.' || safeFilename === '..') {
     throw new Error('Invalid media filename');
   }
 
@@ -19,15 +21,30 @@ const getSafeFilename = (filename: string) => {
 
 const toWebStream = (body: Readable) => Readable.toWeb(body) as ReadableStream<Uint8Array>;
 
+// Один клиент на процесс: каждый new S3Client поднимает собственный пул
+// сокетов с keep-alive, а destroy() никто не звал — на VPS это утечка.
+let cachedClient: S3Client | null = null;
+
+const getClient = () => {
+  cachedClient = cachedClient || new S3Client(getR2StorageConfig());
+
+  return cachedClient;
+};
+
 export const readMediaObject = async (filename: string): Promise<ReadableStream<Uint8Array>> => {
   const safeFilename = getSafeFilename(filename);
 
   if (!isR2StorageEnabled()) {
-    return toWebStream(createReadStream(path.join(localMediaDirectory, safeFilename)));
+    const localPath = path.join(localMediaDirectory, safeFilename);
+
+    // createReadStream не бросает синхронно: без этой проверки отсутствующий
+    // файл уходил клиенту как 200 с оборванным телом.
+    await stat(localPath);
+
+    return toWebStream(createReadStream(localPath));
   }
 
-  const client = new S3Client(getR2StorageConfig());
-  const response = await client.send(
+  const response = await getClient().send(
     new GetObjectCommand({
       Bucket: process.env.R2_BUCKET,
       Key: safeFilename
