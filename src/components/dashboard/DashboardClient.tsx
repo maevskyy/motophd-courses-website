@@ -14,6 +14,7 @@ type DashboardTab = 'overview' | 'courses' | 'downloads' | 'profile';
 export function DashboardClient({
   content,
   courses,
+  displayName,
   email,
   locale,
   name,
@@ -22,6 +23,9 @@ export function DashboardClient({
   availableCourses: CourseCardCourse[];
   content: DashboardContent;
   courses: CourseCardCourse[];
+  // displayName — что показываем в шапке (имя либо email), name — что лежит в
+  // поле профиля (пустое, пока человек его не заполнил).
+  displayName: string;
   email: string;
   locale: 'en' | 'ru';
   name: string;
@@ -33,8 +37,8 @@ export function DashboardClient({
     <main className={styles.dashboardLayout}>
       <aside className={styles.dashboardSidebar}>
         <div className={styles.dashUser}>
-          <div className={styles.dashAvatar}>{name.slice(0, 1).toUpperCase()}</div>
-          <div className={styles.dashName}>{name}</div>
+          <div className={styles.dashAvatar}>{displayName.slice(0, 1).toUpperCase()}</div>
+          <div className={styles.dashName}>{displayName}</div>
           <div className={styles.dashEmail}>{email}</div>
         </div>
         <nav className={styles.dashNav}>
@@ -68,10 +72,24 @@ export function DashboardClient({
         </div>
       </aside>
       <section className={styles.dashboardMain}>
-        {tab === 'overview' ? <OverviewPanel content={content} courses={courses} email={email} name={name} /> : null}
-        {tab === 'courses' ? <CoursesPanel availableCourses={availableCourses} content={content} courses={courses} email={email} name={name} /> : null}
-        {tab === 'downloads' ? <DownloadsPanel content={content} courses={courses} email={email} name={name} /> : null}
-        {tab === 'profile' ? <ProfilePanel content={content} courses={courses} email={email} name={name} /> : null}
+        {tab === 'overview' ? (
+          <OverviewPanel content={content} courses={courses} email={email} name={displayName} />
+        ) : null}
+        {tab === 'courses' ? (
+          <CoursesPanel
+            availableCourses={availableCourses}
+            content={content}
+            courses={courses}
+            email={email}
+            name={displayName}
+          />
+        ) : null}
+        {tab === 'downloads' ? (
+          <DownloadsPanel content={content} courses={courses} email={email} name={displayName} />
+        ) : null}
+        {tab === 'profile' ? (
+          <ProfilePanel content={content} courses={courses} email={email} name={name} />
+        ) : null}
       </section>
     </main>
   );

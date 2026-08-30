@@ -62,7 +62,6 @@ export function CoursesPanel({ availableCourses = [], courses }: PanelProps) {
 
 export function DownloadsPanel({ content }: PanelProps) {
   const t = useTranslations();
-  const { showToast } = useToast();
 
   return (
     <>
@@ -72,21 +71,22 @@ export function DownloadsPanel({ content }: PanelProps) {
       </div>
       <div className={styles.dashSectionTitle}>{t('dashboard.availablePdfs')}</div>
       {content.dashboard.downloads.map((download) => (
-        <button
+        <a
           className={styles.pdfDownloadCard}
-          key={download.name}
-          onClick={() => showToast(t('toast.pdfDownloaded', { name: download.name }))}
-          type="button"
+          href={download.url}
+          key={download.id}
+          rel="noopener"
+          target="_blank"
         >
-          <div className={styles.pdfIcon}>📄</div>
+          <div aria-hidden className={styles.pdfIcon}>
+            📄
+          </div>
           <div className={styles.pdfInfo}>
-            <div className={styles.pdfName}>{download.name}</div>
-            <div className={styles.pdfSize}>{download.size}</div>
+            <div className={styles.pdfName}>{download.title}</div>
           </div>
           <span className={styles.pdfBtn}>{t('actions.download')}</span>
-        </button>
+        </a>
       ))}
-      <div className={styles.notice}>🔒 {t('dashboard.morePdfs')}</div>
     </>
   );
 }

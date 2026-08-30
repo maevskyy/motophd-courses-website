@@ -9,7 +9,8 @@ import {
   getPlayerLesson,
   toAppLocale,
   toCurriculumModules,
-  toPlayerContent
+  toPlayerContent,
+  toPlayerDownloads
 } from '@/lib/data';
 import { getPayloadClient } from '@/lib/data/payload';
 import { getPlaybackUrl } from '@/lib/video';
@@ -44,10 +45,7 @@ export default async function CoursePlayerPage({
   const curriculum = toCurriculumModules(course, lessons);
   const currentLesson = getPlayerLesson(lessons);
   const player = toPlayerContent(course, lessons, {
-    pdfUrl:
-      currentLesson?.type === 'pdf'
-        ? `/api/lessons/${currentLesson.id}/pdf?locale=${safeLocale}`
-        : null,
+    downloads: toPlayerDownloads(lessons, safeLocale),
     videoEmbedUrl: getPlaybackUrl(currentLesson?.streamVideoId, { free: false })
   });
 

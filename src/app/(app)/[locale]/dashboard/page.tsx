@@ -29,19 +29,23 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
   const availableCourses = publishedCourses
     .filter((course) => !purchasedCourseIds.has(course.id))
     .map((course, index) => toCourseCardCourse(course, index, safeLocale));
-  const lessons = payloadCourses[0]
-    ? await getCourseLessons(payloadCourses[0].id, safeLocale, user)
-    : [];
-  const content = toDashboardContent(lessons, safeLocale);
+  // Материалы по всем купленным курсам: раньше брался только первый.
+  const lessonsPerCourse = await Promise.all(
+    payloadCourses.map((course) => getCourseLessons(course.id, safeLocale, user))
+  );
+  const content = toDashboardContent(lessonsPerCourse.flat(), safeLocale);
 
   return (
     <DashboardClient
       availableCourses={availableCourses}
       content={content}
       courses={courses}
+      displayName={user.name || user.email}
       email={user.email}
       locale={safeLocale}
-      name={user.name || user.email}
+      // В форму профиля пустое имя, а не email: иначе первое же сохранение
+      // записывало email покупателя в поле «Имя» навсегда.
+      name={user.name || ''}
     />
   );
 }

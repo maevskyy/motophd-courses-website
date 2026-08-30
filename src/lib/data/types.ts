@@ -47,8 +47,7 @@ export type SalesContent = {
 
 export type DashboardContent = {
   dashboard: {
-    studentName: string;
-    downloads: Array<{ name: string; size: string }>;
+    downloads: PlayerDownload[];
   };
 };
 
@@ -63,7 +62,13 @@ export type PlayerContent = {
   moduleOutcome: string[];
   sidebarTitle: string;
   videoEmbedUrl: string | null;
-  pdfUrl: string | null;
+  downloads: PlayerDownload[];
+};
+
+export type PlayerDownload = {
+  id: number;
+  title: string;
+  url: string;
 };
 
 export type PublishedCourse = Course;

@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import type { CourseCardCourse, DashboardContent } from '@/lib/data';
-import { CoursesPanel, OverviewPanel } from './DashboardPanels';
+import { CoursesPanel, DownloadsPanel, OverviewPanel } from './DashboardPanels';
 
 vi.mock('@/i18n/routing', () => ({
   Link: ({ children, href, ...rest }: React.ComponentProps<'a'>) => (
@@ -20,12 +20,20 @@ vi.mock('@/components/providers/ToastProvider', () => ({
 }));
 
 vi.mock('@/lib/auth/account', () => ({
-  initialUpdateProfileFormState: { status: 'idle' },
   updateProfileAction: vi.fn()
 }));
 
 const content: DashboardContent = {
-  dashboard: { downloads: [], studentName: 'Student' }
+  dashboard: { downloads: [] }
+};
+
+const contentWithDownloads: DashboardContent = {
+  dashboard: {
+    downloads: [
+      { id: 4, title: 'Lean Angle & Physics', url: '/api/lessons/4/pdf?locale=en' },
+      { id: 9, title: 'Grip & Contact Patch', url: '/api/lessons/9/pdf?locale=en' }
+    ]
+  }
 };
 
 const courses = [
@@ -96,5 +104,24 @@ describe('OverviewPanel', () => {
       'href',
       '/courses/counter-steering'
     );
+  });
+});
+
+describe('DownloadsPanel', () => {
+  it('links every purchased PDF to the protected lesson route', () => {
+    render(
+      <DownloadsPanel
+        content={contentWithDownloads}
+        courses={courses}
+        email="student@motophd.com"
+        name="Student"
+      />
+    );
+
+    expect(screen.getByRole('link', { name: /lean angle/i })).toHaveAttribute(
+      'href',
+      '/api/lessons/4/pdf?locale=en'
+    );
+    expect(screen.getAllByRole('link')).toHaveLength(2);
   });
 });

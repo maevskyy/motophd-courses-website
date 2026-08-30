@@ -6,6 +6,7 @@ import type {
   CurriculumModule,
   DashboardContent,
   PlayerContent,
+  PlayerDownload,
   SalesContent
 } from './types';
 
@@ -29,8 +30,7 @@ const localized = {
     curriculumIntro: 'Theory + practice lessons. Each lesson has a clear, measurable outcome.',
     ready: 'Ready to ride',
     withoutFear: 'with more confidence?',
-    bottomSub: 'One course. One transformation. Lifetime access.',
-    studentName: 'Demo Student'
+    bottomSub: 'One course. One transformation. Lifetime access.'
   },
   ru: {
     allCourses: 'Все курсы',
@@ -45,8 +45,7 @@ const localized = {
     curriculumIntro: 'Теория + практика. У каждого урока понятный результат.',
     ready: 'Готов ехать',
     withoutFear: 'увереннее?',
-    bottomSub: 'Один курс. Одна трансформация. Доступ навсегда.',
-    studentName: 'Demo Student'
+    bottomSub: 'Один курс. Одна трансформация. Доступ навсегда.'
   }
 };
 
@@ -148,10 +147,22 @@ export const toCurriculumModules = (
 export const getPlayerLesson = (lessons: Lesson[]) =>
   lessons.find((lesson) => lesson.type === 'video') || lessons[0];
 
+// Материалы берём по наличию файла, а не по type: PDF бывает приложен и к
+// видео-уроку, а раньше ссылка строилась только для type === 'pdf' и не
+// появлялась никогда.
+export const toPlayerDownloads = (lessons: Lesson[], locale: AppLocale): PlayerDownload[] =>
+  lessons
+    .filter((lesson) => Boolean(lesson.pdf))
+    .map((lesson) => ({
+      id: lesson.id,
+      title: lesson.title,
+      url: `/api/lessons/${lesson.id}/pdf?locale=${locale}`
+    }));
+
 export const toPlayerContent = (
   course: Course,
   lessons: Lesson[],
-  media: Pick<PlayerContent, 'pdfUrl' | 'videoEmbedUrl'>
+  media: Pick<PlayerContent, 'downloads' | 'videoEmbedUrl'>
 ): PlayerContent => {
   const currentLesson = getPlayerLesson(lessons);
   const notes = course.commonMistakes?.split('\n').filter(Boolean) || [];
@@ -172,15 +183,10 @@ export const toPlayerContent = (
   };
 };
 
+// Материалы всех купленных курсов и настоящие ссылки на защищённый роут:
+// раньше список резался до двух штук и вёл в тост вместо файла.
 export const toDashboardContent = (lessons: Lesson[], locale: AppLocale): DashboardContent => ({
   dashboard: {
-    studentName: localized[locale].studentName,
-    downloads: lessons
-      .filter((lesson) => lesson.type === 'pdf')
-      .slice(0, 2)
-      .map((lesson) => ({
-        name: lesson.title,
-        size: 'PDF'
-      }))
+    downloads: toPlayerDownloads(lessons, locale)
   }
 });

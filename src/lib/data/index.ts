@@ -13,6 +13,7 @@ export {
   toDashboardContent,
   getPlayerLesson,
   toPlayerContent,
+  toPlayerDownloads,
   toSalesContent
 } from './adapters';
 export { richTextToParagraphs, richTextToText } from './richText';
@@ -22,6 +23,7 @@ export type {
   CurriculumModule,
   DashboardContent,
   PlayerContent,
+  PlayerDownload,
   SalesContent
 } from './types';
 export type { CourseCurriculumLesson } from './courses';
