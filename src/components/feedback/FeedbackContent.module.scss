@@ -1,0 +1,68 @@
+.page {
+  margin: 0 auto;
+  max-width: 720px;
+  padding: 60px 24px;
+}
+
+.title {
+  font-size: 32px;
+  margin: 0 0 12px;
+}
+
+.intro {
+  color: var(--gray);
+  font-size: 16px;
+  margin: 0 0 32px;
+}
+
+.step {
+  border: 1px solid #2a2a2a;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  padding: 20px 24px;
+}
+
+.step__number {
+  color: var(--red);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.step__text {
+  font-size: 15px;
+  margin: 8px 0 0;
+}
+
+.contactCta {
+  background: var(--red);
+  border-radius: 6px;
+  color: #fff;
+  display: inline-block;
+  font-weight: 700;
+  margin-top: 12px;
+  padding: 12px 24px;
+  text-decoration: none;
+}
+
+.included {
+  background: #111;
+  border-radius: 8px;
+  color: var(--gray);
+  font-size: 14px;
+  margin-top: 32px;
+  padding: 16px 20px;
+}
+
+.back {
+  color: var(--gray);
+  display: inline-block;
+  font-size: 14px;
+  margin-top: 32px;
+  text-decoration: none;
+}
+
+.back:hover {
+  color: var(--white);
+}

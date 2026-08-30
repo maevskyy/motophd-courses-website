@@ -8,7 +8,10 @@ contactPoints:
         type: telegram
         settings:
           bottoken: ${TG_BOT_TOKEN}
-          chatid: ${TG_CHAT_ID}
+          # НЕ ${TG_CHAT_ID}: env-интерполяция Grafana превращает числовую
+          # строку в число независимо от кавычек (grafana/grafana#69950),
+          # и провижининг падает. Плейсхолдер вписывает entrypoint (compose).
+          chatid: "__TG_CHAT_ID__"
           message: '{{ template "default.message" . }}'
 
 policies:

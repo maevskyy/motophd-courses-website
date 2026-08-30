@@ -132,3 +132,31 @@
 .loginBack:hover {
   color: var(--white);
 }
+
+.loginSuccess {
+  background: #0d2612;
+  border-radius: 6px;
+  color: #8ee59a;
+  font-size: 14px;
+  margin-bottom: 20px;
+  padding: 12px;
+}
+
+.loginForgot {
+  color: var(--gray);
+  display: block;
+  font-size: 13px;
+  margin: -12px 0 20px;
+  text-align: right;
+  text-decoration: none;
+}
+
+.loginForgot:hover {
+  color: var(--white);
+}
+
+.loginHint {
+  color: var(--gray);
+  font-size: 13px;
+  margin: 0 0 20px;
+}

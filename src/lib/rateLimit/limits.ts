@@ -17,6 +17,16 @@ export const RATE_LIMITS = {
     limit: fromEnv('RATE_LIMIT_LOGIN_EMAIL', 10),
     windowMs: 15 * 60_000
   },
+  // Сброс пароля шлёт письмо: лимит жёсткий, иначе форма превращается
+  // в спам-пушку по чужим ящикам.
+  forgotIp: {
+    limit: fromEnv('RATE_LIMIT_FORGOT_IP', 5),
+    windowMs: 15 * 60_000
+  },
+  forgotEmail: {
+    limit: fromEnv('RATE_LIMIT_FORGOT_EMAIL', 3),
+    windowMs: 15 * 60_000
+  },
   pdfAnonIp: {
     limit: fromEnv('RATE_LIMIT_PDF_ANON_IP', 30),
     windowMs: 10 * 60_000

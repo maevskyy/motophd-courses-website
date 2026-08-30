@@ -36,7 +36,20 @@
     "tooManyAttempts": "Too many attempts. Wait a few minutes and try again.",
     "accessHint": "Access is sent by email after purchasing a course.",
     "submitting": "Signing in...",
-    "back": "Back to MotoPhD Online"
+    "back": "Back to MotoPhD Online",
+    "forgotLink": "Forgot password?",
+    "forgotTagline": "Password Recovery",
+    "forgotHint": "Enter your email — if the account exists, we will send a reset link.",
+    "forgotSent": "If the account exists, we sent a reset link. Check your inbox.",
+    "forgotButton": "Send reset link",
+    "backToLogin": "Back to sign in",
+    "resetTagline": "Set a New Password",
+    "newPassword": "New password",
+    "confirmPassword": "Repeat new password",
+    "resetButton": "Save new password",
+    "resetInvalidToken": "The link is invalid or expired. Request a new one.",
+    "resetMismatch": "Passwords do not match.",
+    "resetTooShort": "Password must be at least 8 characters."
   },
   "access": {
     "courseDenied": "This course is not included in your purchases."
@@ -140,5 +153,17 @@
     "acceptAll": "Accept all",
     "change": "Cookie settings",
     "privacyLink": "Privacy Policy"
+  },
+  "feedback": {
+    "title": "Personal Feedback",
+    "intro": "Your tier includes a personal review of your riding from the MotoPhD coach.",
+    "stepOne": "Step 1 — Get in touch",
+    "stepContact": "Message us and we will agree on the details.",
+    "stepContactFallback": "Reply to your purchase confirmation email and we will send you the chat link.",
+    "contactCta": "Message us on WhatsApp / Telegram",
+    "stepTwo": "Step 2 — Send your video",
+    "stepVideo": "Send a video of your riding and tell us briefly what you want to work on.",
+    "included": "Included in your tier: 1 video review + 1 Zoom call (45 minutes).",
+    "backToDashboard": "Back to dashboard"
   }
 }

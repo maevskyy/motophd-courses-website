@@ -101,7 +101,9 @@ export async function changePasswordAction(
     });
 
     token = relogin.token;
-  } catch {
+  } catch (error) {
+    // Пароль в лог не попадает: только идентификатор и причина.
+    console.error('changePassword: update/relogin failed for user', user.id, error);
     return { status: 'error' };
   }
 

@@ -60,6 +60,9 @@ export function LoginForm({ locale, nextPath }: Props) {
             type="password"
           />
         </div>
+        <Link className={styles.loginForgot} href="/login/forgot">
+          {t('forgotLink')}
+        </Link>
         <LoginSubmitButton />
         <Link className={styles.loginBack} href="/">
           ← {t('back')}

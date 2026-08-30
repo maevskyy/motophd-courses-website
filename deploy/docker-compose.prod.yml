@@ -77,7 +77,10 @@ services:
     entrypoint:
       - /bin/sh
       - -c
-      - 'test -n "$$GF_SECURITY_ADMIN_PASSWORD" || { echo "grafana: GRAFANA_ADMIN_PASSWORD is empty — set it in ~/motophd/.env (MOT-4)"; exit 1; }; exec /run.sh'
+      # Провижининг копируется в /tmp и chatid вписывается sed-ом: родная
+      # env-интерполяция Grafana превращает числовую строку в число
+      # (grafana/grafana#69950), и алертинг не стартует.
+      - 'test -n "$$GF_SECURITY_ADMIN_PASSWORD" || { echo "grafana: GRAFANA_ADMIN_PASSWORD is empty — set it in ~/motophd/.env (MOT-4)"; exit 1; }; cp -r /etc/grafana/provisioning-src /tmp/provisioning && sed -i "s/__TG_CHAT_ID__/$$TG_CHAT_ID/" /tmp/provisioning/alerting/contact-points.yml && export GF_PATHS_PROVISIONING=/tmp/provisioning; exec /run.sh'
     # env_file здесь НЕ используем: Grafana доступна из интернета, а прод-.env
     # содержит PAYLOAD_SECRET, POSTGRES_PASSWORD, DATABASE_URI и ключи R2/Resend.
     # Пробрасываем ровно две переменные, нужные контакт-поинту Telegram.
@@ -92,7 +95,7 @@ services:
       TG_CHAT_ID: ${TG_CHAT_ID:-}
     volumes:
       - grafana_data:/var/lib/grafana
-      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning-src:ro
       - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
 
   prometheus:

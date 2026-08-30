@@ -138,6 +138,57 @@ const seedAdminUser = async (payload: Payload) => {
   await payload.create({ collection: 'users', data, overrideAccess: true });
 };
 
+const upsertPurchase = async (
+  payload: Payload,
+  {
+    course,
+    providerTxnId,
+    tier,
+    user
+  }: {
+    course: DefaultDocumentIDType;
+    providerTxnId: string;
+    tier: 'feedback' | 'standard';
+    user: DefaultDocumentIDType;
+  }
+) => {
+  const existing = await payload.find({
+    collection: 'purchases',
+    depth: 0,
+    limit: 1,
+    overrideAccess: true,
+    where: {
+      and: [{ user: { equals: user } }, { course: { equals: course } }]
+    }
+  });
+
+  const purchase = {
+    amount: 0,
+    course,
+    currency: 'EUR' as const,
+    provider: 'manual' as const,
+    providerTxnId,
+    status: 'paid' as const,
+    tier,
+    user
+  };
+
+  if (existing.docs[0]) {
+    await payload.update({
+      collection: 'purchases',
+      data: purchase,
+      id: existing.docs[0].id,
+      overrideAccess: true
+    });
+  } else {
+    await payload.create({
+      collection: 'purchases',
+      data: purchase,
+      overrideAccess: true
+    });
+  }
+};
+
 const seedDemoAccounts = async (payload: Payload, firstCourseId: DefaultDocumentIDType) => {
   if (process.env.NODE_ENV === 'production') {
     return;
@@ -153,6 +204,20 @@ const seedDemoAccounts = async (payload: Payload, firstCourseId: DefaultDocument
   await upsertDemoUser(payload, 'lockout@motophd.com', 'lockout1234');
   await upsertDemoUser(payload, 'ratelimit@motophd.com', 'ratelimit1234');
 
+  // Смена пароля в e2e гоняется на своём аккаунте: сид возвращает пароль
+  // на место, даже если прогон упал посередине.
+  await upsertDemoUser(payload, 'passwd@motophd.com', 'passwd1234');
+
+  // Покупатель feedback-тарифа — для гейта страницы /feedback.
+  const feedbackStudent = await upsertDemoUser(payload, 'feedback@motophd.com', 'feedback1234');
+
+  await upsertPurchase(payload, {
+    course: firstCourseId,
+    providerTxnId: 'seed-feedback-first-course',
+    tier: 'feedback',
+    user: feedbackStudent.id
+  });
+
   await payload.delete({
     collection: 'purchases',
     overrideAccess: true,
@@ -163,52 +228,12 @@ const seedDemoAccounts = async (payload: Payload, firstCourseId: DefaultDocument
     }
   });
 
-  const existingPurchase = await payload.find({
-    collection: 'purchases',
-    depth: 0,
-    limit: 1,
-    overrideAccess: true,
-    where: {
-      and: [
-        {
-          user: {
-            equals: student.id
-          }
-        },
-        {
-          course: {
-            equals: firstCourseId
-          }
-        }
-      ]
-    }
-  });
-
-  const purchase = {
-    amount: 0,
+  await upsertPurchase(payload, {
     course: firstCourseId,
-    currency: 'EUR' as const,
-    provider: 'manual' as const,
     providerTxnId: 'seed-student-first-course',
-    status: 'paid' as const,
-    tier: 'standard' as const,
+    tier: 'standard',
     user: student.id
-  };
-
-  if (existingPurchase.docs[0]) {
-    await payload.update({
-      collection: 'purchases',
-      data: purchase,
-      id: existingPurchase.docs[0].id,
-      overrideAccess: true
-    });
-  } else {
-    await payload.create({
-      collection: 'purchases',
-      data: purchase,
-      overrideAccess: true
-    });
-  }
+  });
 };
 
 const seedCourses = async () => {
