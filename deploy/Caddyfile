@@ -25,6 +25,9 @@ motophd.com, www.motophd.com {
 admin.motophd.com {
 	tls /certs/origin.pem /certs/origin.key
 	encode gzip
+	# Корень поддомена ведёт в админку: без этого люди видят маркетинговый
+	# сайт и думают, что админка не работает.
+	redir / /admin 302
 	reverse_proxy app:3000
 }
 
