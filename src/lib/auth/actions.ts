@@ -4,6 +4,7 @@ import { cookies, headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { getPayloadClient } from '@/lib/data/payload';
 import { consumeRateLimit, getClientIp, RATE_LIMITS } from '@/lib/rateLimit';
+import { AUTH_COOKIE, setAuthCookie } from './authCookie';
 import { getSafeNextPath } from './redirect';
 import type { LoginFormState } from './formState';
 
@@ -50,14 +51,7 @@ export async function loginAction(
     return { error: true };
   }
 
-  const cookieStore = await cookies();
-
-  cookieStore.set('payload-token', token, {
-    httpOnly: true,
-    path: '/',
-    sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production'
-  });
+  setAuthCookie(await cookies(), token);
 
   redirect(getSafeNextPath(formData.get('next'), fallbackPath));
 }
@@ -66,6 +60,6 @@ export async function logoutAction(formData: FormData) {
   const locale = getLocale(formData.get('locale'));
   const cookieStore = await cookies();
 
-  cookieStore.delete('payload-token');
+  cookieStore.delete(AUTH_COOKIE);
   redirect(`/${locale}/`);
 }

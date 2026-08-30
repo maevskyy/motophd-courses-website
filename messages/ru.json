@@ -21,7 +21,8 @@
     "unlock": "Открыть",
     "download": "Скачать",
     "saveChanges": "Сохранить",
-    "backToDashboard": "Назад в кабинет"
+    "backToDashboard": "Назад в кабинет",
+    "changePassword": "Изменить пароль"
   },
   "login": {
     "tagline": "Портал студента — Войти",
@@ -57,7 +58,16 @@
     "emailReadOnly": "Здесь нельзя изменить email.",
     "profileSaveError": "Не удалось сохранить профиль. Попробуй ещё раз.",
     "profileSaveSuccess": "Профиль сохранён.",
-    "notPurchased": "Не куплен"
+    "notPurchased": "Не куплен",
+    "changePassword": "Смена пароля",
+    "currentPassword": "Текущий пароль",
+    "newPassword": "Новый пароль",
+    "confirmNewPassword": "Повторите новый пароль",
+    "passwordChangeSuccess": "Пароль изменён.",
+    "passwordWrongCurrent": "Текущий пароль неверный.",
+    "passwordMismatch": "Новые пароли не совпадают.",
+    "passwordTooShort": "Новый пароль должен быть не короче 8 символов.",
+    "passwordChangeError": "Не получилось изменить пароль. Попробуйте ещё раз."
   },
   "player": {
     "notes": "Заметки урока",

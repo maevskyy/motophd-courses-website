@@ -21,7 +21,8 @@
     "unlock": "Unlock",
     "download": "Download",
     "saveChanges": "Save Changes",
-    "backToDashboard": "Back to Dashboard"
+    "backToDashboard": "Back to Dashboard",
+    "changePassword": "Change Password"
   },
   "login": {
     "tagline": "Student Portal — Sign In",
@@ -57,7 +58,16 @@
     "emailReadOnly": "Email address cannot be changed here.",
     "profileSaveError": "We could not save your profile. Please try again.",
     "profileSaveSuccess": "Profile saved.",
-    "notPurchased": "Not purchased"
+    "notPurchased": "Not purchased",
+    "changePassword": "Change Password",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "confirmNewPassword": "Repeat New Password",
+    "passwordChangeSuccess": "Password changed.",
+    "passwordWrongCurrent": "Current password is incorrect.",
+    "passwordMismatch": "New passwords do not match.",
+    "passwordTooShort": "New password must be at least 8 characters.",
+    "passwordChangeError": "We could not change your password. Please try again."
   },
   "player": {
     "notes": "Lesson Notes",

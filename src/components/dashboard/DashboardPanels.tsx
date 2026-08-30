@@ -2,6 +2,7 @@ import { useTranslations } from 'next-intl';
 import { useToast } from '@/components/providers/ToastProvider';
 import type { CourseCardCourse, DashboardContent } from '@/lib/data';
 import { AccountProfileForm } from './AccountProfileForm';
+import { ChangePasswordForm } from './ChangePasswordForm';
 import { DashStat, LockedDashCourse, PurchasedDashCourse } from './DashboardCards';
 import styles from './Dashboard.module.scss';
 
@@ -100,6 +101,7 @@ export function ProfilePanel({ email, name }: PanelProps) {
         <h2>{t('dashboard.profileSettings')}</h2>
       </div>
       <AccountProfileForm email={email} name={name} />
+      <ChangePasswordForm />
     </>
   );
 }
