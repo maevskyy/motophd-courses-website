@@ -1,5 +1,8 @@
 apiVersion: 1
 
+# Правила: PromQL-запрос отдельно, порог отдельно (expression Threshold).
+# Сравнение прямо в expr (`... == 0`, `... > 85`) в Grafana не работает как
+# условие: пустой результат = NoData, а не «всё хорошо», и наоборот.
 groups:
   - orgId: 1
     name: infrastructure
@@ -8,8 +11,9 @@ groups:
     rules:
       - uid: motophd-site-unavailable
         title: Сайт не отвечает
-        condition: A
+        condition: B
         for: 2m
+        # Пробы нет вообще (blackbox/Prometheus лежит) — это тоже инцидент.
         noDataState: Alerting
         execErrState: Alerting
         annotations:
@@ -25,15 +29,45 @@ groups:
             datasourceUid: prometheus
             model:
               refId: A
-              expr: probe_success{job="blackbox",instance="https://motophd.com/api/health"} == 0
+              datasource:
+                type: prometheus
+                uid: prometheus
+              expr: probe_success{job="blackbox",instance="https://motophd.com/api/health"}
               instant: true
               range: false
+          - refId: B
+            queryType: ''
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: threshold
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              conditions:
+                - evaluator:
+                    type: lt
+                    params: [1]
+                  operator:
+                    type: and
+                  query:
+                    params: [B]
+                  reducer:
+                    type: last
+                    params: []
+                  type: query
 
       - uid: motophd-disk-85-percent
         title: Диск заполнен более чем на 85%
-        condition: A
+        condition: B
         for: 10m
-        noDataState: NoData
+        # Норма — значение ниже порога, пустого результата тут не бывает;
+        # NoData = сломался сбор метрик, а не инцидент с диском.
+        noDataState: OK
         execErrState: Error
         annotations:
           summary: На хосте осталось менее 15% свободного места на корневом диске.
@@ -48,15 +82,44 @@ groups:
             datasourceUid: prometheus
             model:
               refId: A
-              expr: (1 - (node_filesystem_avail_bytes{mountpoint="/",fstype!~"tmpfs|overlay"} / node_filesystem_size_bytes{mountpoint="/",fstype!~"tmpfs|overlay"})) * 100 > 85
+              datasource:
+                type: prometheus
+                uid: prometheus
+              expr: (1 - (node_filesystem_avail_bytes{mountpoint="/",fstype!~"tmpfs|overlay"} / node_filesystem_size_bytes{mountpoint="/",fstype!~"tmpfs|overlay"})) * 100
               instant: true
               range: false
+          - refId: B
+            queryType: ''
+            relativeTimeRange:
+              from: 900
+              to: 0
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: threshold
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              conditions:
+                - evaluator:
+                    type: gt
+                    params: [85]
+                  operator:
+                    type: and
+                  query:
+                    params: [B]
+                  reducer:
+                    type: last
+                    params: []
+                  type: query
 
       - uid: motophd-container-restarted
         title: Контейнер перезапустился
-        condition: A
+        condition: B
         for: 1m
-        noDataState: NoData
+        # Обычное состояние — нули по всем контейнерам, не NoData.
+        noDataState: OK
         execErrState: Error
         annotations:
           summary: cAdvisor заметил изменение времени запуска контейнера за последние 10 минут.
@@ -71,6 +134,36 @@ groups:
             datasourceUid: prometheus
             model:
               refId: A
-              expr: changes(container_start_time_seconds{container!="",name!=""}[10m]) > 0
+              datasource:
+                type: prometheus
+                uid: prometheus
+              # У cAdvisor нет метки `container` (это kube-state-metrics),
+              # фильтруем только по `name`.
+              expr: changes(container_start_time_seconds{name!=""}[10m])
               instant: true
               range: false
+          - refId: B
+            queryType: ''
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: threshold
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              conditions:
+                - evaluator:
+                    type: gt
+                    params: [0]
+                  operator:
+                    type: and
+                  query:
+                    params: [B]
+                  reducer:
+                    type: last
+                    params: []
+                  type: query

@@ -1,26 +1,44 @@
 # Применение мониторинга и бэкапов
 
-Эта инструкция применяется на VPS из каталога `~/motophd/deploy`. Она не меняет
-данные PostgreSQL и не пересобирает приложение.
+Инструкция применяется на VPS в каталоге `~/motophd` — это фактический корень
+боевого стека (`~/motophd/docker-compose.prod.yml` + `~/motophd/.env`, см.
+[docs/RUNBOOK_VPS.md](../../docs/RUNBOOK_VPS.md) и `.github/workflows/deploy.yml`).
+Никакого подкаталога `deploy/` на сервере нет: относительные маунты
+(`./Caddyfile`, `./certs`, `./monitoring`, `./backup`) резолвятся именно от
+`~/motophd`. Раскладка на VPS:
 
-## 1. Передать файлы на VPS
-
-На локальной машине, из корня репозитория, передайте только файлы этого потока:
-
-```sh
-scp deploy/docker-compose.prod.yml user@vps:~/motophd/deploy/
-scp -r deploy/monitoring deploy/backup user@vps:~/motophd/deploy/
+```text
+~/motophd/
+  docker-compose.prod.yml
+  .env                 ← секреты, остаётся только на сервере
+  Caddyfile
+  certs/               ← origin.pem, origin.key
+  monitoring/
+  backup/
 ```
 
-Замените `user@vps` на фактический SSH-адрес. Не передавайте файл с секретами
-`.env` через `scp`: он остаётся только на VPS.
+Инструкция не меняет данные PostgreSQL и не пересобирает приложение.
 
-## 2. Добавить секреты
+## 1. Сначала секреты, потом compose
 
-На VPS откройте `~/motophd/deploy/.env` и добавьте значения из блока
-`observability` в `.env.prod.example`:
+⚠️ **Порядок важен.** Новый `docker-compose.prod.yml` требует переменные с
+`:?` (`TG_BOT_TOKEN`, `TG_CHAT_ID`, `BACKUP_R2_*`, `HEALTHCHECKS_BACKUP_URL`).
+Если положить compose раньше, чем заполнен `.env`, то `docker compose config
+--quiet` начнёт падать — а именно эту команду выполняет шаг **Preflight VPS** в
+`Deploy`. Кнопка Deploy перестанет работать до тех пор, пока переменные не
+появятся. Поэтому сначала правим `.env`.
+
+На VPS откройте `~/motophd/.env` и добавьте блоки `app` и `observability` из
+[`deploy/.env.prod.example`](../.env.prod.example):
 
 ```dotenv
+APP_URL=https://motophd.com
+RESEND_API_KEY=...
+EMAIL_FROM=MotoPhD <noreply@motophd.com>
+FEEDBACK_CONTACT_URL=...
+NEXT_PUBLIC_GA4_ID=
+NEXT_PUBLIC_META_PIXEL_ID=
+
 TG_BOT_TOKEN=...
 TG_CHAT_ID=...
 BACKUP_R2_ENDPOINT=https://<account-id>.r2.cloudflarestorage.com
@@ -34,33 +52,78 @@ TZ=UTC
 Создайте отдельный S3 API token R2 с правом только на чтение и запись в бакет
 `motophd-backups`. В Healthchecks.io создайте check с периодом `1 day` и
 grace-периодом не менее 2 часов; его ping URL положите в
-`HEALTHCHECKS_BACKUP_URL`. Он отправляет уведомление о неуспешном или
-пропущенном ночном бэкапе.
+`HEALTHCHECKS_BACKUP_URL`. Он уведомляет о неуспешном или пропущенном ночном
+бэкапе.
 
 Для Telegram создайте бота, добавьте его в нужный чат и укажите его token и ID
 чата. До запуска проверьте, что бот может отправлять туда сообщения.
 
-## 3. Метрики Caddy
+## 2. Передать файлы на VPS
 
-Текущий Caddyfile не отключает Admin API, поэтому Caddy уже отдаёт `/metrics` на
-своём внутреннем admin-адресе `:2019`; Prometheus забирает их по `caddy:2019`.
-Файл Caddyfile не изменён. Не публикуйте порт 2019 наружу.
+Только после шага 1. На локальной машине, из корня репозитория:
 
-Для интеграции: если в будущем Admin API будет отключён или перенесён, S7 должен
-явно настроить Caddy `metrics` endpoint и одновременно поменять target `caddy`
-в `monitoring/prometheus.yml`.
+```sh
+scp deploy/docker-compose.prod.yml user@vps:~/motophd/docker-compose.prod.yml
+scp deploy/Caddyfile user@vps:~/motophd/Caddyfile
+scp -r deploy/monitoring deploy/backup user@vps:~/motophd/
+```
 
-## 4. Проверить конфигурацию и запустить
+Замените `user@vps` на фактический SSH-адрес. `.env` через `scp` не передаём:
+он существует только на VPS.
+
+## 3. Cloudflare: админка на отдельном хосте
+
+Публичный `motophd.com` больше не отдаёт `/admin*` (404) — так требует
+[ARCHITECTURE](../../docs/ARCHITECTURE.md). Админка переехала на
+`admin.motophd.com`. `/api` остаётся открытым на публичном хосте: там платёжные
+вебхуки и выдача защищённых PDF.
+
+Перед выкладкой нового Caddyfile в Cloudflare нужно:
+
+1. Завести DNS-запись `admin` → тот же origin IP, что и `motophd.com`,
+   proxied (оранжевое облако).
+2. В Zero Trust → Access → Applications создать self-hosted приложение на
+   `admin.motophd.com` с политикой allow только для нужных email.
+3. Убедиться, что origin-сертификат в `~/motophd/certs/origin.pem` покрывает
+   `*.motophd.com` (тот же сертификат уже обслуживает `grafana.motophd.com`).
+
+⚠️ Смок-проверка в `.github/workflows/deploy.yml` последней строкой делает
+`curl -fsS -o /dev/null https://motophd.com/admin`. После закрытия `/admin`
+она получит 404 и деплой упадёт на зелёном сайте. Строку нужно убрать или
+заменить на проверку `https://admin.motophd.com/admin` — правку в `.github/`
+делает владелец репозитория, эта инструкция её не покрывает.
+
+## 4. Метрики Caddy
+
+Admin API Caddy (`:2019`) слушает только localhost внутри контейнера, поэтому
+таргет `caddy:2019` всегда был бы DOWN. В `deploy/Caddyfile` добавлены
+глобальная опция `metrics` и отдельный внутренний слушатель:
+
+```caddyfile
+:2020 {
+	metrics /metrics
+}
+```
+
+Prometheus ходит на `caddy:2020`. Порт наружу не публикуется, admin API в сеть
+compose не выносится.
+
+## 5. Проверить конфигурацию и запустить
 
 На VPS:
 
 ```sh
-cd ~/motophd/deploy
-docker compose --env-file .env config --quiet
-docker compose up -d --build
-docker compose ps
-docker compose logs --tail=100 prometheus loki promtail backup
+cd ~/motophd
+docker compose -f docker-compose.prod.yml config --quiet
+docker run --rm -v ~/motophd/Caddyfile:/etc/caddy/Caddyfile:ro caddy:2-alpine \
+  caddy validate --config /etc/caddy/Caddyfile
+docker compose -f docker-compose.prod.yml up -d --build
+docker compose -f docker-compose.prod.yml ps
+docker compose -f docker-compose.prod.yml logs --tail=100 prometheus loki promtail backup
 ```
+
+Caddy перечитает конфиг при `up -d` (контейнер пересоздастся). Если сайт после
+этого не отвечает — сразу вернуть прежний `Caddyfile` и повторить `up -d caddy`.
 
 Откройте `https://grafana.motophd.com`. В папке **MotoPhD** должны появиться
 пять дашбордов, а в Connections → Data sources — Prometheus и Loki. В
@@ -70,21 +133,29 @@ Alerting → Contact points должен появиться Telegram.
 должна показывать `prometheus`, `node-exporter`, `cadvisor`, `blackbox` и
 `caddy` как `UP`.
 
-## 5. Проверить бэкап до первой ночи
+Promtail читает логи через Docker API (`/var/run/docker.sock`, read-only), а не
+из `/var/lib/docker/containers`, — только так в Loki попадает имя контейнера. В
+Explore → Loki запрос `{job="docker", container="motophd-app-1"}` должен
+возвращать логи приложения.
+
+## 6. Проверить бэкап до первой ночи
 
 Запустите один бэкап вручную и убедитесь, что в R2 появился файл:
 
 ```sh
-cd ~/motophd/deploy
-docker compose run --rm backup /usr/local/bin/backup
-docker compose logs --tail=100 backup
+cd ~/motophd
+docker compose -f docker-compose.prod.yml run --rm backup /usr/local/bin/backup
+docker compose -f docker-compose.prod.yml logs --tail=100 backup
 ```
 
-В Healthchecks.io check должен стать успешным. Контейнер затем запускает задачу
-каждую ночь в 02:30 по `TZ`; в R2 сохраняются 14 последних дней, в локальном
+В логах должны быть строки `backup: dump ok: ... bytes` и
+`backup: uploaded ...`. Скрипт проверяет дамп до отправки: пустой или
+нечитаемый архив помечает job как проваленный и не пингует успех. В
+Healthchecks.io check должен стать успешным. Контейнер затем запускает задачу
+каждую ночь в 02:30 по `TZ`; в R2 хранятся 14 последних дней, в локальном
 томе — три последних архива.
 
-## Проверка алертов
+## 7. Проверка алертов
 
 1. В Grafana → Alerting убедитесь, что три правила имеют состояние `Normal`.
 2. На короткое время остановите **любой неважный** тестовый контейнер или
@@ -97,7 +168,9 @@ docker compose logs --tail=100 backup
 `app`, `postgres`, `caddy` и `grafana`:
 
 ```sh
-docker compose stop prometheus loki promtail node-exporter cadvisor blackbox-exporter backup
+cd ~/motophd
+docker compose -f docker-compose.prod.yml stop \
+  prometheus loki promtail node-exporter cadvisor blackbox-exporter backup
 ```
 
 Именованные тома не удаляйте: в них лежат метрики, логи и локальные бэкапы.

@@ -1,9 +1,17 @@
 name: motophd
 
+# Глобальная политика логов: без неё json-file растёт до заполнения диска.
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: '10m'
+    max-file: '3'
+
 services:
   postgres:
     image: postgres:16-alpine
     restart: unless-stopped
+    logging: *default-logging
     environment:
       POSTGRES_DB: ${POSTGRES_DB:?POSTGRES_DB is required}
       POSTGRES_USER: ${POSTGRES_USER:?POSTGRES_USER is required}
@@ -19,6 +27,7 @@ services:
   app:
     image: ${GHCR_IMAGE:-ghcr.io/maevskyy/motophd}:${IMAGE_TAG:-latest}
     restart: unless-stopped
+    logging: *default-logging
     env_file:
       - ${APP_ENV_FILE:-.env}
     environment:
@@ -49,6 +58,7 @@ services:
     image: ${GHCR_IMAGE:-ghcr.io/maevskyy/motophd}:${IMAGE_TAG:-latest}-ops
     profiles:
       - ops
+    logging: *default-logging
     env_file:
       - ${APP_ENV_FILE:-.env}
     environment:
@@ -60,15 +70,20 @@ services:
         condition: service_healthy
 
   grafana:
-    image: grafana/grafana:latest
+    image: grafana/grafana:11.6.16
     restart: unless-stopped
-    env_file:
-      - ${APP_ENV_FILE:-.env}
+    logging: *default-logging
+    mem_limit: 512m
+    # env_file здесь НЕ используем: Grafana доступна из интернета, а прод-.env
+    # содержит PAYLOAD_SECRET, POSTGRES_PASSWORD, DATABASE_URI и ключи R2/Resend.
+    # Пробрасываем ровно две переменные, нужные контакт-поинту Telegram.
     environment:
       GF_SERVER_ROOT_URL: https://grafana.motophd.com
       GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:?GRAFANA_ADMIN_PASSWORD is required}
       GF_AUTH_ANONYMOUS_ENABLED: 'false'
+      TG_BOT_TOKEN: ${TG_BOT_TOKEN:?TG_BOT_TOKEN is required}
+      TG_CHAT_ID: ${TG_CHAT_ID:?TG_CHAT_ID is required}
     volumes:
       - grafana_data:/var/lib/grafana
       - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
@@ -77,11 +92,13 @@ services:
   prometheus:
     image: prom/prometheus:v3.2.1
     restart: unless-stopped
+    logging: *default-logging
+    mem_limit: 768m
     command:
       - --config.file=/etc/prometheus/prometheus.yml
       - --storage.tsdb.path=/prometheus
       - --storage.tsdb.retention.time=15d
-      - --storage.tsdb.retention.size=8GB
+      - --storage.tsdb.retention.size=2GB
       - --web.enable-lifecycle
     volumes:
       - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
@@ -90,6 +107,8 @@ services:
   loki:
     image: grafana/loki:3.4.2
     restart: unless-stopped
+    logging: *default-logging
+    mem_limit: 512m
     command: -config.file=/etc/loki/config.yml
     volumes:
       - ./monitoring/loki.yml:/etc/loki/config.yml:ro
@@ -98,17 +117,23 @@ services:
   promtail:
     image: grafana/promtail:3.4.2
     restart: unless-stopped
+    logging: *default-logging
+    mem_limit: 256m
     command: -config.file=/etc/promtail/config.yml
     volumes:
       - ./monitoring/promtail.yml:/etc/promtail/config.yml:ro
       - promtail_positions:/tmp
-      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      # Docker service discovery: только так в Loki попадает имя контейнера.
+      # Сокет — read-only; логи читаются через Docker API.
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     depends_on:
       - loki
 
   node-exporter:
     image: prom/node-exporter:v1.9.1
     restart: unless-stopped
+    logging: *default-logging
+    mem_limit: 128m
     command:
       - --path.rootfs=/host
       - --collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)
@@ -118,6 +143,8 @@ services:
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.52.1
     restart: unless-stopped
+    logging: *default-logging
+    mem_limit: 384m
     privileged: true
     devices:
       - /dev/kmsg
@@ -131,6 +158,8 @@ services:
   blackbox-exporter:
     image: prom/blackbox-exporter:v0.26.0
     restart: unless-stopped
+    logging: *default-logging
+    mem_limit: 128m
     command:
       - --config.file=/etc/blackbox_exporter/config.yml
     volumes:
@@ -140,6 +169,8 @@ services:
     build:
       context: ./backup
     restart: unless-stopped
+    logging: *default-logging
+    mem_limit: 512m
     environment:
       PGHOST: postgres
       PGPORT: 5432
@@ -161,6 +192,7 @@ services:
   caddy:
     image: caddy:2-alpine
     restart: unless-stopped
+    logging: *default-logging
     ports:
       - '80:80'
       - '443:443'

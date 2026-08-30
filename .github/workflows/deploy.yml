@@ -155,4 +155,5 @@ jobs:
           curl -fsS --retry 5 --retry-delay 3 https://motophd.com/api/health
           homepage=$(curl -fsS --retry 5 --retry-delay 3 https://motophd.com/en)
           echo "$homepage" | grep -q "/en/courses/" || { echo "::error::Homepage is up but course cards are missing"; exit 1; }
-          curl -fsS -o /dev/null https://motophd.com/admin
+          admin_status=$(curl -s -o /dev/null -w '%{http_code}' https://motophd.com/admin)
+          [ "$admin_status" = "404" ] || { echo "::error::Admin must be hidden on the public host, got $admin_status"; exit 1; }

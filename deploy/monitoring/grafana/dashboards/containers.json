@@ -31,7 +31,7 @@
       "type": "table",
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "gridPos": { "h": 8, "w": 24, "x": 0, "y": 8 },
-      "targets": [{ "refId": "A", "expr": "changes(container_start_time_seconds{container!=\"\",name!=\"\"}[24h])", "instant": true, "format": "table" }]
+      "targets": [{ "refId": "A", "expr": "changes(container_start_time_seconds{name!=\"\"}[24h])", "instant": true, "format": "table" }]
     }
   ]
 }

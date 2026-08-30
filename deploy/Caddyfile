@@ -1,4 +1,28 @@
+{
+	# Включает сбор Prometheus-метрик; отдаём их отдельным внутренним
+	# слушателем :2020 (см. ниже). Admin API остаётся на localhost:2019
+	# внутри контейнера и наружу/в сеть compose не публикуется.
+	metrics
+}
+
+# Публичный сайт. По ARCHITECTURE админка сюда не выходит: /admin* режем,
+# полноценная админка живёт на admin.motophd.com за Cloudflare Access.
+# /api НЕ режем — там платёжные вебхуки и выдача защищённых PDF.
 motophd.com, www.motophd.com {
+	tls /certs/origin.pem /certs/origin.key
+	encode gzip
+
+	handle /admin* {
+		respond 404
+	}
+
+	handle {
+		reverse_proxy app:3000
+	}
+}
+
+# Админка. Доступ ограничивается Cloudflare Access (см. monitoring/APPLY.md).
+admin.motophd.com {
 	tls /certs/origin.pem /certs/origin.key
 	encode gzip
 	reverse_proxy app:3000
@@ -8,4 +32,9 @@ grafana.motophd.com {
 	tls /certs/origin.pem /certs/origin.key
 	encode gzip
 	reverse_proxy grafana:3000
+}
+
+# Только для Prometheus внутри сети compose: порт наружу не публикуется.
+:2020 {
+	metrics /metrics
 }

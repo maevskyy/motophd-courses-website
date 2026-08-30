@@ -15,9 +15,11 @@ scrape_configs:
     static_configs:
       - targets: ['cadvisor:8080']
 
+  # :2019 — admin API Caddy, слушает только localhost внутри контейнера и в
+  # сеть compose не выходит. Метрики отдаёт отдельный слушатель :2020 из Caddyfile.
   - job_name: caddy
     static_configs:
-      - targets: ['caddy:2019']
+      - targets: ['caddy:2020']
 
   - job_name: blackbox
     metrics_path: /probe
