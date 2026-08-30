@@ -2,6 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
+import { ConsentSettingsLink } from '@/components/consent/ConsentSettingsLink';
 import type { HomeContent } from '@/lib/content';
 import styles from './Footer.module.scss';
 
@@ -86,6 +87,7 @@ export function Footer({ compact = false, socialLinks }: Props) {
         ) : null}
         <div className={styles.footer__bottom}>
           <div className={styles.footer__copy}>{t('copy')}</div>
+          <ConsentSettingsLink />
           {socialLinks && socialLinks.length > 0 ? (
             <div className={styles.footer__social}>
               {socialLinks.map((item) => (

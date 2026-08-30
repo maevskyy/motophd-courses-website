@@ -46,11 +46,9 @@
     "myCourses": "Мои курсы",
     "downloads": "Материалы",
     "profile": "Профиль",
-    "welcomeTitle": "С возвращением, Demo.",
+    "welcomeTitle": "С возвращением, {name}.",
     "welcomeSub": "Продолжи с того места, где остановился.",
-    "coursePurchased": "Курс куплен",
-    "courseProgress": "Прогресс курса",
-    "pdfsAvailable": "PDF доступны",
+    "purchasedCourses": "Купленные курсы",
     "activeEnrollments": "Активные курсы",
     "availableToPurchase": "Можно купить",
     "purchasedContent": "Твой купленный контент.",
@@ -58,11 +56,10 @@
     "availablePdfs": "Доступные PDF",
     "profileSettings": "Настройки профиля",
     "fullName": "Имя",
-    "newPassword": "Новый пароль",
-    "keepPassword": "Оставь пустым, чтобы не менять",
+    "emailReadOnly": "Здесь нельзя изменить email.",
+    "profileSaveError": "Не удалось сохранить профиль. Попробуй ещё раз.",
+    "profileSaveSuccess": "Профиль сохранён.",
     "notPurchased": "Не куплен",
-    "moduleProgress": "Модуль 2 из 4",
-    "percentComplete": "40% готово",
     "morePdfs": "Дополнительные PDF откроются по мере прохождения модулей. Купи больше курсов, чтобы получить больше материалов."
   },
   "player": {
@@ -74,7 +71,11 @@
     "feelLabel": "ЧТО ТЫ ДОЛЖЕН ПОЧУВСТВОВАТЬ",
     "moduleOutcome": "РЕЗУЛЬТАТ МОДУЛЯ",
     "courseProgress": "Прогресс курса",
-    "lessonsComplete": "2 из 10 уроков готовы"
+    "lessonsComplete": "2 из 10 уроков готовы",
+    "videoUnavailable": "Видео недоступно в этом окружении.",
+    "refreshAfterTokenExpiry": "Если токен истёк, обнови страницу, чтобы получить новый.",
+    "pdfLinkLabel": "Открыть PDF",
+    "pdfLinkDescription": "PDF безопасно откроется в браузере"
   },
   "toast": {
     "langEn": "Switched to English",
@@ -114,5 +115,12 @@
     "refundPolicy": "Политика возврата",
     "contact": "Контакты",
     "copy": "© 2026 MotoPhD Online. Все права защищены. Образовательный контент предоставлен исключительно в информационных целях."
+  },
+  "consent": {
+    "title": "Ваша приватность важна",
+    "description": "Мы используем необязательные аналитические cookie, чтобы понимать, как пользуются сайтом, и улучшать его.",
+    "necessaryOnly": "Только необходимые",
+    "acceptAll": "Принять все",
+    "change": "Настройки cookie"
   }
 }

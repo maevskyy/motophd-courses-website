@@ -31,6 +31,12 @@
   width: 100%;
 }
 
+.videoFrame {
+  border: 0;
+  height: 100%;
+  width: 100%;
+}
+
 .pdfDownloadCard:hover {
   border-color: var(--red);
 }

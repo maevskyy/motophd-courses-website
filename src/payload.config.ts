@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url';
 
 import { postgresAdapter } from '@payloadcms/db-postgres';
 import { lexicalEditor } from '@payloadcms/richtext-lexical';
+import { s3Storage } from '@payloadcms/storage-s3';
 import { buildConfig, type SharpDependency } from 'payload';
 import sharp from 'sharp';
 
@@ -12,6 +13,7 @@ import { Lessons } from './collections/Lessons';
 import { Media } from './collections/Media';
 import { Purchases } from './collections/Purchases';
 import { Users } from './collections/Users';
+import { getR2StorageConfig, isR2StorageEnabled } from './lib/media/r2';
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -36,6 +38,17 @@ export default buildConfig({
     fallback: true,
     locales: ['en', 'ru']
   },
+  plugins: [
+    s3Storage({
+      alwaysInsertFields: true,
+      bucket: process.env.R2_BUCKET || '',
+      collections: {
+        media: true
+      },
+      config: getR2StorageConfig(),
+      enabled: isR2StorageEnabled()
+    })
+  ],
   secret: process.env.PAYLOAD_SECRET || '',
   sharp: sharp as unknown as SharpDependency,
   typescript: {

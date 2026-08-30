@@ -11,6 +11,7 @@ export {
   toCourseCardCourse,
   toCurriculumModules,
   toDashboardContent,
+  getPlayerLesson,
   toPlayerContent,
   toSalesContent
 } from './adapters';

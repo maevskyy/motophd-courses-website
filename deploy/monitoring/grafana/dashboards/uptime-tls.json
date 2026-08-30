@@ -1,0 +1,44 @@
+{
+  "uid": "motophd-uptime-tls",
+  "title": "MotoPhD / Аптайм и TLS",
+  "tags": ["motophd", "uptime", "tls"],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "30s",
+  "panels": [
+    {
+      "id": 1,
+      "title": "Сайт отвечает",
+      "type": "stat",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [{ "type": "value", "options": { "0": { "text": "Нет", "color": "red" }, "1": { "text": "Да", "color": "green" } } }],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }, { "color": "green", "value": 1 }] }
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 0 },
+      "targets": [{ "refId": "A", "expr": "probe_success{job=\"blackbox\",instance=\"https://motophd.com/api/health\"}", "instant": true }]
+    },
+    {
+      "id": 2,
+      "title": "Срок TLS-сертификата",
+      "type": "stat",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "unit": "dtdays", "overrides": [] }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 0 },
+      "targets": [{ "refId": "A", "expr": "(probe_ssl_earliest_cert_expiry{job=\"blackbox\",instance=\"https://motophd.com/api/health\"} - time()) / 86400", "instant": true }]
+    },
+    {
+      "id": 3,
+      "title": "Задержка health-check",
+      "type": "timeseries",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "unit": "s" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 0 },
+      "targets": [{ "refId": "A", "expr": "probe_duration_seconds{job=\"blackbox\",instance=\"https://motophd.com/api/health\"}", "legendFormat": "seconds" }]
+    }
+  ]
+}

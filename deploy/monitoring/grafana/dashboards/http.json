@@ -1,0 +1,37 @@
+{
+  "uid": "motophd-http",
+  "title": "MotoPhD / HTTP (Caddy)",
+  "tags": ["motophd", "caddy", "http"],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "30s",
+  "description": "Requires the Caddy metrics endpoint described in deploy/monitoring/APPLY.md.",
+  "panels": [
+    {
+      "id": 1,
+      "title": "RPS",
+      "type": "timeseries",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 0 },
+      "targets": [{ "refId": "A", "expr": "sum(rate(caddy_http_requests_total{handler=\"reverse_proxy\"}[5m]))", "legendFormat": "requests/s" }]
+    },
+    {
+      "id": 2,
+      "title": "Коды ответа",
+      "type": "timeseries",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 0 },
+      "targets": [{ "refId": "A", "expr": "sum by(code) (rate(caddy_http_request_duration_seconds_count{handler=\"reverse_proxy\"}[5m]))", "legendFormat": "{{code}}" }]
+    },
+    {
+      "id": 3,
+      "title": "p95 latency",
+      "type": "timeseries",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "unit": "s" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 0 },
+      "targets": [{ "refId": "A", "expr": "histogram_quantile(0.95, sum by(le) (rate(caddy_http_request_duration_seconds_bucket{handler=\"reverse_proxy\"}[5m])))", "legendFormat": "p95" }]
+    }
+  ]
+}

@@ -3,6 +3,7 @@ import { getMessages, setRequestLocale } from 'next-intl/server';
 import { Unbounded } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import { ToastProvider } from '@/components/providers/ToastProvider';
+import { Consent } from '@/components/consent';
 import { Nav } from '@/components/layout/Nav';
 import { getCurrentUser } from '@/lib/auth';
 import '../../globals.scss';
@@ -39,6 +40,7 @@ export default async function AppLocaleLayout({
           <ToastProvider>
             <Nav isLoggedIn={Boolean(user)} />
             {children}
+            <Consent />
           </ToastProvider>
         </NextIntlClientProvider>
       </body>

@@ -16,13 +16,7 @@ export function DashStat({ label, suffix = '', value }: { label: string; suffix?
   );
 }
 
-export function PurchasedDashCourse({
-  compact,
-  course
-}: {
-  compact?: boolean;
-  course: CourseCardCourse;
-}) {
+export function PurchasedDashCourse({ course }: { course: CourseCardCourse }) {
   const t = useTranslations();
 
   return (
@@ -30,17 +24,8 @@ export function PurchasedDashCourse({
       <div className={`${styles.dashCourseThumb} ${styles.dashCourseThumbRed}`}>🏍️</div>
       <div className={styles.dashCourseBody}>
         <div className={styles.dashCourseTitle}>{course.title}</div>
-        <div className={styles.progressBar}>
-          <div className={styles.progressFill} />
-        </div>
-        <div className={styles.dashCourseMeta}>
-          <span>{t('dashboard.moduleProgress')}</span>
-          <span>{compact ? '40%' : t('dashboard.percentComplete')}</span>
-        </div>
         <div className={styles.dashCourseAction}>
-          <span className={styles.btnContinue}>
-            {compact ? t('actions.continue') : t('actions.continueLearning')} →
-          </span>
+          <span className={styles.btnContinue}>{t('actions.continueLearning')} →</span>
         </div>
       </div>
     </Link>

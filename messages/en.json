@@ -46,11 +46,9 @@
     "myCourses": "My Courses",
     "downloads": "Downloads",
     "profile": "Profile",
-    "welcomeTitle": "Welcome back, Demo.",
+    "welcomeTitle": "Welcome back, {name}.",
     "welcomeSub": "Continue where you left off.",
-    "coursePurchased": "Course Purchased",
-    "courseProgress": "Course Progress",
-    "pdfsAvailable": "PDFs Available",
+    "purchasedCourses": "Purchased Courses",
     "activeEnrollments": "Active Enrollments",
     "availableToPurchase": "Available to Purchase",
     "purchasedContent": "Your purchased content.",
@@ -58,11 +56,10 @@
     "availablePdfs": "Available PDFs",
     "profileSettings": "Profile Settings",
     "fullName": "Full Name",
-    "newPassword": "New Password",
-    "keepPassword": "Leave blank to keep current",
+    "emailReadOnly": "Email address cannot be changed here.",
+    "profileSaveError": "We could not save your profile. Please try again.",
+    "profileSaveSuccess": "Profile saved.",
     "notPurchased": "Not purchased",
-    "moduleProgress": "Module 2 of 4",
-    "percentComplete": "40% complete",
     "morePdfs": "Additional PDFs unlock as you complete each module. Purchase more courses to access more downloads."
   },
   "player": {
@@ -74,7 +71,11 @@
     "feelLabel": "WHAT YOU SHOULD FEEL",
     "moduleOutcome": "MODULE OUTCOME",
     "courseProgress": "Course Progress",
-    "lessonsComplete": "2 of 10 lessons complete"
+    "lessonsComplete": "2 of 10 lessons complete",
+    "videoUnavailable": "Video is unavailable in this environment.",
+    "refreshAfterTokenExpiry": "If playback expires, refresh the page for a new token.",
+    "pdfLinkLabel": "Open PDF",
+    "pdfLinkDescription": "PDF opens securely in your browser"
   },
   "toast": {
     "langEn": "Switched to English",
@@ -114,5 +115,12 @@
     "refundPolicy": "Refund Policy",
     "contact": "Contact",
     "copy": "© 2026 MotoPhD Online. All rights reserved. Educational content for informational purposes only."
+  },
+  "consent": {
+    "title": "Your privacy matters",
+    "description": "We use optional analytics cookies to understand how the site is used and improve it.",
+    "necessaryOnly": "Necessary only",
+    "acceptAll": "Accept all",
+    "change": "Cookie settings"
   }
 }

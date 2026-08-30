@@ -6,11 +6,13 @@ import { requireUser } from '@/lib/auth';
 import {
   getCourseBySlug,
   getCourseLessons,
+  getPlayerLesson,
   toAppLocale,
   toCurriculumModules,
   toPlayerContent
 } from '@/lib/data';
 import { getPayloadClient } from '@/lib/data/payload';
+import { getPlaybackUrl } from '@/lib/video';
 
 export const dynamic = 'force-dynamic';
 
@@ -40,7 +42,14 @@ export default async function CoursePlayerPage({
 
   const lessons = await getCourseLessons(course.id, safeLocale, user);
   const curriculum = toCurriculumModules(course, lessons);
-  const player = toPlayerContent(course, lessons);
+  const currentLesson = getPlayerLesson(lessons);
+  const player = toPlayerContent(course, lessons, {
+    pdfUrl:
+      currentLesson?.type === 'pdf'
+        ? `/api/lessons/${currentLesson.id}/pdf?locale=${safeLocale}`
+        : null,
+    videoEmbedUrl: getPlaybackUrl(currentLesson?.streamVideoId, { free: false })
+  });
 
   return <CoursePlayerClient curriculum={curriculum} player={player} />;
 }

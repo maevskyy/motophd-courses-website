@@ -15,6 +15,55 @@ import {
   toRichText
 } from './contentSeedData';
 
+const fixturePdf = Buffer.from(
+  '%PDF-1.4\n1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n2 0 obj\n<< /Type /Pages /Count 0 /Kids [] >>\nendobj\ntrailer\n<< /Root 1 0 R >>\n%%EOF\n'
+);
+
+const seedFixturePdf = async (payload: Payload, lessonId: DefaultDocumentIDType) => {
+  if (process.env.NODE_ENV === 'production') {
+    return;
+  }
+
+  const existing = await payload.find({
+    collection: 'media',
+    depth: 0,
+    limit: 1,
+    overrideAccess: true,
+    where: {
+      filename: {
+        equals: 'motophd-fixture.pdf'
+      }
+    }
+  });
+  const pdf =
+    existing.docs[0] ||
+    (await payload.create({
+      collection: 'media',
+      data: {
+        alt: 'MotoPhD fixture PDF'
+      },
+      file: {
+        data: fixturePdf,
+        mimetype: 'application/pdf',
+        name: 'motophd-fixture.pdf',
+        size: fixturePdf.length
+      },
+      overrideAccess: true
+    }));
+
+  await Promise.all(
+    locales.map((locale) =>
+      payload.update({
+        collection: 'lessons',
+        data: { pdf: pdf.id },
+        id: lessonId,
+        locale,
+        overrideAccess: true
+      })
+    )
+  );
+};
+
 const upsertDemoUser = async (payload: Payload, email: string, password: string) => {
   const existing = await payload.find({
     collection: 'users',
@@ -127,6 +176,7 @@ const seedCourses = async () => {
 
   try {
     let firstCourseId: DefaultDocumentIDType | undefined;
+    let firstPdfLessonId: DefaultDocumentIDType | undefined;
 
     for (const [courseIndex, courseSeed] of courseSeeds.entries()) {
       let courseId: DefaultDocumentIDType | undefined;
@@ -254,6 +304,10 @@ const seedCourses = async () => {
             lessonId = createdLesson.id;
           }
         }
+
+        if (!firstPdfLessonId && courseIndex === 0 && getLessonType(lesson) === 'pdf') {
+          firstPdfLessonId = lessonId;
+        }
       }
     }
 
@@ -302,6 +356,10 @@ const seedCourses = async () => {
     }
 
     await seedDemoAccounts(payload, firstCourseId);
+
+    if (firstPdfLessonId) {
+      await seedFixturePdf(payload, firstPdfLessonId);
+    }
 
     payload.logger.info('Seed complete: courses, lessons, legal pages, and demo accounts are up to date.');
   } finally {

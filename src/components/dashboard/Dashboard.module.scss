@@ -174,8 +174,8 @@
   border-color: var(--red);
 }
 .dashCourseCardLocked {
-  cursor: default;
-  opacity: 0.5;
+  cursor: pointer;
+  opacity: 1;
 }
 .dashCourseThumb {
   align-items: center;
@@ -210,22 +210,6 @@
   font-size: 14px;
   font-weight: 700;
   margin-bottom: 8px;
-}
-.progressBar {
-  background: #1a1a1a;
-  border-radius: 2px;
-  height: 4px;
-  margin-bottom: 6px;
-  overflow: hidden;
-}
-.progressFill {
-  background: var(--red);
-  border-radius: 2px;
-  height: 100%;
-  width: 40%;
-}
-.progressFillSmall {
-  width: 25%;
 }
 .dashCourseMeta {
   color: var(--gray);

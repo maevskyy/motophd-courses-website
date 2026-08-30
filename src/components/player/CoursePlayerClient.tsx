@@ -4,9 +4,10 @@ import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Link } from '@/i18n/routing';
 import { SidebarLesson } from '@/components/prototype/CurriculumAccordion';
-import { useToast } from '@/components/providers/ToastProvider';
 import type { CurriculumModule, PlayerContent } from '@/lib/data';
 import { cx } from '@/lib/classNames';
+import { LessonDownloads } from './LessonDownloads';
+import { LessonVideo } from './LessonVideo';
 import styles from './CoursePlayer.module.scss';
 
 type PlayerTab = 'notes' | 'downloads' | 'overview';
@@ -19,24 +20,13 @@ export function CoursePlayerClient({
   player: PlayerContent;
 }) {
   const t = useTranslations();
-  const { showToast } = useToast();
   const [tab, setTab] = useState<PlayerTab>('notes');
 
   return (
     <main className={styles.playerLayout}>
       <section className={styles.playerMain}>
         <div className={styles.videoContainer}>
-          <div className={styles.videoPlaceholder}>
-            <button
-              className={styles.videoPlayBtn}
-              onClick={() => showToast(t('toast.videoPlaying'))}
-              type="button"
-            >
-              ▶
-            </button>
-            <div className={styles.videoTitleSmall}>{player.title}</div>
-            <div className={styles.videoMetaSmall}>{player.videoMeta}</div>
-          </div>
+          <LessonVideo player={player} />
         </div>
         <div className={styles.videoInfo}>
           <div className={styles.videoInfo__meta}>{t('player.lessonMeta')}</div>
@@ -76,18 +66,7 @@ export function CoursePlayerClient({
           ) : null}
 
           {tab === 'downloads' ? (
-            <button
-              className={styles.pdfDownloadCard}
-              onClick={() => showToast(t('toast.downloading', { name: player.title }))}
-              type="button"
-            >
-              <div className={styles.pdfIcon}>📄</div>
-              <div className={styles.pdfInfo}>
-                <div className={styles.pdfName}>{player.title}</div>
-                <div className={styles.pdfSize}>PDF · Watermarked with your email</div>
-              </div>
-              <span className={styles.pdfBtn}>{t('actions.download')}</span>
-            </button>
+            <LessonDownloads player={player} />
           ) : null}
 
           {tab === 'overview' ? (

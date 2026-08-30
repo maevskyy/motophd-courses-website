@@ -128,6 +128,37 @@ test('lesson API exposes protected content only to previews or paid students', a
   expect(paidLesson).toHaveProperty('body');
 });
 
+test('PDF lessons are served only through the protected lesson route', async ({ request }) => {
+  const courseResponse = await request.get('/api/courses?where[slug][equals]=lean&limit=1&depth=0');
+  const courseId = (await courseResponse.json()).docs[0].id;
+  const lessonsResponse = await request.get(
+    `/api/lessons?where[course][equals]=${courseId}&where[type][equals]=pdf&limit=1&depth=0`
+  );
+  const lesson = (await lessonsResponse.json()).docs[0];
+  const pdfUrl = `/api/lessons/${lesson.id}/pdf?locale=en`;
+
+  const anonymousResponse = await request.get(pdfUrl);
+
+  expect(anonymousResponse.status()).toBe(403);
+
+  const loginResponse = await request.post('/api/users/login', {
+    data: {
+      email: 'student@motophd.com',
+      password: 'student1234'
+    }
+  });
+  const { token } = await loginResponse.json();
+  const paidResponse = await request.get(pdfUrl, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+
+  expect(paidResponse.status()).toBe(200);
+  expect(paidResponse.headers()['content-type']).toContain('application/pdf');
+  expect(paidResponse.headers()['cache-control']).toBe('private, no-store');
+});
+
 test('course page opens from the catalog', async ({ page }) => {
   await page.goto('/en/courses');
   await page.locator('a[href*="/en/courses/"]').first().click();
@@ -196,6 +227,8 @@ test('student with a purchase can open the course player', async ({ page }) => {
 
   await expect(page).toHaveURL(/\/en\/learn\/lean$/);
   await expect(page.getByText('Lesson Notes')).toBeVisible();
+  await expect(page.getByText('Video is unavailable in this environment.')).toBeVisible();
+  await expect(page.locator('iframe')).toHaveCount(0);
 });
 
 test('logout removes access to private pages', async ({ page }) => {

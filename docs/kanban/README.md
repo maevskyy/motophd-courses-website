@@ -19,6 +19,7 @@ docs/tbd/            — бэклог на грумминг (в работу н�
 - [task_real_auth_14](./todo/task_real_auth_14.md) — настоящий вход/выход через Payload, httpOnly-кука, снос фейкового `AuthProvider`
 - [task_protect_private_routes_15](./todo/task_protect_private_routes_15.md) — замок на кабинет и плеер (логин + оплаченная покупка), `user` в запросы данных · зависит от 14
 - [task_close_lesson_leak_16](./todo/task_close_lesson_leak_16.md) — field-level доступ к содержимому уроков, `isFreePreview` начинает работать · зависит от 14
+- [task_payments_skeleton_6](./todo/task_payments_skeleton_6.md) — платёжный каркас: `PaymentProvider`, серверный прайсинг, промокоды, mock-флоу, идемпотентный вебхук, скелет WayForPay
 
 **done:**
 - [task_next_init_and_port_1](./done/task_next_init_and_port_1.md) — init Next.js + перенос прототипа 1:1 (замещает черновики `task_init_repo_1` и `task_rebuild_prototype_10` в tbd)

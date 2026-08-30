@@ -62,6 +62,8 @@ export type PlayerContent = {
   overviewCopy: string;
   moduleOutcome: string[];
   sidebarTitle: string;
+  videoEmbedUrl: string | null;
+  pdfUrl: string | null;
 };
 
 export type PublishedCourse = Course;

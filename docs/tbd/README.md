@@ -8,13 +8,12 @@
 
 | Черновик | Про что |
 |---|---|
-| task_media_stream_5 | R2 + Cloudflare Stream + signed playback |
-| task_payments_skeleton_6 | PaymentProvider, mock, вебхук, идемпотентность |
 | task_monitoring_7 | начинка мониторинга: Prometheus/Loki/дашборды/алерты (Grafana-хост уже поднят) |
 | task_backups_8 | pg_dump → offsite + restore-тест |
 | task_infra_leftovers_13 | хвосты после 3+4: изоляция админки+Access, branch protection, худой образ, rollback-тест, инструкция Ане |
 
 Закрыты 26.07 и переехали в `../kanban/done/`: task_vps_bootstrap_3, task_cicd_4.
+Отгруммлены и переехали в `../kanban/todo/`: task_media_stream_5, task_payments_skeleton_6.
 
 ## Фронт-скоуп (Аня)
 

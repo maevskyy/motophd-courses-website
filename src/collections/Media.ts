@@ -20,7 +20,26 @@ export const Media: CollectionConfig = {
   access: {
     create: ({ req: { user } }) => isAdminUser(user),
     delete: ({ req: { user } }) => isAdminUser(user),
-    read: () => true,
+    read: ({ req: { user } }) => {
+      if (isAdminUser(user)) {
+        return true;
+      }
+
+      return {
+        or: [
+          {
+            mimeType: {
+              not_equals: 'application/pdf'
+            }
+          },
+          {
+            mimeType: {
+              exists: false
+            }
+          }
+        ]
+      };
+    },
     update: ({ req: { user } }) => isAdminUser(user)
   },
   upload: {

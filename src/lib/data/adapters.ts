@@ -145,8 +145,15 @@ export const toCurriculumModules = (
   ];
 };
 
-export const toPlayerContent = (course: Course, lessons: Lesson[]): PlayerContent => {
-  const currentLesson = lessons.find((lesson) => lesson.type === 'video') || lessons[0];
+export const getPlayerLesson = (lessons: Lesson[]) =>
+  lessons.find((lesson) => lesson.type === 'video') || lessons[0];
+
+export const toPlayerContent = (
+  course: Course,
+  lessons: Lesson[],
+  media: Pick<PlayerContent, 'pdfUrl' | 'videoEmbedUrl'>
+): PlayerContent => {
+  const currentLesson = getPlayerLesson(lessons);
   const notes = course.commonMistakes?.split('\n').filter(Boolean) || [];
 
   return {
@@ -160,7 +167,8 @@ export const toPlayerContent = (course: Course, lessons: Lesson[]): PlayerConten
     overviewTitle: course.title,
     overviewCopy: course.description || '',
     moduleOutcome: course.outcomes?.map(({ text }) => text).filter(Boolean) || [],
-    sidebarTitle: course.title
+    sidebarTitle: course.title,
+    ...media
   };
 };
 

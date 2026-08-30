@@ -15,12 +15,16 @@ export function DashboardClient({
   content,
   courses,
   email,
-  locale
+  locale,
+  name,
+  availableCourses
 }: {
+  availableCourses: CourseCardCourse[];
   content: DashboardContent;
   courses: CourseCardCourse[];
   email: string;
   locale: 'en' | 'ru';
+  name: string;
 }) {
   const t = useTranslations();
   const [tab, setTab] = useState<DashboardTab>('overview');
@@ -29,8 +33,8 @@ export function DashboardClient({
     <main className={styles.dashboardLayout}>
       <aside className={styles.dashboardSidebar}>
         <div className={styles.dashUser}>
-          <div className={styles.dashAvatar}>D</div>
-          <div className={styles.dashName}>{content.dashboard.studentName}</div>
+          <div className={styles.dashAvatar}>{name.slice(0, 1).toUpperCase()}</div>
+          <div className={styles.dashName}>{name}</div>
           <div className={styles.dashEmail}>{email}</div>
         </div>
         <nav className={styles.dashNav}>
@@ -64,10 +68,10 @@ export function DashboardClient({
         </div>
       </aside>
       <section className={styles.dashboardMain}>
-        {tab === 'overview' ? <OverviewPanel content={content} courses={courses} email={email} /> : null}
-        {tab === 'courses' ? <CoursesPanel content={content} courses={courses} email={email} /> : null}
-        {tab === 'downloads' ? <DownloadsPanel content={content} courses={courses} email={email} /> : null}
-        {tab === 'profile' ? <ProfilePanel content={content} courses={courses} email={email} /> : null}
+        {tab === 'overview' ? <OverviewPanel content={content} courses={courses} email={email} name={name} /> : null}
+        {tab === 'courses' ? <CoursesPanel availableCourses={availableCourses} content={content} courses={courses} email={email} name={name} /> : null}
+        {tab === 'downloads' ? <DownloadsPanel content={content} courses={courses} email={email} name={name} /> : null}
+        {tab === 'profile' ? <ProfilePanel content={content} courses={courses} email={email} name={name} /> : null}
       </section>
     </main>
   );

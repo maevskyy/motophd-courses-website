@@ -1,0 +1,76 @@
+apiVersion: 1
+
+groups:
+  - orgId: 1
+    name: infrastructure
+    folder: MotoPhD
+    interval: 1m
+    rules:
+      - uid: motophd-site-unavailable
+        title: Сайт не отвечает
+        condition: A
+        for: 2m
+        noDataState: Alerting
+        execErrState: Alerting
+        annotations:
+          summary: https://motophd.com/api/health не отвечает из VPS.
+        labels:
+          severity: critical
+        data:
+          - refId: A
+            queryType: ''
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: prometheus
+            model:
+              refId: A
+              expr: probe_success{job="blackbox",instance="https://motophd.com/api/health"} == 0
+              instant: true
+              range: false
+
+      - uid: motophd-disk-85-percent
+        title: Диск заполнен более чем на 85%
+        condition: A
+        for: 10m
+        noDataState: NoData
+        execErrState: Error
+        annotations:
+          summary: На хосте осталось менее 15% свободного места на корневом диске.
+        labels:
+          severity: warning
+        data:
+          - refId: A
+            queryType: ''
+            relativeTimeRange:
+              from: 900
+              to: 0
+            datasourceUid: prometheus
+            model:
+              refId: A
+              expr: (1 - (node_filesystem_avail_bytes{mountpoint="/",fstype!~"tmpfs|overlay"} / node_filesystem_size_bytes{mountpoint="/",fstype!~"tmpfs|overlay"})) * 100 > 85
+              instant: true
+              range: false
+
+      - uid: motophd-container-restarted
+        title: Контейнер перезапустился
+        condition: A
+        for: 1m
+        noDataState: NoData
+        execErrState: Error
+        annotations:
+          summary: cAdvisor заметил изменение времени запуска контейнера за последние 10 минут.
+        labels:
+          severity: warning
+        data:
+          - refId: A
+            queryType: ''
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: prometheus
+            model:
+              refId: A
+              expr: changes(container_start_time_seconds{container!="",name!=""}[10m]) > 0
+              instant: true
+              range: false

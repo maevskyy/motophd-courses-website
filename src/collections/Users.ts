@@ -46,6 +46,15 @@ export const Users: CollectionConfig = {
   },
   fields: [
     {
+      name: 'name',
+      type: 'text',
+      maxLength: 120,
+      label: {
+        en: 'Name',
+        ru: 'Имя'
+      }
+    },
+    {
       name: 'role',
       type: 'select',
       required: true,

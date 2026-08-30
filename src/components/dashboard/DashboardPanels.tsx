@@ -1,42 +1,41 @@
 import { useTranslations } from 'next-intl';
 import { useToast } from '@/components/providers/ToastProvider';
 import type { CourseCardCourse, DashboardContent } from '@/lib/data';
+import { AccountProfileForm } from './AccountProfileForm';
 import { DashStat, LockedDashCourse, PurchasedDashCourse } from './DashboardCards';
 import styles from './Dashboard.module.scss';
 
 interface PanelProps {
+  availableCourses?: CourseCardCourse[];
   content: DashboardContent;
   courses: CourseCardCourse[];
   email: string;
+  name: string;
 }
 
-export function OverviewPanel({ courses }: PanelProps) {
+export function OverviewPanel({ courses, name }: PanelProps) {
   const t = useTranslations();
-  const purchasedCourse = courses[0];
 
   return (
     <>
       <div className={styles.dashGreeting}>
-        <h2>{t('dashboard.welcomeTitle')} 👋</h2>
+        <h2>{t('dashboard.welcomeTitle', { name })} 👋</h2>
         <p>{t('dashboard.welcomeSub')}</p>
       </div>
       <div className={styles.dashStats}>
-        <DashStat label={t('dashboard.coursePurchased')} value="1" />
-        <DashStat label={t('dashboard.courseProgress')} suffix="%" value="40" />
-        <DashStat label={t('dashboard.pdfsAvailable')} value="2" />
+        <DashStat label={t('dashboard.purchasedCourses')} value={String(courses.length)} />
       </div>
       <div className={styles.dashSectionTitle}>{t('dashboard.myCourses')}</div>
       <div className={styles.dashCourses}>
-        {purchasedCourse ? <PurchasedDashCourse course={purchasedCourse} /> : null}
-        {courses.slice(1).map((course) => (
-          <LockedDashCourse course={course} key={course.slug} />
+        {courses.map((course) => (
+          <PurchasedDashCourse course={course} key={course.slug} />
         ))}
       </div>
     </>
   );
 }
 
-export function CoursesPanel({ courses }: PanelProps) {
+export function CoursesPanel({ availableCourses = [], courses }: PanelProps) {
   const t = useTranslations();
 
   return (
@@ -47,11 +46,13 @@ export function CoursesPanel({ courses }: PanelProps) {
       </div>
       <div className={styles.dashSectionTitle}>{t('dashboard.activeEnrollments')}</div>
       <div className={styles.dashCourses}>
-        {courses[0] ? <PurchasedDashCourse compact course={courses[0]} /> : null}
+        {courses.map((course) => (
+          <PurchasedDashCourse course={course} key={course.slug} />
+        ))}
       </div>
       <div className={styles.dashSectionTitle}>{t('dashboard.availableToPurchase')}</div>
       <div className={styles.dashCourses}>
-        {courses.slice(1).map((course) => (
+        {availableCourses.map((course) => (
           <LockedDashCourse course={course} key={course.slug} />
         ))}
       </div>
@@ -90,52 +91,15 @@ export function DownloadsPanel({ content }: PanelProps) {
   );
 }
 
-export function ProfilePanel({ email }: PanelProps) {
+export function ProfilePanel({ email, name }: PanelProps) {
   const t = useTranslations();
-  const { showToast } = useToast();
 
   return (
     <>
       <div className={styles.dashGreeting}>
         <h2>{t('dashboard.profileSettings')}</h2>
       </div>
-      <div className={styles.formGrid}>
-        <Field defaultValue="Demo Student" id="profile-name" label={t('dashboard.fullName')} />
-        <Field defaultValue={email} id="profile-email" label={t('login.email')} type="email" />
-        <Field id="profile-password" label={t('dashboard.newPassword')} placeholder={t('dashboard.keepPassword')} type="password" />
-        <button className={styles.button} onClick={() => showToast(t('toast.profileSaved'))} type="button">
-          {t('actions.saveChanges')}
-        </button>
-      </div>
+      <AccountProfileForm email={email} name={name} />
     </>
-  );
-}
-
-function Field({
-  defaultValue,
-  id,
-  label,
-  placeholder,
-  type
-}: {
-  defaultValue?: string;
-  id: string;
-  label: string;
-  placeholder?: string;
-  type?: string;
-}) {
-  return (
-    <div className={styles.formGroup}>
-      <label className={styles.formLabel} htmlFor={id}>
-        {label}
-      </label>
-      <input
-        className={styles.formInput}
-        defaultValue={defaultValue}
-        id={id}
-        placeholder={placeholder}
-        type={type}
-      />
-    </div>
   );
 }
