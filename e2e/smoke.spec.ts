@@ -1,5 +1,23 @@
 import { expect, test } from '@playwright/test';
 
+// Сервер читает .env сам (Next), а процесс Playwright — нет, поэтому режим
+// определяем по тому же файлу: без ключей плеер показывает заглушку.
+import { readFileSync } from 'node:fs';
+
+function isStreamConfigured() {
+  let envFile = '';
+
+  try {
+    envFile = readFileSync('.env', 'utf8');
+  } catch {
+    envFile = '';
+  }
+
+  return ['CF_STREAM_CUSTOMER_CODE', 'CF_STREAM_KEY_ID', 'CF_STREAM_KEY_PEM'].every(
+    (name) => process.env[name] || new RegExp(`^${name}=.+`, 'm').test(envFile)
+  );
+}
+
 test('health endpoint responds', async ({ request }) => {
   const response = await request.get('/api/health');
 
@@ -230,8 +248,16 @@ test('student with a purchase can open the course player', async ({ page }) => {
 
   await expect(page).toHaveURL(/\/en\/learn\/lean$/);
   await expect(page.getByText('Lesson Notes')).toBeVisible();
-  await expect(page.getByText('Video is unavailable in this environment.')).toBeVisible();
-  await expect(page.locator('iframe')).toHaveCount(0);
+
+  if (isStreamConfigured()) {
+    // Ключи Cloudflare на месте: видео-уроки рендерят iframe с подписанным
+    // токеном, голого UID в src нет, заглушка не показывается.
+    await expect(page.locator('iframe[src*="cloudflarestream.com"]').first()).toBeAttached();
+    await expect(page.getByText('Video is unavailable in this environment.')).toHaveCount(0);
+  } else {
+    await expect(page.getByText('Video is unavailable in this environment.')).toBeVisible();
+    await expect(page.locator('iframe')).toHaveCount(0);
+  }
 });
 
 test('logout removes access to private pages', async ({ page }) => {
