@@ -1,46 +1,17 @@
+import {
+  emailLayout,
+  escapeHtml,
+  getDashboardUrl,
+  getLoginUrl,
+  link,
+  signatureText,
+  tierName
+} from './emailLayout';
 import type { EmailLocale, EmailMessage, PurchaseTier } from './types';
 
-const escapeHtml = (value: string) =>
-  value.replace(/[&<>'"]/g, (character) => {
-    const entities: Record<string, string> = {
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;',
-      "'": '&#39;',
-      '"': '&quot;'
-    };
+export { getAppUrl } from './emailLayout';
 
-    return entities[character];
-  });
-
-const emailLayout = (content: string) =>
-  `<!doctype html><html lang="en"><body style="font-family:Arial,sans-serif;line-height:1.5;color:#181818">${content}</body></html>`;
-
-const link = (url: string, label: string) =>
-  `<a href="${escapeHtml(url)}">${escapeHtml(label)}</a>`;
-
-export const getAppUrl = () => (process.env.APP_URL || 'http://localhost:3000').replace(/\/$/, '');
-
-const getLoginUrl = (locale: EmailLocale) => `${getAppUrl()}/${locale}/login`;
-
-const getDashboardUrl = (locale: EmailLocale) => `${getAppUrl()}/${locale}/dashboard`;
-
-const tierName = (tier: PurchaseTier, locale: EmailLocale) => {
-  const names = {
-    en: {
-      feedback: 'Course + feedback',
-      feedback_upgrade: 'Feedback upgrade',
-      standard: 'Course only'
-    },
-    ru: {
-      feedback: 'Курс + обратная связь',
-      feedback_upgrade: 'Докупка обратной связи',
-      standard: 'Только курс'
-    }
-  };
-
-  return names[locale][tier];
-};
+const RESET_LINK_TTL = { en: '1 hour', ru: '1 час' };
 
 export const createAccountCredentialsEmail = ({
   to,
@@ -56,10 +27,11 @@ export const createAccountCredentialsEmail = ({
   if (locale === 'ru') {
     return {
       to,
-      subject: 'Твои данные для входа в MotoPhD',
-      text: `Привет!\n\nТвой аккаунт MotoPhD готов.\nEmail: ${to}\nПароль: ${password}\n\nВойти: ${loginUrl}\n\nПосле входа можешь сменить пароль в кабинете.`,
+      subject: 'Данные для входа в MotoPhD',
+      text: `Привет!\n\nАккаунт MotoPhD готов.\nEmail: ${to}\nПароль: ${password}\n\nВойти: ${loginUrl}\n\nПароль прислан открытым текстом — рекомендуем сменить его в кабинете после входа.${signatureText(locale)}`,
       html: emailLayout(
-        `<p>Привет!</p><p>Твой аккаунт MotoPhD готов.</p><p>Email: <strong>${escapeHtml(to)}</strong><br>Пароль: <strong>${escapeHtml(password)}</strong></p><p>${link(loginUrl, 'Войти в кабинет')}</p><p>После входа можешь сменить пароль в кабинете.</p>`
+        `<p>Привет!</p><p>Аккаунт MotoPhD готов.</p><p>Email: <strong>${escapeHtml(to)}</strong><br>Пароль: <strong>${escapeHtml(password)}</strong></p><p>${link(loginUrl, 'Войти в кабинет')}</p><p>Пароль прислан открытым текстом — рекомендуем сменить его в кабинете после входа.</p>`,
+        locale
       )
     };
   }
@@ -67,9 +39,10 @@ export const createAccountCredentialsEmail = ({
   return {
     to,
     subject: 'Your MotoPhD access details',
-    text: `Hi!\n\nYour MotoPhD account is ready.\nEmail: ${to}\nPassword: ${password}\n\nSign in: ${loginUrl}\n\nYou can change your password in the dashboard after signing in.`,
+    text: `Hi!\n\nYour MotoPhD account is ready.\nEmail: ${to}\nPassword: ${password}\n\nSign in: ${loginUrl}\n\nThis password was sent in plain text — we recommend changing it in your dashboard.${signatureText(locale)}`,
     html: emailLayout(
-      `<p>Hi!</p><p>Your MotoPhD account is ready.</p><p>Email: <strong>${escapeHtml(to)}</strong><br>Password: <strong>${escapeHtml(password)}</strong></p><p>${link(loginUrl, 'Sign in to your dashboard')}</p><p>You can change your password in the dashboard after signing in.</p>`
+      `<p>Hi!</p><p>Your MotoPhD account is ready.</p><p>Email: <strong>${escapeHtml(to)}</strong><br>Password: <strong>${escapeHtml(password)}</strong></p><p>${link(loginUrl, 'Sign in to your dashboard')}</p><p>This password was sent in plain text — we recommend changing it in your dashboard.</p>`,
+      locale
     )
   };
 };
@@ -93,9 +66,10 @@ export const createPurchaseConfirmationEmail = ({
     return {
       to,
       subject: 'Покупка MotoPhD подтверждена',
-      text: `Спасибо за покупку!\n\nКурс: ${courseTitle}\nТариф: ${selectedTier}\n\nТвой кабинет: ${dashboardUrl}`,
+      text: `Спасибо за покупку!\n\nКурс: ${courseTitle}\nТариф: ${selectedTier}\n\nКабинет: ${dashboardUrl}${signatureText(locale)}`,
       html: emailLayout(
-        `<p>Спасибо за покупку!</p><p>Курс: <strong>${title}</strong><br>Тариф: <strong>${escapeHtml(selectedTier)}</strong></p><p>${link(dashboardUrl, 'Перейти в кабинет')}</p>`
+        `<p>Спасибо за покупку!</p><p>Курс: <strong>${title}</strong><br>Тариф: <strong>${escapeHtml(selectedTier)}</strong></p><p>${link(dashboardUrl, 'Перейти в кабинет')}</p>`,
+        locale
       )
     };
   }
@@ -103,9 +77,10 @@ export const createPurchaseConfirmationEmail = ({
   return {
     to,
     subject: 'Your MotoPhD purchase is confirmed',
-    text: `Thanks for your purchase!\n\nCourse: ${courseTitle}\nTier: ${selectedTier}\n\nYour dashboard: ${dashboardUrl}`,
+    text: `Thanks for your purchase!\n\nCourse: ${courseTitle}\nTier: ${selectedTier}\n\nYour dashboard: ${dashboardUrl}${signatureText(locale)}`,
     html: emailLayout(
-      `<p>Thanks for your purchase!</p><p>Course: <strong>${title}</strong><br>Tier: <strong>${escapeHtml(selectedTier)}</strong></p><p>${link(dashboardUrl, 'Open your dashboard')}</p>`
+      `<p>Thanks for your purchase!</p><p>Course: <strong>${title}</strong><br>Tier: <strong>${escapeHtml(selectedTier)}</strong></p><p>${link(dashboardUrl, 'Open your dashboard')}</p>`,
+      locale
     )
   };
 };
@@ -117,25 +92,36 @@ export const createFeedbackInstructionsEmail = ({
   to: string;
   locale: EmailLocale;
 }): EmailMessage => {
-  const contactUrl = process.env.FEEDBACK_CONTACT_URL || '';
-  const contact = contactUrl
+  const contactUrl = process.env.FEEDBACK_CONTACT_URL?.trim();
+
+  if (!contactUrl) {
+    // Оплаченный тариф без канала связи — инцидент: иначе покупатель за €129
+    // получает письмо «контакт скоро появится» и не может забрать услугу.
+    console.error('FEEDBACK_CONTACT_URL is not set; feedback email falls back to replies:', to);
+  }
+
+  const contactHtml = contactUrl
     ? link(
         contactUrl,
         locale === 'ru' ? 'Написать в WhatsApp / Telegram' : 'Message us on WhatsApp / Telegram'
       )
     : locale === 'ru'
-      ? 'Контакт WhatsApp / Telegram скоро появится.'
-      : 'The WhatsApp / Telegram contact link will be available soon.';
-  const contactText =
-    contactUrl || (locale === 'ru' ? 'Контакт будет добавлен скоро.' : 'Contact link coming soon.');
+      ? 'Просто ответь на это письмо — пришлём ссылку на чат.'
+      : 'Just reply to this email and we will send you the chat link.';
+  const contactPlain = contactUrl
+    ? contactUrl
+    : locale === 'ru'
+      ? 'ответь на это письмо, и мы пришлём ссылку на чат'
+      : 'reply to this email and we will send you the chat link';
 
   if (locale === 'ru') {
     return {
       to,
       subject: 'Как получить обратную связь MotoPhD',
-      text: `Спасибо, что выбрал тариф с обратной связью!\n\n1. Напиши нам в WhatsApp или Telegram: ${contactText}\n2. Пришли видео своей езды и коротко опиши, над чем хочешь поработать.\n\nВ тариф включены: 1 видео-разбор и 1 Zoom-созвон на 45 минут.`,
+      text: `Спасибо за выбор тарифа с обратной связью!\n\n1. Свяжись с нами: ${contactPlain}\n2. Пришли видео своей езды и коротко опиши, над чем хочешь поработать.\n\nВ тариф включены: 1 видео-разбор и 1 Zoom-созвон на 45 минут.${signatureText(locale)}`,
       html: emailLayout(
-        `<p>Спасибо, что выбрал тариф с обратной связью!</p><ol><li>${contact}</li><li>Пришли видео своей езды и коротко опиши, над чем хочешь поработать.</li></ol><p>В тариф включены: <strong>1 видео-разбор + 1 Zoom-созвон на 45 минут</strong>.</p>`
+        `<p>Спасибо за выбор тарифа с обратной связью!</p><ol><li>${contactHtml}</li><li>Пришли видео своей езды и коротко опиши, над чем хочешь поработать.</li></ol><p>В тариф включены: <strong>1 видео-разбор + 1 Zoom-созвон на 45 минут</strong>.</p>`,
+        locale
       )
     };
   }
@@ -143,9 +129,10 @@ export const createFeedbackInstructionsEmail = ({
   return {
     to,
     subject: 'How to get your MotoPhD feedback',
-    text: `Thanks for choosing the feedback tier!\n\n1. Message us on WhatsApp or Telegram: ${contactText}\n2. Send a video of your riding and tell us briefly what you want to work on.\n\nYour tier includes: 1 video review and 1 Zoom call (45 minutes).`,
+    text: `Thanks for choosing the feedback tier!\n\n1. Get in touch: ${contactPlain}\n2. Send a video of your riding and tell us briefly what you want to work on.\n\nYour tier includes: 1 video review and 1 Zoom call (45 minutes).${signatureText(locale)}`,
     html: emailLayout(
-      `<p>Thanks for choosing the feedback tier!</p><ol><li>${contact}</li><li>Send a video of your riding and tell us briefly what you want to work on.</li></ol><p>Your tier includes: <strong>1 video review + 1 Zoom call (45 minutes)</strong>.</p>`
+      `<p>Thanks for choosing the feedback tier!</p><ol><li>${contactHtml}</li><li>Send a video of your riding and tell us briefly what you want to work on.</li></ol><p>Your tier includes: <strong>1 video review + 1 Zoom call (45 minutes)</strong>.</p>`,
+      locale
     )
   };
 };
@@ -163,9 +150,10 @@ export const createPasswordResetEmail = ({
     return {
       to,
       subject: 'Восстановление пароля MotoPhD',
-      text: `Чтобы задать новый пароль, перейди по ссылке:\n${resetUrl}\n\nЕсли ты не запрашивал восстановление пароля, просто проигнорируй это письмо.`,
+      text: `Чтобы задать новый пароль, перейди по ссылке:\n${resetUrl}\n\nСсылка действует ${RESET_LINK_TTL.ru}.\nЕсли запрос был не от тебя, просто проигнорируй это письмо.${signatureText(locale)}`,
       html: emailLayout(
-        `<p>Чтобы задать новый пароль, перейди по ссылке:</p><p>${link(resetUrl, 'Сбросить пароль')}</p><p>Если ты не запрашивал восстановление пароля, просто проигнорируй это письмо.</p>`
+        `<p>Чтобы задать новый пароль, перейди по ссылке:</p><p>${link(resetUrl, 'Сбросить пароль')}</p><p>Ссылка действует ${RESET_LINK_TTL.ru}. Если запрос был не от тебя, просто проигнорируй это письмо.</p>`,
+        locale
       )
     };
   }
@@ -173,9 +161,10 @@ export const createPasswordResetEmail = ({
   return {
     to,
     subject: 'Reset your MotoPhD password',
-    text: `Use this link to set a new password:\n${resetUrl}\n\nIf you did not request a password reset, you can ignore this email.`,
+    text: `Use this link to set a new password:\n${resetUrl}\n\nThe link is valid for ${RESET_LINK_TTL.en}.\nIf this request was not from you, you can ignore this email.${signatureText(locale)}`,
     html: emailLayout(
-      `<p>Use this link to set a new password:</p><p>${link(resetUrl, 'Reset password')}</p><p>If you did not request a password reset, you can ignore this email.</p>`
+      `<p>Use this link to set a new password:</p><p>${link(resetUrl, 'Reset password')}</p><p>The link is valid for ${RESET_LINK_TTL.en}. If this request was not from you, you can ignore this email.</p>`,
+      locale
     )
   };
 };

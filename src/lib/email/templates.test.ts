@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   createAccountCredentialsEmail,
   createFeedbackInstructionsEmail,
@@ -44,9 +44,56 @@ describe('email templates', () => {
     expect(reset.text).toContain('https://motophd.com/reset?token=test');
   });
 
-  it('uses a helpful placeholder when the feedback contact is not configured', () => {
+  it('falls back to replies and reports an incident when the feedback contact is missing', () => {
+    const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+
     const email = createFeedbackInstructionsEmail({ locale: 'en', to: 'student@motophd.com' });
 
-    expect(email.text).toContain('Contact link coming soon.');
+    expect(email.text).toContain('reply to this email');
+    expect(email.text).not.toMatch(/coming soon|скоро/i);
+    expect(error).toHaveBeenCalled();
+
+    error.mockRestore();
+  });
+
+  it('signs every email so it does not read as phishing', () => {
+    const email = createAccountCredentialsEmail({
+      locale: 'ru',
+      password: 'secure-password',
+      to: 'student@motophd.com'
+    });
+
+    expect(email.html).toContain('<html lang="ru"');
+    expect(email.html).toContain('charset="utf-8"');
+    expect(email.html).toContain('MotoPhD Online');
+    expect(email.text).toContain('MotoPhD Online');
+  });
+
+  it('tells the reader how long a reset link stays valid', () => {
+    const en = createPasswordResetEmail({
+      locale: 'en',
+      resetUrl: 'https://motophd.com/reset?token=test',
+      to: 'student@motophd.com'
+    });
+    const ru = createPasswordResetEmail({
+      locale: 'ru',
+      resetUrl: 'https://motophd.com/reset?token=test',
+      to: 'student@motophd.com'
+    });
+
+    expect(en.text).toContain('valid for 1 hour');
+    expect(ru.text).toContain('действует 1 час');
+  });
+
+  it('escapes HTML coming from course titles', () => {
+    const email = createPurchaseConfirmationEmail({
+      courseTitle: '<img src=x onerror=alert(1)>',
+      locale: 'en',
+      tier: 'standard',
+      to: 'student@motophd.com'
+    });
+
+    expect(email.html).not.toContain('<img src=x');
+    expect(email.html).toContain('&lt;img src=x');
   });
 });
