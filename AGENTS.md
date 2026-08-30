@@ -71,13 +71,16 @@
 - [docs/GITFLOW.md](./docs/GITFLOW.md) — git-процесс (пока: пушим в `main`)
 - [docs/CODE_STYLE.md](./docs/CODE_STYLE.md) — код-стайл Next.js (размеры файлов, колокация)
 - [docs/TZ.md](./docs/TZ.md) — полное ТЗ (справочно; предметные правила — в трёх файлах выше)
-- [docs/kanban/](./docs/kanban/README.md) — доска задач · [docs/tbd/](./docs/tbd/README.md) — бэклог на грумминг
+- [docs/LINEAR.md](./docs/LINEAR.md) — **задачи: source of truth — Linear** (команда motophd) + протокол работы агента с карточкой
+- [docs/kanban/](./docs/kanban/README.md) — бывшая доска задач (историческая справка) · [docs/tbd/](./docs/tbd/README.md) — материалы грумминга
 
 ## Команды
 
 ```bash
 pnpm install
-docker compose -f docker-compose.dev.yml up -d
+pnpm db:up          # локальный Postgres (brew services). Первый раз: pnpm db:setup
+pnpm payload migrate
+pnpm seed
 pnpm dev
 pnpm payload
 pnpm generate:types
@@ -91,6 +94,19 @@ pnpm build
 
 `pnpm test` — юнит/компонент (Vitest). `pnpm test:e2e` — смоук по страницам (Playwright,
 порт 3100): нужны дев-Postgres (`pnpm db:up`), `pnpm seed` и свежий `pnpm build`.
+
+**База локально, без Docker** (порт 5432, БД/роль `motophd`):
+
+| Команда | Что делает |
+|---|---|
+| `pnpm db:up` / `pnpm db:down` | старт/стоп локального Postgres через brew services |
+| `pnpm db:setup` | создать роль и базу (идемпотентно; владелец базы обязан быть `motophd`) |
+| `pnpm db:reset` | снести базу и собрать заново: setup → migrate → seed |
+| `pnpm db:psql` | psql-консоль к дев-базе |
+| `pnpm db:up:docker` | старый путь через Docker (порт 5433) — если понадобится |
+
+После правок `payload.config.ts` (особенно плагинов) — `pnpm payload generate:importmap`,
+иначе админка отдаёт белый экран.
 
 Текущая версия — сайт читает контент из Payload, прод развёрнут (OVH + GHCR + Caddy + Cloudflare,
 деплой кнопкой в Actions), тестовый фундамент стоит. Дальше по бэклогу: медиа (R2/Stream),

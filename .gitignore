@@ -6,3 +6,6 @@ node_modules/
 out/
 coverage/
 *.tsbuildinfo
+media/
+test-results/
+playwright-report/
