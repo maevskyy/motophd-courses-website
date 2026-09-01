@@ -62,7 +62,7 @@ const verifyMockCallback = (rawBody: string, signature: string | null): Verified
 export const mockProvider: PaymentProvider = {
   name: 'mock',
   buildAck: () => Response.json({ ok: true }),
-  createCheckout: ({ locale, orderReference, postPaymentToken }) => {
+  createCheckout: async ({ locale, orderReference, postPaymentToken }) => {
     const query = new URLSearchParams({ order: orderReference });
 
     if (postPaymentToken) {

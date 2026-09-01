@@ -206,12 +206,14 @@ export const createCheckout = async ({
     overrideAccess: true
   });
 
-  const checkout = provider.createCheckout({
+  const checkout = await provider.createCheckout({
     amount: pricing.amount,
     currency: course.currency,
     locale,
     orderReference,
-    postPaymentToken
+    postPaymentToken,
+    productName: `${course.title} — ${submittedTier}`,
+    clientEmail: email
   });
 
   return { redirectUrl: checkout.redirectUrl };

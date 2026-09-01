@@ -8,6 +8,8 @@ export type CheckoutRequest = {
   locale: 'en' | 'ru';
   orderReference: string;
   postPaymentToken?: string;
+  productName: string;
+  clientEmail: string;
 };
 
 export type CheckoutResponse = {
@@ -24,6 +26,6 @@ export type VerifiedCallback = {
 export interface PaymentProvider {
   name: 'mock' | 'wayforpay';
   buildAck: (callback: VerifiedCallback) => Response;
-  createCheckout: (request: CheckoutRequest) => CheckoutResponse;
+  createCheckout: (request: CheckoutRequest) => Promise<CheckoutResponse>;
   verifyCallback: (rawBody: string, signature: string | null) => VerifiedCallback | null;
 }

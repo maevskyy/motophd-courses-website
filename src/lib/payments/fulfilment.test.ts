@@ -36,4 +36,16 @@ describe('fulfilPayment', () => {
     expect(mocks.update).not.toHaveBeenCalled();
     expect(mocks.logPaymentNotification).not.toHaveBeenCalled();
   });
+
+  it('leaves a pending purchase untouched for a non-approved callback', async () => {
+    mocks.find.mockResolvedValue({ docs: [{ id: 17, status: 'pending' }] });
+
+    await expect(fulfilPayment({ ...callback, status: 'failed' })).resolves.toEqual({
+      found: true,
+      fulfilled: false
+    });
+
+    expect(mocks.update).not.toHaveBeenCalled();
+    expect(mocks.logPaymentNotification).not.toHaveBeenCalled();
+  });
 });
