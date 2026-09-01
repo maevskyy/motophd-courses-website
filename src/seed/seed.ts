@@ -204,6 +204,14 @@ const seedDemoAccounts = async (payload: Payload, firstCourseId: DefaultDocument
   await upsertDemoUser(payload, 'lockout@motophd.com', 'lockout1234');
   await upsertDemoUser(payload, 'ratelimit@motophd.com', 'ratelimit1234');
 
+  // Отдельный существующий аккаунт для e2e отказа от оплаты. После Decline
+  // тест входит им штатно и проверяет pending-покупку без чужой сессии.
+  const checkoutDecline = await upsertDemoUser(
+    payload,
+    'checkout-decline@motophd.com',
+    'checkout-decline1234'
+  );
+
   // Смена пароля в e2e гоняется на своём аккаунте: сид возвращает пароль
   // на место, даже если прогон упал посередине.
   await upsertDemoUser(payload, 'passwd@motophd.com', 'passwd1234');
@@ -228,12 +236,56 @@ const seedDemoAccounts = async (payload: Payload, firstCourseId: DefaultDocument
     }
   });
 
+  await payload.delete({
+    collection: 'purchases',
+    overrideAccess: true,
+    where: {
+      user: {
+        equals: checkoutDecline.id
+      }
+    }
+  });
+
   await upsertPurchase(payload, {
     course: firstCourseId,
     providerTxnId: 'seed-student-first-course',
     tier: 'standard',
     user: student.id
   });
+};
+
+const seedPromoCodes = async (payload: Payload) => {
+  if (process.env.NODE_ENV === 'production') {
+    return;
+  }
+
+  const existing = await payload.find({
+    collection: 'promoCodes',
+    depth: 0,
+    limit: 1,
+    overrideAccess: true,
+    where: { code: { equals: 'MOTO10' } }
+  });
+  const data = {
+    active: true,
+    code: 'MOTO10',
+    discountType: 'percent' as const,
+    maxUses: 100,
+    usedCount: 0,
+    value: 10
+  };
+
+  if (existing.docs[0]) {
+    await payload.update({
+      collection: 'promoCodes',
+      data,
+      id: existing.docs[0].id,
+      overrideAccess: true
+    });
+    return;
+  }
+
+  await payload.create({ collection: 'promoCodes', data, overrideAccess: true });
 };
 
 const seedCourses = async () => {
@@ -270,8 +322,8 @@ const seedCourses = async () => {
           title: course.title,
           pain: course.pain,
           description: course.description,
-          priceStandard: 49,
-          priceFeedback: 149,
+          priceStandard: 29,
+          priceFeedback: 129,
           currency: 'EUR' as const,
           outcomes: getOutcomes(course, locale),
           keyPoint: getKeyPoint(course),
@@ -439,6 +491,7 @@ const seedCourses = async () => {
     }
 
     await seedDemoAccounts(payload, firstCourseId);
+    await seedPromoCodes(payload);
 
     for (const lessonId of [firstPdfLessonId, firstPaidPdfLessonId]) {
       if (lessonId) {

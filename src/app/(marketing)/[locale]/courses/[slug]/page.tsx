@@ -1,4 +1,3 @@
-import { getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { Link } from '@/i18n/routing';
 import { AccessNotice } from '@/components/courseSales/AccessNotice';
@@ -11,6 +10,7 @@ import {
   toCurriculumModules,
   toSalesContent
 } from '@/lib/data';
+import { getPaymentProvider } from '@/lib/payments';
 import { requireLocale } from '@/i18n/requireLocale';
 import styles from '@/components/courseSales/CourseSalesPage.module.scss';
 
@@ -36,7 +36,6 @@ export default async function CourseSalesPage({
     notFound();
   }
 
-  const t = await getTranslations({ locale: safeLocale, namespace: 'actions' });
   const lessons = await getCourseCurriculum(course.id, safeLocale);
   const sales = toSalesContent(course, safeLocale);
   const curriculum = toCurriculumModules(course, lessons, safeLocale);
@@ -69,8 +68,9 @@ export default async function CourseSalesPage({
             </div>
           </div>
           <PricingBox
+            checkoutEnabled={Boolean(getPaymentProvider())}
             courseSlug={course.slug}
-            loginHref={`/${safeLocale}/login?next=${encodeURIComponent(`/${safeLocale}/courses/${course.slug}`)}`}
+            locale={safeLocale}
             sales={sales}
           />
         </div>

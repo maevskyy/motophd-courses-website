@@ -188,6 +188,7 @@ jobs:
             -e RATE_LIMIT_PDF_ANON_IP=10000 \
             -e RATE_LIMIT_FORGOT_IP=10000 \
             -e RATE_LIMIT_FORGOT_EMAIL=10000 \
+            -e PAYMENTS_PROVIDER=mock \
             -v "$PWD/media:/app/media:ro" \
             "$IMAGE_NAME:sha-${{ github.sha }}"
           curl -fsS --retry 30 --retry-delay 2 --retry-all-errors "$E2E_BASE_URL/api/health"

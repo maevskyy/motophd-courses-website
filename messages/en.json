@@ -132,6 +132,29 @@
     "opening": "Opening: {name}",
     "nowPlaying": "Now playing this lesson"
   },
+  "checkout": {
+    "email": "Email",
+    "promoCode": "Promo code",
+    "unavailable": "We cannot accept payment right now — please contact us.",
+    "mockTitle": "Mock bank",
+    "mockDescription": "This is a test payment page.",
+    "pay": "Pay",
+    "decline": "Decline",
+    "successTitle": "Payment complete",
+    "successSignedIn": "You are signed in and your course is ready.",
+    "successLogin": "Payment is complete. Sign in to access your course.",
+    "failTitle": "Payment was not completed",
+    "failDescription": "Your order is still pending. You can try again later.",
+    "errors": {
+      "alreadyPurchased": "This course is already in your purchases.",
+      "checkoutUnavailable": "We cannot accept payment right now — please contact us.",
+      "invalidEmail": "Enter a valid email address.",
+      "invalidPromoCode": "This promo code cannot be used.",
+      "invalidTier": "This purchase option is unavailable.",
+      "minimumAmount": "The discounted total must be at least €1.",
+      "upgradeUnavailable": "The feedback upgrade requires an existing standard purchase."
+    }
+  },
   "footer": {
     "tagline": "Premium online motorcycle education. Learn to ride with confidence, understanding, and precision.",
     "coursesHeading": "Courses",

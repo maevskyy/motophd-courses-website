@@ -85,12 +85,14 @@ export const toSalesContent = (course: Course, locale: AppLocale): SalesContent 
       {
         name: text.courseOnly,
         price: `€${course.priceStandard}`,
-        desc: text.courseOnlyDesc
+        desc: text.courseOnlyDesc,
+        tier: 'standard'
       },
       {
         name: text.feedback,
         price: `€${course.priceFeedback}`,
-        desc: text.feedbackDesc
+        desc: text.feedbackDesc,
+        tier: 'feedback'
       }
     ],
     disclaimer: text.disclaimer,

@@ -73,6 +73,7 @@ export interface Config {
     lessons: Lesson;
     legalPages: LegalPage;
     purchases: Purchase;
+    promoCodes: PromoCode;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -86,6 +87,7 @@ export interface Config {
     lessons: LessonsSelect<false> | LessonsSelect<true>;
     legalPages: LegalPagesSelect<false> | LegalPagesSelect<true>;
     purchases: PurchasesSelect<false> | PurchasesSelect<true>;
+    promoCodes: PromoCodesSelect<false> | PromoCodesSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -271,7 +273,39 @@ export interface Purchase {
   currency: 'EUR';
   provider: 'wayforpay' | 'paypal' | 'mock' | 'manual';
   providerTxnId?: string | null;
+  orderReference?: string | null;
+  promoCode?: (number | null) | PromoCode;
   status: 'pending' | 'paid' | 'failed' | 'refunded';
+  paidAt?: string | null;
+  providerPayload?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  postPaymentToken?: string | null;
+  postPaymentTokenExpiresAt?: string | null;
+  postPaymentTokenUsedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "promoCodes".
+ */
+export interface PromoCode {
+  id: number;
+  code: string;
+  discountType: 'percent' | 'fixed';
+  value: number;
+  maxUses?: number | null;
+  usedCount: number;
+  validFrom?: string | null;
+  validTo?: string | null;
+  active: boolean;
   updatedAt: string;
   createdAt: string;
 }
@@ -322,6 +356,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'purchases';
         value: number | Purchase;
+      } | null)
+    | ({
+        relationTo: 'promoCodes';
+        value: number | PromoCode;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -475,7 +513,30 @@ export interface PurchasesSelect<T extends boolean = true> {
   currency?: T;
   provider?: T;
   providerTxnId?: T;
+  orderReference?: T;
+  promoCode?: T;
   status?: T;
+  paidAt?: T;
+  providerPayload?: T;
+  postPaymentToken?: T;
+  postPaymentTokenExpiresAt?: T;
+  postPaymentTokenUsedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "promoCodes_select".
+ */
+export interface PromoCodesSelect<T extends boolean = true> {
+  code?: T;
+  discountType?: T;
+  value?: T;
+  maxUses?: T;
+  usedCount?: T;
+  validFrom?: T;
+  validTo?: T;
+  active?: T;
   updatedAt?: T;
   createdAt?: T;
 }

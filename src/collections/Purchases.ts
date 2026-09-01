@@ -115,6 +115,25 @@ export const Purchases: CollectionConfig = {
       }
     },
     {
+      name: 'orderReference',
+      type: 'text',
+      index: true,
+      unique: true,
+      label: {
+        en: 'Order reference',
+        ru: 'Номер заказа'
+      }
+    },
+    {
+      name: 'promoCode',
+      type: 'relationship',
+      relationTo: 'promoCodes',
+      label: {
+        en: 'Promo code',
+        ru: 'Промокод'
+      }
+    },
+    {
       name: 'status',
       type: 'select',
       defaultValue: 'pending',
@@ -124,6 +143,47 @@ export const Purchases: CollectionConfig = {
       label: {
         en: 'Status',
         ru: 'Статус'
+      }
+    },
+    {
+      name: 'paidAt',
+      type: 'date',
+      label: {
+        en: 'Paid at',
+        ru: 'Дата оплаты'
+      }
+    },
+    {
+      name: 'providerPayload',
+      type: 'json',
+      label: {
+        en: 'Provider payload',
+        ru: 'Данные провайдера'
+      }
+    },
+    {
+      name: 'postPaymentToken',
+      type: 'text',
+      index: true,
+      label: {
+        en: 'Post-payment token',
+        ru: 'Токен после оплаты'
+      }
+    },
+    {
+      name: 'postPaymentTokenExpiresAt',
+      type: 'date',
+      label: {
+        en: 'Post-payment token expiry',
+        ru: 'Срок токена после оплаты'
+      }
+    },
+    {
+      name: 'postPaymentTokenUsedAt',
+      type: 'date',
+      label: {
+        en: 'Post-payment token used at',
+        ru: 'Использован токен после оплаты'
       }
     }
   ]

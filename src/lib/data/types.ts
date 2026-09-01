@@ -34,7 +34,7 @@ export type SalesContent = {
   pain: string;
   outcomes: string[];
   priceNote: string;
-  options: Array<{ name: string; price: string; desc: string }>;
+  options: Array<{ name: string; price: string; desc: string; tier: 'feedback' | 'standard' }>;
   disclaimer: string;
   guarantee: string;
   modulesTitle: string;
