@@ -3,12 +3,12 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 const mocks = vi.hoisted(() => ({
   find: vi.fn(),
   getPayloadClient: vi.fn(),
-  logPaymentNotification: vi.fn(),
+  sendPaymentNotifications: vi.fn(),
   update: vi.fn()
 }));
 
 vi.mock('@/lib/data/payload', () => ({ getPayloadClient: mocks.getPayloadClient }));
-vi.mock('./notifications', () => ({ logPaymentNotification: mocks.logPaymentNotification }));
+vi.mock('./notifications', () => ({ sendPaymentNotifications: mocks.sendPaymentNotifications }));
 
 import { fulfilPayment } from './fulfilment';
 
@@ -34,7 +34,7 @@ describe('fulfilPayment', () => {
     await expect(fulfilPayment(callback)).resolves.toEqual({ found: true, fulfilled: false });
 
     expect(mocks.update).not.toHaveBeenCalled();
-    expect(mocks.logPaymentNotification).not.toHaveBeenCalled();
+    expect(mocks.sendPaymentNotifications).not.toHaveBeenCalled();
   });
 
   it('leaves a pending purchase untouched for a non-approved callback', async () => {
@@ -46,6 +46,27 @@ describe('fulfilPayment', () => {
     });
 
     expect(mocks.update).not.toHaveBeenCalled();
-    expect(mocks.logPaymentNotification).not.toHaveBeenCalled();
+    expect(mocks.sendPaymentNotifications).not.toHaveBeenCalled();
+  });
+
+  it('sends the purchase emails after a first paid callback', async () => {
+    mocks.find.mockResolvedValue({
+      docs: [{
+        course: { title: 'Cornering Basics' },
+        id: 17,
+        promoCode: null,
+        status: 'pending',
+        tier: 'feedback',
+        user: { email: 'student@motophd.com' }
+      }]
+    });
+
+    await expect(fulfilPayment(callback)).resolves.toEqual({ found: true, fulfilled: true });
+
+    expect(mocks.sendPaymentNotifications).toHaveBeenCalledWith({
+      courseTitle: 'Cornering Basics',
+      email: 'student@motophd.com',
+      tier: 'feedback'
+    });
   });
 });

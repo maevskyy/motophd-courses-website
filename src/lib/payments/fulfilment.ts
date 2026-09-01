@@ -1,13 +1,27 @@
 import { getPayloadClient } from '@/lib/data/payload';
+import type { Purchase } from '@/payload-types';
 
-import { logPaymentNotification } from './notifications';
-import type { VerifiedCallback } from './types';
+import { sendPaymentNotifications } from './notifications';
+import type { PaymentTier, VerifiedCallback } from './types';
+
+type PurchaseWithPaymentDetails = Purchase & {
+  course: { title: string };
+  user: { email: string };
+};
+
+const hasPaymentDetails = (purchase: Purchase): purchase is PurchaseWithPaymentDetails =>
+  typeof purchase.course === 'object' &&
+  purchase.course !== null &&
+  'title' in purchase.course &&
+  typeof purchase.user === 'object' &&
+  purchase.user !== null &&
+  'email' in purchase.user;
 
 export const fulfilPayment = async (callback: VerifiedCallback) => {
   const payload = await getPayloadClient();
   const purchases = await payload.find({
     collection: 'purchases',
-    depth: 0,
+    depth: 1,
     limit: 1,
     overrideAccess: true,
     where: { orderReference: { equals: callback.orderReference } }
@@ -38,11 +52,14 @@ export const fulfilPayment = async (callback: VerifiedCallback) => {
     overrideAccess: true
   });
 
-  if (typeof purchase.promoCode === 'number') {
+  const promoCodeId =
+    typeof purchase.promoCode === 'number' ? purchase.promoCode : purchase.promoCode?.id;
+
+  if (promoCodeId) {
     const promo = await payload.findByID({
       collection: 'promoCodes',
       depth: 0,
-      id: purchase.promoCode,
+      id: promoCodeId,
       overrideAccess: true
     });
 
@@ -54,7 +71,13 @@ export const fulfilPayment = async (callback: VerifiedCallback) => {
     });
   }
 
-  logPaymentNotification(callback.orderReference);
+  if (hasPaymentDetails(purchase)) {
+    await sendPaymentNotifications({
+      courseTitle: String(purchase.course.title),
+      email: String(purchase.user.email),
+      tier: purchase.tier as PaymentTier
+    });
+  }
 
   return { found: true, fulfilled: true };
 };
