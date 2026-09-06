@@ -4,6 +4,6 @@ import { noIndexMetadata } from '@/lib/seo';
 
 export const metadata: Metadata = noIndexMetadata;
 
-export default function LoginLayout({ children }: { children: React.ReactNode }) {
+export default function CheckoutLayout({ children }: { children: React.ReactNode }) {
   return children;
 }

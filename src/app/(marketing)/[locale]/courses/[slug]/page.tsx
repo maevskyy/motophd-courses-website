@@ -1,4 +1,6 @@
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { cache } from 'react';
 import { Link } from '@/i18n/routing';
 import { AccessNotice } from '@/components/courseSales/AccessNotice';
 import { CurriculumAccordion } from '@/components/prototype/CurriculumAccordion';
@@ -8,9 +10,11 @@ import {
   getCourseBySlug,
   getCourseCurriculum,
   toCurriculumModules,
-  toSalesContent
+  toSalesContent,
+  type AppLocale
 } from '@/lib/data';
 import { getPaymentProvider } from '@/lib/payments';
+import { buildPageMetadata, courseCoverImage, resolveSeoLocale } from '@/lib/seo';
 import { requireLocale } from '@/i18n/requireLocale';
 import styles from '@/components/courseSales/CourseSalesPage.module.scss';
 
@@ -23,6 +27,33 @@ export function generateStaticParams() {
   return [];
 }
 
+// Один запрос на рендер: generateMetadata и страница читают тот же курс.
+const loadCourse = cache((slug: string, locale: AppLocale) => getCourseBySlug(slug, locale));
+
+// Title/description курса — его название и описание из Payload (локализованы),
+// og:image — обложка курса, если загружена; иначе дефолтная картинка сайта.
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ slug: string; locale: string }>;
+}): Promise<Metadata> {
+  const { locale, slug } = await params;
+  const seoLocale = resolveSeoLocale(locale);
+  const course = seoLocale ? await loadCourse(slug, seoLocale) : null;
+
+  if (!seoLocale || !course) {
+    return {};
+  }
+
+  return buildPageMetadata({
+    description: course.description || course.pain,
+    image: courseCoverImage(course),
+    locale: seoLocale,
+    path: `/courses/${course.slug}`,
+    title: course.title
+  });
+}
+
 export default async function CourseSalesPage({
   params
 }: {
@@ -30,7 +61,7 @@ export default async function CourseSalesPage({
 }) {
   const { locale, slug } = await params;
   const safeLocale = requireLocale(locale);
-  const course = await getCourseBySlug(slug, safeLocale);
+  const course = await loadCourse(slug, safeLocale);
 
   if (!course) {
     notFound();

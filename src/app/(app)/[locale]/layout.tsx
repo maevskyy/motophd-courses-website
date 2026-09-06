@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { Unbounded } from 'next/font/google';
@@ -7,6 +8,7 @@ import { ToastProvider } from '@/components/providers/ToastProvider';
 import { Consent } from '@/components/consent';
 import { Nav } from '@/components/layout/Nav';
 import { getCurrentUser } from '@/lib/auth';
+import { noIndexMetadata } from '@/lib/seo';
 import '../../globals.scss';
 
 const unbounded = Unbounded({
@@ -16,6 +18,9 @@ const unbounded = Unbounded({
 });
 
 export const dynamic = 'force-dynamic';
+
+// Кабинет и плеер — персональные страницы: в индекс не попадают.
+export const metadata: Metadata = noIndexMetadata;
 
 export default async function AppLocaleLayout({
   children,

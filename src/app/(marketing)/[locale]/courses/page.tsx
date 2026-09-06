@@ -1,6 +1,8 @@
+import type { Metadata } from 'next';
 import { CourseCard } from '@/components/prototype/CourseCard';
 import { Footer } from '@/components/prototype/Footer';
 import { getPublishedCourses, toCourseCardCourse } from '@/lib/data';
+import { buildPageMetadata, resolveSeoLocale } from '@/lib/seo';
 import { requireLocale } from '@/i18n/requireLocale';
 import styles from '@/components/catalog/CatalogPage.module.scss';
 
@@ -24,6 +26,29 @@ const catalogContent = {
     sub: 'Каждый курс решает одну конкретную проблему. Разбери её полностью и переходи к следующей.'
   }
 };
+
+// Title/description каталога — заголовок и подзаголовок самой страницы.
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const seoLocale = resolveSeoLocale(locale);
+
+  if (!seoLocale) {
+    return {};
+  }
+
+  const content = catalogContent[seoLocale];
+
+  return buildPageMetadata({
+    description: content.sub,
+    locale: seoLocale,
+    path: '/courses',
+    title: content.title
+  });
+}
 
 export default async function CoursesPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;

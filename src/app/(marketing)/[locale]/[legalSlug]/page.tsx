@@ -1,6 +1,9 @@
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { cache } from 'react';
 import { Footer } from '@/components/prototype/Footer';
-import { getLegalPage, richTextToParagraphs } from '@/lib/data';
+import { getLegalPage, richTextToParagraphs, type AppLocale } from '@/lib/data';
+import { buildPageMetadata, resolveSeoLocale } from '@/lib/seo';
 import { requireLocale } from '@/i18n/requireLocale';
 import type { LegalPage } from '@/payload-types';
 import styles from '@/components/catalog/CatalogPage.module.scss';
@@ -18,6 +21,38 @@ const legalSlugs = ['privacy', 'terms', 'refund', 'contact'] satisfies LegalPage
 const isLegalSlug = (slug: string): slug is LegalPage['slug'] =>
   legalSlugs.includes(slug as LegalPage['slug']);
 
+// Один запрос на рендер: generateMetadata и страница читают ту же запись.
+const loadLegalPage = cache((slug: LegalPage['slug'], locale: AppLocale) =>
+  getLegalPage(slug, locale)
+);
+
+// Title — заголовок страницы из Payload, description — её первый абзац.
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ locale: string; legalSlug: string }>;
+}): Promise<Metadata> {
+  const { legalSlug, locale } = await params;
+  const seoLocale = resolveSeoLocale(locale);
+
+  if (!seoLocale || !isLegalSlug(legalSlug)) {
+    return {};
+  }
+
+  const page = await loadLegalPage(legalSlug, seoLocale);
+
+  if (!page) {
+    return {};
+  }
+
+  return buildPageMetadata({
+    description: richTextToParagraphs(page.body)[0] || page.title,
+    locale: seoLocale,
+    path: `/${page.slug}`,
+    title: page.title
+  });
+}
+
 export default async function LegalPageRoute({
   params
 }: {
@@ -29,7 +64,7 @@ export default async function LegalPageRoute({
   if (!isLegalSlug(legalSlug)) {
     notFound();
   }
-  const page = await getLegalPage(legalSlug, safeLocale);
+  const page = await loadLegalPage(legalSlug, safeLocale);
 
   if (!page) {
     notFound();

@@ -29,3 +29,4 @@ export type {
   SalesContent
 } from './types';
 export type { CourseCurriculumLesson } from './courses';
+export { getSitemapCourses, getSitemapLegalPages } from './sitemapEntries';

@@ -1,0 +1,85 @@
+import { describe, expect, it } from 'vitest';
+
+import { buildSitemapEntries } from './sitemap';
+
+const siteUrl = 'https://motophd.com';
+
+const source = {
+  courses: [
+    { slug: 'lean', updatedAt: '2026-09-01T10:00:00.000Z' },
+    { slug: 'counter-steering', updatedAt: 'not-a-date' }
+  ],
+  legalPages: [{ slug: 'privacy', updatedAt: null }, { slug: 'terms' }],
+  siteUrl
+};
+
+describe('buildSitemapEntries', () => {
+  it('lists landing, catalog, every course and every legal page in both locales', () => {
+    const urls = buildSitemapEntries(source).map((entry) => entry.url);
+
+    expect(urls).toEqual([
+      'https://motophd.com/en',
+      'https://motophd.com/ru',
+      'https://motophd.com/en/courses',
+      'https://motophd.com/ru/courses',
+      'https://motophd.com/en/courses/lean',
+      'https://motophd.com/ru/courses/lean',
+      'https://motophd.com/en/courses/counter-steering',
+      'https://motophd.com/ru/courses/counter-steering',
+      'https://motophd.com/en/privacy',
+      'https://motophd.com/ru/privacy',
+      'https://motophd.com/en/terms',
+      'https://motophd.com/ru/terms'
+    ]);
+  });
+
+  it('attaches the full hreflang set to every entry', () => {
+    const entries = buildSitemapEntries(source);
+    const lean = entries.filter((entry) => entry.url.endsWith('/courses/lean'));
+
+    expect(lean).toHaveLength(2);
+
+    for (const entry of lean) {
+      expect(entry.alternates?.languages).toEqual({
+        en: 'https://motophd.com/en/courses/lean',
+        ru: 'https://motophd.com/ru/courses/lean',
+        'x-default': 'https://motophd.com/en/courses/lean'
+      });
+    }
+  });
+
+  it('uses updatedAt as lastModified only when it parses', () => {
+    const byUrl = Object.fromEntries(
+      buildSitemapEntries(source).map((entry) => [entry.url, entry.lastModified])
+    );
+
+    expect(byUrl['https://motophd.com/en/courses/lean']).toEqual(
+      new Date('2026-09-01T10:00:00.000Z')
+    );
+    expect(byUrl['https://motophd.com/ru/courses/counter-steering']).toBeUndefined();
+    expect(byUrl['https://motophd.com/en/privacy']).toBeUndefined();
+  });
+
+  it('gives the landing page the highest priority and legal pages the lowest', () => {
+    const entries = buildSitemapEntries(source);
+    const priority = (url: string) => entries.find((entry) => entry.url === url)?.priority;
+
+    expect(priority('https://motophd.com/en')).toBe(1);
+    expect(priority('https://motophd.com/ru/courses')).toBe(0.9);
+    expect(priority('https://motophd.com/en/courses/lean')).toBe(0.8);
+    expect(priority('https://motophd.com/ru/terms')).toBe(0.3);
+  });
+
+  it('only contains what it was given: no courses means only static and legal pages', () => {
+    const urls = buildSitemapEntries({ courses: [], legalPages: [], siteUrl }).map(
+      (entry) => entry.url
+    );
+
+    expect(urls).toEqual([
+      'https://motophd.com/en',
+      'https://motophd.com/ru',
+      'https://motophd.com/en/courses',
+      'https://motophd.com/ru/courses'
+    ]);
+  });
+});
