@@ -13,10 +13,8 @@
 | task_infra_leftovers_13 | хвосты после 3+4: изоляция админки+Access, branch protection, худой образ, rollback-тест, инструкция Ане |
 
 Закрыты 26.07 и переехали в `../kanban/done/`: task_vps_bootstrap_3, task_cicd_4.
-Отгруммлены и переехали в `../kanban/todo/`: task_media_stream_5, task_payments_skeleton_6.
+Отгруммлены, сделаны и лежат в `../kanban/done/`: task_media_stream_5 (MOT-2), task_payments_skeleton_6 (MOT-3, MOT-11).
 
 ## Фронт-скоуп (Аня)
 
-| Черновик | Про что |
-|---|---|
-| task_rebuild_prototype_10 | УСТАРЕЛА — порт уже сделан (task 1+11); первую задачу Ани формулируем заново |
+Черновиков нет: task_rebuild_prototype_10 удалена 06.09 как устаревшая (порт сделан в task 1+11), первая задача Ани — MOT-8 в Linear.
