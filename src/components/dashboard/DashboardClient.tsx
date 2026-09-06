@@ -16,6 +16,7 @@ export function DashboardClient({
   courses,
   displayName,
   email,
+  feedbackUpgradeSlugs,
   locale,
   name,
   availableCourses,
@@ -28,6 +29,7 @@ export function DashboardClient({
   // поле профиля (пустое, пока человек его не заполнил).
   displayName: string;
   email: string;
+  feedbackUpgradeSlugs: string[];
   locale: 'en' | 'ru';
   name: string;
   purchases: PurchaseHistoryItem[];
@@ -75,7 +77,13 @@ export function DashboardClient({
       </aside>
       <section className={styles.dashboardMain}>
         {tab === 'overview' ? (
-          <OverviewPanel content={content} courses={courses} email={email} name={displayName} />
+          <OverviewPanel
+            content={content}
+            courses={courses}
+            email={email}
+            feedbackUpgradeSlugs={feedbackUpgradeSlugs}
+            name={displayName}
+          />
         ) : null}
         {tab === 'courses' ? (
           <CoursesPanel
@@ -83,6 +91,7 @@ export function DashboardClient({
             content={content}
             courses={courses}
             email={email}
+            feedbackUpgradeSlugs={feedbackUpgradeSlugs}
             name={displayName}
           />
         ) : null}

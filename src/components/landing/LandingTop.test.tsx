@@ -18,6 +18,19 @@ const labels = {
 };
 
 describe('LandingTop', () => {
+  it('does not preload the hero video: the poster is the LCP element', () => {
+    const { container } = render(
+      <LandingTop content={homeContent.ru} courses={[]} labels={labels} />
+    );
+    const video = container.querySelector('video');
+
+    expect(video).toHaveAttribute('preload', 'none');
+    expect(video).toHaveAttribute('poster', '/hero-poster.jpg');
+    expect(video).toHaveAttribute('autoplay');
+    expect(video).toHaveAttribute('loop');
+    expect(video).toHaveAttribute('playsinline');
+  });
+
   it('links the instructor section to the course catalog', () => {
     render(<LandingTop content={homeContent.ru} courses={[]} labels={labels} />);
 

@@ -66,7 +66,7 @@ describe('getPurchaseHistory', () => {
       docs: [
         {
           amount: 29,
-          course: { id: 2, title: 'Lean with confidence' },
+          course: { id: 2, slug: 'lean', title: 'Lean with confidence' },
           createdAt: '2026-08-01T10:00:00.000Z',
           currency: 'EUR',
           id: 11,
@@ -80,6 +80,7 @@ describe('getPurchaseHistory', () => {
     await expect(getPurchaseHistory('en', user)).resolves.toEqual([
       {
         amount: 29,
+        courseSlug: 'lean',
         courseTitle: 'Lean with confidence',
         currency: 'EUR',
         id: 11,

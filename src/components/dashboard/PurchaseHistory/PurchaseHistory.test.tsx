@@ -11,6 +11,7 @@ vi.mock('next-intl', () => ({
 const purchases = [
   {
     amount: 29,
+    courseSlug: 'lean',
     courseTitle: 'Lean with confidence',
     currency: 'EUR',
     id: 11,
@@ -20,6 +21,7 @@ const purchases = [
   },
   {
     amount: 100,
+    courseSlug: 'counter-steering',
     courseTitle: 'Counter steering',
     currency: 'EUR',
     id: 12,

@@ -4,6 +4,7 @@ import type { Purchase, User } from '@/payload-types';
 
 export type PurchaseHistoryItem = {
   id: Purchase['id'];
+  courseSlug: string;
   courseTitle: string;
   tier: Purchase['tier'];
   amount: number;
@@ -14,6 +15,10 @@ export type PurchaseHistoryItem = {
 
 const getCourseTitle = (course: Purchase['course']) =>
   typeof course === 'object' && course ? course.title : '';
+
+// Slug нужен кабинету, чтобы решить, у какого курса показать докупку feedback.
+const getCourseSlug = (course: Purchase['course']) =>
+  typeof course === 'object' && course ? course.slug : '';
 
 export const getPurchaseHistory = async (
   locale: AppLocale,
@@ -38,6 +43,7 @@ export const getPurchaseHistory = async (
 
   return purchases.docs.map((purchase) => ({
     amount: purchase.amount,
+    courseSlug: getCourseSlug(purchase.course),
     courseTitle: getCourseTitle(purchase.course),
     currency: purchase.currency,
     id: purchase.id,

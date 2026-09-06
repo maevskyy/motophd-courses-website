@@ -1,5 +1,4 @@
 import { useTranslations } from 'next-intl';
-import { useToast } from '@/components/providers/ToastProvider';
 import type { CourseCardCourse, DashboardContent, PurchaseHistoryItem } from '@/lib/data';
 import { AccountProfileForm } from './AccountProfileForm';
 import { ChangePasswordForm } from './ChangePasswordForm';
@@ -13,11 +12,13 @@ interface PanelProps {
   content: DashboardContent;
   courses: CourseCardCourse[];
   email: string;
+  // Slug'и курсов, у которых можно докупить обратную связь — считает сервер.
+  feedbackUpgradeSlugs?: string[];
   name: string;
   purchases?: PurchaseHistoryItem[];
 }
 
-export function OverviewPanel({ courses, name }: PanelProps) {
+export function OverviewPanel({ courses, feedbackUpgradeSlugs = [], name }: PanelProps) {
   const t = useTranslations();
 
   return (
@@ -32,14 +33,18 @@ export function OverviewPanel({ courses, name }: PanelProps) {
       <div className={styles.dashSectionTitle}>{t('dashboard.myCourses')}</div>
       <div className={styles.dashCourses}>
         {courses.map((course) => (
-          <PurchasedDashCourse course={course} key={course.slug} />
+          <PurchasedDashCourse
+            course={course}
+            feedbackUpgrade={feedbackUpgradeSlugs.includes(course.slug)}
+            key={course.slug}
+          />
         ))}
       </div>
     </>
   );
 }
 
-export function CoursesPanel({ availableCourses = [], courses }: PanelProps) {
+export function CoursesPanel({ availableCourses = [], courses, feedbackUpgradeSlugs = [] }: PanelProps) {
   const t = useTranslations();
 
   return (
@@ -51,7 +56,11 @@ export function CoursesPanel({ availableCourses = [], courses }: PanelProps) {
       <div className={styles.dashSectionTitle}>{t('dashboard.activeEnrollments')}</div>
       <div className={styles.dashCourses}>
         {courses.map((course) => (
-          <PurchasedDashCourse course={course} key={course.slug} />
+          <PurchasedDashCourse
+            course={course}
+            feedbackUpgrade={feedbackUpgradeSlugs.includes(course.slug)}
+            key={course.slug}
+          />
         ))}
       </div>
       <div className={styles.dashSectionTitle}>{t('dashboard.availableToPurchase')}</div>

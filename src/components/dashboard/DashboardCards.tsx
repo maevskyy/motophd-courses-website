@@ -2,6 +2,7 @@ import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
 import type { CourseCardCourse } from '@/lib/data';
 import { cx } from '@/lib/classNames';
+import { FeedbackUpgradeButton } from './FeedbackUpgradeButton';
 import styles from './Dashboard.module.scss';
 
 export function DashStat({ label, suffix = '', value }: { label: string; suffix?: string; value: string }) {
@@ -16,19 +17,31 @@ export function DashStat({ label, suffix = '', value }: { label: string; suffix?
   );
 }
 
-export function PurchasedDashCourse({ course }: { course: CourseCardCourse }) {
+export function PurchasedDashCourse({
+  course,
+  feedbackUpgrade = false
+}: {
+  course: CourseCardCourse;
+  // Решает сервер по истории покупок (getFeedbackUpgradeCourseSlugs).
+  feedbackUpgrade?: boolean;
+}) {
   const t = useTranslations();
 
+  // Кнопка докупки — отдельная форма, поэтому карточка больше не целиком
+  // ссылка: <form> внутри <a> невалиден, и клик по кнопке уводил бы в плеер.
   return (
-    <Link className={styles.dashCourseCard} href={`/learn/${course.slug}`}>
-      <div className={`${styles.dashCourseThumb} ${styles.dashCourseThumbRed}`}>🏍️</div>
-      <div className={styles.dashCourseBody}>
-        <div className={styles.dashCourseTitle}>{course.title}</div>
-        <div className={styles.dashCourseAction}>
-          <span className={styles.btnContinue}>{t('actions.continueLearning')} →</span>
+    <article className={styles.dashCourseCard}>
+      <Link className={styles.dashCourseLink} href={`/learn/${course.slug}`}>
+        <div className={`${styles.dashCourseThumb} ${styles.dashCourseThumbRed}`}>🏍️</div>
+        <div className={styles.dashCourseBody}>
+          <div className={styles.dashCourseTitle}>{course.title}</div>
+          <div className={styles.dashCourseAction}>
+            <span className={styles.btnContinue}>{t('actions.continueLearning')} →</span>
+          </div>
         </div>
-      </div>
-    </Link>
+      </Link>
+      {feedbackUpgrade ? <FeedbackUpgradeButton courseSlug={course.slug} /> : null}
+    </article>
   );
 }
 

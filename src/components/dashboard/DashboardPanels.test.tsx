@@ -1,5 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
+import {
+  getFeedbackUpgradeCourseSlugs,
+  type FeedbackUpgradeCandidate
+} from '@/lib/access/feedbackUpgrade';
 import type { CourseCardCourse, DashboardContent } from '@/lib/data';
 import { CoursesPanel, DownloadsPanel, OverviewPanel } from './DashboardPanels';
 
@@ -12,6 +16,7 @@ vi.mock('@/i18n/routing', () => ({
 }));
 
 vi.mock('next-intl', () => ({
+  useLocale: () => 'en',
   useTranslations: () => (key: string) => key
 }));
 
@@ -21,6 +26,10 @@ vi.mock('@/components/providers/ToastProvider', () => ({
 
 vi.mock('@/lib/auth/account', () => ({
   updateProfileAction: vi.fn()
+}));
+
+vi.mock('@/lib/payments/checkout', () => ({
+  checkoutAction: vi.fn()
 }));
 
 const content: DashboardContent = {
@@ -103,6 +112,74 @@ describe('OverviewPanel', () => {
     expect(screen.getByRole('link', { name: /counter steering/i })).toHaveAttribute(
       'href',
       '/courses/counter-steering'
+    );
+  });
+});
+
+describe('feedback upgrade button', () => {
+  const paid = (
+    courseSlug: string,
+    tier: FeedbackUpgradeCandidate['tier']
+  ): FeedbackUpgradeCandidate => ({ courseSlug, status: 'paid', tier });
+  const upgradeButton = () => screen.queryByRole('button', { name: 'feedbackUpgrade' });
+  // Как на сервере: список купленных курсов и slug'и для докупки — из покупок.
+  const renderOverview = (
+    purchasedCourses: CourseCardCourse[],
+    purchases: FeedbackUpgradeCandidate[]
+  ) =>
+    render(
+      <OverviewPanel
+        content={content}
+        courses={purchasedCourses}
+        email="student@motophd.com"
+        feedbackUpgradeSlugs={getFeedbackUpgradeCourseSlugs(purchases)}
+        name="Student"
+      />
+    );
+
+  it('offers the upgrade for a paid standard course without feedback', () => {
+    renderOverview([courses[0]], [paid('lean', 'standard')]);
+
+    expect(upgradeButton()).toBeVisible();
+    expect(screen.getByRole('link', { name: /lean with confidence/i })).toHaveAttribute(
+      'href',
+      '/learn/lean'
+    );
+  });
+
+  it('hides the upgrade once feedback is paid for the course', () => {
+    renderOverview([courses[0]], [paid('lean', 'standard'), paid('lean', 'feedback_upgrade')]);
+
+    expect(upgradeButton()).not.toBeInTheDocument();
+  });
+
+  it('hides the upgrade for a course bought with feedback outright', () => {
+    renderOverview([courses[0]], [paid('lean', 'feedback')]);
+
+    expect(upgradeButton()).not.toBeInTheDocument();
+  });
+
+  it('shows nothing without purchases', () => {
+    renderOverview([], []);
+
+    expect(upgradeButton()).not.toBeInTheDocument();
+  });
+
+  it('shows the upgrade only on the matching course card', () => {
+    render(
+      <CoursesPanel
+        content={content}
+        courses={courses}
+        email="student@motophd.com"
+        feedbackUpgradeSlugs={['counter-steering']}
+        name="Student"
+      />
+    );
+
+    expect(screen.getAllByRole('button', { name: 'feedbackUpgrade' })).toHaveLength(1);
+    expect(screen.getByRole('link', { name: /counter steering/i })).toHaveAttribute(
+      'href',
+      '/learn/counter-steering'
     );
   });
 });

@@ -1,5 +1,6 @@
 import { connection } from 'next/server';
 import { DashboardClient } from '@/components/dashboard/DashboardClient';
+import { getFeedbackUpgradeCourseSlugs } from '@/lib/access/feedbackUpgrade';
 import { requireUser } from '@/lib/auth';
 import {
   getCourseLessons,
@@ -36,6 +37,9 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
     payloadCourses.map((course) => getCourseLessons(course.id, safeLocale, user))
   );
   const content = toDashboardContent(lessonsPerCourse.flat(), safeLocale);
+  // Докупка обратной связи: paid standard без paid feedback — считаем здесь,
+  // в клиент уезжает только список slug'ов.
+  const feedbackUpgradeSlugs = getFeedbackUpgradeCourseSlugs(purchases);
 
   return (
     <DashboardClient
@@ -44,6 +48,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
       courses={courses}
       displayName={user.name || user.email}
       email={user.email}
+      feedbackUpgradeSlugs={feedbackUpgradeSlugs}
       locale={safeLocale}
       // В форму профиля пустое имя, а не email: иначе первое же сохранение
       // записывало email покупателя в поле «Имя» навсегда.

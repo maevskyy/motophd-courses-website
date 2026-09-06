@@ -17,6 +17,16 @@ export function LandingTop({ content, courses, labels }: Props) {
   return (
     <>
       <section className={styles.hero}>
+        {/*
+          preload="none", а не "auto": не просим браузер качать ролик заранее —
+          LCP-элемент хиро это постер (`poster`), страница рисуется без видео.
+          Оговорка: по спецификации autoplay перекрывает подсказку preload, и там,
+          где muted-autoplay разрешён (Chrome и др.), загрузка mp4 стартует сразу,
+          но с низким приоритетом. "none" экономит трафик там, где автозапуск
+          заблокирован (iOS Low Power Mode, экономия данных), а главный рычаг
+          скорости — вес файла: бюджет и команда пережатия —
+          docs/ARCHITECTURE.md, раздел «Статические медиа лендинга».
+        */}
         <video
           autoPlay
           className={styles.hero__video}
@@ -24,7 +34,7 @@ export function LandingTop({ content, courses, labels }: Props) {
           muted
           playsInline
           poster="/hero-poster.jpg"
-          preload="auto"
+          preload="none"
         >
           <source src="/hero-loop.mp4" type="video/mp4" />
         </video>
