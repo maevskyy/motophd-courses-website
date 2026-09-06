@@ -161,6 +161,7 @@ export interface User {
 export interface Media {
   id: number;
   alt?: string | null;
+  prefix?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -276,6 +277,7 @@ export interface Purchase {
   orderReference?: string | null;
   promoCode?: (number | null) | PromoCode;
   status: 'pending' | 'paid' | 'failed' | 'refunded';
+  locale: 'en' | 'ru';
   paidAt?: string | null;
   providerPayload?:
     | {
@@ -433,6 +435,7 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  prefix?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -516,6 +519,7 @@ export interface PurchasesSelect<T extends boolean = true> {
   orderReference?: T;
   promoCode?: T;
   status?: T;
+  locale?: T;
   paidAt?: T;
   providerPayload?: T;
   postPaymentToken?: T;

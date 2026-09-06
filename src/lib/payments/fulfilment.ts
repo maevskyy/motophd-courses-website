@@ -75,6 +75,7 @@ export const fulfilPayment = async (callback: VerifiedCallback) => {
     await sendPaymentNotifications({
       courseTitle: String(purchase.course.title),
       email: String(purchase.user.email),
+      locale: purchase.locale,
       tier: purchase.tier as PaymentTier
     });
   }

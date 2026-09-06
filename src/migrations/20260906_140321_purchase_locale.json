@@ -1357,6 +1357,14 @@
           "notNull": true,
           "default": "'pending'"
         },
+        "locale": {
+          "name": "locale",
+          "type": "enum_purchases_locale",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'en'"
+        },
         "paid_at": {
           "name": "paid_at",
           "type": "timestamp(3) with time zone",
@@ -2569,6 +2577,14 @@
         "refunded"
       ]
     },
+    "public.enum_purchases_locale": {
+      "name": "enum_purchases_locale",
+      "schema": "public",
+      "values": [
+        "en",
+        "ru"
+      ]
+    },
     "public.enum_promo_codes_discount_type": {
       "name": "enum_promo_codes_discount_type",
       "schema": "public",
@@ -2588,6 +2604,6 @@
     "tables": {},
     "columns": {}
   },
-  "id": "9182c933-a306-4b8e-abae-a41a0ed35ffd",
+  "id": "efcaecdd-dfc1-4537-b2e0-515de73e114e",
   "prevId": "00000000-0000-0000-0000-000000000000"
 }

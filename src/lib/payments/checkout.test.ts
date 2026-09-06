@@ -80,6 +80,23 @@ describe('checkout', () => {
     );
   });
 
+  it('stores the checkout locale on the pending purchase', async () => {
+    mocks.find
+      .mockResolvedValueOnce({ docs: [course] })
+      .mockResolvedValueOnce({ docs: [user] })
+      .mockResolvedValueOnce({ docs: [], totalDocs: 0 });
+    mocks.create.mockResolvedValue({ id: 11 });
+
+    await createCheckout({ courseSlug: 'lean', email: user.email, locale: 'ru', tier: 'standard' });
+
+    expect(mocks.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        collection: 'purchases',
+        data: expect.objectContaining({ locale: 'ru' })
+      })
+    );
+  });
+
   it('does not issue a post-payment token for an existing account', async () => {
     mocks.find
       .mockResolvedValueOnce({ docs: [course] })

@@ -194,6 +194,7 @@ export const createCheckout = async ({
       amount: pricing.amount,
       course: course.id,
       currency: course.currency,
+      locale,
       orderReference,
       postPaymentToken,
       postPaymentTokenExpiresAt,

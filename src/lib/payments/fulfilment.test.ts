@@ -54,6 +54,7 @@ describe('fulfilPayment', () => {
       docs: [{
         course: { title: 'Cornering Basics' },
         id: 17,
+        locale: 'en',
         promoCode: null,
         status: 'pending',
         tier: 'feedback',
@@ -66,7 +67,28 @@ describe('fulfilPayment', () => {
     expect(mocks.sendPaymentNotifications).toHaveBeenCalledWith({
       courseTitle: 'Cornering Basics',
       email: 'student@motophd.com',
+      locale: 'en',
       tier: 'feedback'
     });
+  });
+
+  it('passes the locale stored on the purchase to the emails', async () => {
+    mocks.find.mockResolvedValue({
+      docs: [{
+        course: { title: 'Cornering Basics' },
+        id: 18,
+        locale: 'ru',
+        promoCode: null,
+        status: 'pending',
+        tier: 'standard',
+        user: { email: 'student@motophd.com' }
+      }]
+    });
+
+    await fulfilPayment({ ...callback, orderReference: 'order-paid-2' });
+
+    expect(mocks.sendPaymentNotifications).toHaveBeenCalledWith(
+      expect.objectContaining({ locale: 'ru' })
+    );
   });
 });

@@ -1,6 +1,7 @@
 import config from '@payload-config';
 import { getPayload, type DefaultDocumentIDType, type Payload } from 'payload';
 
+import { defaultLocale } from '../i18n/locales';
 import {
   getCommonMistakes,
   getCourseSeeds,
@@ -14,57 +15,7 @@ import {
   locales,
   toRichText
 } from './contentSeedData';
-
-// Payload требует у PDF заголовок, xref-таблицу и %%EOF (utilities/validatePDF).
-// Смещения в xref соответствуют этой строке — менять её только вместе с ними.
-const fixturePdf = Buffer.from(
-  '%PDF-1.4\n1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n2 0 obj\n<< /Type /Pages /Count 0 /Kids [] >>\nendobj\nxref\n0 3\n0000000000 65535 f \n0000000009 00000 n \n0000000058 00000 n \ntrailer\n<< /Size 3 /Root 1 0 R >>\nstartxref\n110\n%%EOF\n'
-);
-
-const seedFixturePdf = async (payload: Payload, lessonId: DefaultDocumentIDType) => {
-  if (process.env.NODE_ENV === 'production') {
-    return;
-  }
-
-  const existing = await payload.find({
-    collection: 'media',
-    depth: 0,
-    limit: 1,
-    overrideAccess: true,
-    where: {
-      filename: {
-        equals: 'motophd-fixture.pdf'
-      }
-    }
-  });
-  const pdf =
-    existing.docs[0] ||
-    (await payload.create({
-      collection: 'media',
-      data: {
-        alt: 'MotoPhD fixture PDF'
-      },
-      file: {
-        data: fixturePdf,
-        mimetype: 'application/pdf',
-        name: 'motophd-fixture.pdf',
-        size: fixturePdf.length
-      },
-      overrideAccess: true
-    }));
-
-  // Последовательно: параллельные update одного документа по разным локалям
-  // затирают друг друга, и PDF оставался привязанным только к одной из них.
-  for (const locale of locales) {
-    await payload.update({
-      collection: 'lessons',
-      data: { pdf: pdf.id },
-      id: lessonId,
-      locale,
-      overrideAccess: true
-    });
-  }
-};
+import { seedFixturePdf } from './fixturePdf';
 
 const upsertDemoUser = async (payload: Payload, email: string, password: string) => {
   const existing = await payload.find({
@@ -166,6 +117,7 @@ const upsertPurchase = async (
     amount: 0,
     course,
     currency: 'EUR' as const,
+    locale: defaultLocale,
     provider: 'manual' as const,
     providerTxnId,
     status: 'paid' as const,
@@ -493,11 +445,12 @@ const seedCourses = async () => {
     await seedDemoAccounts(payload, firstCourseId);
     await seedPromoCodes(payload);
 
-    for (const lessonId of [firstPdfLessonId, firstPaidPdfLessonId]) {
-      if (lessonId) {
-        await seedFixturePdf(payload, lessonId);
-      }
-    }
+    await seedFixturePdf(
+      payload,
+      [firstPdfLessonId, firstPaidPdfLessonId].filter(
+        (lessonId): lessonId is DefaultDocumentIDType => lessonId !== undefined
+      )
+    );
 
     payload.logger.info('Seed complete: courses, lessons, legal pages, and demo accounts are up to date.');
   } finally {

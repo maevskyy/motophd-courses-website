@@ -2,6 +2,7 @@ import * as migration_20260725_211521_initial_schema from './20260725_211521_ini
 import * as migration_20260819_202728_add_media_prefix from './20260819_202728_add_media_prefix';
 import * as migration_20260819_203905 from './20260819_203905';
 import * as migration_20260831_193143 from './20260831_193143';
+import * as migration_20260906_140321_purchase_locale from './20260906_140321_purchase_locale';
 
 export const migrations = [
   {
@@ -22,6 +23,11 @@ export const migrations = [
   {
     up: migration_20260831_193143.up,
     down: migration_20260831_193143.down,
-    name: '20260831_193143'
+    name: '20260831_193143',
+  },
+  {
+    up: migration_20260906_140321_purchase_locale.up,
+    down: migration_20260906_140321_purchase_locale.down,
+    name: '20260906_140321_purchase_locale'
   },
 ];

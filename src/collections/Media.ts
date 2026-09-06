@@ -50,6 +50,20 @@ export const Media: CollectionConfig = {
         en: 'Alt text',
         ru: 'Alt-текст'
       }
+    },
+    // Колонка media.prefix живёт в проде (миграция 20260819_202728) и хранит
+    // R2-префикс каждого файла. Обычно её объявляет s3Storage, но плагин
+    // включается только при R2-env: без него поле пропадало из схемы, и
+    // `migrate:create` предлагал DROP COLUMN "prefix" (MOT-37). Объявляем поле
+    // сами — плагин находит его по имени и дополняет своими hooks/defaultValue.
+    {
+      name: 'prefix',
+      type: 'text',
+      defaultValue: '',
+      admin: {
+        hidden: true,
+        readOnly: true
+      }
     }
   ]
 };
