@@ -1,3 +1,5 @@
+import type { IconName } from '@/components/ui/Icon';
+
 import type { Locale } from '@/i18n/routing';
 
 export type HomeContent = {
@@ -21,7 +23,7 @@ export type HomeContent = {
   methodLabel: string;
   methodTitle: string;
   methodSub: string;
-  method: Array<{ icon: string; num: string; title: string; desc: string }>;
+  method: Array<{ icon: IconName; num: string; title: string; desc: string }>;
   testimonialsLabel: string;
   testimonialsTitle: string[];
   testimonials: Array<{ initial: string; name: string; quote: string }>;

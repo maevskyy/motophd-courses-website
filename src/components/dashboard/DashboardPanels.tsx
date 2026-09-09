@@ -4,6 +4,7 @@ import { AccountProfileForm } from './AccountProfileForm';
 import { ChangePasswordForm } from './ChangePasswordForm';
 import { DeleteAccountSection } from './DeleteAccountSection';
 import { PurchaseHistory } from './PurchaseHistory';
+import { Icon } from '@/components/ui/Icon';
 import { DashStat, LockedDashCourse, PurchasedDashCourse } from './DashboardCards';
 import styles from './Dashboard.module.scss';
 
@@ -24,8 +25,8 @@ export function OverviewPanel({ courses, feedbackUpgradeSlugs = [], name }: Pane
   return (
     <>
       <div className={styles.dashGreeting}>
-        <h2>{t('dashboard.welcomeTitle', { name })} 👋</h2>
-        <p>{t('dashboard.welcomeSub')}</p>
+        <h1 className={styles.dashGreetingTitle}>{t('dashboard.welcomeTitle', { name })}</h1>
+        <p className={styles.dashGreetingText}>{t('dashboard.welcomeSub')}</p>
       </div>
       <div className={styles.dashStats}>
         <DashStat label={t('dashboard.purchasedCourses')} value={String(courses.length)} />
@@ -50,8 +51,8 @@ export function CoursesPanel({ availableCourses = [], courses, feedbackUpgradeSl
   return (
     <>
       <div className={styles.dashGreeting}>
-        <h2>{t('dashboard.myCourses')}</h2>
-        <p>{t('dashboard.purchasedContent')}</p>
+        <h1 className={styles.dashGreetingTitle}>{t('dashboard.myCourses')}</h1>
+        <p className={styles.dashGreetingText}>{t('dashboard.purchasedContent')}</p>
       </div>
       <div className={styles.dashSectionTitle}>{t('dashboard.activeEnrollments')}</div>
       <div className={styles.dashCourses}>
@@ -79,8 +80,8 @@ export function DownloadsPanel({ content }: PanelProps) {
   return (
     <>
       <div className={styles.dashGreeting}>
-        <h2>{t('dashboard.downloads')}</h2>
-        <p>{t('dashboard.downloadsSub')}</p>
+        <h1 className={styles.dashGreetingTitle}>{t('dashboard.downloads')}</h1>
+        <p className={styles.dashGreetingText}>{t('dashboard.downloadsSub')}</p>
       </div>
       <div className={styles.dashSectionTitle}>{t('dashboard.availablePdfs')}</div>
       {content.dashboard.downloads.map((download) => (
@@ -91,9 +92,9 @@ export function DownloadsPanel({ content }: PanelProps) {
           rel="noopener"
           target="_blank"
         >
-          <div aria-hidden className={styles.pdfIcon}>
-            📄
-          </div>
+          <span className={styles.pdfIcon}>
+            <Icon name="document" size={22} />
+          </span>
           <div className={styles.pdfInfo}>
             <div className={styles.pdfName}>{download.title}</div>
           </div>
@@ -110,7 +111,7 @@ export function ProfilePanel({ email, name, purchases = [] }: PanelProps) {
   return (
     <>
       <div className={styles.dashGreeting}>
-        <h2>{t('dashboard.profileSettings')}</h2>
+        <h1 className={styles.dashGreetingTitle}>{t('dashboard.profileSettings')}</h1>
       </div>
       <AccountProfileForm email={email} name={name} />
       <ChangePasswordForm />

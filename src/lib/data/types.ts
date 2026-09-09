@@ -1,10 +1,11 @@
+import type { IconName } from '@/components/ui/Icon';
 import type { Course, LegalPage, Lesson } from '@/payload-types';
 
 export type AppLocale = 'en' | 'ru';
 
 export type CourseCardCourse = {
   slug: string;
-  icon: string;
+  icon: IconName;
   image?: string;
   imageTone: 'red' | 'green' | 'blue';
   featured?: boolean;

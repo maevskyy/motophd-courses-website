@@ -6,17 +6,17 @@ const leanCurriculumEn: CurriculumModule[] = [
     title: 'Level 01 — Theory',
     meta: '1 video · Theory foundation',
     open: true,
-    lessons: [{ icon: '🎥', name: 'Video Lesson', duration: '' }]
+    lessons: [{ icon: 'play', name: 'Video Lesson', duration: '' }]
   },
   {
     number: '02',
     title: 'Level 02 — Preparation',
     meta: '1 video · 3 PDFs · Getting bike and body ready',
     lessons: [
-      { icon: '🎥', name: 'Video Tutorial', duration: '' },
-      { icon: '📄', name: 'Motorcycle Preparation', duration: 'PDF' },
-      { icon: '📄', name: 'Tire Condition Check', duration: 'PDF' },
-      { icon: '📄', name: 'Practicing Proper Body Position', duration: 'PDF' }
+      { icon: 'play', name: 'Video Tutorial', duration: '' },
+      { icon: 'document', name: 'Motorcycle Preparation', duration: 'PDF' },
+      { icon: 'document', name: 'Tire Condition Check', duration: 'PDF' },
+      { icon: 'document', name: 'Practicing Proper Body Position', duration: 'PDF' }
     ]
   },
   {
@@ -24,9 +24,9 @@ const leanCurriculumEn: CurriculumModule[] = [
     title: 'Level 03 — Hanging Off',
     meta: '1 video · 2 PDFs · Hanging-off fundamentals',
     lessons: [
-      { icon: '🎥', name: 'Video Tutorial', duration: '' },
-      { icon: '📄', name: 'Hanging-Off Technique', duration: 'PDF' },
-      { icon: '📄', name: 'Flick Technique', duration: 'PDF' }
+      { icon: 'play', name: 'Video Tutorial', duration: '' },
+      { icon: 'document', name: 'Hanging-Off Technique', duration: 'PDF' },
+      { icon: 'document', name: 'Flick Technique', duration: 'PDF' }
     ]
   },
   {
@@ -34,9 +34,9 @@ const leanCurriculumEn: CurriculumModule[] = [
     title: 'Level 04 — Trajectory & Deep Lean',
     meta: '1 video · 2 PDFs · Line choice and throttle control',
     lessons: [
-      { icon: '🎥', name: 'Video Tutorial', duration: '' },
-      { icon: '📄', name: 'Turn-In Points & Trajectory Work', duration: 'PDF' },
-      { icon: '📄', name: 'Throttle Phase Work', duration: 'PDF' }
+      { icon: 'play', name: 'Video Tutorial', duration: '' },
+      { icon: 'document', name: 'Turn-In Points & Trajectory Work', duration: 'PDF' },
+      { icon: 'document', name: 'Throttle Phase Work', duration: 'PDF' }
     ]
   },
   {
@@ -44,10 +44,10 @@ const leanCurriculumEn: CurriculumModule[] = [
     title: 'Level 05 — Mixing Different Steering Methods',
     meta: '1 video · 3 PDFs · Combining every tool',
     lessons: [
-      { icon: '🎥', name: 'Video Tutorial', duration: '' },
-      { icon: '📄', name: 'Footwork', duration: 'PDF' },
-      { icon: '📄', name: 'Countersteering + Body', duration: 'PDF' },
-      { icon: '📄', name: 'MotoPhD Challenge', duration: 'PDF' }
+      { icon: 'play', name: 'Video Tutorial', duration: '' },
+      { icon: 'document', name: 'Footwork', duration: 'PDF' },
+      { icon: 'document', name: 'Countersteering + Body', duration: 'PDF' },
+      { icon: 'document', name: 'MotoPhD Challenge', duration: 'PDF' }
     ]
   }
 ];
@@ -58,17 +58,17 @@ const leanCurriculumRu: CurriculumModule[] = [
     title: 'Уровень 01 — Теория',
     meta: '1 видео · Теоретическая база',
     open: true,
-    lessons: [{ icon: '🎥', name: 'Видеоролик', duration: '' }]
+    lessons: [{ icon: 'play', name: 'Видеоролик', duration: '' }]
   },
   {
     number: '02',
     title: 'Уровень 02 — Подготовка',
     meta: '1 видео · 3 PDF · Подготовка байка и тела',
     lessons: [
-      { icon: '🎥', name: 'Видеоролик', duration: '' },
-      { icon: '📄', name: 'Подготовка мотоцикла', duration: 'PDF' },
-      { icon: '📄', name: 'Проверка состояния резины', duration: 'PDF' },
-      { icon: '📄', name: 'Отработка правильного положения тела', duration: 'PDF' }
+      { icon: 'play', name: 'Видеоролик', duration: '' },
+      { icon: 'document', name: 'Подготовка мотоцикла', duration: 'PDF' },
+      { icon: 'document', name: 'Проверка состояния резины', duration: 'PDF' },
+      { icon: 'document', name: 'Отработка правильного положения тела', duration: 'PDF' }
     ]
   },
   {
@@ -76,9 +76,9 @@ const leanCurriculumRu: CurriculumModule[] = [
     title: 'Уровень 03 — Свешивание',
     meta: '1 видео · 2 PDF · Основы свешивания',
     lessons: [
-      { icon: '🎥', name: 'Видеоролик', duration: '' },
-      { icon: '📄', name: 'Техника свешивания', duration: 'PDF' },
-      { icon: '📄', name: 'Техника перекладки', duration: 'PDF' }
+      { icon: 'play', name: 'Видеоролик', duration: '' },
+      { icon: 'document', name: 'Техника свешивания', duration: 'PDF' },
+      { icon: 'document', name: 'Техника перекладки', duration: 'PDF' }
     ]
   },
   {
@@ -86,9 +86,9 @@ const leanCurriculumRu: CurriculumModule[] = [
     title: 'Уровень 04 — Траектория и глубокий наклон',
     meta: '1 видео · 2 PDF · Выбор траектории и газ',
     lessons: [
-      { icon: '🎥', name: 'Видеоролик', duration: '' },
-      { icon: '📄', name: 'Работа над точками руления и траекторией', duration: 'PDF' },
-      { icon: '📄', name: 'Работа над фазами газа', duration: 'PDF' }
+      { icon: 'play', name: 'Видеоролик', duration: '' },
+      { icon: 'document', name: 'Работа над точками руления и траекторией', duration: 'PDF' },
+      { icon: 'document', name: 'Работа над фазами газа', duration: 'PDF' }
     ]
   },
   {
@@ -96,10 +96,10 @@ const leanCurriculumRu: CurriculumModule[] = [
     title: 'Уровень 05 — Микс разных инструментов руления',
     meta: '1 видео · 3 PDF · Соединяем всё вместе',
     lessons: [
-      { icon: '🎥', name: 'Видеоролик', duration: '' },
-      { icon: '📄', name: 'Работа ног', duration: 'PDF' },
-      { icon: '📄', name: 'Контр руление + тело', duration: 'PDF' },
-      { icon: '📄', name: 'Челлендж от MotoPhD', duration: 'PDF' }
+      { icon: 'play', name: 'Видеоролик', duration: '' },
+      { icon: 'document', name: 'Работа ног', duration: 'PDF' },
+      { icon: 'document', name: 'Контр руление + тело', duration: 'PDF' },
+      { icon: 'document', name: 'Челлендж от MotoPhD', duration: 'PDF' }
     ]
   }
 ];
@@ -111,9 +111,9 @@ const legacyCurriculum: CurriculumModule[] = [
     meta: '1 PDF · 1 video (10 min) · Theory foundation',
     open: true,
     lessons: [
-      { icon: '📄', name: 'Theory PDF — Lean Angle & Physics', duration: '5–6 pages' },
+      { icon: 'document', name: 'Theory PDF — Lean Angle & Physics', duration: '5–6 pages' },
       {
-        icon: '🎥',
+        icon: 'play',
         name: 'Theory Video — Why Your Bike Can Lean Far More',
         duration: '10 min'
       },
@@ -125,8 +125,8 @@ const legacyCurriculum: CurriculumModule[] = [
     title: 'Understanding Grip',
     meta: '1 PDF · 1 video · Grip awareness training',
     lessons: [
-      { icon: '📄', name: 'Theory PDF — Grip & Contact Patch', duration: '5 pages' },
-      { icon: '🎥', name: 'Theory Video — How Tyres Actually Hold You', duration: '10 min' }
+      { icon: 'document', name: 'Theory PDF — Grip & Contact Patch', duration: '5 pages' },
+      { icon: 'play', name: 'Theory Video — How Tyres Actually Hold You', duration: '10 min' }
     ]
   },
   {
@@ -134,10 +134,10 @@ const legacyCurriculum: CurriculumModule[] = [
     title: 'Practice Drills — Building Lean Confidence',
     meta: '3 practice videos · PDF drill sheets',
     lessons: [
-      { icon: '🎥', name: 'Drill 1 — First Lean Exercise (Parking Lot)', duration: '5 min' },
-      { icon: '🎥', name: 'Drill 2 — Progressive Lean Progression', duration: '5 min' },
-      { icon: '🎥', name: 'Drill 3 — Corner Entry Confidence', duration: '5 min' },
-      { icon: '📄', name: 'Drill Sheets PDF', duration: 'Exercises' }
+      { icon: 'play', name: 'Drill 1 — First Lean Exercise (Parking Lot)', duration: '5 min' },
+      { icon: 'play', name: 'Drill 2 — Progressive Lean Progression', duration: '5 min' },
+      { icon: 'play', name: 'Drill 3 — Corner Entry Confidence', duration: '5 min' },
+      { icon: 'document', name: 'Drill Sheets PDF', duration: 'Exercises' }
     ]
   },
   {
@@ -145,8 +145,8 @@ const legacyCurriculum: CurriculumModule[] = [
     title: 'Applying It on the Road',
     meta: 'Real-world application framework',
     lessons: [
-      { icon: '🎥', name: 'From Parking Lot to Real Corners', duration: '5 min' },
-      { icon: '📄', name: 'What You Should Now Feel — Checklist', duration: 'PDF' }
+      { icon: 'play', name: 'From Parking Lot to Real Corners', duration: '5 min' },
+      { icon: 'document', name: 'What You Should Now Feel — Checklist', duration: 'PDF' }
     ]
   }
 ];

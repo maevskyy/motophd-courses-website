@@ -1,58 +1,77 @@
+@use '@/styles/mixins' as *;
+
 .history {
-  border-top: 1px solid #2a2a2a;
-  margin-top: 40px;
-  padding-top: 32px;
+  @include card;
+
+  margin-block-start: var(--sp-5);
+  max-inline-size: 720px;
+  padding: var(--sp-6);
 }
 
 .history__title {
-  font-size: 18px;
-  margin: 0 0 20px;
+  @include h3;
+
+  margin-block-end: var(--sp-4);
 }
 
 .history__empty {
-  color: var(--gray);
-  font-size: 14px;
-  margin: 0;
+  color: var(--text-3);
+  font-size: var(--fs-small);
 }
 
 .history__row {
-  align-items: baseline;
-  border-bottom: 1px solid #1d1d1d;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 16px;
-  justify-content: space-between;
-  padding: 14px 0;
+  align-items: center;
+  border-block-start: 1px solid var(--border);
+  display: grid;
+  gap: var(--sp-2) var(--sp-4);
+  grid-template-columns: minmax(0, 2fr) repeat(2, minmax(0, 1fr)) auto auto;
+  padding-block: var(--sp-3);
 }
 
 .history__course {
-  flex: 1 1 220px;
-  font-weight: 700;
+  font-size: var(--fs-small);
+  font-weight: 600;
 }
 
 .history__meta {
-  color: var(--gray);
-  font-size: 13px;
+  color: var(--text-3);
+  font-size: var(--fs-caption);
 }
 
 .history__amount {
-  font-weight: 700;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  text-align: end;
 }
 
+/* Статус читается по подписи; цвет — вспомогательный. */
 .history__status {
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 700;
-  padding: 4px 10px;
-  text-transform: uppercase;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-full);
+  font-size: var(--fs-caption);
+  padding: 2px var(--sp-3);
+  text-align: center;
+  white-space: nowrap;
 }
 
 .history__statusPaid {
-  background: #0d2612;
-  color: #8ee59a;
+  color: var(--success);
 }
 
 .history__statusOther {
-  background: #2b2410;
-  color: #e5d48e;
+  color: var(--text-3);
+}
+
+@media (max-width: 700px) {
+  .history__row {
+    grid-template-columns: 1fr auto;
+  }
+
+  .history__course {
+    grid-column: 1 / -1;
+  }
+
+  .history__amount {
+    text-align: start;
+  }
 }

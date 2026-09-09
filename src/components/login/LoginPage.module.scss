@@ -1,162 +1,126 @@
-.red {
-  color: var(--red);
-}
-.courseBtn,
-.courseBtnGhost,
-.btnContinue,
-.btnUnlock,
-.pdfBtn,
-.btnLogin,
-.btnEnroll {
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 700;
-  transition: opacity 0.2s;
-}
-
-.courseBtn,
-.pdfBtn,
-.btnLogin,
-.btnEnroll,
-.btnContinue {
-  background: var(--red);
-  border: 0;
-  color: #fff;
-}
+@use '@/styles/mixins' as *;
 
 .loginPage {
   align-items: center;
-  background: linear-gradient(135deg, #000, #0a0000);
+  background: var(--surface-1);
   display: flex;
   justify-content: center;
-  min-height: 100vh;
-  padding: 24px;
+  min-block-size: 100svh;
+  padding: calc(var(--header-h) + var(--sp-5)) var(--sp-5) var(--sp-5);
 }
 
 .loginCard {
-  background: #0d0d0d;
-  border: 1px solid #1e1e1e;
-  border-radius: 16px;
-  max-width: 420px;
-  padding: 48px;
-  width: 100%;
+  @include card;
+
+  border-radius: var(--radius-lg);
+  max-inline-size: 420px;
+  padding: var(--sp-7);
+  inline-size: 100%;
 }
 
 .loginLogo {
-  font-size: 24px;
-  font-weight: 900;
-  margin-bottom: 8px;
-  text-align: center;
+  block-size: 32px;
+  display: block;
+  inline-size: auto;
+  margin: 0 auto var(--sp-4);
 }
 
 .loginTagline {
-  color: var(--gray);
-  font-size: 13px;
-  margin-bottom: 40px;
+  @include h3;
+
+  color: var(--text-1);
+  margin-block-end: var(--sp-7);
   text-align: center;
 }
 
-.loginError {
-  background: #111;
-  border-radius: 6px;
-  color: var(--gray);
+.loginError,
+.loginSuccess {
+  border-radius: var(--radius);
   display: grid;
-  font-size: 12px;
-  gap: 4px;
-  margin-bottom: 20px;
-  padding: 10px;
-  text-align: center;
+  font-size: var(--fs-small);
+  gap: var(--sp-1);
+  line-height: var(--lh-normal);
+  margin-block-end: var(--sp-5);
+  padding: var(--sp-3) var(--sp-4);
+}
+
+/* Ошибка помечена не только цветом: рамка + жирный заголовок. */
+.loginError {
+  background: var(--brand-tint);
+  border: 1px solid var(--brand-line);
+  color: var(--text-2);
 }
 
 .loginError strong {
-  color: var(--white);
-}
-
-.formGroup {
-  margin-bottom: 18px;
-}
-
-.formLabel {
-  color: var(--white);
-  display: block;
-  font-size: 13px;
-  font-weight: 700;
-  margin-bottom: 8px;
-}
-
-.formInput {
-  background: #050505;
-  border: 1px solid #2a2a2a;
-  border-radius: 8px;
-  color: var(--white);
-  font-family: inherit;
-  font-size: 15px;
-  outline: none;
-  padding: 14px;
-  transition:
-    border-color 0.2s,
-    box-shadow 0.2s;
-  width: 100%;
-}
-
-.formInput:focus {
-  border-color: var(--red);
-  box-shadow: 0 0 0 3px rgb(237 28 36 / 15%);
-}
-
-.btnLogin {
-  border-radius: 8px;
-  font-size: 15px;
-  margin-bottom: 16px;
-  padding: 15px;
-  width: 100%;
-}
-
-.btnLogin:disabled {
-  cursor: wait;
-  opacity: 0.7;
-}
-
-.loginBack {
-  background: transparent;
-  border: 0;
-  color: var(--gray);
-  cursor: pointer;
-  display: block;
-  font-size: 13px;
-  text-align: center;
-  text-decoration: none;
-  width: 100%;
-}
-
-.loginBack:hover {
-  color: var(--white);
+  color: var(--text-1);
 }
 
 .loginSuccess {
-  background: #0d2612;
-  border-radius: 6px;
-  color: #8ee59a;
-  font-size: 14px;
-  margin-bottom: 20px;
-  padding: 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-strong);
+  color: var(--text-1);
+}
+
+.formGroup {
+  margin-block-end: var(--sp-5);
+}
+
+.formLabel {
+  @include field-label;
+}
+
+.formInput {
+  @include field;
+}
+
+.btnLogin {
+  @include btn-primary;
+  @include btn-block;
+
+  margin-block-start: var(--sp-2);
 }
 
 .loginForgot {
-  color: var(--gray);
-  display: block;
-  font-size: 13px;
-  margin: -12px 0 20px;
-  text-align: right;
+  align-items: center;
+  color: var(--text-3);
+  display: flex;
+  font-size: var(--fs-small);
+  justify-content: flex-end;
+  margin-block: calc(var(--sp-4) * -1) var(--sp-4);
+  min-block-size: var(--control-h);
   text-decoration: none;
-}
 
-.loginForgot:hover {
-  color: var(--white);
+  @include focus-ring;
+
+  &:hover {
+    color: var(--text-1);
+  }
 }
 
 .loginHint {
-  color: var(--gray);
-  font-size: 13px;
-  margin: 0 0 20px;
+  color: var(--text-2);
+  font-size: var(--fs-small);
+  line-height: var(--lh-normal);
+  margin-block-end: var(--sp-5);
+}
+
+.loginBack {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  color: var(--text-3);
+  cursor: pointer;
+  display: flex;
+  font-size: var(--fs-small);
+  gap: var(--sp-2);
+  justify-content: center;
+  margin-block-start: var(--sp-4);
+  min-block-size: var(--control-h);
+  text-decoration: none;
+
+  @include focus-ring;
+
+  &:hover {
+    color: var(--text-1);
+  }
 }

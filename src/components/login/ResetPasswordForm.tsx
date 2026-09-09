@@ -3,6 +3,7 @@
 import { useActionState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
+import { Icon } from '@/components/ui/Icon';
 import { MIN_PASSWORD_LENGTH } from '@/lib/auth/accountFormState';
 import { resetPasswordAction } from '@/lib/auth/passwordReset';
 import { initialResetPasswordFormState } from '@/lib/auth/passwordResetFormState';
@@ -23,10 +24,9 @@ export function ResetPasswordForm({ locale, token }: { locale: 'en' | 'ru'; toke
       <form action={formAction} className={styles.loginCard}>
         <input name="locale" type="hidden" value={locale} />
         <input name="token" type="hidden" value={token} />
-        <div className={styles.loginLogo}>
-          MOTO<span className={styles.red}>PhD</span>
-        </div>
-        <div className={styles.loginTagline}>{t('resetTagline')}</div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img alt="MotoPhD" className={styles.loginLogo} height={32} src="/logo.png" width={116} />
+        <h1 className={styles.loginTagline}>{t('resetTagline')}</h1>
         {state.status !== 'idle' ? (
           <div className={styles.loginError} role="alert">
             <strong>{t(errorKeys[state.status])}</strong>
@@ -64,7 +64,8 @@ export function ResetPasswordForm({ locale, token }: { locale: 'en' | 'ru'; toke
           {t('resetButton')}
         </button>
         <Link className={styles.loginBack} href="/login/forgot">
-          ← {t('forgotTagline')}
+          <Icon name="arrowLeft" size={16} />
+          {t('forgotTagline')}
         </Link>
       </form>
     </main>

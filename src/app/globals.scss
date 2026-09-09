@@ -1,32 +1,89 @@
 @use '@/styles/tokens';
+@use '@/styles/mixins' as *;
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
 * {
-  box-sizing: border-box;
   margin: 0;
   min-width: 0;
   padding: 0;
 }
 
 html {
-  background: var(--dark);
+  background: var(--surface-1);
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Якорь #about-anchor не должен уезжать под фиксированную шапку. */
+html {
+  scroll-padding-top: calc(var(--header-h) + var(--sp-5));
 }
 
 body {
-  background: var(--dark);
-  color: var(--white);
-  font-family: var(--font-body), 'Segoe UI', system-ui, sans-serif;
-  overflow-x: hidden;
+  background: var(--surface-1);
+  color: var(--text-1);
+  display: flex;
+  flex-direction: column;
+  min-block-size: 100svh;
+  font-family: var(--font-text);
+  font-size: var(--fs-body);
+  font-weight: 400;
+  line-height: var(--lh-relaxed);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Подвал прижат к низу на коротких страницах (правовые тексты, служебные экраны). */
+body > footer {
+  margin-block-start: auto;
 }
 
 h1,
 h2,
-h3 {
+h3,
+h4 {
+  font-family: var(--font-display);
+  letter-spacing: var(--ls-tight);
   overflow-wrap: break-word;
-  word-break: break-word;
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: var(--fs-h1);
+  font-weight: 700;
+  line-height: var(--lh-tight);
+}
+
+h2 {
+  font-size: var(--fs-h2);
+  font-weight: 700;
+  line-height: var(--lh-snug);
+}
+
+h3,
+h4 {
+  font-size: var(--fs-h3);
+  font-weight: 600;
+  line-height: var(--lh-snug);
+}
+
+p {
+  text-wrap: pretty;
+}
+
+img,
+video {
+  display: block;
+  max-width: 100%;
 }
 
 button,
-input {
+input,
+select,
+textarea {
   font: inherit;
 }
 
@@ -38,19 +95,51 @@ a {
   color: inherit;
 }
 
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+/* Скрыто визуально, доступно скринридеру. */
+.srOnly {
+  block-size: 1px;
+  clip-path: inset(50%);
+  inline-size: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+}
+
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0a0a0a;
+  background: var(--surface-2);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #2a2a2a;
-  border-radius: 3px;
+  background: var(--border-strong);
+  border: 3px solid var(--surface-2);
+  border-radius: var(--radius-full);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--red);
+  background: var(--text-3);
+}
+
+::selection {
+  background: var(--brand);
+  color: var(--text-on-brand);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }

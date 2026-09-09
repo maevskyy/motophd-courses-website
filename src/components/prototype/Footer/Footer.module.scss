@@ -1,104 +1,116 @@
-.red {
-  color: var(--red);
-}
+@use '@/styles/mixins' as *;
+
 .footer {
-  background: #000;
-  border-top: 1px solid #1a1a1a;
-  padding: 48px 40px 24px;
+  background: var(--surface-2);
+  border-block-start: 1px solid var(--border);
+  padding-block: var(--sp-8) var(--sp-5);
 }
 
 .footer__inner {
-  margin: 0 auto;
-  max-width: 1200px;
+  @include container;
 }
 
 .footer__top {
   display: grid;
-  gap: 40px;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
-  margin-bottom: 40px;
+  gap: var(--sp-7);
+  grid-template-columns: 1.6fr repeat(3, 1fr);
+  margin-block-end: var(--sp-7);
 }
 
 .footer__logo {
-  font-size: 20px;
-  font-weight: 900;
-  margin-bottom: 12px;
+  block-size: 28px;
+  inline-size: auto;
+  margin-block-end: var(--sp-4);
 }
 
 .footer__copyText {
-  color: var(--gray);
-  font-size: 13px;
-  line-height: 1.6;
+  color: var(--text-3);
+  font-size: var(--fs-small);
+  line-height: var(--lh-relaxed);
+  max-width: 34ch;
 }
 
+/* Заголовок колонки — та же капслок-метка, что и в остальном интерфейсе. */
 .footer__heading {
-  color: var(--gray);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  margin-bottom: 16px;
+  color: var(--text-3);
+  font-family: var(--font-text);
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  letter-spacing: var(--ls-caps);
+  margin-block-end: var(--sp-4);
   text-transform: uppercase;
 }
 
 .footer__link {
-  background: transparent;
-  border: 0;
-  color: #666;
-  cursor: pointer;
+  color: var(--text-2);
   display: block;
-  font-size: 13px;
-  margin-bottom: 8px;
-  text-align: left;
+  font-size: var(--fs-small);
+  padding-block: var(--sp-2);
   text-decoration: none;
-  transition: color 0.2s;
-}
+  transition: color var(--dur) var(--ease);
 
-.footer__link:hover {
-  color: var(--white);
+  @include focus-ring;
+
+  &:hover {
+    color: var(--text-1);
+  }
 }
 
 .footer__bottom {
   align-items: center;
-  border-top: 1px solid #1a1a1a;
+  border-block-start: 1px solid var(--border);
   display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-4);
   justify-content: space-between;
-  padding-top: 24px;
+  padding-block-start: var(--sp-5);
 }
 
 .footer__copy {
-  color: #444;
-  font-size: 12px;
+  color: var(--text-3);
+  font-size: var(--fs-caption);
 }
 
 .footer__social {
   display: flex;
-  gap: 12px;
+  gap: var(--sp-2);
 }
 
 .footer__socialLink {
   align-items: center;
-  border: 1px solid #222;
-  border-radius: 50%;
-  color: #666;
+  block-size: var(--control-h-sm);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-2);
   display: flex;
-  height: 36px;
+  inline-size: var(--control-h-sm);
   justify-content: center;
-  transition: border-color 0.2s, color 0.2s;
-  width: 36px;
-}
+  transition:
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease);
 
-.footer__socialLink:hover {
-  border-color: var(--red);
-  color: var(--red);
-}
+  @include focus-ring;
 
+  &:hover {
+    border-color: var(--border-strong);
+    color: var(--text-1);
+  }
+}
 
 @media (max-width: 900px) {
-  .footer__top { grid-template-columns: 1fr 1fr; }
+  .footer__top {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
-@media (max-width: 480px) {
-  .footer { padding: 32px 16px 20px; }
-  .footer__top { grid-template-columns: 1fr; gap: 28px; }
-  .footer__bottom { align-items: flex-start; flex-direction: column; gap: 8px; }
+@media (max-width: 560px) {
+  .footer__top {
+    gap: var(--sp-6);
+    grid-template-columns: 1fr;
+  }
+
+  .footer__bottom {
+    align-items: flex-start;
+    flex-direction: column;
+  }
 }

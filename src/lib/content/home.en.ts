@@ -36,25 +36,25 @@ export const homeEn: HomeContent = {
     'Most riders have some fears because of a lack of knowledge. That lack of knowledge leads to wrong feelings from the bike. MotoPhD fixes that in four simple steps.',
   method: [
     {
-      icon: '🧠',
+      icon: 'brain',
       num: 'Step 01',
       title: 'Understand',
       desc: 'Before you ride, you understand exactly what your motorcycle is doing — and why. Physics, tactics and all dynamics explained in plain language.'
     },
     {
-      icon: '🔧',
+      icon: 'wrench',
       num: 'Step 02',
       title: 'Prepare',
       desc: 'Check the bike and learn the main technique for your course before you start practicing.'
     },
     {
-      icon: '🏍️',
+      icon: 'motorcycle',
       num: 'Step 03',
       title: 'Train',
       desc: 'Structured exercises. Progressive drills. No guesswork. Each module builds the next. Clear outcome at every stage.'
     },
     {
-      icon: '✅',
+      icon: 'flag',
       num: 'Step 04',
       title: 'Apply',
       desc: 'Real confidence on real roads. You apply what you learn immediately, and feel the difference in your very next ride.'

@@ -3,6 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Link } from '@/i18n/routing';
+import { Icon, type IconName } from '@/components/ui/Icon';
 import { logoutAction } from '@/lib/auth/actions';
 import type { CourseCardCourse, DashboardContent, PurchaseHistoryItem } from '@/lib/data';
 import { cx } from '@/lib/classNames';
@@ -46,26 +47,30 @@ export function DashboardClient({
           <div className={styles.dashEmail}>{email}</div>
         </div>
         <nav className={styles.dashNav}>
-          {[
-            ['overview', '🏠', t('dashboard.overview')],
-            ['courses', '📚', t('dashboard.myCourses')],
-            ['downloads', '📄', t('dashboard.downloads')],
-            ['profile', '👤', t('dashboard.profile')]
-          ].map(([id, icon, label]) => (
+          {(
+            [
+              ['overview', 'grid', t('dashboard.overview')],
+              ['courses', 'library', t('dashboard.myCourses')],
+              ['downloads', 'document', t('dashboard.downloads')],
+              ['profile', 'user', t('dashboard.profile')]
+            ] as Array<[DashboardTab, IconName, string]>
+          ).map(([id, icon, label]) => (
             <button
+              aria-current={tab === id ? 'page' : undefined}
               className={cx(styles.dashNavItem, tab === id && styles.dashNavItemActive)}
               key={id}
-              onClick={() => setTab(id as DashboardTab)}
+              onClick={() => setTab(id)}
               type="button"
             >
-              <span className={styles.dashNavIcon}>{icon}</span>
+              <Icon className={styles.dashNavIcon} name={icon} size={18} />
               <span>{label}</span>
             </button>
           ))}
         </nav>
         <div className={styles.dashSidebarFooter}>
           <Link className={styles.dashSidebarLink} href="/">
-            ← {t('actions.backToWebsite')}
+            <Icon name="arrowLeft" size={16} />
+            {t('actions.backToWebsite')}
           </Link>
           <form action={logoutAction}>
             <input name="locale" type="hidden" value={locale} />

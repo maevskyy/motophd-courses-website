@@ -1,0 +1,47 @@
+@use '@/styles/mixins' as *;
+
+/* Короткие служебные страницы (оплата прошла / не прошла, заглушка провайдера)
+   раньше отдавались вообще без стилей — браузерным Times по белому. */
+.wrap {
+  @include container;
+
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  min-block-size: 100svh;
+  padding-block: calc(var(--header-h) + var(--section-y)) var(--section-y);
+}
+
+.card {
+  @include card;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  max-inline-size: 520px;
+  padding: var(--sp-7);
+  inline-size: 100%;
+}
+
+.title {
+  @include h2;
+}
+
+.text {
+  @include body;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  margin-block-start: var(--sp-2);
+}
+
+.primary {
+  @include btn-primary;
+}
+
+.secondary {
+  @include btn-secondary;
+}

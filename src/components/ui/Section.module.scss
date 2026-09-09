@@ -1,0 +1,52 @@
+@use '@/styles/mixins' as *;
+
+.section {
+  @include section-y;
+
+  position: relative;
+}
+
+/* Чередование фона — единственный приём разделения секций (плюс граница). */
+.toneAlt {
+  background: var(--surface-2);
+}
+
+.bordered {
+  border-block-start: 1px solid var(--border);
+}
+
+.container {
+  @include container;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  margin-block-end: var(--sp-7);
+  max-width: var(--measure);
+}
+
+.headerCenter {
+  align-items: center;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.kicker {
+  @include kicker;
+}
+
+.headerCenter .kicker {
+  justify-content: center;
+}
+
+.title {
+  @include h2;
+
+  color: var(--text-1);
+}
+
+.lead {
+  @include lead;
+}

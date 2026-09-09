@@ -1,5 +1,6 @@
 import { useTranslations } from 'next-intl';
 
+import { Icon } from '@/components/ui/Icon';
 import type { PlayerContent } from '@/lib/data';
 import styles from './CoursePlayer.module.scss';
 
@@ -24,9 +25,9 @@ export function LessonDownloads({ player }: Props) {
           rel="noopener"
           target="_blank"
         >
-          <div aria-hidden className={styles.pdfIcon}>
-            📄
-          </div>
+          <span className={styles.pdfIcon}>
+            <Icon name="document" size={22} />
+          </span>
           <div className={styles.pdfInfo}>
             <div className={styles.pdfName}>{download.title}</div>
             <div className={styles.pdfSize}>{t('pdfLinkDescription')}</div>

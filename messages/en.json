@@ -4,7 +4,10 @@
     "about": "About",
     "login": "Login",
     "dashboard": "My Dashboard",
-    "cta": "Start Learning"
+    "cta": "Start Learning",
+    "primary": "Main",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
   },
   "actions": {
     "viewCourses": "View Courses",
@@ -26,7 +29,8 @@
     "saveChanges": "Save Changes",
     "backToDashboard": "Back to Dashboard",
     "changePassword": "Change Password",
-    "deleteAccount": "Delete my account"
+    "deleteAccount": "Delete my account",
+    "signIn": "Sign In"
   },
   "login": {
     "tagline": "Student Portal — Sign In",

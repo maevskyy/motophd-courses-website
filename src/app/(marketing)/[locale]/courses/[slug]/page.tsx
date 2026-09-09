@@ -6,6 +6,7 @@ import { AccessNotice } from '@/components/courseSales/AccessNotice';
 import { CurriculumAccordion } from '@/components/prototype/CurriculumAccordion';
 import { Footer } from '@/components/prototype/Footer';
 import { PricingBox } from '@/components/prototype/PricingBox';
+import { Icon } from '@/components/ui/Icon';
 import {
   getCourseBySlug,
   getCourseCurriculum,
@@ -73,30 +74,25 @@ export default async function CourseSalesPage({
 
   return (
     <>
-      <section className={styles.salesHero}>
-        <div className={styles.salesHero__inner}>
+      <section className={styles.hero}>
+        <div className={styles.heroInner}>
           <div>
-            <Link className={styles.salesBreadcrumb} href="/courses">
-              ← <span className={styles.red}>{sales.breadcrumb}</span> / {course.title}
+            <Link className={styles.breadcrumb} href="/courses">
+              <Icon name="arrowLeft" size={16} />
+              {sales.breadcrumb}
             </Link>
             <AccessNotice />
-            <div className={styles.salesTag}>{sales.tag}</div>
-            <h1 className={styles.salesTitle}>
-              {sales.title.map((line) => (
-                <span key={line}>
-                  {line}
-                  <br />
-                </span>
-              ))}
-            </h1>
-            <p className={styles.salesPain}>{sales.pain}</p>
-            <div className={styles.outcomes}>
+            <p className={styles.tag}>{sales.tag}</p>
+            <h1 className={styles.title}>{sales.title.join(' ')}</h1>
+            <p className={styles.pain}>{sales.pain}</p>
+            <ul className={styles.outcomes}>
               {sales.outcomes.map((outcome) => (
-                <div className={styles.outcome} key={outcome}>
-                  {outcome}
-                </div>
+                <li className={styles.outcome} key={outcome}>
+                  <Icon className={styles.outcomeIcon} name="check" size={18} />
+                  <span>{outcome}</span>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
           <PricingBox
             checkoutEnabled={Boolean(getPaymentProvider())}
@@ -107,16 +103,17 @@ export default async function CourseSalesPage({
         </div>
       </section>
 
-      <section className={styles.salesSection}>
-        <h2 className={styles.salesSection__title}>{sales.modulesTitle}</h2>
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>{sales.modulesTitle}</h2>
         <CurriculumAccordion modules={curriculum} />
       </section>
 
-      <section className={styles.ctaSection}>
-        <Link className={styles.button} href={`/courses/${course.slug}`}>
+      <div className={styles.cta}>
+        {/* Ведёт к блоку с ценой на этой же странице: на телефоне он уезжает вниз. */}
+        <a className={styles.ctaButton} href="#pricing">
           {sales.enrollCta}
-        </Link>
-      </section>
+        </a>
+      </div>
 
       <Footer compact />
     </>

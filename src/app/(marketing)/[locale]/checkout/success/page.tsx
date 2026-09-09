@@ -1,5 +1,7 @@
 import { getTranslations } from 'next-intl/server';
 
+import { Link } from '@/i18n/routing';
+import { PageMessage, pageMessageStyles as styles } from '@/components/ui/PageMessage';
 import { requireLocale } from '@/i18n/requireLocale';
 
 export default async function CheckoutSuccessPage({
@@ -15,11 +17,16 @@ export default async function CheckoutSuccessPage({
   // Токен погашен и кука поставлена до редиректа сюда (server action / return-роут).
   const signedIn = signedInFlag === '1';
   const t = await getTranslations({ locale: safeLocale, namespace: 'checkout' });
+  const actions = await getTranslations({ locale: safeLocale, namespace: 'actions' });
 
   return (
-    <main>
-      <h1>{t('successTitle')}</h1>
-      <p>{signedIn ? t('successSignedIn') : t('successLogin')}</p>
-    </main>
+    <PageMessage text={signedIn ? t('successSignedIn') : t('successLogin')} title={t('successTitle')}>
+      <Link className={styles.primary} href={signedIn ? '/dashboard' : '/login'}>
+        {signedIn ? actions('backToDashboard') : actions('signIn')}
+      </Link>
+      <Link className={styles.secondary} href="/">
+        {actions('backToWebsite')}
+      </Link>
+    </PageMessage>
   );
 }

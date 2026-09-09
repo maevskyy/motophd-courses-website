@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { CourseCard } from '@/components/prototype/CourseCard';
 import { Footer } from '@/components/prototype/Footer';
+import { Section, SectionHeader } from '@/components/ui/Section';
 import { getPublishedCourses, toCourseCardCourse } from '@/lib/data';
 import { buildPageMetadata, resolveSeoLocale } from '@/lib/seo';
 import { requireLocale } from '@/i18n/requireLocale';
@@ -59,17 +60,15 @@ export default async function CoursesPage({ params }: { params: Promise<{ locale
 
   return (
     <>
-      <main className={styles.catalogShell}>
-        <section className={styles.catalogInner}>
-          <div className={styles.section__label}>{content.label}</div>
-          <h1 className={styles.section__title}>{content.title}</h1>
-          <p className={styles.section__sub}>{content.sub}</p>
-          <div className={styles.coursesGrid}>
+      <main className={styles.shell}>
+        <Section>
+          <SectionHeader as="h1" kicker={content.label} lead={content.sub} title={content.title} />
+          <div className={styles.grid}>
             {courses.map((course) => (
-              <CourseCard catalog course={course} key={course.slug} />
+              <CourseCard catalog course={course} key={course.slug} titleAs="h2" />
             ))}
           </div>
-        </section>
+        </Section>
       </main>
       <Footer />
     </>

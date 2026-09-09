@@ -1,40 +1,25 @@
+@use '@/styles/mixins' as *;
+
 .upgrade {
-  border-top: 1px solid #1a1a1a;
-  padding: 12px 16px 16px;
+  border-block-start: 1px solid var(--border);
+  padding: var(--sp-4);
 }
 
 .upgrade__button {
-  background: transparent;
-  border: 1px solid var(--red);
-  border-radius: 6px;
-  color: var(--white);
-  cursor: pointer;
-  font-size: 12px;
-  font-weight: 700;
-  padding: 9px;
-  transition:
-    background 0.2s,
-    opacity 0.2s;
-  width: 100%;
-}
-
-.upgrade__button:hover:not(:disabled) {
-  background: var(--red);
-}
-
-.upgrade__button:disabled {
-  cursor: default;
-  opacity: 0.6;
+  @include btn-secondary;
+  @include btn-sm;
+  @include btn-block;
 }
 
 .upgrade__hint {
-  color: var(--gray);
-  font-size: 11px;
-  margin: 8px 0 0;
+  color: var(--text-3);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-normal);
+  margin-block-start: var(--sp-2);
 }
 
 .upgrade__error {
-  color: var(--red);
-  font-size: 12px;
-  margin: 8px 0 0;
+  color: var(--brand);
+  font-size: var(--fs-caption);
+  margin-block-start: var(--sp-2);
 }

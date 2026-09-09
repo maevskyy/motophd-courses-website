@@ -1,21 +1,15 @@
 import type { Metadata } from 'next';
 import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
-import { Unbounded } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import { AuthStatusProvider } from '@/components/providers/AuthStatusProvider';
 import { ToastProvider } from '@/components/providers/ToastProvider';
 import { Consent } from '@/components/consent';
 import { Nav } from '@/components/layout/Nav';
+import { fontClassName } from '../../fonts';
 import { getCurrentUser } from '@/lib/auth';
 import { noIndexMetadata } from '@/lib/seo';
 import '../../globals.scss';
-
-const unbounded = Unbounded({
-  subsets: ['latin', 'cyrillic'],
-  variable: '--font-body',
-  weight: ['400', '500', '600', '700', '800', '900']
-});
 
 export const dynamic = 'force-dynamic';
 
@@ -40,8 +34,8 @@ export default async function AppLocaleLayout({
   const [messages, user] = await Promise.all([getMessages({ locale }), getCurrentUser()]);
 
   return (
-    <html lang={locale}>
-      <body className={unbounded.variable}>
+    <html className={fontClassName} lang={locale}>
+      <body>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <AuthStatusProvider initialLoggedIn={Boolean(user)}>
             <ToastProvider>

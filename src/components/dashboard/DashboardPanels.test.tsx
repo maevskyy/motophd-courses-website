@@ -49,7 +49,7 @@ const courses = [
   {
     currency: 'EUR',
     description: '',
-    icon: '🏍️',
+    icon: 'motorcycle',
     imageTone: 'red',
     includes: [],
     pain: '',
@@ -61,7 +61,7 @@ const courses = [
   {
     currency: 'EUR',
     description: '',
-    icon: '⚡',
+    icon: 'flag',
     imageTone: 'green',
     includes: [],
     pain: '',

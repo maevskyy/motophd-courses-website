@@ -11,9 +11,9 @@ import type {
 } from './types';
 
 const visualByIndex = [
-  { icon: '🏍️', imageTone: 'red' as const, image: '/course-lean.jpg' },
-  { icon: '⚡', imageTone: 'green' as const, image: '/course-braking.jpg' },
-  { icon: '🛑', imageTone: 'blue' as const, image: undefined }
+  { icon: 'motorcycle' as const, imageTone: 'red' as const, image: '/course-lean.jpg' },
+  { icon: 'flag' as const, imageTone: 'green' as const, image: '/course-braking.jpg' },
+  { icon: 'wrench' as const, imageTone: 'blue' as const, image: undefined }
 ];
 
 const localized = {

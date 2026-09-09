@@ -3,6 +3,7 @@
 import { useActionState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
+import { Icon } from '@/components/ui/Icon';
 import { forgotPasswordAction } from '@/lib/auth/passwordReset';
 import { initialForgotPasswordFormState } from '@/lib/auth/passwordResetFormState';
 import styles from './LoginPage.module.scss';
@@ -15,10 +16,9 @@ export function ForgotPasswordForm({ locale }: { locale: 'en' | 'ru' }) {
     <main className={styles.loginPage}>
       <form action={formAction} className={styles.loginCard}>
         <input name="locale" type="hidden" value={locale} />
-        <div className={styles.loginLogo}>
-          MOTO<span className={styles.red}>PhD</span>
-        </div>
-        <div className={styles.loginTagline}>{t('forgotTagline')}</div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img alt="MotoPhD" className={styles.loginLogo} height={32} src="/logo.png" width={116} />
+        <h1 className={styles.loginTagline}>{t('forgotTagline')}</h1>
         {state.status === 'sent' ? (
           <p className={styles.loginSuccess} role="status">
             {t('forgotSent')}
@@ -48,7 +48,8 @@ export function ForgotPasswordForm({ locale }: { locale: 'en' | 'ru' }) {
           {t('forgotButton')}
         </button>
         <Link className={styles.loginBack} href="/login">
-          ← {t('backToLogin')}
+          <Icon name="arrowLeft" size={16} />
+          {t('backToLogin')}
         </Link>
       </form>
     </main>

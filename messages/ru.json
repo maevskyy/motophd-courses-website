@@ -4,7 +4,10 @@
     "about": "О нас",
     "login": "Войти",
     "dashboard": "Мой кабинет",
-    "cta": "Начать обучение"
+    "cta": "Начать обучение",
+    "primary": "Основная навигация",
+    "openMenu": "Открыть меню",
+    "closeMenu": "Закрыть меню"
   },
   "actions": {
     "viewCourses": "Смотреть курсы",
@@ -26,7 +29,8 @@
     "saveChanges": "Сохранить",
     "backToDashboard": "Назад в кабинет",
     "changePassword": "Изменить пароль",
-    "deleteAccount": "Удалить аккаунт"
+    "deleteAccount": "Удалить аккаунт",
+    "signIn": "Войти"
   },
   "login": {
     "tagline": "Портал студента — Войти",

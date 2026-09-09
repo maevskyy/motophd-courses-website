@@ -1,8 +1,9 @@
 import { Link } from '@/i18n/routing';
 import { FaqAccordion } from '@/components/prototype/FaqAccordion';
 import { Footer } from '@/components/prototype/Footer';
+import { Section, SectionHeader } from '@/components/ui/Section';
 import type { HomeContent } from '@/lib/content';
-import { landingStyles as styles } from './styles';
+import blocks from './styles/MarketingBlocks.module.scss';
 
 interface Props {
   content: HomeContent;
@@ -14,49 +15,37 @@ interface Props {
 export function LandingBottom({ content, labels }: Props) {
   return (
     <>
-      <section className={styles.section}>
-        <div className={styles.section__label}>{content.howLabel}</div>
-        <h2 className={styles.section__title}>
-          {content.howTitle.map((line) => (
-            <span key={line}>
-              {line}
-              <br />
-            </span>
-          ))}
-        </h2>
-        <div className={styles.howSteps}>
+      <Section bordered>
+        <SectionHeader kicker={content.howLabel} title={content.howTitle.join(' ')} />
+        <ol className={blocks.steps}>
           {content.steps.map((step) => (
-            <div className={styles.howStep} key={step.num}>
-              <div className={styles.howStep__num}>{step.num}</div>
-              <div className={styles.howStep__title}>{step.title}</div>
-              <div className={styles.howStep__desc}>{step.desc}</div>
-            </div>
+            <li className={blocks.step} key={step.num}>
+              <span className={blocks.stepBadge}>{step.num}</span>
+              <h3 className={blocks.cardTitle}>{step.title}</h3>
+              <p className={blocks.cardText}>{step.desc}</p>
+            </li>
           ))}
-        </div>
-      </section>
-      <hr className={styles.divider} />
-      <section className={styles.section}>
-        <div className={styles.section__label}>{content.faqLabel}</div>
-        <h2 className={styles.section__title}>{content.faqTitle}</h2>
+        </ol>
+      </Section>
+
+      <Section bordered tone="alt">
+        <SectionHeader kicker={content.faqLabel} title={content.faqTitle} />
         <FaqAccordion items={content.faq} />
-      </section>
-      <section className={styles.ctaSection}>
-        <h2 className={styles.ctaTitle}>
-          {content.ctaTitle.map((line) => (
-            <span key={line}>
-              {line}
-              <br />
-            </span>
-          ))}
-          <span className={styles.ctaAccent}>{content.ctaAccent}</span>
-        </h2>
-        <p className={styles.ctaSub}>{content.ctaSub}</p>
-        {labels.joinCommunity ? (
-          <Link className={`${styles.button} ${styles.ctaButton}`} href="/courses">
-            {labels.joinCommunity}
-          </Link>
-        ) : null}
-      </section>
+      </Section>
+
+      <Section bordered>
+        <div className={blocks.cta}>
+          <h2 className={blocks.ctaTitle}>{content.ctaTitle.join(' ')}</h2>
+          <p className={blocks.ctaAccent}>{content.ctaAccent}</p>
+          <p className={blocks.ctaSub}>{content.ctaSub}</p>
+          {labels.joinCommunity ? (
+            <Link className={blocks.ctaButton} href="/courses">
+              {labels.joinCommunity}
+            </Link>
+          ) : null}
+        </div>
+      </Section>
+
       <Footer socialLinks={content.socialLinks} />
     </>
   );

@@ -1,0 +1,283 @@
+/*
+  Общие примитивы дизайн-системы. Любой модуль подключает их через
+  `@use '@/styles/mixins' as *;` — чтобы одинаковые сущности (кнопка, карточка,
+  секция, метка) описывались в одном месте, а не переписывались в каждом файле.
+*/
+
+/* ---------- Сетка ---------- */
+
+@mixin container {
+  margin-inline: auto;
+  max-width: var(--container);
+  padding-inline: var(--gutter);
+  width: 100%;
+}
+
+@mixin section-y {
+  padding-block: var(--section-y);
+}
+
+/* ---------- Типографика ---------- */
+
+@mixin display {
+  font-family: var(--font-display);
+  font-size: var(--fs-display);
+  font-weight: 700;
+  letter-spacing: var(--ls-tight);
+  line-height: var(--lh-tight);
+}
+
+@mixin h1 {
+  font-family: var(--font-display);
+  font-size: var(--fs-h1);
+  font-weight: 700;
+  letter-spacing: var(--ls-tight);
+  line-height: var(--lh-tight);
+}
+
+@mixin h2 {
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  font-weight: 700;
+  letter-spacing: var(--ls-tight);
+  line-height: var(--lh-snug);
+}
+
+@mixin h3 {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  font-weight: 600;
+  letter-spacing: var(--ls-tight);
+  line-height: var(--lh-snug);
+}
+
+@mixin lead {
+  color: var(--text-2);
+  font-size: var(--fs-lead);
+  font-weight: 500;
+  line-height: var(--lh-relaxed);
+  max-width: var(--measure);
+}
+
+@mixin body {
+  color: var(--text-2);
+  font-size: var(--fs-body);
+  font-weight: 400;
+  line-height: var(--lh-relaxed);
+  max-width: var(--measure);
+}
+
+@mixin caption {
+  color: var(--text-3);
+  font-size: var(--fs-caption);
+  font-weight: 400;
+  line-height: var(--lh-normal);
+}
+
+/*
+  Метка секции. Красным остаётся только штрих: капслок-текст акцентным цветом
+  на 12px не проходит WCAG AA, поэтому сам текст — приглушённый.
+*/
+@mixin kicker {
+  align-items: center;
+  color: var(--text-3);
+  display: flex;
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  gap: var(--sp-3);
+  letter-spacing: var(--ls-caps);
+  line-height: var(--lh-normal);
+  text-transform: uppercase;
+
+  &::before {
+    background: var(--brand);
+    block-size: 2px;
+    content: '';
+    display: block;
+    flex: none;
+    inline-size: 24px;
+  }
+}
+
+/* ---------- Фокус ---------- */
+
+@mixin focus-ring {
+  &:focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+  }
+}
+
+/* ---------- Кнопки ---------- */
+
+@mixin btn-base {
+  align-items: center;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  cursor: pointer;
+  display: inline-flex;
+  font-family: var(--font-text);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  gap: var(--sp-2);
+  justify-content: center;
+  line-height: var(--lh-normal);
+  max-inline-size: 100%;
+  min-block-size: var(--control-h);
+  padding-block: var(--sp-2);
+  padding-inline: var(--sp-5);
+  text-align: center;
+  text-decoration: none;
+  transition:
+    background-color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+  white-space: nowrap;
+
+  @include focus-ring;
+
+  &:disabled,
+  &[aria-disabled='true'] {
+    cursor: not-allowed;
+    opacity: 0.45;
+  }
+}
+
+@mixin btn-primary {
+  @include btn-base;
+
+  background: var(--brand);
+  color: var(--text-on-brand);
+
+  &:hover:not(:disabled) {
+    background: var(--brand-hover);
+  }
+
+  &:active:not(:disabled) {
+    background: var(--brand-active);
+  }
+}
+
+@mixin btn-secondary {
+  @include btn-base;
+
+  background: transparent;
+  border-color: var(--border-strong);
+  color: var(--text-1);
+
+  &:hover:not(:disabled) {
+    background: var(--surface-3);
+    border-color: var(--text-3);
+  }
+}
+
+@mixin btn-tertiary {
+  @include btn-base;
+
+  background: transparent;
+  color: var(--text-2);
+  padding-inline: var(--sp-3);
+
+  &:hover:not(:disabled) {
+    color: var(--text-1);
+  }
+}
+
+@mixin btn-destructive {
+  @include btn-base;
+
+  background: transparent;
+  border-color: var(--brand-line);
+  color: var(--brand);
+
+  &:hover:not(:disabled) {
+    background: var(--brand-tint);
+    border-color: var(--brand);
+  }
+}
+
+/* Компактный размер: меняет только габариты, не цвет. */
+@mixin btn-sm {
+  font-size: var(--fs-caption);
+  min-block-size: var(--control-h-sm);
+  padding-inline: var(--sp-4);
+}
+
+@mixin btn-block {
+  inline-size: 100%;
+}
+
+/* ---------- Поверхности ---------- */
+
+@mixin card {
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+@mixin card-interactive {
+  @include card;
+
+  transition:
+    border-color var(--dur) var(--ease),
+    background-color var(--dur) var(--ease);
+
+  &:hover {
+    border-color: var(--border-strong);
+  }
+
+  @include focus-ring;
+}
+
+/* ---------- Поля ввода ---------- */
+
+@mixin field-label {
+  color: var(--text-2);
+  display: block;
+  font-size: var(--fs-small);
+  font-weight: 500;
+  margin-block-end: var(--sp-2);
+}
+
+@mixin field {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-1);
+  font-family: inherit;
+  font-size: var(--fs-body);
+  inline-size: 100%;
+  min-block-size: var(--control-h);
+  padding: var(--sp-3) var(--sp-4);
+  transition: border-color var(--dur) var(--ease);
+
+  &::placeholder {
+    color: var(--text-3);
+  }
+
+  &:hover {
+    border-color: var(--border-strong);
+  }
+
+  &:focus {
+    border-color: var(--brand);
+    outline: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 1px;
+  }
+
+  &[aria-invalid='true'] {
+    border-color: var(--brand);
+  }
+}
+
+/* ---------- Сетки карточек: три разрешённых раскладки ---------- */
+
+@mixin grid-cards($min: 300px) {
+  display: grid;
+  gap: var(--sp-5);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, #{$min}), 1fr));
+}

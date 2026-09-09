@@ -1,80 +1,14 @@
-.red {
-  color: var(--red);
-}
-.progressBar {
-  background: #1a1a1a;
-  border-radius: 2px;
-  height: 4px;
-  margin-bottom: 6px;
-  overflow: hidden;
-}
+@use '@/styles/mixins' as *;
 
-.progressFill {
-  background: var(--red);
-  border-radius: 2px;
-  height: 100%;
-  width: 40%;
-}
-
-.progressFillSmall {
-  width: 25%;
-}
-
-.pdfDownloadCard {
-  align-items: center;
-  cursor: pointer;
-  display: flex;
-  gap: 16px;
-  margin-bottom: 12px;
-  padding: 16px;
-  transition: border-color 0.2s;
-  width: 100%;
-}
-
-.videoFrame {
-  border: 0;
-  height: 100%;
-  width: 100%;
-}
-
-.pdfDownloadCard:hover {
-  border-color: var(--red);
-}
-
-.pdfIcon {
-  font-size: 32px;
-}
-
-.pdfInfo {
-  flex: 1;
-  text-align: left;
-}
-
-.pdfName {
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.pdfSize {
-  color: var(--gray);
-  font-size: 12px;
-}
-
-.pdfBtn {
-  border-radius: 6px;
-  font-size: 12px;
-  padding: 8px 16px;
-}
-
-.playerLayout {
+.layout {
   display: grid;
-  grid-template-columns: 1fr 320px;
-  min-height: calc(100vh - 64px);
-  padding-top: 64px;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  min-block-size: calc(100svh - var(--header-h));
+  padding-block-start: var(--header-h);
 }
 
-.playerMain {
-  padding: 0;
+.main {
+  min-inline-size: 0;
 }
 
 .videoContainer {
@@ -83,259 +17,372 @@
   background: #000;
   display: flex;
   justify-content: center;
-  max-height: 60vh;
+  max-block-size: 62svh;
   overflow: hidden;
   position: relative;
 }
 
+.videoFrame {
+  block-size: 100%;
+  border: 0;
+  inline-size: 100%;
+}
+
 .videoPlaceholder {
-  color: var(--gray);
+  color: var(--text-3);
+  display: grid;
+  gap: var(--sp-2);
+  font-size: var(--fs-small);
+  padding: var(--sp-5);
   text-align: center;
 }
 
-.videoPlayBtn {
-  align-items: center;
-  background: var(--red);
-  border: 0;
-  border-radius: 50%;
-  color: #fff;
-  cursor: pointer;
-  display: flex;
-  font-size: 28px;
-  height: 80px;
-  justify-content: center;
-  margin: 0 auto 16px;
-  transition: transform 0.2s;
-  width: 80px;
-}
-
-.videoPlayBtn:hover {
-  transform: scale(1.1);
-}
-
-.videoTitleSmall {
-  color: var(--gray);
-  font-size: 14px;
-}
-
 .videoMetaSmall {
-  color: #444;
-  font-size: 12px;
-  margin-top: 6px;
+  color: var(--text-3);
+  font-size: var(--fs-caption);
 }
 
-.videoInfo {
-  border-bottom: 1px solid #1a1a1a;
-  padding: 24px 32px;
+/* Одна колонка чтения на всю страницу урока. */
+.column {
+  margin-inline: auto;
+  max-inline-size: 760px;
+  padding: var(--sp-7) var(--gutter) var(--sp-9);
 }
 
-.videoInfo__meta {
-  color: var(--gray);
-  font-size: 11px;
-  margin-bottom: 8px;
+.lessonHeader {
+  border-block-end: 1px solid var(--border);
+  padding-block-end: var(--sp-5);
 }
 
-.videoInfo h2 {
-  font-size: 22px;
-  font-weight: 800;
-  margin-bottom: 8px;
-}
-
-.videoInfo p {
-  color: var(--gray);
-  font-size: 14px;
-}
-
-.videoTabs {
-  border-bottom: 1px solid #1a1a1a;
-  display: flex;
-  gap: 0;
-  padding: 0 32px;
-}
-
-.videoTab {
-  background: transparent;
-  border: 0;
-  border-bottom: 2px solid transparent;
-  color: var(--gray);
-  cursor: pointer;
-  font-size: 13px;
+.lessonMeta {
+  color: var(--text-3);
+  font-size: var(--fs-caption);
   font-weight: 600;
-  padding: 14px 20px;
-  transition: all 0.2s;
-}
-
-.videoTabActive {
-  border-bottom-color: var(--red);
-  color: var(--white);
-}
-
-.videoTabContent {
-  padding: 24px 32px;
-}
-
-.contentNarrow {
-  max-width: 640px;
-}
-
-.lessonHeading {
-  font-size: 16px;
-  font-weight: 700;
-  margin-bottom: 16px;
-}
-
-.takeaways {
-  color: var(--gray);
-  font-size: 14px;
-  line-height: 2;
-  list-style: none;
-}
-
-.callout {
-  background: #0d0d0d;
-  border-left: 3px solid var(--red);
-  border-radius: 0 8px 8px 0;
-  margin-top: 24px;
-  padding: 16px 20px;
-}
-
-.calloutLabel {
-  color: var(--red);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  margin-bottom: 6px;
-}
-
-.calloutText {
-  color: var(--light);
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-.moduleOutcomeBox {
-  background: #0d0d0d;
-  border: 1px solid #1a1a1a;
-  border-radius: 8px;
-  padding: 20px;
-}
-
-.playerSidebar {
-  background: #0a0a0a;
-  border-left: 1px solid #1a1a1a;
-  max-height: calc(100vh - 64px);
-  overflow-y: auto;
-  position: sticky;
-  top: 64px;
-}
-
-.playerSidebarTitle {
-  border-bottom: 1px solid #1a1a1a;
-  color: var(--gray);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  padding: 20px 20px 12px;
+  letter-spacing: var(--ls-caps);
+  margin-block-end: var(--sp-3);
   text-transform: uppercase;
 }
 
+.lessonTitle {
+  @include h2;
+}
+
+.lessonSub {
+  color: var(--text-2);
+  font-size: var(--fs-body);
+  line-height: var(--lh-relaxed);
+  margin-block-start: var(--sp-3);
+}
+
+.tabs {
+  border-block-end: 1px solid var(--border);
+  display: flex;
+  gap: var(--sp-1);
+  margin-block-start: var(--sp-5);
+  overflow-x: auto;
+}
+
+.tab {
+  background: transparent;
+  border: 0;
+  border-block-end: 2px solid transparent;
+  color: var(--text-3);
+  cursor: pointer;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  min-block-size: var(--control-h);
+  padding-inline: var(--sp-4);
+  transition:
+    color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease);
+  white-space: nowrap;
+
+  @include focus-ring;
+
+  &:hover {
+    color: var(--text-1);
+  }
+}
+
+.tabActive {
+  border-block-end-color: var(--brand);
+  color: var(--text-1);
+}
+
+.panel {
+  padding-block-start: var(--sp-6);
+}
+
+.panelTitle {
+  @include h3;
+
+  margin-block-end: var(--sp-4);
+}
+
+.prose {
+  @include body;
+}
+
+.takeaways {
+  display: grid;
+  gap: var(--sp-3);
+  list-style: none;
+}
+
+.takeaway {
+  align-items: flex-start;
+  color: var(--text-2);
+  display: flex;
+  font-size: var(--fs-body);
+  gap: var(--sp-3);
+  line-height: var(--lh-normal);
+}
+
+.takeawayIcon {
+  color: var(--brand);
+  flex: none;
+  margin-block-start: 3px;
+}
+
+.callout {
+  @include card;
+
+  background: var(--surface-2);
+  display: grid;
+  gap: var(--sp-3);
+  margin-block-start: var(--sp-6);
+  padding: var(--sp-5);
+}
+
+.calloutLabel {
+  color: var(--text-3);
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  letter-spacing: var(--ls-caps);
+  text-transform: uppercase;
+}
+
+.calloutText {
+  color: var(--text-1);
+  font-size: var(--fs-body);
+  line-height: var(--lh-relaxed);
+}
+
+/* ---------- Материалы урока ---------- */
+
+.pdfDownloadCard {
+  @include card-interactive;
+
+  align-items: center;
+  color: inherit;
+  display: flex;
+  gap: var(--sp-4);
+  margin-block-end: var(--sp-3);
+  padding: var(--sp-4);
+  text-decoration: none;
+}
+
+.pdfIcon {
+  align-items: center;
+  color: var(--text-3);
+  display: flex;
+  flex: none;
+}
+
+.pdfInfo {
+  flex: 1;
+  min-inline-size: 0;
+}
+
+.pdfName {
+  font-size: var(--fs-small);
+  font-weight: 600;
+}
+
+.pdfSize {
+  color: var(--text-3);
+  font-size: var(--fs-caption);
+}
+
+.pdfBtn {
+  @include btn-secondary;
+  @include btn-sm;
+
+  flex: none;
+  pointer-events: none;
+}
+
+/* ---------- Программа курса ---------- */
+
+.sidebar {
+  background: var(--surface-2);
+  border-inline-start: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  max-block-size: calc(100svh - var(--header-h));
+  position: sticky;
+  top: var(--header-h);
+}
+
+.sidebarTitle {
+  border-block-end: 1px solid var(--border);
+  color: var(--text-3);
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  letter-spacing: var(--ls-caps);
+  padding: var(--sp-5) var(--sp-5) var(--sp-3);
+  text-transform: uppercase;
+}
+
+.sidebarScroll {
+  flex: 1;
+  min-block-size: 0;
+  overflow-y: auto;
+}
+
 .sidebarModule {
-  border-bottom: 1px solid #111;
+  border-block-end: 1px solid var(--border);
 }
 
 .sidebarModuleHeader {
   align-items: center;
-  background: #0d0d0d;
-  color: var(--light);
+  color: var(--text-1);
   display: flex;
-  font-size: 13px;
-  font-weight: 700;
-  justify-content: space-between;
-  padding: 14px 20px;
+  font-family: var(--font-text);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  gap: var(--sp-3);
+  letter-spacing: normal;
+  line-height: var(--lh-normal);
+  padding: var(--sp-4) var(--sp-5);
+}
+
+.sidebarModuleNum {
+  align-items: center;
+  background: var(--surface-3);
+  block-size: 24px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-2);
+  display: flex;
+  flex: none;
+  font-family: var(--font-display);
+  font-size: var(--fs-caption);
+  inline-size: 24px;
+  justify-content: center;
 }
 
 .sidebarLesson {
   align-items: center;
   background: transparent;
   border: 0;
-  border-bottom: 1px solid #0d0d0d;
-  color: var(--gray);
+  border-inline-start: 2px solid transparent;
+  color: var(--text-2);
   cursor: pointer;
   display: flex;
-  font-size: 12px;
-  gap: 10px;
-  padding: 10px 20px 10px 32px;
-  text-align: left;
-  transition: all 0.2s;
-  width: 100%;
+  gap: var(--sp-3);
+  inline-size: 100%;
+  min-block-size: var(--control-h);
+  padding: var(--sp-2) var(--sp-5) var(--sp-2) var(--sp-6);
+  text-align: start;
+  transition:
+    background-color var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+
+  @include focus-ring;
+
+  &:hover {
+    background: var(--surface-3);
+    color: var(--text-1);
+  }
 }
 
-.sidebarLesson:hover {
-  background: #111;
-  color: var(--white);
-}
-
+/* Текущий урок помечен и заливкой, и полосой слева — не только цветом. */
 .sidebarLessonActive {
-  background: #1a0405;
-  color: var(--white);
+  background: var(--surface-3);
+  border-inline-start-color: var(--brand);
+  color: var(--text-1);
 }
 
-.sidebarLessonCheck {
+.sidebarLessonMark {
   align-items: center;
-  border: 1px solid #333;
-  border-radius: 50%;
+  block-size: 18px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-full);
+  color: var(--text-3);
   display: flex;
-  flex-shrink: 0;
-  font-size: 9px;
-  height: 18px;
+  flex: none;
+  inline-size: 18px;
   justify-content: center;
-  width: 18px;
 }
 
-.sidebarLessonCheckDone {
-  background: var(--red);
-  border-color: var(--red);
+.sidebarLessonMarkDone {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: var(--text-on-brand);
 }
 
-.sidebarProgress {
-  padding: 20px;
+.sidebarLessonLabel {
+  font-size: var(--fs-small);
+  line-height: var(--lh-normal);
 }
 
-.sidebarProgressCard {
-  background: #0d0d0d;
-  border-radius: 8px;
-  padding: 14px;
+.sidebarFooter {
+  border-block-start: 1px solid var(--border);
+  padding: var(--sp-4) var(--sp-5) var(--sp-5);
 }
 
-.sidebarProgressLabel,
-.sidebarProgressText {
-  color: var(--gray);
-  font-size: 11px;
+.progressCard {
+  @include card;
+
+  padding: var(--sp-4);
 }
 
-.sidebarProgressLabel {
-  margin-bottom: 8px;
+.progressLabel,
+.progressText {
+  color: var(--text-3);
+  font-size: var(--fs-caption);
 }
 
-.sidebarProgressText {
-  margin-top: 6px;
+.progressBar {
+  background: var(--surface-2);
+  block-size: 6px;
+  border-radius: var(--radius-full);
+  margin-block: var(--sp-2);
+  overflow: hidden;
 }
 
-.sidebarBack {
-  background: transparent;
-  border: 1px solid #333;
-  border-radius: 6px;
-  color: var(--gray);
-  cursor: pointer;
-  font-size: 12px;
-  margin-top: 12px;
-  padding: 10px;
-  text-align: center;
-  text-decoration: none;
-  width: 100%;
+.progressFill {
+  background: var(--brand);
+  block-size: 100%;
+  inline-size: 20%;
 }
 
-@media (max-width: 900px) {
-  .playerLayout { grid-template-columns: 1fr; }
-  .playerSidebar { max-height: none; position: static; }
+.backLink {
+  @include btn-secondary;
+  @include btn-sm;
+  @include btn-block;
+
+  margin-block-start: var(--sp-3);
+}
+
+@media (max-width: 1024px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    border-block-start: 1px solid var(--border);
+    border-inline-start: 0;
+    max-block-size: none;
+    position: static;
+  }
+
+  .sidebarScroll {
+    overflow: visible;
+  }
+
+  .column {
+    padding-block: var(--sp-6) var(--sp-8);
+  }
 }

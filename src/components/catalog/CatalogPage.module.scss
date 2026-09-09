@@ -1,84 +1,25 @@
-.red {
-  color: var(--red);
-}
-.section {
-  padding-bottom: 100px;
-  padding-top: 100px;
+@use '@/styles/mixins' as *;
+
+/* Каталог живёт на тех же примитивах, что и лендинг: контейнер, шапка секции
+   и сетка карточек приходят из Section/CourseCard, здесь остаётся только
+   отступ под фиксированную шапку. */
+.shell {
+  padding-block-start: var(--header-h);
 }
 
-.section__label {
-  color: var(--red);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 3px;
-  margin-bottom: 16px;
-  text-transform: uppercase;
+.grid {
+  @include grid-cards(300px);
 }
 
-.section__title {
-  font-size: clamp(28px, 4vw, 48px);
-  font-weight: 900;
-  letter-spacing: -0.5px;
-  line-height: 1.1;
-  margin-bottom: 16px;
-}
-
-.section__sub {
-  color: var(--gray);
-  font-size: 16px;
-  line-height: 1.6;
-  max-width: 600px;
-}
-
-.section__sub p:not(:last-child) {
-  margin-bottom: 12px;
-}
-
-.divider {
-  border: 0;
-  border-top: 1px solid #1a1a1a;
-}
-
-.coursesGrid,
-.methodGrid,
-.testimonialsGrid {
+/* Длинные юридические тексты: одна колонка читаемой ширины. */
+.prose {
   display: grid;
-  gap: 24px;
-  grid-template-columns: repeat(3, 1fr);
-  margin-top: 48px;
+  gap: var(--sp-4);
+  max-width: var(--measure);
 }
 
-.catalogShell {
-  padding-bottom: 80px;
-  padding-top: 64px;
-}
-
-.catalogInner {
-  margin: 0 auto;
-  max-width: 1200px;
-  padding: 60px 40px;
-}
-
-.includes {
-  margin-bottom: 16px;
-}
-
-.includes__title,
-.includes__item {
-  font-size: 12px;
-}
-
-.includes__title {
-  color: var(--gray);
-  margin-bottom: 6px;
-}
-
-.includes__item {
-  color: var(--light);
-  margin-bottom: 2px;
-}
-
-@media (max-width: 900px) {
-  .coursesGrid { grid-template-columns: 1fr; }
-  .catalogInner { padding-left: 20px; padding-right: 20px; }
+.prose p {
+  color: var(--text-2);
+  font-size: var(--fs-body);
+  line-height: var(--lh-relaxed);
 }

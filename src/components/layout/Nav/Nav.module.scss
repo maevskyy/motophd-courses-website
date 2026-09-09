@@ -1,146 +1,177 @@
-.nav {
-  align-items: center;
-  backdrop-filter: blur(12px);
-  background: rgba(29, 29, 27, 0.95);
-  border-bottom: 1px solid #1a1a1a;
-  display: flex;
-  height: 64px;
-  justify-content: space-between;
-  left: 0;
-  padding: 0 40px;
+@use '@/styles/mixins' as *;
+
+.header {
+  background: var(--surface-2);
+  border-block-end: 1px solid var(--border);
+  inset-block-start: 0;
+  inset-inline: 0;
   position: fixed;
-  right: 0;
-  top: 0;
-  z-index: 1000;
+  z-index: 100;
 }
 
-.nav__logo {
+@supports (backdrop-filter: blur(12px)) {
+  .header {
+    backdrop-filter: blur(12px);
+    background: rgb(20 20 18 / 88%);
+  }
+}
+
+/* Шапка живёт на той же сетке, что и контент страницы. */
+.bar {
+  @include container;
+
   align-items: center;
+  block-size: var(--header-h);
+  display: flex;
+  gap: var(--sp-5);
+  justify-content: space-between;
+}
+
+.logo {
+  align-items: center;
+  display: flex;
+  flex: none;
+
+  @include focus-ring;
+}
+
+.logoImg {
+  block-size: 32px;
+  inline-size: auto;
+}
+
+.desktop {
+  align-items: center;
+  display: flex;
+  gap: var(--sp-5);
+}
+
+.mobile {
+  align-items: center;
+  display: none;
+  gap: var(--sp-2);
+}
+
+.link {
+  border-radius: var(--radius);
+  color: var(--text-2);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  padding-block: var(--sp-2);
+  text-decoration: none;
+  transition: color var(--dur) var(--ease);
+
+  @include focus-ring;
+
+  &:hover {
+    color: var(--text-1);
+  }
+}
+
+/* Переключатель языка — сегмент фиксированной геометрии: обе метки
+   одинаковой ширины, поэтому шапка не «прыгает» при смене языка. */
+.lang {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  display: flex;
+  overflow: hidden;
+}
+
+.langOption {
+  color: var(--text-3);
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  inline-size: 40px;
+  letter-spacing: 0.06em;
+  line-height: var(--control-h-sm);
+  text-align: center;
+  text-decoration: none;
+  transition:
+    background-color var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+
+  @include focus-ring;
+
+  &:hover {
+    color: var(--text-1);
+  }
+}
+
+.langOptionActive {
+  background: var(--surface-3);
+  color: var(--text-1);
+}
+
+.btnPrimary {
+  @include btn-primary;
+  @include btn-sm;
+}
+
+.btnSecondary {
+  @include btn-secondary;
+  @include btn-sm;
+}
+
+.btnCompact {
+  padding-inline: var(--sp-3);
+}
+
+.burger {
+  align-items: center;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  block-size: var(--control-h-sm);
+  color: var(--text-1);
   cursor: pointer;
   display: flex;
-  gap: 10px;
-  text-decoration: none;
+  inline-size: var(--control-h-sm);
+  justify-content: center;
+
+  @include focus-ring;
 }
 
-.nav__logoImg {
-  display: block;
-  height: 36px;
-  width: auto;
+.panel {
+  border-block-start: 1px solid var(--border);
+  display: none;
+  overflow: hidden;
 }
 
-.nav__links {
+.panelInner {
+  @include container;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  padding-block: var(--sp-4);
+}
+
+.panelInner .link {
   align-items: center;
   display: flex;
-  gap: 32px;
+  font-size: var(--fs-body);
+  min-block-size: var(--control-h);
+  padding-block: 0;
 }
 
-.nav__link {
-  background: transparent;
-  border: 0;
-  color: var(--light);
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
-  text-decoration: none;
-  transition: color 0.2s;
-}
-
-.nav__link:hover {
-  color: var(--white);
-}
-
-.nav__lang {
-  border: 1px solid #333;
-  border-radius: 4px;
-  color: var(--gray);
-  cursor: pointer;
-  font-size: 13px;
-  padding: 4px 10px;
-  text-decoration: none;
-}
-
-.nav__langActive {
-  color: var(--white);
-  font-weight: 700;
-}
-
-.nav__cta,
-.nav__ctaGhost,
-.button,
-.buttonGhost {
-  border-radius: 6px;
-  cursor: pointer;
-  display: inline-block;
-  font-size: 13px;
-  font-weight: 700;
-  text-decoration: none;
-  transition: all 0.2s;
-}
-
-.nav__cta {
-  background: var(--red);
-  border: 0;
-  color: var(--white);
-  padding: 9px 22px;
-}
-
-.nav__cta:hover {
-  opacity: 0.88;
-}
-
-.nav__ctaGhost {
-  background: transparent;
-  border: 1px solid #333;
-  color: var(--white);
-  font-weight: 600;
-  padding: 9px 22px;
-}
-
-.nav__ctaGhost:hover {
-  border-color: var(--white);
-}
-
-.button {
-  background: var(--red);
-  border: 0;
-  color: #fff;
-  font-size: 15px;
-  padding: 16px 32px;
-}
-
-.button:hover {
-  background: #c91a1f;
-  transform: translateY(-1px);
-}
-
-.buttonGhost {
-  background: transparent;
-  border: 1px solid #444;
-  color: var(--white);
-  font-size: 15px;
-  font-weight: 600;
-  padding: 16px 32px;
-}
-
-.buttonGhost:hover {
-  border-color: #888;
-}
-
-.buttonLarge {
-  font-size: 17px;
-  padding: 18px 48px;
+.panelInner .lang {
+  align-self: flex-start;
+  margin-block-start: var(--sp-2);
 }
 
 @media (max-width: 900px) {
-  .nav { padding: 0 20px; }
-  .nav__links { gap: 12px; }
-  .nav__link { display: none; }
-}
+  .desktop {
+    display: none;
+  }
 
-@media (max-width: 480px) {
-  .nav { padding: 0 10px; }
-  .nav__links { gap: 4px; }
-  .nav__lang { font-size: 10px; padding: 2px 5px; }
-  .nav__ctaGhost { font-size: 11px; padding: 5px 8px; }
-  .nav__cta { display: none; }
+  .mobile {
+    display: flex;
+  }
+
+  /* Закрытое меню не занимает место и не перекрывает хиро. */
+  .panelOpen {
+    background: var(--surface-2);
+    box-shadow: var(--shadow-overlay);
+    display: block;
+  }
 }

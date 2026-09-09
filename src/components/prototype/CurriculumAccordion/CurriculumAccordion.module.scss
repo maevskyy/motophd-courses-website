@@ -1,399 +1,118 @@
-.red {
-  color: var(--red);
-}
-.nav__cta,
-.nav__ctaGhost,
-.button,
-.buttonGhost {
-  border-radius: 6px;
-  cursor: pointer;
-  display: inline-block;
-  font-size: 13px;
-  font-weight: 700;
-  text-decoration: none;
-  transition: all 0.2s;
-}
+@use '@/styles/mixins' as *;
 
-.nav__cta {
-  background: var(--red);
-  border: 0;
-  color: var(--white);
-  padding: 9px 22px;
-}
-
-.nav__cta:hover {
-  opacity: 0.88;
-}
-
-.nav__ctaGhost {
-  background: transparent;
-  border: 1px solid #333;
-  color: var(--white);
-  font-weight: 600;
-  padding: 9px 22px;
-}
-
-.nav__ctaGhost:hover {
-  border-color: var(--white);
-}
-
-.button {
-  background: var(--red);
-  border: 0;
-  color: #fff;
-  font-size: 15px;
-  padding: 16px 32px;
-}
-
-.button:hover {
-  background: #c91a1f;
-  transform: translateY(-1px);
-}
-
-.buttonGhost {
-  background: transparent;
-  border: 1px solid #444;
-  color: var(--white);
-  font-size: 15px;
-  font-weight: 600;
-  padding: 16px 32px;
-}
-
-.buttonGhost:hover {
-  border-color: #888;
-}
-
-.buttonLarge {
-  font-size: 17px;
-  padding: 18px 48px;
-}
-.section__sub {
-  color: var(--gray);
-  font-size: 16px;
-  line-height: 1.6;
-  max-width: 560px;
-}
-
-.salesHero {
-  background: linear-gradient(180deg, #0a0000 0%, var(--dark) 100%);
-  padding-bottom: 80px;
-  padding-top: 64px;
-}
-
-.salesHero__inner {
-  align-items: start;
+.list {
   display: grid;
-  gap: 60px;
-  grid-template-columns: 1fr 380px;
-  margin: 0 auto;
-  max-width: 1200px;
-  padding: 80px 40px 0;
+  gap: var(--sp-2);
+  max-width: 820px;
 }
 
-.salesBreadcrumb {
-  background: transparent;
-  border: 0;
-  color: var(--gray);
-  cursor: pointer;
-  font-size: 12px;
-  margin-bottom: 20px;
-}
+.module {
+  @include card;
 
-.salesTag {
-  background: rgba(227, 30, 36, 0.1);
-  border: 1px solid rgba(227, 30, 36, 0.3);
-  border-radius: 4px;
-  color: var(--red);
-  display: inline-block;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  margin-bottom: 16px;
-  padding: 4px 12px;
-  text-transform: uppercase;
-}
-
-.salesTitle {
-  font-size: clamp(28px, 4vw, 52px);
-  font-weight: 900;
-  letter-spacing: -0.5px;
-  line-height: 1.05;
-  margin-bottom: 20px;
-}
-
-.salesPain {
-  color: var(--gray);
-  font-size: 18px;
-  line-height: 1.6;
-  margin-bottom: 32px;
-}
-
-.outcomes {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 32px;
-}
-
-.outcome {
-  align-items: center;
-  color: var(--light);
-  display: flex;
-  font-size: 14px;
-  gap: 10px;
-}
-
-.outcome::before {
-  color: var(--red);
-  content: '✓';
-  font-size: 16px;
-  font-weight: 700;
-}
-
-.salesSticky {
-  background: #0d0d0d;
-  border: 1px solid #2a2a2a;
-  border-radius: 12px;
-  padding: 28px;
-  position: sticky;
-  top: 80px;
-}
-
-.salesPrice {
-  font-size: 44px;
-  font-weight: 900;
-  margin-bottom: 4px;
-}
-
-.salesPrice small {
-  color: var(--gray);
-  font-size: 16px;
-  font-weight: 400;
-}
-
-.salesNote,
-.salesGuarantee {
-  color: var(--gray);
-  font-size: 13px;
-  margin-bottom: 20px;
-}
-
-.priceOptions {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.priceOption {
-  background: transparent;
-  border: 1px solid #2a2a2a;
-  border-radius: 8px;
-  color: inherit;
-  cursor: pointer;
-  padding: 14px 16px;
-  text-align: left;
-  transition: all 0.2s;
-}
-
-.priceOption:hover,
-.priceOptionSelected {
-  background: rgba(227, 30, 36, 0.05);
-  border-color: var(--red);
-}
-
-.priceOption__top {
-  align-items: center;
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 4px;
-}
-
-.priceOption__name {
-  font-size: 14px;
-  font-weight: 700;
-}
-
-.priceOption__price {
-  color: var(--red);
-  font-size: 18px;
-  font-weight: 900;
-}
-
-.priceOption__desc {
-  color: var(--gray);
-  font-size: 12px;
-}
-
-.disclaimer {
-  background: #0a0a0a;
-  border: 1px solid #1a1a1a;
-  border-radius: 6px;
-  margin-bottom: 16px;
-  padding: 12px;
-}
-
-.disclaimer__label {
-  align-items: flex-start;
-  color: var(--gray);
-  cursor: pointer;
-  display: flex;
-  font-size: 11px;
-  gap: 8px;
-  line-height: 1.5;
-}
-
-.disclaimer__input {
-  accent-color: var(--red);
-  margin-top: 2px;
-}
-
-.btnEnroll {
-  border-radius: 8px;
-  font-size: 15px;
-  margin-bottom: 12px;
-  padding: 16px;
-  width: 100%;
-}
-
-.salesGuarantee {
-  align-items: center;
-  display: flex;
-  font-size: 12px;
-  gap: 8px;
-  justify-content: center;
-}
-
-.salesSection {
-  padding-bottom: 60px;
-  padding-top: 60px;
-}
-
-.salesSection__title {
-  font-size: clamp(24px, 3vw, 36px);
-  font-weight: 900;
-  letter-spacing: -0.3px;
-  margin-bottom: 32px;
-}
-
-.curriculumList {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.curriculumModule {
-  border: 1px solid #1a1a1a;
-  border-radius: 8px;
   overflow: hidden;
 }
 
-.curriculumHeader {
-  align-items: center;
-  background: #0d0d0d;
-  border: 0;
-  color: inherit;
-  cursor: pointer;
-  display: flex;
-  gap: 14px;
-  padding: 18px 24px;
-  text-align: left;
-  transition: background 0.2s;
-  width: 100%;
-}
-
-.curriculumHeader:hover {
-  background: #111;
-}
-
-.moduleNum {
-  align-items: center;
-  background: rgba(227, 30, 36, 0.1);
-  border: 1px solid rgba(227, 30, 36, 0.3);
-  border-radius: 50%;
-  color: var(--red);
-  display: flex;
-  flex-shrink: 0;
-  font-size: 13px;
-  font-weight: 700;
-  height: 36px;
-  justify-content: center;
-  width: 36px;
-}
-
-.moduleInfo {
-  flex: 1;
-}
-
-.moduleTitle {
-  font-size: 15px;
-  font-weight: 700;
-}
-
-.moduleMeta {
-  color: var(--gray);
-  font-size: 12px;
-  margin-top: 2px;
-}
-
-.moduleArrow {
-  color: var(--gray);
-  font-size: 18px;
-  transition: transform 0.3s;
-}
-
-.moduleOpen .moduleArrow {
-  transform: rotate(90deg);
-}
-
-.curriculumLessons {
-  border-top: 1px solid #1a1a1a;
-  display: none;
-}
-
-.moduleOpen .curriculumLessons {
-  display: block;
-}
-
-.lessonItem {
+.header {
   align-items: center;
   background: transparent;
   border: 0;
-  border-bottom: 1px solid #111;
-  color: var(--gray);
+  color: var(--text-1);
   cursor: pointer;
   display: flex;
-  font-size: 13px;
-  gap: 12px;
-  padding: 12px 24px;
-  text-align: left;
-  transition: background 0.2s;
+  gap: var(--sp-4);
+  inline-size: 100%;
+  min-block-size: var(--control-h);
+  padding: var(--sp-4) var(--sp-5);
+  text-align: start;
+  transition: background-color var(--dur) var(--ease);
+
+  @include focus-ring;
+
+  &:hover {
+    background: var(--surface-2);
+  }
 }
 
-.lessonItem:hover {
-  background: #0a0a0a;
-  color: var(--light);
+/* Номер модуля — тот же скруглённый квадрат, что и номера шагов на лендинге. */
+.number {
+  align-items: center;
+  background: var(--surface-2);
+  block-size: var(--control-h-sm);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-2);
+  display: flex;
+  flex: none;
+  font-family: var(--font-display);
+  font-size: var(--fs-caption);
+  font-weight: 700;
+  inline-size: var(--control-h-sm);
+  justify-content: center;
 }
 
-.lessonItem:last-child {
+.title {
+  flex: 1;
+  font-size: var(--fs-body);
+  font-weight: 600;
+  line-height: var(--lh-normal);
+}
+
+.arrow {
+  color: var(--text-3);
+  flex: none;
+  transition: transform var(--dur) var(--ease);
+}
+
+.moduleOpen .arrow {
+  transform: rotate(180deg);
+}
+
+.lessons {
+  border-block-start: 1px solid var(--border);
+  display: none;
+  list-style: none;
+}
+
+.moduleOpen .lessons {
+  display: block;
+}
+
+.lesson {
+  align-items: center;
+  background: transparent;
   border: 0;
+  color: var(--text-2);
+  cursor: pointer;
+  display: flex;
+  gap: var(--sp-3);
+  inline-size: 100%;
+  min-block-size: var(--control-h);
+  padding: var(--sp-2) var(--sp-5);
+  text-align: start;
+  transition:
+    background-color var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+
+  @include focus-ring;
+
+  &:hover {
+    background: var(--surface-2);
+    color: var(--text-1);
+  }
 }
 
 .lessonIcon {
-  flex-shrink: 0;
-  font-size: 14px;
+  color: var(--text-3);
+  flex: none;
 }
 
 .lessonName {
   flex: 1;
+  font-size: var(--fs-small);
 }
 
 .lessonDuration {
-  color: #444;
-  font-size: 11px;
-}
-
-@media (max-width: 900px) {
-  .salesHero__inner { grid-template-columns: 1fr; }
-  .salesSection { padding-left: 20px; padding-right: 20px; }
+  color: var(--text-3);
+  flex: none;
+  font-size: var(--fs-caption);
 }

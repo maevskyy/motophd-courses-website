@@ -1,18 +1,12 @@
 import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
-import { Unbounded } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import { AuthStatusProvider } from '@/components/providers/AuthStatusProvider';
 import { ToastProvider } from '@/components/providers/ToastProvider';
 import { Consent } from '@/components/consent';
 import { Nav } from '@/components/layout/Nav';
+import { fontClassName } from '../../fonts';
 import '../../globals.scss';
-
-const unbounded = Unbounded({
-  subsets: ['latin', 'cyrillic'],
-  variable: '--font-body',
-  weight: ['400', '500', '600', '700', '800', '900']
-});
 
 // Маркетинг раздаётся статикой (ISR), поэтому здесь нельзя читать куки и
 // заголовки: статус логина для нава добирает AuthStatusProvider на клиенте.
@@ -34,8 +28,8 @@ export default async function LocaleLayout({
   const messages = await getMessages({ locale });
 
   return (
-    <html lang={locale}>
-      <body className={unbounded.variable}>
+    <html className={fontClassName} lang={locale}>
+      <body>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <AuthStatusProvider>
             <ToastProvider>

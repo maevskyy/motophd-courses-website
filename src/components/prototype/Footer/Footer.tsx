@@ -3,27 +3,9 @@
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
 import { ConsentSettingsLink } from '@/components/consent/ConsentSettingsLink';
+import { Icon } from '@/components/ui/Icon';
 import type { HomeContent } from '@/lib/content';
 import styles from './Footer.module.scss';
-
-function SocialIcon({ platform }: { platform: 'youtube' | 'instagram' }) {
-  if (platform === 'youtube') {
-    return (
-      <svg fill="none" height="18" viewBox="0 0 24 24" width="18">
-        <rect height="14" rx="4" stroke="currentColor" strokeWidth="1.6" width="20" x="2" y="5" />
-        <path d="M10 9l5 3-5 3V9z" fill="currentColor" />
-      </svg>
-    );
-  }
-
-  return (
-    <svg fill="none" height="18" viewBox="0 0 24 24" width="18">
-      <rect height="18" rx="5" stroke="currentColor" strokeWidth="1.6" width="18" x="3" y="3" />
-      <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.6" />
-      <circle cx="17.3" cy="6.7" fill="currentColor" r="1.1" />
-    </svg>
-  );
-}
 
 interface Props {
   compact?: boolean;
@@ -39,13 +21,12 @@ export function Footer({ compact = false, socialLinks }: Props) {
         {!compact ? (
           <div className={styles.footer__top}>
             <div>
-              <div className={styles.footer__logo}>
-                MOTO<span className={styles.red}>PhD</span>
-              </div>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img alt="MotoPhD" className={styles.footer__logo} height={28} src="/logo.png" width={101} />
               <p className={styles.footer__copyText}>{t('tagline')}</p>
             </div>
             <div>
-              <h4 className={styles.footer__heading}>{t('coursesHeading')}</h4>
+              <h2 className={styles.footer__heading}>{t('coursesHeading')}</h2>
               <Link className={styles.footer__link} href="/courses/lean">
                 {t('course1')}
               </Link>
@@ -54,7 +35,7 @@ export function Footer({ compact = false, socialLinks }: Props) {
               </Link>
             </div>
             <div>
-              <h4 className={styles.footer__heading}>{t('platformHeading')}</h4>
+              <h2 className={styles.footer__heading}>{t('platformHeading')}</h2>
               <Link className={styles.footer__link} href="/login">
                 {t('studentLogin')}
               </Link>
@@ -66,7 +47,7 @@ export function Footer({ compact = false, socialLinks }: Props) {
               </Link>
             </div>
             <div>
-              <h4 className={styles.footer__heading}>{t('legalHeading')}</h4>
+              <h2 className={styles.footer__heading}>{t('legalHeading')}</h2>
               <Link className={styles.footer__link} href="/privacy">
                 {t('privacyPolicy')}
               </Link>
@@ -97,7 +78,7 @@ export function Footer({ compact = false, socialLinks }: Props) {
                   target="_blank"
                   title={item.label}
                 >
-                  <SocialIcon platform={item.platform} />
+                  <Icon name={item.platform} size={18} />
                 </a>
               ))}
             </div>

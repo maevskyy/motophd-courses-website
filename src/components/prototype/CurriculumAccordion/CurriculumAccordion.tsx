@@ -3,12 +3,11 @@
 import { useState } from 'react';
 import { useRouter } from '@/i18n/routing';
 import { useToast } from '@/components/providers/ToastProvider';
+import { Icon } from '@/components/ui/Icon';
 import type { CurriculumModule } from '@/lib/data';
 import { cx } from '@/lib/classNames';
 import playerStyles from '@/components/player/CoursePlayer.module.scss';
-import salesStyles from './CurriculumAccordion.module.scss';
-
-const styles = { ...salesStyles, ...playerStyles };
+import styles from './CurriculumAccordion.module.scss';
 
 export function CurriculumAccordion({ modules }: { modules: CurriculumModule[] }) {
   const router = useRouter();
@@ -31,34 +30,40 @@ export function CurriculumAccordion({ modules }: { modules: CurriculumModule[] }
   }
 
   return (
-    <div className={styles.curriculumList}>
-      {modules.map((module) => (
-        <div
-          className={cx(styles.curriculumModule, openModules.has(module.number) && styles.moduleOpen)}
-          key={module.number}
-        >
-          <button className={styles.curriculumHeader} onClick={() => toggle(module.number)} type="button">
-            <div className={styles.moduleNum}>{module.number}</div>
-            <div className={styles.moduleInfo}>
-              <div className={styles.moduleTitle}>{module.title}</div>
-            </div>
-            <span className={styles.moduleArrow}>›</span>
-          </button>
-          <div className={styles.curriculumLessons}>
-            {module.lessons.map((lesson) => (
-              <button
-                className={styles.lessonItem}
-                key={lesson.name}
-                onClick={() => router.push('/learn/lean')}
-                type="button"
-              >
-                <span className={styles.lessonName}>{lesson.name}</span>
-                <span className={styles.lessonDuration}>{lesson.duration}</span>
-              </button>
-            ))}
+    <div className={styles.list}>
+      {modules.map((module) => {
+        const open = openModules.has(module.number);
+
+        return (
+          <div className={cx(styles.module, open && styles.moduleOpen)} key={module.number}>
+            <button
+              aria-expanded={open}
+              className={styles.header}
+              onClick={() => toggle(module.number)}
+              type="button"
+            >
+              <span className={styles.number}>{module.number}</span>
+              <span className={styles.title}>{module.title}</span>
+              <Icon className={styles.arrow} name="chevronDown" size={18} />
+            </button>
+            <ul className={styles.lessons}>
+              {module.lessons.map((lesson) => (
+                <li key={lesson.name}>
+                  <button
+                    className={styles.lesson}
+                    onClick={() => router.push('/learn/lean')}
+                    type="button"
+                  >
+                    <Icon className={styles.lessonIcon} name="play" size={14} />
+                    <span className={styles.lessonName}>{lesson.name}</span>
+                    <span className={styles.lessonDuration}>{lesson.duration}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
@@ -78,14 +83,15 @@ export function SidebarLesson({
 
   return (
     <button
-      className={cx(styles.sidebarLesson, active && styles.sidebarLessonActive)}
+      aria-current={active ? 'true' : undefined}
+      className={cx(playerStyles.sidebarLesson, active && playerStyles.sidebarLessonActive)}
       onClick={() => showToast(toast)}
       type="button"
     >
-      <span className={cx(styles.sidebarLessonCheck, done && styles.sidebarLessonCheckDone)}>
-        {done ? '✓' : active ? '▶' : ''}
+      <span className={cx(playerStyles.sidebarLessonMark, done && playerStyles.sidebarLessonMarkDone)}>
+        {done ? <Icon name="check" size={12} /> : active ? <Icon name="play" size={10} /> : null}
       </span>
-      {label}
+      <span className={playerStyles.sidebarLessonLabel}>{label}</span>
     </button>
   );
 }

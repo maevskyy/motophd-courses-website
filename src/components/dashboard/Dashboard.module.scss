@@ -1,336 +1,363 @@
-.red {
-  color: var(--red);
-}
-.button {
-  background: var(--red);
-  border: 0;
-  border-radius: 6px;
-  color: #fff;
-  cursor: pointer;
-  display: inline-block;
-  font-size: 15px;
-  font-weight: 700;
-  padding: 16px 32px;
-  text-decoration: none;
-  transition: all 0.2s;
-}
-.button:hover {
-  background: #c91a1f;
-  transform: translateY(-1px);
-}
-.btnContinue,
-.btnUnlock,
-.pdfBtn {
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 700;
-  transition: opacity 0.2s;
-}
-.pdfBtn,
-.btnContinue {
-  background: var(--red);
-  border: 0;
-  color: #fff;
-}
-.btnUnlock {
-  background: transparent;
-  border: 1px solid #333;
-  color: var(--light);
-}
-.btnContinue:hover {
-  opacity: 0.85;
-}
-.testiAvatar,
-.dashAvatar {
-  align-items: center;
-  background: var(--red);
-  border-radius: 50%;
-  display: flex;
-  font-weight: 700;
-  justify-content: center;
-}
+@use '@/styles/mixins' as *;
+
 .dashboardLayout {
   display: grid;
-  grid-template-columns: 260px 1fr;
-  min-height: calc(100vh - 64px);
-  padding-top: 64px;
+  grid-template-columns: 264px minmax(0, 1fr);
+  min-block-size: calc(100svh - var(--header-h));
+  padding-block-start: var(--header-h);
 }
+
+/* ---------- Боковая колонка ---------- */
+
 .dashboardSidebar {
-  background: #0a0a0a;
-  border-right: 1px solid #1a1a1a;
-  height: calc(100vh - 64px);
+  background: var(--surface-2);
+  border-inline-end: 1px solid var(--border);
+  block-size: calc(100svh - var(--header-h));
+  display: flex;
+  flex-direction: column;
   overflow-y: auto;
-  padding: 32px 0;
+  padding-block: var(--sp-6);
   position: sticky;
-  top: 64px;
+  top: var(--header-h);
 }
+
 .dashUser {
-  border-bottom: 1px solid #1a1a1a;
-  margin-bottom: 16px;
-  padding: 0 24px 24px;
+  border-block-end: 1px solid var(--border);
+  margin-block-end: var(--sp-4);
+  padding: 0 var(--sp-5) var(--sp-5);
 }
+
 .dashAvatar {
-  font-size: 20px;
-  height: 52px;
-  margin-bottom: 12px;
-  width: 52px;
-}
-.dashName {
-  font-size: 15px;
+  align-items: center;
+  background: var(--brand);
+  block-size: 44px;
+  border-radius: var(--radius-full);
+  color: var(--text-on-brand);
+  display: flex;
+  font-family: var(--font-display);
+  font-size: var(--fs-body);
   font-weight: 700;
+  inline-size: 44px;
+  justify-content: center;
+  margin-block-end: var(--sp-3);
 }
+
+.dashName {
+  font-size: var(--fs-small);
+  font-weight: 600;
+}
+
 .dashEmail {
-  color: var(--gray);
-  font-size: 12px;
+  color: var(--text-3);
+  font-size: var(--fs-caption);
+  overflow-wrap: anywhere;
 }
+
 .dashNav {
   display: flex;
   flex-direction: column;
 }
+
 .dashNavItem {
   align-items: center;
   background: transparent;
   border: 0;
-  border-left: 3px solid transparent;
-  color: var(--gray);
+  border-inline-start: 2px solid transparent;
+  color: var(--text-2);
   cursor: pointer;
   display: flex;
-  font-size: 14px;
-  gap: 12px;
-  padding: 12px 24px;
-  transition: all 0.2s;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  gap: var(--sp-3);
+  min-block-size: var(--control-h);
+  padding-inline: var(--sp-5);
+  text-align: start;
+  transition:
+    background-color var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+
+  @include focus-ring;
+
+  &:hover {
+    background: var(--surface-3);
+    color: var(--text-1);
+  }
 }
-.dashNavItem:hover {
-  background: #111;
-  color: var(--white);
-}
+
 .dashNavItemActive {
-  background: #0d0d0d;
-  border-left-color: var(--red);
-  color: var(--white);
+  background: var(--surface-3);
+  border-inline-start-color: var(--brand);
+  color: var(--text-1);
 }
+
 .dashNavIcon {
-  font-size: 18px;
+  color: currentcolor;
+  flex: none;
 }
+
 .dashSidebarFooter {
-  border-top: 1px solid #1a1a1a;
-  margin-top: 40px;
-  padding: 24px;
+  border-block-start: 1px solid var(--border);
+  display: grid;
+  gap: var(--sp-1);
+  margin-block-start: auto;
+  padding: var(--sp-4) var(--sp-5);
 }
+
 .dashSidebarLink {
+  align-items: center;
   background: transparent;
   border: 0;
-  color: var(--gray);
+  color: var(--text-3);
   cursor: pointer;
-  display: block;
-  font-size: 12px;
-  margin-top: 8px;
-  text-align: left;
+  display: flex;
+  font-size: var(--fs-small);
+  gap: var(--sp-2);
+  min-block-size: var(--control-h);
+  text-align: start;
   text-decoration: none;
+  transition: color var(--dur) var(--ease);
+
+  @include focus-ring;
+
+  &:hover {
+    color: var(--text-1);
+  }
 }
+
+/* ---------- Рабочая область ---------- */
+
 .dashboardMain {
-  overflow-y: auto;
-  padding: 40px;
+  max-inline-size: 1000px;
+  padding: var(--sp-7) var(--gutter) var(--sp-9);
 }
+
 .dashGreeting {
-  margin-bottom: 32px;
+  margin-block-end: var(--sp-7);
 }
-.dashGreeting h2 {
-  font-size: 28px;
-  font-weight: 900;
-  margin-bottom: 4px;
+
+.dashGreetingTitle {
+  @include h2;
 }
-.dashGreeting p {
-  color: var(--gray);
-  font-size: 14px;
+
+.dashGreetingText {
+  color: var(--text-2);
+  font-size: var(--fs-body);
+  margin-block-start: var(--sp-2);
 }
+
 .dashSectionTitle {
-  border-bottom: 1px solid #1a1a1a;
-  color: var(--gray);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  margin-bottom: 20px;
-  padding-bottom: 10px;
+  border-block-end: 1px solid var(--border);
+  color: var(--text-3);
+  font-family: var(--font-text);
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  letter-spacing: var(--ls-caps);
+  margin-block-end: var(--sp-5);
+  padding-block-end: var(--sp-3);
   text-transform: uppercase;
 }
+
+.dashStats {
+  display: grid;
+  gap: var(--sp-4);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+  margin-block-end: var(--sp-7);
+}
+
+.dashStat {
+  @include card;
+
+  padding: var(--sp-5);
+}
+
+.dashStatNum {
+  color: var(--text-1);
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  font-weight: 700;
+  letter-spacing: var(--ls-tight);
+}
+
+.dashStatLabel {
+  color: var(--text-3);
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  letter-spacing: var(--ls-caps);
+  margin-block-start: var(--sp-1);
+  text-transform: uppercase;
+}
+
+/* ---------- Карточки курсов кабинета ---------- */
+
 .dashCourses {
   display: grid;
-  gap: 20px;
-  grid-template-columns: repeat(2, 1fr);
-  margin-bottom: 40px;
+  gap: var(--sp-4);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  margin-block-end: var(--sp-7);
 }
+
 .dashCourseCard {
-  background: #0d0d0d;
-  border: 1px solid #1a1a1a;
-  border-radius: 10px;
-  color: inherit;
-  cursor: pointer;
+  @include card;
+
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
-  text-decoration: none;
-  transition: all 0.25s;
+  transition: border-color var(--dur) var(--ease);
+
+  &:hover {
+    border-color: var(--border-strong);
+  }
 }
-.dashCourseCard:hover {
-  border-color: var(--red);
-}
-.dashCourseCardLocked {
-  cursor: pointer;
-  opacity: 1;
-}
+
 .dashCourseLink {
   color: inherit;
-  display: block;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
   text-decoration: none;
+
+  @include focus-ring;
 }
+
+/* Одна нейтральная обложка: разноцветные градиенты убраны. */
 .dashCourseThumb {
   align-items: center;
+  aspect-ratio: 16 / 7;
+  background: var(--surface-2);
+  color: var(--text-3);
   display: flex;
-  font-size: 40px;
-  height: 120px;
   justify-content: center;
   position: relative;
 }
-.dashCourseThumbRed {
-  background: linear-gradient(135deg, #1a0000, #2d0505);
-}
-.dashCourseThumbGreen {
-  background: linear-gradient(135deg, #001a00, #052d05);
-}
-.dashCourseThumbBlue {
-  background: linear-gradient(135deg, #00001a, #05052d);
-}
+
 .dashLockOverlay {
   align-items: center;
-  background: rgba(0, 0, 0, 0.6);
+  background: var(--overlay);
+  color: var(--text-2);
   display: flex;
-  font-size: 32px;
   inset: 0;
   justify-content: center;
   position: absolute;
 }
+
 .dashCourseBody {
-  padding: 16px;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-4);
 }
+
 .dashCourseTitle {
-  font-size: 14px;
-  font-weight: 700;
-  margin-bottom: 8px;
-}
-.dashCourseMeta {
-  color: var(--gray);
-  display: flex;
-  font-size: 11px;
-  justify-content: space-between;
-}
-.dashCourseAction {
-  margin-top: 12px;
-}
-.btnContinue,
-.btnUnlock {
-  font-size: 12px;
-  padding: 9px;
-  width: 100%;
-}
-.btnUnlock {
-  color: var(--gray);
+  font-size: var(--fs-small);
   font-weight: 600;
+  line-height: var(--lh-snug);
 }
-.dashStats {
-  display: grid;
-  gap: 16px;
-  grid-template-columns: repeat(3, 1fr);
-  margin-bottom: 32px;
+
+.dashCourseMeta {
+  color: var(--text-3);
+  font-size: var(--fs-caption);
 }
-.dashStat {
-  padding: 20px;
+
+.dashCourseAction {
+  margin-block-start: auto;
+  padding-block-start: var(--sp-3);
 }
-.dashStatNum {
-  color: var(--white);
-  font-size: 32px;
-  font-weight: 900;
+
+.btnContinue {
+  @include btn-primary;
+  @include btn-sm;
+  @include btn-block;
 }
-.dashStatLabel {
-  color: var(--gray);
-  font-size: 11px;
-  letter-spacing: 1px;
-  margin-top: 4px;
-  text-transform: uppercase;
+
+.btnUnlock {
+  @include btn-secondary;
+  @include btn-sm;
+  @include btn-block;
 }
+
+/* ---------- Материалы ---------- */
+
 .pdfDownloadCard {
+  @include card-interactive;
+
   align-items: center;
-  cursor: pointer;
+  color: inherit;
   display: flex;
-  gap: 16px;
-  margin-bottom: 12px;
-  padding: 16px;
-  transition: border-color 0.2s;
-  width: 100%;
+  gap: var(--sp-4);
+  margin-block-end: var(--sp-3);
+  max-inline-size: 720px;
+  padding: var(--sp-4);
+  text-decoration: none;
 }
-.pdfDownloadCard:hover {
-  border-color: var(--red);
-}
+
 .pdfIcon {
-  font-size: 32px;
+  align-items: center;
+  color: var(--text-3);
+  display: flex;
+  flex: none;
 }
+
 .pdfInfo {
   flex: 1;
-  text-align: left;
+  min-inline-size: 0;
 }
+
 .pdfName {
-  font-size: 14px;
+  font-size: var(--fs-small);
   font-weight: 600;
 }
-.pdfSize {
-  color: var(--gray);
-  font-size: 12px;
-}
+
 .pdfBtn {
-  border-radius: 6px;
-  font-size: 12px;
-  padding: 8px 16px;
+  @include btn-secondary;
+  @include btn-sm;
+
+  flex: none;
+  pointer-events: none;
 }
-.notice {
-  background: #0d0d0d;
-  border: 1px solid #1a1a1a;
-  border-radius: 8px;
-  color: var(--gray);
-  font-size: 13px;
-  margin-top: 32px;
-  padding: 16px 20px;
-}
-.formGrid {
-  max-width: 500px;
-}
-.formGroup {
-  margin-bottom: 20px;
-}
-.formLabel {
-  color: var(--gray);
-  display: block;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  margin-bottom: 8px;
-  text-transform: uppercase;
-}
-.formInput {
-  background: #111;
-  border: 1px solid #2a2a2a;
-  border-radius: 8px;
-  color: var(--white);
-  font-size: 15px;
-  outline: none;
-  padding: 12px 16px;
-  transition: border-color 0.2s;
-  width: 100%;
-}
-.formInput:focus {
-  border-color: var(--red);
-}
+
 @media (max-width: 900px) {
-  .dashboardLayout { grid-template-columns: 1fr; }
-  .dashboardSidebar { height: auto; position: static; }
-  .dashboardMain { padding-left: 20px; padding-right: 20px; }
-  .dashStats { grid-template-columns: 1fr 1fr; }
-  .dashCourses { grid-template-columns: 1fr; }
+  .dashboardLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboardSidebar {
+    block-size: auto;
+    border-block-end: 1px solid var(--border);
+    border-inline-end: 0;
+    padding-block: var(--sp-5);
+    position: static;
+  }
+
+  .dashboardMain {
+    padding-block: var(--sp-6) var(--sp-8);
+  }
+
+  /* На телефоне разделы кабинета — горизонтальная лента, а не длинный столбец. */
+  .dashNav {
+    flex-direction: row;
+    gap: var(--sp-1);
+    overflow-x: auto;
+    padding-inline: var(--sp-5);
+  }
+
+  .dashNavItem {
+    border-inline-start: 0;
+    border-block-end: 2px solid transparent;
+    flex: none;
+    padding-inline: var(--sp-3);
+    white-space: nowrap;
+  }
+
+  .dashNavItemActive {
+    border-block-end-color: var(--brand);
+    border-inline-start-color: transparent;
+  }
+
+  .dashSidebarFooter {
+    display: flex;
+    gap: var(--sp-5);
+    margin-block-start: var(--sp-4);
+    padding-block-end: 0;
+  }
 }

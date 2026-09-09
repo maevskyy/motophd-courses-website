@@ -3,6 +3,7 @@
 import { useActionState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
+import { Icon } from '@/components/ui/Icon';
 import { loginAction } from '@/lib/auth/actions';
 import { initialLoginFormState } from '@/lib/auth/formState';
 import { LoginSubmitButton } from './LoginSubmitButton';
@@ -22,10 +23,9 @@ export function LoginForm({ locale, nextPath }: Props) {
       <form action={formAction} className={styles.loginCard}>
         <input name="locale" type="hidden" value={locale} />
         <input name="next" type="hidden" value={nextPath || ''} />
-        <div className={styles.loginLogo}>
-          MOTO<span className={styles.red}>PhD</span>
-        </div>
-        <div className={styles.loginTagline}>{t('tagline')}</div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img alt="MotoPhD" className={styles.loginLogo} height={32} src="/logo.png" width={116} />
+        <h1 className={styles.loginTagline}>{t('tagline')}</h1>
         {state.error ? (
           <div className={styles.loginError} role="alert">
             <strong>{state.rateLimited ? t('tooManyAttempts') : t('invalidCredentials')}</strong>
@@ -65,7 +65,8 @@ export function LoginForm({ locale, nextPath }: Props) {
         </Link>
         <LoginSubmitButton />
         <Link className={styles.loginBack} href="/">
-          ← {t('back')}
+          <Icon name="arrowLeft" size={16} />
+          {t('back')}
         </Link>
       </form>
     </main>
