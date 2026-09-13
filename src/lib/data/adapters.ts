@@ -110,6 +110,12 @@ const lessonDuration = (lesson: CourseCurriculumLesson, locale: AppLocale) => {
   return locale === 'ru' ? 'Чтение' : 'Reading';
 };
 
+const toCurriculumLesson = (lesson: CourseCurriculumLesson, locale: AppLocale) => ({
+  name: lesson.title,
+  order: lesson.order ?? 0,
+  duration: lessonDuration(lesson, locale)
+});
+
 const curriculumLevelsByCourse: Record<string, Record<AppLocale, Array<{ title: string; count: number }>>> = {
   lean: {
     en: [
@@ -147,10 +153,7 @@ export const toCurriculumModules = (
         number: '1',
         title: course.title,
         open: true,
-        lessons: lessons.map((lesson) => ({
-          name: lesson.title,
-          duration: lessonDuration(lesson, locale)
-        }))
+        lessons: lessons.map((lesson) => toCurriculumLesson(lesson, locale))
       }
     ];
   }
@@ -165,16 +168,33 @@ export const toCurriculumModules = (
       number: String(levelIndex + 1).padStart(2, '0'),
       title: level.title,
       open: levelIndex === 0,
-      lessons: levelLessons.map((lesson) => ({
-        name: lesson.title,
-        duration: lessonDuration(lesson, locale)
-      }))
+      lessons: levelLessons.map((lesson) => toCurriculumLesson(lesson, locale))
     };
   });
 };
 
-export const getPlayerLesson = (lessons: Lesson[]) =>
-  lessons.find((lesson) => lesson.type === 'video') || lessons[0];
+const sortLessonsByOrder = <T extends Pick<Lesson, 'order'>>(lessons: T[]) =>
+  [...lessons].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+
+// ?lesson=2 → 2. Мусор, пустая строка или массив → undefined: плеер откроет
+// первый урок, а не упадёт и не покажет «урок 0».
+export const parseLessonOrder = (value: string | string[] | undefined) =>
+  typeof value === 'string' && /^\d+$/.test(value) ? Number(value) : undefined;
+
+// Урок для плеера: тот, чей order запросили в адресе; без параметра или с
+// неизвестным order — первый по порядку. Раньше всегда играл первый video-урок.
+export const getPlayerLesson = <T extends Pick<Lesson, 'order'>>(
+  lessons: T[],
+  requestedOrder?: number
+): T | undefined => {
+  const sorted = sortLessonsByOrder(lessons);
+  const requested =
+    requestedOrder === undefined
+      ? undefined
+      : sorted.find((lesson) => lesson.order === requestedOrder);
+
+  return requested ?? sorted[0];
+};
 
 // Материалы берём по наличию файла, а не по type: PDF бывает приложен и к
 // видео-уроку, а раньше ссылка строилась только для type === 'pdf' и не
@@ -191,10 +211,13 @@ export const toPlayerDownloads = (lessons: Lesson[], locale: AppLocale): PlayerD
 export const toPlayerContent = (
   course: Course,
   lessons: Lesson[],
-  media: Pick<PlayerContent, 'downloads' | 'videoEmbedUrl'>
+  {
+    currentLesson,
+    ...media
+  }: Pick<PlayerContent, 'downloads' | 'videoEmbedUrl'> & { currentLesson: Lesson | undefined }
 ): PlayerContent => {
-  const currentLesson = getPlayerLesson(lessons);
   const notes = course.commonMistakes?.split('\n').filter(Boolean) || [];
+  const position = currentLesson ? sortLessonsByOrder(lessons).indexOf(currentLesson) : -1;
 
   return {
     title: currentLesson?.title || course.title,
@@ -208,6 +231,9 @@ export const toPlayerContent = (
     overviewCopy: course.description || '',
     moduleOutcome: course.outcomes?.map(({ text }) => text).filter(Boolean) || [],
     sidebarTitle: course.title,
+    currentLessonOrder: currentLesson?.order ?? null,
+    lessonNumber: position + 1,
+    lessonCount: lessons.length,
     ...media
   };
 };

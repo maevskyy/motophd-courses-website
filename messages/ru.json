@@ -107,12 +107,10 @@
     "notes": "Заметки урока",
     "downloads": "Материалы",
     "overview": "Обзор модуля",
-    "lessonMeta": "МОДУЛЬ 1 · УРОК 2",
+    "lessonMeta": "УРОК {current} ИЗ {total}",
     "keyTakeaways": "Главное из урока",
     "feelLabel": "ЧТО ТЫ ДОЛЖЕН ПОЧУВСТВОВАТЬ",
     "moduleOutcome": "РЕЗУЛЬТАТ МОДУЛЯ",
-    "courseProgress": "Прогресс курса",
-    "lessonsComplete": "2 из 10 уроков готовы",
     "videoUnavailable": "Видео недоступно в этом окружении.",
     "refreshAfterTokenExpiry": "Если токен истёк, обнови страницу, чтобы получить новый.",
     "pdfLinkLabel": "Открыть PDF",
@@ -130,10 +128,7 @@
     "privacy": "Privacy Policy — появится в production",
     "terms": "Terms & Conditions — появится в production",
     "refund": "Refund Policy — появится в production",
-    "riding": "Riding Disclaimer — появится в production",
-    "loadingLesson": "Загружаем урок...",
-    "opening": "Открываем: {name}",
-    "nowPlaying": "Сейчас воспроизводится этот урок"
+    "riding": "Riding Disclaimer — появится в production"
   },
   "checkout": {
     "email": "Email",

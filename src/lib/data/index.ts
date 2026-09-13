@@ -12,6 +12,7 @@ export {
   toCurriculumModules,
   toDashboardContent,
   getPlayerLesson,
+  parseLessonOrder,
   toPlayerContent,
   toPlayerDownloads,
   toSalesContent

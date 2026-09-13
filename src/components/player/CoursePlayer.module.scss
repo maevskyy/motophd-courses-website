@@ -1,24 +1,6 @@
 .red {
   color: var(--red);
 }
-.progressBar {
-  background: #1a1a1a;
-  border-radius: 2px;
-  height: 4px;
-  margin-bottom: 6px;
-  overflow: hidden;
-}
-
-.progressFill {
-  background: var(--red);
-  border-radius: 2px;
-  height: 100%;
-  width: 40%;
-}
-
-.progressFillSmall {
-  width: 25%;
-}
 
 .pdfDownloadCard {
   align-items: center;
@@ -266,6 +248,7 @@
   gap: 10px;
   padding: 10px 20px 10px 32px;
   text-align: left;
+  text-decoration: none;
   transition: all 0.2s;
   width: 100%;
 }
@@ -292,33 +275,8 @@
   width: 18px;
 }
 
-.sidebarLessonCheckDone {
-  background: var(--red);
-  border-color: var(--red);
-}
-
-.sidebarProgress {
+.sidebarFooter {
   padding: 20px;
-}
-
-.sidebarProgressCard {
-  background: #0d0d0d;
-  border-radius: 8px;
-  padding: 14px;
-}
-
-.sidebarProgressLabel,
-.sidebarProgressText {
-  color: var(--gray);
-  font-size: 11px;
-}
-
-.sidebarProgressLabel {
-  margin-bottom: 8px;
-}
-
-.sidebarProgressText {
-  margin-top: 6px;
 }
 
 .sidebarBack {
@@ -327,8 +285,8 @@
   border-radius: 6px;
   color: var(--gray);
   cursor: pointer;
+  display: block;
   font-size: 12px;
-  margin-top: 12px;
   padding: 10px;
   text-align: center;
   text-decoration: none;

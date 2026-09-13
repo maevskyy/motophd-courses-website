@@ -7,6 +7,7 @@ import {
   getCourseBySlug,
   getCourseLessons,
   getPlayerLesson,
+  parseLessonOrder,
   toAppLocale,
   toCurriculumModules,
   toPlayerContent,
@@ -18,17 +19,22 @@ import { getPlaybackUrl } from '@/lib/video';
 export const dynamic = 'force-dynamic';
 
 export default async function CoursePlayerPage({
-  params
+  params,
+  searchParams
 }: {
   params: Promise<{ slug: string; locale: string }>;
+  searchParams: Promise<{ lesson?: string | string[] }>;
 }) {
   await connection();
 
-  const { locale, slug } = await params;
+  const [{ locale, slug }, { lesson }] = await Promise.all([params, searchParams]);
   const safeLocale = toAppLocale(locale);
-  const user = await requireUser(
-    `/${safeLocale}/login?next=${encodeURIComponent(`/${safeLocale}/learn/${slug}`)}`
-  );
+  const requestedOrder = parseLessonOrder(lesson);
+  // После логина возвращаем на тот же урок, а не на первый.
+  const playerPath =
+    `/${safeLocale}/learn/${slug}` +
+    (requestedOrder === undefined ? '' : `?lesson=${requestedOrder}`);
+  const user = await requireUser(`/${safeLocale}/login?next=${encodeURIComponent(playerPath)}`);
   const course = await getCourseBySlug(slug, safeLocale, user);
 
   if (!course) {
@@ -43,11 +49,14 @@ export default async function CoursePlayerPage({
 
   const lessons = await getCourseLessons(course.id, safeLocale, user);
   const curriculum = toCurriculumModules(course, lessons, safeLocale);
-  const currentLesson = getPlayerLesson(lessons);
+  // Текущий урок — из ?lesson=<order>; без параметра или с чужим значением
+  // играет первый по порядку.
+  const currentLesson = getPlayerLesson(lessons, requestedOrder);
   const player = toPlayerContent(course, lessons, {
+    currentLesson,
     downloads: toPlayerDownloads(lessons, safeLocale),
     videoEmbedUrl: getPlaybackUrl(currentLesson?.streamVideoId, { free: false })
   });
 
-  return <CoursePlayerClient curriculum={curriculum} player={player} />;
+  return <CoursePlayerClient courseSlug={course.slug} curriculum={curriculum} player={player} />;
 }

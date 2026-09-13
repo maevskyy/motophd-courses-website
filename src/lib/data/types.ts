@@ -23,6 +23,7 @@ export type CurriculumModule = {
   open?: boolean;
   lessons: Array<{
     name: string;
+    order: number;
     duration: string;
   }>;
 };
@@ -57,6 +58,11 @@ export type PlayerContent = {
   overviewCopy: string;
   moduleOutcome: string[];
   sidebarTitle: string;
+  // Текущий урок: order для подсветки в боковой панели, номер и общее число —
+  // для подписи «УРОК N ИЗ M». Прогресса прохождения нет (ADR-9).
+  currentLessonOrder: number | null;
+  lessonNumber: number;
+  lessonCount: number;
   videoEmbedUrl: string | null;
   downloads: PlayerDownload[];
 };

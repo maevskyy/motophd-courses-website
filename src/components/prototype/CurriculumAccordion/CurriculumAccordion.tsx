@@ -2,13 +2,9 @@
 
 import { useState } from 'react';
 import { useRouter } from '@/i18n/routing';
-import { useToast } from '@/components/providers/ToastProvider';
 import type { CurriculumModule } from '@/lib/data';
 import { cx } from '@/lib/classNames';
-import playerStyles from '@/components/player/CoursePlayer.module.scss';
-import salesStyles from './CurriculumAccordion.module.scss';
-
-const styles = { ...salesStyles, ...playerStyles };
+import styles from './CurriculumAccordion.module.scss';
 
 export function CurriculumAccordion({ modules }: { modules: CurriculumModule[] }) {
   const router = useRouter();
@@ -60,32 +56,5 @@ export function CurriculumAccordion({ modules }: { modules: CurriculumModule[] }
         </div>
       ))}
     </div>
-  );
-}
-
-export function SidebarLesson({
-  active,
-  done,
-  label,
-  toast
-}: {
-  active?: boolean;
-  done?: boolean;
-  label: string;
-  toast: string;
-}) {
-  const { showToast } = useToast();
-
-  return (
-    <button
-      className={cx(styles.sidebarLesson, active && styles.sidebarLessonActive)}
-      onClick={() => showToast(toast)}
-      type="button"
-    >
-      <span className={cx(styles.sidebarLessonCheck, done && styles.sidebarLessonCheckDone)}>
-        {done ? '✓' : active ? '▶' : ''}
-      </span>
-      {label}
-    </button>
   );
 }

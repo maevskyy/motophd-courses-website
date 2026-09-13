@@ -107,12 +107,10 @@
     "notes": "Lesson Notes",
     "downloads": "Downloads",
     "overview": "Module Overview",
-    "lessonMeta": "MODULE 1 · LESSON 2",
+    "lessonMeta": "LESSON {current} OF {total}",
     "keyTakeaways": "Key Takeaways from This Lesson",
     "feelLabel": "WHAT YOU SHOULD FEEL",
     "moduleOutcome": "MODULE OUTCOME",
-    "courseProgress": "Course Progress",
-    "lessonsComplete": "2 of 10 lessons complete",
     "videoUnavailable": "Video is unavailable in this environment.",
     "refreshAfterTokenExpiry": "If playback expires, refresh the page for a new token.",
     "pdfLinkLabel": "Open PDF",
@@ -130,10 +128,7 @@
     "privacy": "Privacy Policy — coming in production",
     "terms": "Terms & Conditions — coming in production",
     "refund": "Refund Policy — coming in production",
-    "riding": "Riding Disclaimer — coming in production",
-    "loadingLesson": "Loading lesson...",
-    "opening": "Opening: {name}",
-    "nowPlaying": "Now playing this lesson"
+    "riding": "Riding Disclaimer — coming in production"
   },
   "checkout": {
     "email": "Email",

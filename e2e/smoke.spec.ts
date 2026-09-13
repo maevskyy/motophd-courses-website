@@ -258,6 +258,27 @@ test('student with a purchase can open the course player', async ({ page }) => {
     await expect(page.getByText('Video is unavailable in this environment.')).toBeVisible();
     await expect(page.locator('iframe')).toHaveCount(0);
   }
+
+  // Без ?lesson плеер открывает первый урок (в сиде — «Video Lesson»), он же
+  // подсвечен в боковой панели.
+  const sidebarLessons = page.locator('aside a[href*="lesson="]');
+  const firstLesson = sidebarLessons.nth(0);
+  const secondLesson = sidebarLessons.nth(1);
+
+  await expect(page.locator('h1')).toHaveText('Video Lesson');
+  await expect(page.getByText('LESSON 1 OF 15')).toBeVisible();
+  await expect(firstLesson).toHaveAttribute('aria-current', 'page');
+  await expect(firstLesson).toHaveClass(/sidebarLessonActive/);
+
+  // Клик по второму уроку переключает адрес, заголовок и подсветку.
+  await secondLesson.click();
+
+  await expect(page).toHaveURL(/\/en\/learn\/lean\?lesson=2$/);
+  await expect(page.locator('h1')).toHaveText('Video Tutorial');
+  await expect(page.getByText('LESSON 2 OF 15')).toBeVisible();
+  await expect(secondLesson).toHaveAttribute('aria-current', 'page');
+  await expect(secondLesson).toHaveClass(/sidebarLessonActive/);
+  await expect(firstLesson).not.toHaveClass(/sidebarLessonActive/);
 });
 
 test('logout removes access to private pages', async ({ page }) => {
