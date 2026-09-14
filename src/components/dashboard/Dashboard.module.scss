@@ -1,43 +1,18 @@
 @use '@/styles/mixins' as *;
 
-.dashboardLayout {
-  display: grid;
-  grid-template-columns: 264px minmax(0, 1fr);
-  min-block-size: calc(100svh - var(--header-h));
-  padding-block-start: var(--header-h);
-}
-
-/* ---------- Боковая колонка ---------- */
-
-.dashboardSidebar {
-  background: var(--surface-2);
-  border-inline-end: 1px solid var(--border);
-  block-size: calc(100svh - var(--header-h));
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-  padding-block: var(--sp-6);
-  position: sticky;
-  top: var(--header-h);
-}
-
-.dashUser {
-  border-block-end: 1px solid var(--border);
-  margin-block-end: var(--sp-4);
-  padding: 0 var(--sp-5) var(--sp-5);
-}
+/* ---------- Сайдбар кабинета: содержимое слотов AppSidebar ---------- */
 
 .dashAvatar {
   align-items: center;
   background: var(--brand);
-  block-size: 44px;
+  block-size: var(--control-h);
   border-radius: var(--radius-full);
   color: var(--text-on-brand);
   display: flex;
   font-family: var(--font-display);
   font-size: var(--fs-body);
   font-weight: 700;
-  inline-size: 44px;
+  inline-size: var(--control-h);
   justify-content: center;
   margin-block-end: var(--sp-3);
 }
@@ -51,56 +26,6 @@
   color: var(--text-3);
   font-size: var(--fs-caption);
   overflow-wrap: anywhere;
-}
-
-.dashNav {
-  display: flex;
-  flex-direction: column;
-}
-
-.dashNavItem {
-  align-items: center;
-  background: transparent;
-  border: 0;
-  border-inline-start: 2px solid transparent;
-  color: var(--text-2);
-  cursor: pointer;
-  display: flex;
-  font-size: var(--fs-small);
-  font-weight: 600;
-  gap: var(--sp-3);
-  min-block-size: var(--control-h);
-  padding-inline: var(--sp-5);
-  text-align: start;
-  transition:
-    background-color var(--dur) var(--ease),
-    color var(--dur) var(--ease);
-
-  @include focus-ring;
-
-  &:hover {
-    background: var(--surface-3);
-    color: var(--text-1);
-  }
-}
-
-.dashNavItemActive {
-  background: var(--surface-3);
-  border-inline-start-color: var(--brand);
-  color: var(--text-1);
-}
-
-.dashNavIcon {
-  color: currentcolor;
-  flex: none;
-}
-
-.dashSidebarFooter {
-  border-block-start: 1px solid var(--border);
-  display: grid;
-  gap: var(--sp-1);
-  margin-block-start: auto;
-  padding: var(--sp-4) var(--sp-5);
 }
 
 .dashSidebarLink {
@@ -139,12 +64,6 @@
   @include h2;
 }
 
-.dashGreetingText {
-  color: var(--text-2);
-  font-size: var(--fs-body);
-  margin-block-start: var(--sp-2);
-}
-
 .dashSectionTitle {
   border-block-end: 1px solid var(--border);
   color: var(--text-3);
@@ -157,37 +76,20 @@
   text-transform: uppercase;
 }
 
-.dashStats {
+/* ---------- Купленные курсы: блоки во всю ширину контента ---------- */
+
+.dashCourseList {
   display: grid;
-  gap: var(--sp-4);
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+  gap: var(--sp-7);
   margin-block-end: var(--sp-7);
 }
 
-.dashStat {
-  @include card;
-
-  padding: var(--sp-5);
+.dashCourseBlock {
+  display: grid;
+  gap: var(--sp-4);
 }
 
-.dashStatNum {
-  color: var(--text-1);
-  font-family: var(--font-display);
-  font-size: var(--fs-h2);
-  font-weight: 700;
-  letter-spacing: var(--ls-tight);
-}
-
-.dashStatLabel {
-  color: var(--text-3);
-  font-size: var(--fs-caption);
-  font-weight: 600;
-  letter-spacing: var(--ls-caps);
-  margin-block-start: var(--sp-1);
-  text-transform: uppercase;
-}
-
-/* ---------- Карточки курсов кабинета ---------- */
+/* ---------- «Можно купить»: карточки курсов ---------- */
 
 .dashCourses {
   display: grid;
@@ -264,100 +166,14 @@
   padding-block-start: var(--sp-3);
 }
 
-.btnContinue {
-  @include btn-primary;
-  @include btn-sm;
-  @include btn-block;
-}
-
 .btnUnlock {
   @include btn-secondary;
   @include btn-sm;
   @include btn-block;
 }
 
-/* ---------- Материалы ---------- */
-
-.pdfDownloadCard {
-  @include card-interactive;
-
-  align-items: center;
-  color: inherit;
-  display: flex;
-  gap: var(--sp-4);
-  margin-block-end: var(--sp-3);
-  max-inline-size: 720px;
-  padding: var(--sp-4);
-  text-decoration: none;
-}
-
-.pdfIcon {
-  align-items: center;
-  color: var(--text-3);
-  display: flex;
-  flex: none;
-}
-
-.pdfInfo {
-  flex: 1;
-  min-inline-size: 0;
-}
-
-.pdfName {
-  font-size: var(--fs-small);
-  font-weight: 600;
-}
-
-.pdfBtn {
-  @include btn-secondary;
-  @include btn-sm;
-
-  flex: none;
-  pointer-events: none;
-}
-
 @media (max-width: 900px) {
-  .dashboardLayout {
-    grid-template-columns: 1fr;
-  }
-
-  .dashboardSidebar {
-    block-size: auto;
-    border-block-end: 1px solid var(--border);
-    border-inline-end: 0;
-    padding-block: var(--sp-5);
-    position: static;
-  }
-
   .dashboardMain {
     padding-block: var(--sp-6) var(--sp-8);
-  }
-
-  /* На телефоне разделы кабинета — горизонтальная лента, а не длинный столбец. */
-  .dashNav {
-    flex-direction: row;
-    gap: var(--sp-1);
-    overflow-x: auto;
-    padding-inline: var(--sp-5);
-  }
-
-  .dashNavItem {
-    border-inline-start: 0;
-    border-block-end: 2px solid transparent;
-    flex: none;
-    padding-inline: var(--sp-3);
-    white-space: nowrap;
-  }
-
-  .dashNavItemActive {
-    border-block-end-color: var(--brand);
-    border-inline-start-color: transparent;
-  }
-
-  .dashSidebarFooter {
-    display: flex;
-    gap: var(--sp-5);
-    margin-block-start: var(--sp-4);
-    padding-block-end: 0;
   }
 }

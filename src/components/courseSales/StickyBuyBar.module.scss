@@ -1,0 +1,76 @@
+@use '@/styles/mixins' as *;
+
+/* Высота панели собрана один раз, чтобы распорка под ней резервировала ровно
+   столько же: тач-цель кнопки + вертикальные поля + верхняя граница. */
+.bar,
+.spacer {
+  --buy-bar-block-size: calc(var(--control-h) + var(--sp-3) * 2 + 1px);
+}
+
+.bar {
+  align-items: center;
+  background: var(--surface-2);
+  border-block-start: 1px solid var(--border);
+  box-shadow: var(--shadow-overlay);
+  display: none;
+  gap: var(--sp-4);
+  inset-block-end: 0;
+  inset-inline: 0;
+  justify-content: space-between;
+  padding-block: var(--sp-3) calc(var(--sp-3) + env(safe-area-inset-bottom));
+  padding-inline: var(--gutter);
+  position: fixed;
+  transform: translateY(0);
+  transition:
+    transform var(--dur) var(--ease),
+    visibility var(--dur) var(--ease);
+  visibility: visible;
+  /* Ниже cookie-баннера (200) и тостов (300): панель — не модальный слой. */
+  z-index: 150;
+}
+
+/* visibility, а не display: сохраняет анимацию и убирает панель из таб-порядка. */
+.barHidden {
+  pointer-events: none;
+  transform: translateY(100%);
+  visibility: hidden;
+}
+
+.price {
+  color: var(--text-1);
+  font-family: var(--font-display);
+  font-size: var(--fs-body);
+  font-weight: 700;
+  letter-spacing: var(--ls-tight);
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Компактнее обычной primary-кнопки по горизонтали, но с полной высотой
+   тач-цели: на 320px рядом с ценой иначе не помещается. */
+.button {
+  @include btn-primary;
+
+  flex: none;
+  font-size: var(--fs-caption);
+  padding-inline: var(--sp-4);
+}
+
+.spacer {
+  block-size: calc(var(--buy-bar-block-size) + env(safe-area-inset-bottom));
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .bar {
+    display: flex;
+  }
+
+  /* Цвет подвала: распорка стоит сразу за ним и должна читаться его частью. */
+  .spacer {
+    background: var(--surface-2);
+    display: block;
+  }
+}

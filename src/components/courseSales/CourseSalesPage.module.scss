@@ -1,16 +1,40 @@
 @use '@/styles/mixins' as *;
 
+/* Контейнер лежит на самой секции, а не на внутреннем гриде: так поля страницы
+   считаются по <section> так же, как в остальных блоках сайта. */
 .hero {
+  @include container;
+
   padding-block: calc(var(--header-h) + var(--section-y)) var(--section-y);
 }
 
+/*
+  Одна сетка на всю страницу продажи. Программа курса лежит в той же колонке,
+  что и вступление, а блок цены растянут на обе строки и липнет сбоку — поэтому
+  под списком outcomes не остаётся пустого угла, а отдельная кнопка внизу
+  страницы не нужна: главное действие и так всё время на экране.
+*/
 .heroInner {
-  @include container;
-
   align-items: start;
+  column-gap: var(--sp-7);
   display: grid;
-  gap: var(--sp-7);
+  grid-template-areas:
+    'intro price'
+    'modules price';
   grid-template-columns: minmax(0, 1fr) minmax(0, 380px);
+  row-gap: var(--sp-8);
+}
+
+.intro {
+  grid-area: intro;
+}
+
+.pricing {
+  grid-area: price;
+}
+
+.modules {
+  grid-area: modules;
 }
 
 .breadcrumb {
@@ -82,36 +106,20 @@
   margin-block-start: 3px;
 }
 
-.section {
-  @include container;
-
-  padding-block-end: var(--section-y);
-}
-
 .sectionTitle {
   @include h2;
 
   margin-block-end: var(--sp-6);
 }
 
-.cta {
-  @include container;
-
-  display: flex;
-  justify-content: center;
-  padding-block-end: var(--section-y);
-}
-
-.ctaButton {
-  @include btn-primary;
-
-  font-size: var(--fs-body);
-  padding-inline: var(--sp-7);
-  white-space: normal;
-}
-
 @media (max-width: 900px) {
+  /* Блок цены поднимается сразу под вступление: до программы курса на телефоне
+     ещё надо долистать, а решение о покупке зреет выше. */
   .heroInner {
-    grid-template-columns: 1fr;
+    grid-template-areas:
+      'intro'
+      'price'
+      'modules';
+    grid-template-columns: minmax(0, 1fr);
   }
 }

@@ -25,6 +25,7 @@ export type IconName =
   | 'play'
   | 'plus'
   | 'star'
+  | 'starFilled'
   | 'user'
   | 'wrench'
   | 'youtube';
@@ -101,6 +102,10 @@ const paths: Record<IconName, React.ReactNode> = {
   play: <path d="M8 5.5v13l10-6.5z" />,
   plus: <path d="M12 5v14M5 12h14" />,
   star: <path d="m12 4 2.4 5 5.6.8-4 3.9 1 5.5-5-2.7-5 2.7 1-5.5-4-3.9 5.6-.8z" />,
+  /* Залитый вариант: fill задан на самом path, потому что у <svg> общий fill="none". */
+  starFilled: (
+    <path d="m12 4 2.4 5 5.6.8-4 3.9 1 5.5-5-2.7-5 2.7 1-5.5-4-3.9 5.6-.8z" fill="currentColor" />
+  ),
   user: (
     <>
       <circle cx="12" cy="8" r="4" />

@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { cache } from 'react';
 import { Link } from '@/i18n/routing';
 import { AccessNotice } from '@/components/courseSales/AccessNotice';
+import { StickyBuyBar } from '@/components/courseSales/StickyBuyBar';
 import { CurriculumAccordion } from '@/components/prototype/CurriculumAccordion';
 import { Footer } from '@/components/prototype/Footer';
 import { PricingBox } from '@/components/prototype/PricingBox';
@@ -76,7 +77,7 @@ export default async function CourseSalesPage({
     <>
       <section className={styles.hero}>
         <div className={styles.heroInner}>
-          <div>
+          <div className={styles.intro}>
             <Link className={styles.breadcrumb} href="/courses">
               <Icon name="arrowLeft" size={16} />
               {sales.breadcrumb}
@@ -96,26 +97,22 @@ export default async function CourseSalesPage({
           </div>
           <PricingBox
             checkoutEnabled={Boolean(getPaymentProvider())}
+            className={styles.pricing}
             courseSlug={course.slug}
             locale={safeLocale}
             sales={sales}
           />
+          <div className={styles.modules}>
+            <h2 className={styles.sectionTitle}>{sales.modulesTitle}</h2>
+            <CurriculumAccordion modules={curriculum} />
+          </div>
         </div>
       </section>
 
-      <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>{sales.modulesTitle}</h2>
-        <CurriculumAccordion modules={curriculum} />
-      </section>
-
-      <div className={styles.cta}>
-        {/* Ведёт к блоку с ценой на этой же странице: на телефоне он уезжает вниз. */}
-        <a className={styles.ctaButton} href="#pricing">
-          {sales.enrollCta}
-        </a>
-      </div>
-
       <Footer compact />
+      {/* Единственный дубль главного действия — и только там, где блок цены
+          уехал с экрана: на телефоне. */}
+      <StickyBuyBar price={sales.options[0].price} targetId="pricing" />
     </>
   );
 }

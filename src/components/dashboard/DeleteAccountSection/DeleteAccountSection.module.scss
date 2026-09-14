@@ -1,13 +1,14 @@
 @use '@/styles/mixins' as *;
 
-/* Опасная зона отличается акцентной рамкой, а не отдельной палитрой. */
+/*
+  Опасная зона отличается акцентной рамкой, а не отдельной палитрой.
+  Ширину колонки задаёт SettingsSection.
+*/
 .danger {
   border: 1px solid var(--brand-line);
   border-radius: var(--radius);
   display: grid;
   gap: var(--sp-4);
-  margin-block-start: var(--sp-5);
-  max-inline-size: 560px;
   padding: var(--sp-6);
 }
 

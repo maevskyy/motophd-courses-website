@@ -71,11 +71,18 @@
   }
 }
 
+/*
+  Высоту текстовых блоков хиро задаёт слот в строках, а не длина фразы.
+  Иначе русский вариант тянет хиро на 130px выше английского, и первый экран
+  у двух локалей выглядит по-разному: на EN видно статистику, на RU — нет.
+  Слот считается в em, поэтому едет вместе со шкалой шрифта.
+*/
 .title {
   @include display;
 
   margin-block: var(--sp-5) 0;
   max-width: 22ch;
+  min-block-size: calc(5em * var(--lh-tight));
   text-wrap: balance;
 }
 
@@ -89,6 +96,7 @@
 
   margin-block-start: var(--sp-5);
   max-width: 52ch;
+  min-block-size: calc(3em * var(--lh-normal));
 }
 
 .actions {
@@ -151,14 +159,20 @@ a.stat:hover .statValue {
   margin: 0;
 }
 
+/*
+  На десктопе хиро — сцена заданной высоты, а не блок, который растёт от
+  текста: высота одинаковая на обеих локалях, поэтому следующая секция
+  начинается на одном и том же y.
+*/
 @media (min-width: 769px) {
   .hero {
+    block-size: min(760px, 100svh);
     display: flex;
-    min-block-size: min(760px, 100svh);
   }
 
   .inner {
     align-self: center;
+    padding-block: var(--header-h) 0;
   }
 }
 
@@ -194,6 +208,11 @@ a.stat:hover .statValue {
 
   .title {
     max-width: 18ch;
+    min-block-size: calc(10em * var(--lh-tight));
+  }
+
+  .sub {
+    min-block-size: calc(5em * var(--lh-normal));
   }
 
   .stats {

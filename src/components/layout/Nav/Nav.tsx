@@ -102,10 +102,15 @@ export function Nav() {
         <div className={styles.desktop}>
           {navLinks}
           {langSwitch}
-          <Link className={styles.btnSecondary} href={isLoggedIn ? '/dashboard' : '/login'}>
+          <Link className={styles.link} href={isLoggedIn ? '/dashboard' : '/login'}>
             {isLoggedIn ? t('nav.dashboard') : t('nav.login')}
           </Link>
-          <Link className={styles.btnPrimary} href="/courses">
+          {/*
+            В шапке действие вторичное: главный красный CTA на первом экране —
+            кнопка в хиро, а на последнем — закрывающий блок. Два primary
+            одновременно на экране размывают главное действие.
+          */}
+          <Link className={styles.btnSecondary} href="/courses">
             {t('nav.cta')}
           </Link>
         </div>

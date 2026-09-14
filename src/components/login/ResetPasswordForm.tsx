@@ -24,9 +24,11 @@ export function ResetPasswordForm({ locale, token }: { locale: 'en' | 'ru'; toke
       <form action={formAction} className={styles.loginCard}>
         <input name="locale" type="hidden" value={locale} />
         <input name="token" type="hidden" value={token} />
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img alt="MotoPhD" className={styles.loginLogo} height={32} src="/logo.png" width={116} />
-        <h1 className={styles.loginTagline}>{t('resetTagline')}</h1>
+        <div className={styles.loginHead}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img alt="MotoPhD" className={styles.loginLogo} height={32} src="/logo.png" width={116} />
+          <h1 className={styles.loginTagline}>{t('resetTagline')}</h1>
+        </div>
         {state.status !== 'idle' ? (
           <div className={styles.loginError} role="alert">
             <strong>{t(errorKeys[state.status])}</strong>
@@ -63,10 +65,12 @@ export function ResetPasswordForm({ locale, token }: { locale: 'en' | 'ru'; toke
         <button className={styles.btnLogin} type="submit">
           {t('resetButton')}
         </button>
-        <Link className={styles.loginBack} href="/login/forgot">
-          <Icon name="arrowLeft" size={16} />
-          {t('forgotTagline')}
-        </Link>
+        <p className={styles.loginFooter}>
+          <Link className={styles.loginFooterLink} href="/login/forgot">
+            <Icon name="arrowLeft" size={16} />
+            {t('forgotTagline')}
+          </Link>
+        </p>
       </form>
     </main>
   );

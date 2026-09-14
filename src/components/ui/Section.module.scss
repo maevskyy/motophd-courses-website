@@ -41,12 +41,15 @@
   justify-content: center;
 }
 
+/* Шапка секции — тоже слот: см. lines-reserve в _mixins.scss. */
 .title {
   @include h2;
+  @include lines-reserve(2, var(--lh-tight));
 
   color: var(--text-1);
 }
 
 .lead {
   @include lead;
+  @include lines-reserve(2);
 }

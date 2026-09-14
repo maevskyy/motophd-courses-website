@@ -16,9 +16,11 @@ export function ForgotPasswordForm({ locale }: { locale: 'en' | 'ru' }) {
     <main className={styles.loginPage}>
       <form action={formAction} className={styles.loginCard}>
         <input name="locale" type="hidden" value={locale} />
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img alt="MotoPhD" className={styles.loginLogo} height={32} src="/logo.png" width={116} />
-        <h1 className={styles.loginTagline}>{t('forgotTagline')}</h1>
+        <div className={styles.loginHead}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img alt="MotoPhD" className={styles.loginLogo} height={32} src="/logo.png" width={116} />
+          <h1 className={styles.loginTagline}>{t('forgotTagline')}</h1>
+        </div>
         {state.status === 'sent' ? (
           <p className={styles.loginSuccess} role="status">
             {t('forgotSent')}
@@ -47,10 +49,12 @@ export function ForgotPasswordForm({ locale }: { locale: 'en' | 'ru' }) {
         <button className={styles.btnLogin} type="submit">
           {t('forgotButton')}
         </button>
-        <Link className={styles.loginBack} href="/login">
-          <Icon name="arrowLeft" size={16} />
-          {t('backToLogin')}
-        </Link>
+        <p className={styles.loginFooter}>
+          <Link className={styles.loginFooterLink} href="/login">
+            <Icon name="arrowLeft" size={16} />
+            {t('backToLogin')}
+          </Link>
+        </p>
       </form>
     </main>
   );

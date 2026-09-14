@@ -1,36 +1,49 @@
 @use '@/styles/mixins' as *;
 
+/*
+  Экраны входа / восстановления / нового пароля — одна карточка по канону
+  курсовых платформ: лого → одна строка → поля → кнопка во всю ширину →
+  одна второстепенная ссылка. Ритм задаёт grid-gap карточки, локальных
+  margin-хаков нет.
+*/
+
 .loginPage {
   align-items: center;
   background: var(--surface-1);
   display: flex;
   justify-content: center;
   min-block-size: 100svh;
-  padding: calc(var(--header-h) + var(--sp-5)) var(--sp-5) var(--sp-5);
+  padding: calc(var(--header-h) + var(--sp-6)) var(--gutter) var(--sp-6);
 }
 
 .loginCard {
   @include card;
 
   border-radius: var(--radius-lg);
-  max-inline-size: 420px;
-  padding: var(--sp-7);
+  display: grid;
+  gap: var(--sp-4);
   inline-size: 100%;
+  max-inline-size: 400px;
+  padding: var(--sp-6);
+}
+
+.loginHead {
+  display: grid;
+  gap: var(--sp-3);
+  justify-items: center;
+  margin-block-end: var(--sp-2);
+  text-align: center;
 }
 
 .loginLogo {
   block-size: 32px;
-  display: block;
   inline-size: auto;
-  margin: 0 auto var(--sp-4);
 }
 
 .loginTagline {
   @include h3;
 
   color: var(--text-1);
-  margin-block-end: var(--sp-7);
-  text-align: center;
 }
 
 .loginError,
@@ -40,7 +53,6 @@
   font-size: var(--fs-small);
   gap: var(--sp-1);
   line-height: var(--lh-normal);
-  margin-block-end: var(--sp-5);
   padding: var(--sp-3) var(--sp-4);
 }
 
@@ -61,32 +73,47 @@
   color: var(--text-1);
 }
 
+.loginHint {
+  color: var(--text-2);
+  font-size: var(--fs-small);
+  line-height: var(--lh-normal);
+}
+
+/* Grid-элемент с полем на 100%: без min-size 0 длинный placeholder распирает карточку. */
 .formGroup {
-  margin-block-end: var(--sp-5);
+  min-inline-size: 0;
 }
 
 .formLabel {
   @include field-label;
 }
 
-.formInput {
-  @include field;
+/*
+  Подпись и «Забыли пароль?» в одной строке. Ссылка держит тач-зону
+  --control-h, строка центрирует содержимое и сама отдаёт отступ до поля,
+  поэтому у подписи внутри строки собственный margin снят.
+*/
+.formLabelRow {
+  align-items: center;
+  display: flex;
+  gap: var(--sp-3);
+  justify-content: space-between;
+
+  .formLabel {
+    margin-block-end: 0;
+  }
 }
 
-.btnLogin {
-  @include btn-primary;
-  @include btn-block;
-
-  margin-block-start: var(--sp-2);
+.formInput {
+  @include field;
 }
 
 .loginForgot {
   align-items: center;
   color: var(--text-3);
-  display: flex;
+  display: inline-flex;
   font-size: var(--fs-small);
-  justify-content: flex-end;
-  margin-block: calc(var(--sp-4) * -1) var(--sp-4);
+  font-weight: 500;
   min-block-size: var(--control-h);
   text-decoration: none;
 
@@ -97,30 +124,38 @@
   }
 }
 
-.loginHint {
-  color: var(--text-2);
-  font-size: var(--fs-small);
-  line-height: var(--lh-normal);
-  margin-block-end: var(--sp-5);
+.btnLogin {
+  @include btn-primary;
+  @include btn-block;
+
+  margin-block-start: var(--sp-2);
 }
 
-.loginBack {
+/* Одна второстепенная строка под кнопкой: «Нет доступа? Курсы →» или «← Назад». */
+.loginFooter {
   align-items: center;
-  background: transparent;
-  border: 0;
   color: var(--text-3);
-  cursor: pointer;
   display: flex;
+  flex-wrap: wrap;
   font-size: var(--fs-small);
-  gap: var(--sp-2);
+  gap: var(--sp-1) var(--sp-2);
   justify-content: center;
-  margin-block-start: var(--sp-4);
+  line-height: var(--lh-normal);
+  margin: 0;
+}
+
+.loginFooterLink {
+  align-items: center;
+  color: var(--text-1);
+  display: inline-flex;
+  font-weight: 500;
+  gap: var(--sp-1);
   min-block-size: var(--control-h);
   text-decoration: none;
 
   @include focus-ring;
 
   &:hover {
-    color: var(--text-1);
+    color: var(--brand);
   }
 }

@@ -1,12 +1,9 @@
 @use '@/styles/mixins' as *;
 
+/* Ширину колонки задаёт SettingsSection — здесь только ритм полей. */
 .profileForm {
-  @include card;
-
   display: grid;
   gap: var(--sp-5);
-  max-inline-size: 560px;
-  padding: var(--sp-6);
 }
 
 .profileForm__field {
@@ -19,6 +16,13 @@
 
 .profileForm__input {
   @include field;
+}
+
+.profileForm__value {
+  color: var(--text-1);
+  font-size: var(--fs-body);
+  line-height: var(--lh-normal);
+  overflow-wrap: anywhere;
 }
 
 .profileForm__hint {

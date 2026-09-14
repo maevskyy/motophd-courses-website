@@ -1,15 +1,20 @@
 @use '@/styles/mixins' as *;
 
+/* Аккордеон занимает всю ширину своей колонки: узкую меру строки держит только текст ответа. */
 .faqList {
   display: grid;
   gap: var(--sp-2);
-  max-width: 820px;
 }
 
 .faqItem {
   @include card;
 
   overflow: hidden;
+  transition: border-color var(--dur) var(--ease);
+}
+
+.faqItemOpen {
+  border-color: var(--border-strong);
 }
 
 .faqHeading {
@@ -49,18 +54,49 @@
   flex: none;
 }
 
+/*
+  Раскрытие через grid-template-rows 0fr → 1fr: высота анимируется без JS и без
+  фиксированных величин, а текст ответа остаётся в DOM и в закрытом состоянии
+  (display: none или hidden его бы оттуда убрали).
+*/
 .faqAnswer {
-  display: none;
-  padding: 0 var(--sp-5) var(--sp-5);
+  display: grid;
+  grid-template-rows: 0fr;
+  overflow: hidden;
+  transition: grid-template-rows var(--dur-slow) var(--ease);
 }
 
 .faqItemOpen .faqAnswer {
-  display: block;
+  grid-template-rows: 1fr;
+}
+
+/* min-block-size: 0 обязателен — у grid-элемента он по умолчанию auto, и трек не сожмётся. */
+.faqAnswerInner {
+  border-block-start: 1px solid var(--border);
+  min-block-size: 0;
+  overflow: hidden;
+  padding: var(--sp-4) var(--sp-5) var(--sp-5);
 }
 
 .faqAnswerText {
   color: var(--text-2);
   font-size: var(--fs-small);
   line-height: var(--lh-relaxed);
-  max-width: var(--measure);
+  max-inline-size: var(--measure);
+}
+
+@media (max-width: 480px) {
+  .faqQuestion {
+    padding-inline: var(--sp-4);
+  }
+
+  .faqAnswerInner {
+    padding-inline: var(--sp-4);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .faqAnswer {
+    transition: none;
+  }
 }

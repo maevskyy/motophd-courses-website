@@ -1,0 +1,164 @@
+@use '@/styles/mixins' as *;
+
+.list {
+  @include grid-cards(300px);
+
+  list-style: none;
+}
+
+.card {
+  @include card;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-5);
+}
+
+.stars {
+  color: var(--brand);
+  display: flex;
+  gap: var(--sp-1);
+}
+
+/*
+  Цитата занимает ровно пять строк в свёрнутом виде: и обрезает длинные отзывы,
+  и добирает высоту коротким — иначе подписи авторов в ряду висят на разной высоте.
+*/
+.quote {
+  @include text-slot(5, var(--lh-relaxed));
+
+  color: var(--text-2);
+  font-size: var(--fs-small);
+  line-height: var(--lh-relaxed);
+}
+
+.quoteOpen {
+  -webkit-line-clamp: none;
+  display: block;
+  overflow: visible;
+}
+
+/*
+  Подвал прижат к низу карточки: в ряду карточки равной высоты, и подписи
+  авторов стоят на одной линии независимо от длины цитаты.
+*/
+.footer {
+  align-items: center;
+  column-gap: var(--sp-3);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-block-start: auto;
+  padding-block-start: var(--sp-1);
+  row-gap: var(--sp-2);
+}
+
+.author {
+  align-items: center;
+  color: var(--text-1);
+  display: flex;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  gap: var(--sp-3);
+}
+
+/* Отрицательный отступ гасит внутренний padding третичной кнопки: подпись встаёт по краю карточки. */
+.readMore {
+  @include btn-tertiary;
+  @include btn-sm;
+
+  flex: none;
+  margin-inline-end: calc(var(--sp-3) * -1);
+}
+
+/* Круг — только там, где сущность действительно круглая: аватар. */
+.avatar {
+  align-items: center;
+  background: var(--brand);
+  block-size: 32px;
+  border-radius: var(--radius-full);
+  color: var(--text-on-brand);
+  display: flex;
+  flex: none;
+  font-size: var(--fs-caption);
+  font-weight: 700;
+  inline-size: 32px;
+  justify-content: center;
+}
+
+.controls {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  justify-content: center;
+  margin-block-start: var(--sp-6);
+}
+
+.showMore {
+  @include btn-secondary;
+}
+
+.source {
+  @include btn-tertiary;
+}
+
+/* Свёрнутый вид: видны первые шесть отзывов, остальные — по кнопке. */
+@media (min-width: 701px) {
+  .list:not(.listAll) .card:nth-child(n + 7) {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .listAll .card:nth-child(n + 7) {
+    animation: reveal var(--dur) var(--ease) both;
+  }
+}
+
+/*
+  Телефон: не столбец из двенадцати карточек, а лента со snap-остановками.
+  Скролл живёт внутри ленты — карточки шире экрана не становятся, поэтому
+  горизонтальной прокрутки у страницы не появляется.
+*/
+@media (max-width: 700px) {
+  .list {
+    /*
+      contain: paint — не украшение, а починка. Без него Chromium отдаёт
+      scrollWidth ленты наружу, и по горизонтали начинает ездить вся страница
+      (замер: документ 2337px при экране 390px). Ни overflow: clip на обёртке,
+      ни отключение scroll-snap этого не снимают, а `contain` возвращает
+      документу честные 390px. Лента внутри листается как прежде.
+    */
+    contain: paint;
+    display: flex;
+    min-inline-size: 0;
+    overflow: auto hidden;
+    overscroll-behavior-x: contain;
+    padding-block-end: var(--sp-2);
+    scroll-snap-type: x mandatory;
+  }
+
+  .card {
+    flex: 0 0 min(84%, 320px);
+    scroll-snap-align: start;
+  }
+
+  /* В ленте видны все отзывы сразу, раскрывать нечего. */
+  .showMore {
+    display: none;
+  }
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(var(--sp-2));
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

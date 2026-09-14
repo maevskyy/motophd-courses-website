@@ -1,0 +1,325 @@
+@use '@/styles/mixins' as *;
+
+/* ---------- Шапка колонки: слоты AppSidebar ---------- */
+
+.head {
+  align-items: center;
+  display: flex;
+  gap: var(--sp-2);
+  justify-content: space-between;
+  margin-block-end: var(--sp-3);
+}
+
+.back {
+  align-items: center;
+  color: var(--text-3);
+  display: flex;
+  font-size: var(--fs-small);
+  gap: var(--sp-2);
+  min-block-size: var(--control-h-sm);
+  text-decoration: none;
+  transition: color var(--dur) var(--ease);
+
+  @include focus-ring;
+
+  &:hover {
+    color: var(--text-1);
+  }
+}
+
+.hide {
+  align-items: center;
+  background: transparent;
+  block-size: var(--control-h-sm);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-2);
+  cursor: pointer;
+  display: flex;
+  flex: none;
+  inline-size: var(--control-h-sm);
+  justify-content: center;
+  transition:
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+
+  @include focus-ring;
+
+  &:hover {
+    border-color: var(--border-strong);
+    color: var(--text-1);
+  }
+}
+
+/* «Свернуть» — шеврон влево: в наборе иконок есть только правый. */
+.hideIcon {
+  transform: scaleX(-1);
+}
+
+.title {
+  font-size: var(--fs-small);
+  font-weight: 600;
+  line-height: var(--lh-snug);
+  margin-block-end: var(--sp-3);
+}
+
+/* Нативный <progress>: ширина заливки без инлайн-стиля (как в кабинете). */
+.bar {
+  appearance: none;
+  background: var(--surface-3);
+  block-size: var(--sp-2);
+  border: 0;
+  border-radius: var(--radius-full);
+  display: block;
+  inline-size: 100%;
+  overflow: hidden;
+
+  &::-webkit-progress-bar {
+    background: var(--surface-3);
+    border-radius: var(--radius-full);
+  }
+
+  &::-webkit-progress-value {
+    background: var(--brand);
+    border-radius: var(--radius-full);
+    transition: inline-size var(--dur-slow) var(--ease);
+  }
+
+  &::-moz-progress-bar {
+    background: var(--brand);
+    border-radius: var(--radius-full);
+  }
+}
+
+.meta {
+  @include caption;
+
+  margin-block-start: var(--sp-2);
+}
+
+/* ---------- Дерево модулей ---------- */
+
+.tree {
+  inline-size: 100%;
+}
+
+.module {
+  border-block-end: 1px solid var(--border);
+}
+
+.moduleHeader {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  color: var(--text-1);
+  cursor: pointer;
+  display: flex;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  gap: var(--sp-3);
+  inline-size: 100%;
+  line-height: var(--lh-normal);
+  min-block-size: var(--control-h);
+  padding: var(--sp-3) var(--sp-5);
+  text-align: start;
+  transition: background-color var(--dur) var(--ease);
+
+  @include focus-ring;
+
+  &:hover {
+    background: var(--surface-3);
+  }
+}
+
+.moduleNum {
+  align-items: center;
+  background: var(--surface-3);
+  block-size: var(--sp-5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-2);
+  display: flex;
+  flex: none;
+  font-family: var(--font-display);
+  font-size: var(--fs-caption);
+  inline-size: var(--sp-5);
+  justify-content: center;
+}
+
+.moduleName {
+  flex: 1;
+  min-inline-size: 0;
+}
+
+.moduleArrow {
+  color: var(--text-3);
+  flex: none;
+  transition: transform var(--dur) var(--ease);
+}
+
+.moduleArrowOpen {
+  transform: rotate(180deg);
+}
+
+.lessons {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 var(--sp-2);
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+.lesson {
+  align-items: center;
+  border-inline-start: 2px solid transparent;
+  color: var(--text-2);
+  display: flex;
+  gap: var(--sp-3);
+  min-block-size: var(--control-h);
+  padding: var(--sp-2) var(--sp-5) var(--sp-2) var(--sp-6);
+  text-decoration: none;
+  transition:
+    background-color var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+
+  @include focus-ring;
+
+  &:hover {
+    background: var(--surface-3);
+    color: var(--text-1);
+  }
+}
+
+/* Текущий урок помечен и заливкой, и полосой слева — не только цветом. */
+.lessonActive {
+  background: var(--surface-3);
+  border-inline-start-color: var(--brand);
+  color: var(--text-1);
+}
+
+.lessonMark {
+  align-items: center;
+  block-size: 18px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-full);
+  color: var(--text-3);
+  display: flex;
+  flex: none;
+  inline-size: 18px;
+  justify-content: center;
+}
+
+.lessonMarkDone {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: var(--text-on-brand);
+}
+
+.lessonLabel {
+  flex: 1;
+  font-size: var(--fs-small);
+  line-height: var(--lh-normal);
+  min-inline-size: 0;
+}
+
+.lessonDoc {
+  color: var(--text-3);
+  flex: none;
+}
+
+.siteLink {
+  align-items: center;
+  color: var(--text-3);
+  display: flex;
+  font-size: var(--fs-small);
+  gap: var(--sp-2);
+  min-block-size: var(--control-h);
+  text-decoration: none;
+  transition: color var(--dur) var(--ease);
+
+  @include focus-ring;
+
+  &:hover {
+    color: var(--text-1);
+  }
+}
+
+/* ---------- Свёрнутый рейл: 56px, только номера модулей ---------- */
+
+.rail {
+  align-items: center;
+  background: var(--surface-2);
+  block-size: calc(100svh - var(--header-h));
+  border-inline-end: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  inset-block-start: var(--header-h);
+  overflow-y: auto;
+  padding-block: var(--sp-4);
+  position: sticky;
+}
+
+.railBtn {
+  align-items: center;
+  background: transparent;
+  block-size: var(--control-h-sm);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-2);
+  cursor: pointer;
+  display: flex;
+  flex: none;
+  inline-size: var(--control-h-sm);
+  justify-content: center;
+  margin-block-end: var(--sp-2);
+  transition:
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+
+  @include focus-ring;
+
+  &:hover {
+    border-color: var(--border-strong);
+    color: var(--text-1);
+  }
+}
+
+.railNav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.railItem {
+  align-items: center;
+  background: var(--surface-3);
+  block-size: var(--control-h-sm);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-2);
+  display: flex;
+  flex: none;
+  font-family: var(--font-display);
+  font-size: var(--fs-caption);
+  inline-size: var(--control-h-sm);
+  justify-content: center;
+  text-decoration: none;
+  transition:
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+
+  @include focus-ring;
+
+  &:hover {
+    border-color: var(--border-strong);
+    color: var(--text-1);
+  }
+}
+
+.railItemActive {
+  border-color: var(--brand);
+  color: var(--text-1);
+}

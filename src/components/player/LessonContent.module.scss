@@ -1,0 +1,165 @@
+@use '@/styles/mixins' as *;
+
+/* ---------- Навигация между уроками ---------- */
+
+.lessonNav {
+  border-block: 1px solid var(--border);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  justify-content: space-between;
+  padding-block: var(--sp-4);
+}
+
+.navPrev {
+  @include btn-secondary;
+}
+
+.navNext {
+  @include btn-primary;
+}
+
+/* ---------- Текст урока: мерой --measure по левому краю колонки ---------- */
+
+.lessonText {
+  display: grid;
+  gap: var(--sp-6);
+  max-inline-size: var(--measure);
+  padding-block: var(--sp-6);
+}
+
+/* Разметка приходит из Lexical без классов — стилизуем элементы внутри обёртки. */
+.richText {
+  display: grid;
+  gap: var(--sp-3);
+
+  h2 {
+    @include h3;
+
+    margin-block-start: var(--sp-3);
+  }
+
+  h3 {
+    color: var(--text-1);
+    font-size: var(--fs-lead);
+    font-weight: 600;
+    line-height: var(--lh-snug);
+    margin-block-start: var(--sp-2);
+  }
+
+  p,
+  li {
+    @include body;
+  }
+
+  ul,
+  ol {
+    display: grid;
+    gap: var(--sp-2);
+    padding-inline-start: var(--sp-5);
+  }
+
+  a {
+    color: var(--text-1);
+    text-decoration: underline;
+  }
+}
+
+.sectionTitle {
+  @include h3;
+
+  margin-block-end: var(--sp-4);
+}
+
+.takeaways {
+  display: grid;
+  gap: var(--sp-3);
+  list-style: none;
+}
+
+.takeaway {
+  align-items: flex-start;
+  color: var(--text-2);
+  display: flex;
+  font-size: var(--fs-body);
+  gap: var(--sp-3);
+  line-height: var(--lh-normal);
+}
+
+.takeawayIcon {
+  color: var(--brand);
+  flex: none;
+  margin-block-start: var(--sp-1);
+}
+
+.callout {
+  @include card;
+
+  background: var(--surface-2);
+  display: grid;
+  gap: var(--sp-3);
+  padding: var(--sp-5);
+}
+
+.calloutLabel {
+  color: var(--text-3);
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  letter-spacing: var(--ls-caps);
+  text-transform: uppercase;
+}
+
+.calloutText {
+  color: var(--text-1);
+  font-size: var(--fs-body);
+  line-height: var(--lh-relaxed);
+}
+
+/* ---------- Материалы урока: во всю ширину колонки ---------- */
+
+.materials {
+  border-block-start: 1px solid var(--border);
+  padding-block-start: var(--sp-6);
+}
+
+.pdfDownloadCard {
+  @include card-interactive;
+
+  align-items: center;
+  color: inherit;
+  display: flex;
+  gap: var(--sp-4);
+  padding: var(--sp-4);
+  text-decoration: none;
+}
+
+.pdfIcon {
+  align-items: center;
+  color: var(--text-3);
+  display: flex;
+  flex: none;
+}
+
+.pdfInfo {
+  flex: 1;
+  min-inline-size: 0;
+}
+
+.pdfName {
+  font-size: var(--fs-small);
+  font-weight: 600;
+}
+
+.pdfFile {
+  color: var(--text-3);
+  font-size: var(--fs-caption);
+  overflow-wrap: anywhere;
+}
+
+.pdfBtn {
+  @include btn-secondary;
+  @include btn-sm;
+
+  flex: none;
+  pointer-events: none;
+}

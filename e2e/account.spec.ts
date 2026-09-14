@@ -8,7 +8,7 @@ const signIn = async (page: Page, email: string, password: string) => {
   await page.goto('/en/login');
   await page.locator('#login-email').fill(email);
   await page.locator('#login-password').fill(password);
-  await page.getByRole('button', { name: 'Sign In to My Dashboard' }).click();
+  await page.getByRole('button', { name: 'Sign in' }).click();
 };
 
 test('password change: the old password dies, the new one works', async ({ page }) => {
@@ -18,7 +18,9 @@ test('password change: the old password dies, the new one works', async ({ page 
   // Неверный текущий пароль — здесь же, на выделенном аккаунте: Payload
   // ведёт сессии в базе, и неверные попытки на общем student@ инвалидируют
   // сессии параллельных тестов.
-  await page.getByRole('button', { name: 'Profile' }).click();
+  await page.getByRole('link', { name: 'Settings' }).click();
+  // Поля пароля свёрнуты в строку «Password •••••••• [Edit]» — сначала раскрываем.
+  await page.getByRole('button', { name: 'Edit' }).click();
   await page.locator('#current-password').fill('not-the-password');
   await page.locator('#new-password').fill('whatever123');
   await page.locator('#confirm-password').fill('whatever123');
@@ -33,7 +35,7 @@ test('password change: the old password dies, the new one works', async ({ page 
 
   // Смена не разлогинила: кабинет всё ещё открыт.
   await page.reload();
-  await expect(page).toHaveURL(/\/en\/dashboard$/);
+  await expect(page).toHaveURL(/\/en\/dashboard\/settings$/);
 
   await page.getByRole('button', { name: 'Sign Out' }).click();
   await expect(page).toHaveURL(/\/en$/);
@@ -45,7 +47,8 @@ test('password change: the old password dies, the new one works', async ({ page 
   // Новый работает; возвращаем исходный, чтобы прогон был идемпотентным.
   await signIn(page, 'passwd@motophd.com', 'passwd5678x');
   await expect(page).toHaveURL(/\/en\/dashboard$/);
-  await page.getByRole('button', { name: 'Profile' }).click();
+  await page.getByRole('link', { name: 'Settings' }).click();
+  await page.getByRole('button', { name: 'Edit' }).click();
   await page.locator('#current-password').fill('passwd5678x');
   await page.locator('#new-password').fill('passwd1234');
   await page.locator('#confirm-password').fill('passwd1234');
@@ -67,7 +70,7 @@ test('feedback tier owner sees the purchase history and the instructions', async
   await signIn(page, 'feedback@motophd.com', 'feedback1234');
   await expect(page).toHaveURL(/\/en\/dashboard$/);
 
-  await page.getByRole('button', { name: 'Profile' }).click();
+  await page.getByRole('link', { name: 'Settings' }).click();
   await expect(page.getByText('Purchase History')).toBeVisible();
   await expect(page.getByText('Paid', { exact: true })).toBeVisible();
 

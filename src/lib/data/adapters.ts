@@ -1,5 +1,7 @@
 import type { Course, Lesson } from '@/payload-types';
+import { lessonOrder } from '@/lib/progress';
 import type { CourseCurriculumLesson } from './courses';
+import { richTextToText } from './richText';
 import type {
   AppLocale,
   CourseCardCourse,
@@ -7,6 +9,7 @@ import type {
   DashboardContent,
   PlayerContent,
   PlayerDownload,
+  PlayerLesson,
   SalesContent
 } from './types';
 
@@ -173,8 +176,15 @@ export const toCurriculumModules = (
   });
 };
 
-export const getPlayerLesson = (lessons: Lesson[]) =>
-  lessons.find((lesson) => lesson.type === 'video') || lessons[0];
+// Урок из URL: только положительное целое без ведущих нулей, иначе 404.
+export const parseLessonOrder = (value: string): number | null =>
+  /^[1-9]\d*$/.test(value) ? Number(value) : null;
+
+export const getPlayerLesson = <L extends Pick<Lesson, 'order'>>(lessons: L[], order: number) =>
+  lessons.find((lesson) => lessonOrder(lesson) === order);
+
+const pdfFileName = (pdf: Lesson['pdf']) =>
+  typeof pdf === 'object' && pdf?.filename ? pdf.filename : undefined;
 
 // Материалы берём по наличию файла, а не по type: PDF бывает приложен и к
 // видео-уроку, а раньше ссылка строилась только для type === 'pdf' и не
@@ -185,30 +195,42 @@ export const toPlayerDownloads = (lessons: Lesson[], locale: AppLocale): PlayerD
     .map((lesson) => ({
       id: lesson.id,
       title: lesson.title,
+      fileName: pdfFileName(lesson.pdf),
       url: `/api/lessons/${lesson.id}/pdf?locale=${locale}`
     }));
 
+const lessonBody = (body: Lesson['body']): PlayerLesson['body'] =>
+  body && richTextToText(body) ? body : null;
+
+// Плеер получает все уроки курса: активный выбирает клиент (order из URL или
+// следующий непройденный по прогрессу в localStorage).
 export const toPlayerContent = (
   course: Course,
   lessons: Lesson[],
-  media: Pick<PlayerContent, 'downloads' | 'videoEmbedUrl'>
+  locale: AppLocale,
+  media: { playbackUrl: (streamVideoId: Lesson['streamVideoId']) => string | null }
 ): PlayerContent => {
-  const currentLesson = getPlayerLesson(lessons);
-  const notes = course.commonMistakes?.split('\n').filter(Boolean) || [];
+  const sorted = [...lessons].sort((a, b) => lessonOrder(a) - lessonOrder(b));
+  // Номер модуля по позиции: toCurriculumModules режет тот же отсортированный список.
+  const moduleByIndex = toCurriculumModules(course, sorted, locale).flatMap((module, index) =>
+    module.lessons.map(() => index + 1)
+  );
 
   return {
-    title: currentLesson?.title || course.title,
-    subtitle: course.keyPoint || course.description || '',
-    videoMeta: currentLesson?.durationSec
-      ? `${Math.round(currentLesson.durationSec / 60)}:00 · MotoPhD Online`
-      : 'MotoPhD Online',
-    notes,
-    feel: course.whatYouShouldFeel || '',
-    overviewTitle: course.title,
-    overviewCopy: course.description || '',
-    moduleOutcome: course.outcomes?.map(({ text }) => text).filter(Boolean) || [],
-    sidebarTitle: course.title,
-    ...media
+    courseSlug: course.slug,
+    courseTitle: course.title,
+    lessons: sorted.map((lesson, index) => ({
+      id: lesson.id,
+      order: lessonOrder(lesson),
+      title: lesson.title,
+      type: lesson.type,
+      module: moduleByIndex[index] ?? 1,
+      body: lessonBody(lesson.body),
+      videoEmbedUrl: lesson.type === 'video' ? media.playbackUrl(lesson.streamVideoId) : null,
+      download: toPlayerDownloads([lesson], locale)[0] ?? null
+    })),
+    keyTakeaways: course.commonMistakes?.split('\n').filter(Boolean) || [],
+    feel: course.whatYouShouldFeel || ''
   };
 };
 

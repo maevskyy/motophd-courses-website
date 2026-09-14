@@ -1,16 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from '@/i18n/routing';
-import { useToast } from '@/components/providers/ToastProvider';
+import { useTranslations } from 'next-intl';
 import { Icon } from '@/components/ui/Icon';
 import type { CurriculumModule } from '@/lib/data';
 import { cx } from '@/lib/classNames';
-import playerStyles from '@/components/player/CoursePlayer.module.scss';
 import styles from './CurriculumAccordion.module.scss';
 
 export function CurriculumAccordion({ modules }: { modules: CurriculumModule[] }) {
-  const router = useRouter();
+  const t = useTranslations('course');
   const [openModules, setOpenModules] = useState<Set<string>>(
     () => new Set(modules.filter((module) => module.open).map((module) => module.number))
   );
@@ -44,20 +42,21 @@ export function CurriculumAccordion({ modules }: { modules: CurriculumModule[] }
             >
               <span className={styles.number}>{module.number}</span>
               <span className={styles.title}>{module.title}</span>
+              <span className={styles.count}>
+                {t('lessonCount', { count: module.lessons.length })}
+              </span>
               <Icon className={styles.arrow} name="chevronDown" size={18} />
             </button>
+            {/* На странице продажи программа — витрина, а не навигация: уроки
+                открываются только из плеера после покупки. */}
             <ul className={styles.lessons}>
               {module.lessons.map((lesson) => (
-                <li key={lesson.name}>
-                  <button
-                    className={styles.lesson}
-                    onClick={() => router.push('/learn/lean')}
-                    type="button"
-                  >
-                    <Icon className={styles.lessonIcon} name="play" size={14} />
-                    <span className={styles.lessonName}>{lesson.name}</span>
+                <li className={styles.lesson} key={lesson.name}>
+                  <Icon className={styles.lessonIcon} name="play" size={14} />
+                  <span className={styles.lessonName}>{lesson.name}</span>
+                  {lesson.duration ? (
                     <span className={styles.lessonDuration}>{lesson.duration}</span>
-                  </button>
+                  ) : null}
                 </li>
               ))}
             </ul>
@@ -68,30 +67,3 @@ export function CurriculumAccordion({ modules }: { modules: CurriculumModule[] }
   );
 }
 
-export function SidebarLesson({
-  active,
-  done,
-  label,
-  toast
-}: {
-  active?: boolean;
-  done?: boolean;
-  label: string;
-  toast: string;
-}) {
-  const { showToast } = useToast();
-
-  return (
-    <button
-      aria-current={active ? 'true' : undefined}
-      className={cx(playerStyles.sidebarLesson, active && playerStyles.sidebarLessonActive)}
-      onClick={() => showToast(toast)}
-      type="button"
-    >
-      <span className={cx(playerStyles.sidebarLessonMark, done && playerStyles.sidebarLessonMarkDone)}>
-        {done ? <Icon name="check" size={12} /> : active ? <Icon name="play" size={10} /> : null}
-      </span>
-      <span className={playerStyles.sidebarLessonLabel}>{label}</span>
-    </button>
-  );
-}

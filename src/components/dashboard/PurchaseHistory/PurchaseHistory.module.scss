@@ -1,11 +1,8 @@
 @use '@/styles/mixins' as *;
 
+/* Ширину колонки задаёт SettingsSection — здесь только строки истории. */
 .history {
-  @include card;
-
-  margin-block-start: var(--sp-5);
-  max-inline-size: 720px;
-  padding: var(--sp-6);
+  min-inline-size: 0;
 }
 
 .history__title {

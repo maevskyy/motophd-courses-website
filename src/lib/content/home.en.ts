@@ -129,23 +129,47 @@ export const homeEn: HomeContent = {
         'Thanks for giving us practical exercises, most channels only talk and never teach actual exercises.'
     }
   ],
-  howLabel: 'How It Works',
-  howTitle: ['From purchase to', 'better riding — in minutes'],
+  howLabel: 'How the training works',
+  howTitle: ['Every block ends with', 'a skill you can name'],
   steps: [
-    { num: '1', title: 'Choose Course', desc: 'Pick the skill you want to build' },
-    { num: '2', title: 'Purchase', desc: 'Secure checkout, personal account access' },
-    { num: '3', title: 'Learn', desc: 'Video + PDF at your own pace' },
-    { num: '4', title: 'Practice', desc: 'Build new skills through practice' },
-    { num: '5', title: 'Ride Better', desc: 'Apply on the road. Lifetime access.' }
+    {
+      num: '01',
+      title: 'You read the motorcycle',
+      desc: 'You understand what the bike is doing underneath you: where the load goes, where grip ends and why it behaves the way it does.'
+    },
+    {
+      num: '02',
+      title: 'You control your body',
+      desc: 'Seating, vision and body position stop being accidental: you know which position produces which result.'
+    },
+    {
+      num: '03',
+      title: 'You corner on purpose',
+      desc: 'Entry, apex and exit stop being a lottery: your line becomes a decision instead of a consequence.'
+    },
+    {
+      num: '04',
+      title: 'You react without thinking',
+      desc: 'Emergency braking and obstacle avoidance are trained into a reflex, not left as theory from a video.'
+    }
+  ],
+  schoolLabel: 'About the school',
+  schoolTitle: 'A school that grew out of offline coaching',
+  schoolCopy: [
+    'MotoPhD grew out of Ride White Motoschool — the training ground where more than 5,000 riders have gone through personal coaching over ten years.',
+    "We don't teach theory for its own sake. Every block is built around the feel of the motorcycle: what the bike is doing underneath you and how to influence it. The online course is the same method, broken down into drills you can run on your own practice ground."
+  ],
+  schoolFacts: [
+    { value: '10+ years', label: 'of offline coaching' },
+    { value: '5,000+', label: 'riders through the programme' },
+    { value: 'Ride White', label: 'motoschool in Ukraine' }
   ],
   instructorLabel: 'The Coach',
-  instructorTitle: ['Built by a coach', "who's been there."],
-  instructorCopy: [
-    "More than 5,000 riders have improved their motorcycle control through my personal coaching. Now I'm bringing the same system online — so riders anywhere in the world can learn the same principles.",
-    "I don't teach just theory. I always make focus on your feelings from the bike. Every concept in MotoPhD has been tested with real riders on real roads. That's why we have such clear structure of trainings that delivers a result."
-  ],
+  instructorTitle: 'Who runs the training',
   instructorName: 'Vlad White',
   instructorRole: 'Professional Racer & Motorcycle Coach',
+  instructorQuote:
+    'I always put the focus on what you feel from the bike. The method is built on years of personal coaching — that is why the programme stays this clear and actually delivers a result.',
   instructorCredentials: [
     'Professional racer from Ukraine',
     'Master of Sports',

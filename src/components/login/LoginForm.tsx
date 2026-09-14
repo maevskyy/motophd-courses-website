@@ -23,9 +23,11 @@ export function LoginForm({ locale, nextPath }: Props) {
       <form action={formAction} className={styles.loginCard}>
         <input name="locale" type="hidden" value={locale} />
         <input name="next" type="hidden" value={nextPath || ''} />
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img alt="MotoPhD" className={styles.loginLogo} height={32} src="/logo.png" width={116} />
-        <h1 className={styles.loginTagline}>{t('tagline')}</h1>
+        <div className={styles.loginHead}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img alt="MotoPhD" className={styles.loginLogo} height={32} src="/logo.png" width={116} />
+          <h1 className={styles.loginTagline}>{t('tagline')}</h1>
+        </div>
         {state.error ? (
           <div className={styles.loginError} role="alert">
             <strong>{state.rateLimited ? t('tooManyAttempts') : t('invalidCredentials')}</strong>
@@ -47,27 +49,31 @@ export function LoginForm({ locale, nextPath }: Props) {
           />
         </div>
         <div className={styles.formGroup}>
-          <label className={styles.formLabel} htmlFor="login-password">
-            {t('password')}
-          </label>
+          <div className={styles.formLabelRow}>
+            <label className={styles.formLabel} htmlFor="login-password">
+              {t('password')}
+            </label>
+            <Link className={styles.loginForgot} href="/login/forgot">
+              {t('forgotLink')}
+            </Link>
+          </div>
           <input
             autoComplete="current-password"
             className={styles.formInput}
             id="login-password"
             name="password"
-            placeholder={t('passwordPlaceholder')}
             required
             type="password"
           />
         </div>
-        <Link className={styles.loginForgot} href="/login/forgot">
-          {t('forgotLink')}
-        </Link>
         <LoginSubmitButton />
-        <Link className={styles.loginBack} href="/">
-          <Icon name="arrowLeft" size={16} />
-          {t('back')}
-        </Link>
+        <p className={styles.loginFooter}>
+          <span>{t('noAccess')}</span>
+          <Link className={styles.loginFooterLink} href="/courses">
+            {t('noAccessLink')}
+            <Icon name="arrowRight" size={16} />
+          </Link>
+        </p>
       </form>
     </main>
   );

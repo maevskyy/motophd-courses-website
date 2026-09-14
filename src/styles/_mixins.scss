@@ -281,3 +281,21 @@
   gap: var(--sp-5);
   grid-template-columns: repeat(auto-fit, minmax(min(100%, #{$min}), 1fr));
 }
+
+/*
+  Слот под текст: блок занимает ровно $lines строк независимо от языка.
+  Русский системно длиннее английского на 20-30%, и если высоту задаёт текст,
+  композиция едет при переключении локали. lines-reserve только добирает
+  высоту, text-slot ещё и обрезает лишнее многоточием.
+*/
+@mixin lines-reserve($lines, $lh: var(--lh-normal)) {
+  min-block-size: calc(#{$lines}em * #{$lh});
+}
+
+@mixin text-slot($lines, $lh: var(--lh-normal)) {
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: $lines;
+  display: -webkit-box;
+  min-block-size: calc(#{$lines}em * #{$lh});
+  overflow: hidden;
+}

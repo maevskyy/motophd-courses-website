@@ -2,6 +2,7 @@ import { Link } from '@/i18n/routing';
 import { CourseCard } from '@/components/prototype/CourseCard';
 import { Icon } from '@/components/ui/Icon';
 import { Section, SectionHeader } from '@/components/ui/Section';
+import { Testimonials } from './Testimonials';
 import type { HomeContent } from '@/lib/content';
 import type { CourseCardCourse } from '@/lib/data';
 import blocks from './styles/MarketingBlocks.module.scss';
@@ -12,11 +13,13 @@ interface Props {
   courses: CourseCardCourse[];
   labels: {
     viewCourses: string;
-    browseAllCourses: string;
   };
 }
 
 export function LandingTop({ content, courses, labels }: Props) {
+  // Отзывы приходят из инстаграма школы — даём на него ссылку как на источник.
+  const reviewsSource = content.socialLinks.find((link) => link.platform === 'instagram')?.href;
+
   return (
     <>
       <section className={hero.hero}>
@@ -129,67 +132,66 @@ export function LandingTop({ content, courses, labels }: Props) {
         </ol>
       </Section>
 
+      {/*
+        Школа и инструктор — две разные сущности, поэтому и два разных блока.
+        Раньше в одной секции лежали портрет, регалии, рассказ про платформу и
+        не привязанное ни к чему фото с тренировки: читалось как свалка.
+      */}
       <Section bordered id="about-anchor">
-        <SectionHeader
-          kicker={content.instructorLabel}
-          title={content.instructorTitle.length > 0 ? content.instructorTitle.join(' ') : undefined}
-        />
-        <div className={blocks.instructor}>
-          <div className={blocks.instructorAside}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              alt={`${content.instructorName} — ${content.instructorRole}`}
-              className={blocks.instructorPhoto}
-              src="/vlad.jpg"
-            />
-            <div className={blocks.instructorCard}>
-              <p className={blocks.instructorName}>{content.instructorName}</p>
-              <p className={blocks.instructorRole}>{content.instructorRole}</p>
-              {content.instructorCredentials ? (
-                <ul className={blocks.checkList}>
-                  {content.instructorCredentials.map((item) => (
-                    <li className={blocks.checkItem} key={item}>
-                      <Icon className={blocks.checkIcon} name="check" size={16} />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              ) : null}
-            </div>
-          </div>
-          <div className={blocks.instructorBody}>
-            {content.instructorCopy.map((paragraph) => (
+        <SectionHeader kicker={content.schoolLabel} title={content.schoolTitle} />
+        <div className={blocks.school}>
+          <div className={blocks.schoolBody}>
+            {content.schoolCopy.map((paragraph) => (
               <p className={blocks.prose} key={paragraph}>
                 {paragraph}
               </p>
             ))}
-            <Link className={blocks.btnSecondary} href="/courses">
-              {labels.browseAllCourses}
-            </Link>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img alt="" className={blocks.instructorAction} src="/vlad-training.jpg" />
+            <dl className={blocks.schoolFacts}>
+              {content.schoolFacts.map((fact) => (
+                <div key={fact.label}>
+                  <dt className={blocks.schoolFactValue}>{fact.value}</dt>
+                  <dd className={blocks.schoolFactLabel}>{fact.label}</dd>
+                </div>
+              ))}
+            </dl>
           </div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            alt=""
+            className={blocks.schoolPhoto}
+            src="/vlad-training.jpg"
+          />
         </div>
       </Section>
 
       <Section bordered tone="alt">
+        <SectionHeader kicker={content.instructorLabel} title={content.instructorTitle} />
+        <div className={blocks.instructor}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            alt={`${content.instructorName} — ${content.instructorRole}`}
+            className={blocks.instructorPhoto}
+            src="/vlad.jpg"
+          />
+          <div className={blocks.instructorCard}>
+            <p className={blocks.instructorName}>{content.instructorName}</p>
+            <p className={blocks.instructorRole}>{content.instructorRole}</p>
+            <blockquote className={blocks.instructorQuote}>{content.instructorQuote}</blockquote>
+            <ul className={blocks.checkList}>
+              {content.instructorCredentials.map((item) => (
+                <li className={blocks.checkItem} key={item}>
+                  <Icon className={blocks.checkIcon} name="check" size={16} />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </Section>
+
+      <Section bordered>
         <SectionHeader kicker={content.testimonialsLabel} title={content.testimonialsTitle.join(' ')} />
-        <ul className={blocks.testimonials}>
-          {content.testimonials.map((testimonial) => (
-            <li className={blocks.testiCard} key={testimonial.name}>
-              <p aria-label="5/5" className={blocks.testiStars}>
-                {[0, 1, 2, 3, 4].map((star) => (
-                  <Icon key={star} name="star" size={14} />
-                ))}
-              </p>
-              <blockquote className={blocks.testiQuote}>{testimonial.quote}</blockquote>
-              <p className={blocks.testiAuthor}>
-                <span className={blocks.avatar}>{testimonial.initial}</span>
-                <span>{testimonial.name}</span>
-              </p>
-            </li>
-          ))}
-        </ul>
+        <Testimonials items={content.testimonials} sourceHref={reviewsSource} />
       </Section>
     </>
   );

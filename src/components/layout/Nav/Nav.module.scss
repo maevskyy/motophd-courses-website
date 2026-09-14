@@ -53,10 +53,13 @@
 }
 
 .link {
+  align-items: center;
   border-radius: var(--radius);
   color: var(--text-2);
+  display: inline-flex;
   font-size: var(--fs-small);
   font-weight: 600;
+  justify-content: center;
   padding-block: var(--sp-2);
   text-decoration: none;
   transition: color var(--dur) var(--ease);
@@ -110,6 +113,25 @@
 .btnSecondary {
   @include btn-secondary;
   @include btn-sm;
+}
+
+/*
+  Слоты фиксированной ширины под пункты шапки. Русский текст системно длиннее
+  английского на 20-30%, и когда ширину задаёт сам текст, при переключении
+  языка съезжает вся правая часть шапки. Слот рассчитан на самую длинную
+  локаль; что подписи в него по-прежнему помещаются, проверяет
+  e2e/localeLayout.spec.ts.
+*/
+.desktop .link {
+  min-inline-size: 136px;
+}
+
+.desktop .btnSecondary {
+  min-inline-size: 160px;
+}
+
+.mobile .btnPrimary {
+  min-inline-size: 132px;
 }
 
 .btnCompact {

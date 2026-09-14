@@ -11,12 +11,13 @@ import styles from './PricingBox.module.scss';
 
 interface Props {
   checkoutEnabled: boolean;
+  className?: string;
   courseSlug: string;
   locale: 'en' | 'ru';
   sales: SalesContent;
 }
 
-export function PricingBox({ checkoutEnabled, courseSlug, locale, sales }: Props) {
+export function PricingBox({ checkoutEnabled, className, courseSlug, locale, sales }: Props) {
   const t = useTranslations();
   const { showToast } = useToast();
   const [selected, setSelected] = useState(0);
@@ -29,7 +30,7 @@ export function PricingBox({ checkoutEnabled, courseSlug, locale, sales }: Props
   }
 
   return (
-    <aside className={styles.box} id="pricing">
+    <aside className={cx(styles.box, className)} id="pricing">
       {!checkoutEnabled ? <p className={styles.fallback}>{t('checkout.unavailable')}</p> : null}
       <p className={styles.price}>{sales.options[selected].price}</p>
       <p className={styles.note}>{sales.priceNote}</p>

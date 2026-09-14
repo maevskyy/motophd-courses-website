@@ -42,7 +42,9 @@ export function PurchaseHistory({ purchases }: { purchases: PurchaseHistoryItem[
             <span
               className={cx(
                 styles.history__status,
-                purchase.status === 'paid' ? styles.history__statusPaid : styles.history__statusOther
+                purchase.status === 'paid'
+                  ? styles.history__statusPaid
+                  : styles.history__statusOther
               )}
             >
               {t(statusKeys[purchase.status])}

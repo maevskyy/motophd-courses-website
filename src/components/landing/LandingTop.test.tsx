@@ -12,9 +12,13 @@ vi.mock('@/i18n/routing', () => ({
   )
 }));
 
+// Секция отзывов — клиентский компонент и берёт подписи из next-intl.
+vi.mock('next-intl', () => ({
+  useTranslations: () => (key: string) => key
+}));
+
 const labels = {
-  viewCourses: 'Смотреть курсы',
-  browseAllCourses: 'Смотреть все курсы'
+  viewCourses: 'Начать обучение'
 };
 
 describe('LandingTop', () => {
@@ -31,12 +35,19 @@ describe('LandingTop', () => {
     expect(video).toHaveAttribute('playsinline');
   });
 
-  it('links the instructor section to the course catalog', () => {
+  it('разводит школу и инструктора по разным блокам', () => {
     render(<LandingTop content={homeContent.ru} courses={[]} labels={labels} />);
 
-    expect(screen.getByRole('link', { name: 'Смотреть все курсы' })).toHaveAttribute(
-      'href',
-      '/courses'
-    );
+    expect(screen.getByText(homeContent.ru.schoolTitle)).toBeInTheDocument();
+    expect(screen.getByText(homeContent.ru.instructorTitle)).toBeInTheDocument();
+    expect(screen.getByText(homeContent.ru.instructorQuote)).toBeInTheDocument();
+  });
+
+  it('не ставит кнопок в блоке инструктора: действие живёт в хиро и в финальном блоке', () => {
+    render(<LandingTop content={homeContent.ru} courses={[]} labels={labels} />);
+
+    // Единственная ссылка-действие верхней части — кнопка хиро.
+    expect(screen.getAllByRole('link', { name: 'Начать обучение' })).toHaveLength(1);
+    expect(screen.queryByRole('link', { name: /смотреть все курсы/i })).not.toBeInTheDocument();
   });
 });

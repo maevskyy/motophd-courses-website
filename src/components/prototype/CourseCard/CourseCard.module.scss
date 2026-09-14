@@ -57,11 +57,15 @@
 
 .title {
   @include h3;
+  @include lines-reserve(2, var(--lh-tight));
 
   color: var(--text-1);
 }
 
+/* Описание курса — слот в строках: карточки в ряду одной высоты на обеих локалях. */
 .desc {
+  @include text-slot(3, var(--lh-relaxed));
+
   color: var(--text-2);
   font-size: var(--fs-small);
   line-height: var(--lh-relaxed);

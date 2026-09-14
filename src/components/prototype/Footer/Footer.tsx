@@ -67,6 +67,11 @@ export function Footer({ compact = false, socialLinks }: Props) {
           <div className={styles.footer__copy}>{t('copy')}</div>
           <ConsentSettingsLink />
           {socialLinks && socialLinks.length > 0 ? (
+            /*
+              Два аккаунта в Instagram (школа и личный Влада) с одинаковой иконкой
+              читались как дубль. Подпись рядом с иконкой видна всегда — различать
+              их наведением мыши нельзя.
+            */
             <div className={styles.footer__social}>
               {socialLinks.map((item) => (
                 <a
@@ -76,9 +81,9 @@ export function Footer({ compact = false, socialLinks }: Props) {
                   key={item.href}
                   rel="noopener noreferrer"
                   target="_blank"
-                  title={item.label}
                 >
-                  <Icon name={item.platform} size={18} />
+                  <Icon className={styles.footer__socialIcon} name={item.platform} size={18} />
+                  <span className={styles.footer__socialLabel}>{item.label}</span>
                 </a>
               ))}
             </div>

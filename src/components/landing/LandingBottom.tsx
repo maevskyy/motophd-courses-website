@@ -8,7 +8,7 @@ import blocks from './styles/MarketingBlocks.module.scss';
 interface Props {
   content: HomeContent;
   labels: {
-    joinCommunity?: string;
+    startLearning: string;
   };
 }
 
@@ -29,7 +29,7 @@ export function LandingBottom({ content, labels }: Props) {
       </Section>
 
       <Section bordered tone="alt">
-        <SectionHeader kicker={content.faqLabel} title={content.faqTitle} />
+        <SectionHeader align="center" kicker={content.faqLabel} title={content.faqTitle} />
         <FaqAccordion items={content.faq} />
       </Section>
 
@@ -38,11 +38,10 @@ export function LandingBottom({ content, labels }: Props) {
           <h2 className={blocks.ctaTitle}>{content.ctaTitle.join(' ')}</h2>
           <p className={blocks.ctaAccent}>{content.ctaAccent}</p>
           <p className={blocks.ctaSub}>{content.ctaSub}</p>
-          {labels.joinCommunity ? (
-            <Link className={blocks.ctaButton} href="/courses">
-              {labels.joinCommunity}
-            </Link>
-          ) : null}
+          {/* Единственное главное действие страницы называется одинаково везде. */}
+          <Link className={blocks.ctaButton} href="/courses">
+            {labels.startLearning}
+          </Link>
         </div>
       </Section>
 

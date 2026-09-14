@@ -21,7 +21,9 @@ export function AccountProfileForm({ email, name }: Props) {
     <form action={formAction} className={styles.profileForm}>
       {state.status !== 'idle' ? (
         <p
-          className={state.status === 'success' ? styles.profileForm__success : styles.profileForm__error}
+          className={
+            state.status === 'success' ? styles.profileForm__success : styles.profileForm__error
+          }
           role="status"
         >
           {t(state.status === 'success' ? 'profileSaveSuccess' : 'profileSaveError')}
@@ -41,18 +43,10 @@ export function AccountProfileForm({ email, name }: Props) {
           type="text"
         />
       </div>
+      {/* Email нельзя поменять самому — показываем значением, а не серым инпутом. */}
       <div className={styles.profileForm__field}>
-        <label className={styles.profileForm__label} htmlFor="profile-email">
-          {login('email')}
-        </label>
-        <input
-          autoComplete="email"
-          className={styles.profileForm__input}
-          id="profile-email"
-          readOnly
-          type="email"
-          value={email}
-        />
+        <span className={styles.profileForm__label}>{login('email')}</span>
+        <span className={styles.profileForm__value}>{email}</span>
         <p className={styles.profileForm__hint}>{t('emailReadOnly')}</p>
       </div>
       <button className={styles.profileForm__submit} type="submit">

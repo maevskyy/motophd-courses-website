@@ -151,11 +151,58 @@ const legacyCurriculum: CurriculumModule[] = [
   }
 ];
 
+const legacyCurriculumRu: CurriculumModule[] = [
+  {
+    number: '1',
+    title: 'Понимаем угол наклона',
+    meta: '1 PDF · 1 видео (10 мин) · Теоретическая база',
+    open: true,
+    lessons: [
+      { icon: 'document', name: 'PDF по теории — угол наклона и физика', duration: '5–6 страниц' },
+      {
+        icon: 'play',
+        name: 'Видео по теории — почему мотоцикл наклоняется сильнее, чем ты думаешь',
+        duration: '10 мин'
+      },
+      { icon: '⚠️', name: 'Частые ошибки: что большинство райдеров делают не так', duration: 'Чтение' }
+    ]
+  },
+  {
+    number: '2',
+    title: 'Понимаем сцепление',
+    meta: '1 PDF · 1 видео · Тренируем чувство сцепления',
+    lessons: [
+      { icon: 'document', name: 'PDF по теории — сцепление и пятно контакта', duration: '5 страниц' },
+      { icon: 'play', name: 'Видео по теории — как резина на самом деле держит тебя', duration: '10 мин' }
+    ]
+  },
+  {
+    number: '3',
+    title: 'Практика — строим уверенность в наклоне',
+    meta: '3 практических видео · PDF с упражнениями',
+    lessons: [
+      { icon: 'play', name: 'Упражнение 1 — первый наклон (на площадке)', duration: '5 мин' },
+      { icon: 'play', name: 'Упражнение 2 — наклон по нарастающей', duration: '5 мин' },
+      { icon: 'play', name: 'Упражнение 3 — уверенный вход в поворот', duration: '5 мин' },
+      { icon: 'document', name: 'PDF с упражнениями', duration: 'Упражнения' }
+    ]
+  },
+  {
+    number: '4',
+    title: 'Переносим на дорогу',
+    meta: 'Как применять это в реальных поворотах',
+    lessons: [
+      { icon: 'play', name: 'С площадки — в настоящие повороты', duration: '5 мин' },
+      { icon: 'document', name: 'Что ты теперь должен чувствовать — чеклист', duration: 'PDF' }
+    ]
+  }
+];
+
 export const curriculumByCourse: Record<string, LocalizedContent<CurriculumModule[]>> = {
   lean: { en: leanCurriculumEn, ru: leanCurriculumRu },
-  'counter-steering': { en: legacyCurriculum, ru: legacyCurriculum },
-  'emergency-braking': { en: legacyCurriculum, ru: legacyCurriculum }
+  'counter-steering': { en: legacyCurriculum, ru: legacyCurriculumRu },
+  'emergency-braking': { en: legacyCurriculum, ru: legacyCurriculumRu }
 };
 
 export const getCurriculumForCourse = (slug: string): LocalizedContent<CurriculumModule[]> =>
-  curriculumByCourse[slug] || { en: legacyCurriculum, ru: legacyCurriculum };
+  curriculumByCourse[slug] || { en: legacyCurriculum, ru: legacyCurriculumRu };

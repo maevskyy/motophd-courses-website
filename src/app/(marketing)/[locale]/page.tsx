@@ -54,11 +54,10 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         content={content}
         courses={courses}
         labels={{
-          viewCourses: t('viewCourses'),
-          browseAllCourses: t('browseAllCourses')
+          viewCourses: t('startLearning')
         }}
       />
-      <LandingBottom content={content} labels={{ joinCommunity: t('joinCommunity') }} />
+      <LandingBottom content={content} labels={{ startLearning: t('startLearning') }} />
     </>
   );
 }

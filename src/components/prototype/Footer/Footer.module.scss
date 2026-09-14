@@ -71,20 +71,28 @@
   font-size: var(--fs-caption);
 }
 
+/*
+  Соцсети: иконка + видимая подпись. Два Instagram (школа и личный Влада)
+  различаются текстом, а не только адресом ссылки, поэтому ряд переносится
+  (flex-wrap) вместо того, чтобы сжимать подписи.
+*/
 .footer__social {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--sp-2);
 }
 
 .footer__socialLink {
   align-items: center;
-  block-size: var(--control-h-sm);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   color: var(--text-2);
-  display: flex;
-  inline-size: var(--control-h-sm);
-  justify-content: center;
+  display: inline-flex;
+  font-size: var(--fs-caption);
+  gap: var(--sp-2);
+  min-block-size: var(--control-h);
+  padding-inline: var(--sp-3);
+  text-decoration: none;
   transition:
     border-color var(--dur) var(--ease),
     color var(--dur) var(--ease);
@@ -95,6 +103,15 @@
     border-color: var(--border-strong);
     color: var(--text-1);
   }
+}
+
+.footer__socialIcon {
+  flex: none;
+}
+
+.footer__socialLabel {
+  line-height: var(--lh-normal);
+  white-space: nowrap;
 }
 
 @media (max-width: 900px) {
@@ -112,5 +129,10 @@
   .footer__bottom {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  /* В колонке ряд соцсетей должен занимать всю ширину, иначе он не переносится. */
+  .footer__social {
+    inline-size: 100%;
   }
 }

@@ -17,15 +17,20 @@ vi.mock('next-intl', () => ({
 }));
 
 describe('LandingBottom', () => {
-  it('renders the community call-to-action when a label is provided', () => {
-    render(<LandingBottom content={homeContent.en} labels={{ joinCommunity: 'Join our MotoPhD Community' }} />);
+  it('закрывает страницу единственным главным действием', () => {
+    render(<LandingBottom content={homeContent.en} labels={{ startLearning: 'Start Learning' }} />);
 
-    expect(screen.getByRole('link', { name: 'Join our MotoPhD Community' })).toBeInTheDocument();
+    const cta = screen.getByRole('link', { name: 'Start Learning' });
+
+    expect(cta).toHaveAttribute('href', '/courses');
+    // Один primary на экран: в закрывающем блоке ровно одна ссылка-действие.
+    expect(screen.getAllByRole('link', { name: 'Start Learning' })).toHaveLength(1);
   });
 
-  it('renders nothing when the community label is empty', () => {
-    render(<LandingBottom content={homeContent.ru} labels={{ joinCommunity: '' }} />);
+  it('описывает шаги обучения как результат, а не как покупку', () => {
+    render(<LandingBottom content={homeContent.ru} labels={{ startLearning: 'Начать обучение' }} />);
 
-    expect(screen.queryByRole('link', { name: /community|сообществ/i })).not.toBeInTheDocument();
+    expect(screen.queryByText(/оплат|доступ к курсу/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/Ты читаешь мотоцикл/)).toBeInTheDocument();
   });
 });

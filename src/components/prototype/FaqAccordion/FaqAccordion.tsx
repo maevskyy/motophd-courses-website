@@ -28,6 +28,7 @@ export function FaqAccordion({ items }: { items: Array<{ question: string; answe
       {items.map((item, index) => {
         const open = openItems.has(index);
         const answerId = `${baseId}-${index}`;
+        const questionId = `${answerId}-question`;
 
         return (
           <div className={cx(styles.faqItem, open && styles.faqItemOpen)} key={item.question}>
@@ -36,6 +37,7 @@ export function FaqAccordion({ items }: { items: Array<{ question: string; answe
                 aria-controls={answerId}
                 aria-expanded={open}
                 className={styles.faqQuestion}
+                id={questionId}
                 onClick={() => toggle(index)}
                 type="button"
               >
@@ -45,8 +47,16 @@ export function FaqAccordion({ items }: { items: Array<{ question: string; answe
                 </span>
               </button>
             </h3>
-            <div className={styles.faqAnswer} id={answerId} role="region">
-              <p className={styles.faqAnswerText}>{item.answer}</p>
+            <div
+              aria-labelledby={questionId}
+              className={styles.faqAnswer}
+              id={answerId}
+              role="region"
+            >
+              {/* Внутренняя обёртка нужна приёму 0fr → 1fr: она несёт отступы и умеет сжиматься до нуля. */}
+              <div className={styles.faqAnswerInner}>
+                <p className={styles.faqAnswerText}>{item.answer}</p>
+              </div>
             </div>
           </div>
         );

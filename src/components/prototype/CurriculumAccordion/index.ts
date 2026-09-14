@@ -1,1 +1,1 @@
-export { CurriculumAccordion, SidebarLesson } from './CurriculumAccordion';
+export { CurriculumAccordion } from './CurriculumAccordion';

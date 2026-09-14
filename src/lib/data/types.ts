@@ -48,23 +48,32 @@ export type DashboardContent = {
   };
 };
 
-export type PlayerContent = {
+export type PlayerLesson = {
+  id: number;
+  order: number;
   title: string;
-  subtitle: string;
-  videoMeta: string;
-  notes: string[];
-  feel: string;
-  overviewTitle: string;
-  overviewCopy: string;
-  moduleOutcome: string[];
-  sidebarTitle: string;
+  type: Lesson['type'];
+  // Номер модуля (с 1) по toCurriculumModules — для «Модуль k · Урок j из n».
+  module: number;
+  // Lexical-тело урока; null, если в CMS пусто.
+  body: NonNullable<Lesson['body']> | null;
   videoEmbedUrl: string | null;
-  downloads: PlayerDownload[];
+  download: PlayerDownload | null;
+};
+
+export type PlayerContent = {
+  courseSlug: string;
+  courseTitle: string;
+  // Все уроки курса по order: активный выбирает клиент (URL или прогресс).
+  lessons: PlayerLesson[];
+  keyTakeaways: string[];
+  feel: string;
 };
 
 export type PlayerDownload = {
   id: number;
   title: string;
+  fileName?: string;
   url: string;
 };
 
