@@ -9,60 +9,20 @@ import styles from './Testimonials.module.scss';
 
 type Testimonial = HomeContent['testimonials'][number];
 
-/*
-  Сколько отзывов видно до нажатия «Показать ещё»: два ряда по три на десктопе.
-  Число продублировано в SCSS (`:nth-child(n + 7)`) — менять надо в обоих местах.
-*/
-const COLLAPSED_COUNT = 6;
-
 const STARS = [0, 1, 2, 3, 4];
 
 interface Props {
   items: HomeContent['testimonials'];
-  /** Ссылка на источник отзывов — Instagram школы. */
-  sourceHref?: string;
 }
 
-export function Testimonials({ items, sourceHref }: Props) {
-  const t = useTranslations('actions');
-  const [showAll, setShowAll] = useState(false);
-  const listId = useId();
-  const hasMore = items.length > COLLAPSED_COUNT;
-
+// Все отзывы видны сразу, как в main: без «Показать ещё» и без ссылки на источник.
+export function Testimonials({ items }: Props) {
   return (
-    <>
-      <ul className={cx(styles.list, showAll && styles.listAll)} id={listId}>
-        {items.map((item, index) => (
-          <TestimonialCard item={item} key={`${item.name}-${index}`} />
-        ))}
-      </ul>
-
-      <div className={styles.controls}>
-        {/*
-          Кнопка остаётся на месте и после раскрытия (меняется только подпись):
-          если её убрать, фокус с неё улетает в начало страницы.
-        */}
-        {hasMore ? (
-          <button
-            aria-controls={listId}
-            aria-expanded={showAll}
-            className={styles.showMore}
-            onClick={() => setShowAll((current) => !current)}
-            type="button"
-          >
-            {showAll ? t('showLess') : t('showMore')}
-            <Icon name={showAll ? 'minus' : 'plus'} size={16} />
-          </button>
-        ) : null}
-
-        {sourceHref ? (
-          <a className={styles.source} href={sourceHref} rel="noopener noreferrer" target="_blank">
-            <Icon name="instagram" size={16} />
-            {t('reviewsSource')}
-          </a>
-        ) : null}
-      </div>
-    </>
+    <ul className={styles.list}>
+      {items.map((item, index) => (
+        <TestimonialCard item={item} key={`${item.name}-${index}`} />
+      ))}
+    </ul>
   );
 }
 
@@ -135,7 +95,7 @@ function TestimonialCard({ item }: { item: Testimonial }) {
             type="button"
           >
             {open ? t('showLess') : t('readFull')}
-            {/* Одинаковых кнопок на странице до двенадцати — уточняем, чей это отзыв. */}
+            {/* Одинаковых кнопок на странице до одиннадцати — уточняем, чей это отзыв. */}
             <span className="srOnly">{item.name}</span>
           </button>
         ) : null}

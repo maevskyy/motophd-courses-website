@@ -1,23 +1,27 @@
 import { useEffect, useState } from 'react';
 import { Icon } from '@/components/ui/Icon';
 import { cx } from '@/lib/classNames';
-import type { CurriculumModule, PlayerContent } from '@/lib/data';
-import { isLessonDone, lessonHref, type CourseProgress } from '@/lib/progress';
-import { SidebarLessonLink } from './SidebarLessonLink';
+import type { CurriculumModule } from '@/lib/data';
+import { PlayerSidebarLesson } from './PlayerSidebarLesson';
 import styles from './PlayerSidebar.module.scss';
 
 interface Props {
-  activeOrder: number;
+  // order текущего урока; null — в курсе нет уроков.
+  activeOrder: number | null;
+  courseSlug: string;
   curriculum: CurriculumModule[];
-  player: PlayerContent;
-  progress: CourseProgress;
 }
 
-// Модули аккордеоном: раскрыт модуль активного урока, остальные пользователь
-// открывает сам; переход на урок другого модуля раскрывает и его.
-export function PlayerModules({ activeOrder, curriculum, player, progress }: Props) {
-  const activeModule = player.lessons.find((lesson) => lesson.order === activeOrder)?.module;
-  const [toggled, setToggled] = useState<Record<number, boolean>>({});
+// Модуль, в котором лежит урок с данным order.
+export const findModuleNumber = (curriculum: CurriculumModule[], order: number | null) =>
+  curriculum.find((module) => module.lessons.some((lesson) => lesson.order === order))?.number;
+
+// Модули аккордеоном: как в main, все уроки видны сразу — модули раскрыты,
+// пользователь сворачивает лишние сам; переход на урок свёрнутого модуля
+// раскрывает его обратно.
+export function PlayerModules({ activeOrder, courseSlug, curriculum }: Props) {
+  const activeModule = findModuleNumber(curriculum, activeOrder);
+  const [toggled, setToggled] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     if (activeModule !== undefined) {
@@ -25,23 +29,21 @@ export function PlayerModules({ activeOrder, curriculum, player, progress }: Pro
     }
   }, [activeModule]);
 
-  const isOpen = (number: number) => toggled[number] ?? number === activeModule;
-  const toggle = (number: number) =>
+  const isOpen = (number: string) => toggled[number] ?? true;
+  const toggle = (number: string) =>
     setToggled((current) => ({ ...current, [number]: !isOpen(number) }));
 
   return (
     <div className={styles.tree}>
-      {curriculum.map((module, index) => {
-        const number = index + 1;
-        const lessons = player.lessons.filter((lesson) => lesson.module === number);
-        const open = isOpen(number);
+      {curriculum.map((module) => {
+        const open = isOpen(module.number);
 
         return (
           <section className={styles.module} key={module.number}>
             <button
               aria-expanded={open}
               className={styles.moduleHeader}
-              onClick={() => toggle(number)}
+              onClick={() => toggle(module.number)}
               type="button"
             >
               <span className={styles.moduleNum}>{module.number}</span>
@@ -53,14 +55,13 @@ export function PlayerModules({ activeOrder, curriculum, player, progress }: Pro
               />
             </button>
             <ul className={styles.lessons} hidden={!open}>
-              {lessons.map((lesson) => (
-                <li key={lesson.id}>
-                  <SidebarLessonLink
+              {module.lessons.map((lesson) => (
+                <li key={lesson.order}>
+                  <PlayerSidebarLesson
                     active={lesson.order === activeOrder}
-                    done={isLessonDone(lesson, progress)}
-                    href={lessonHref(player.courseSlug, lesson)}
-                    label={lesson.title}
-                    pdf={lesson.download !== null}
+                    courseSlug={courseSlug}
+                    label={lesson.name}
+                    order={lesson.order}
                   />
                 </li>
               ))}

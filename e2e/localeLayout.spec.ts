@@ -50,9 +50,14 @@ async function readFrame(page: import('@playwright/test').Page, path: string): P
 
 test.describe('композиция лендинга не зависит от локали', () => {
   for (const width of ALL_WIDTHS) {
-    test(`ширина ${width}px: шапка и первый экран совпадают на EN и RU`, async ({ page }) => {
+    test(`ширина ${width}px: шапка и первый экран совпадают на EN и RU`, async ({
+      baseURL,
+      page
+    }) => {
+      // Cookie-баннер прячем заранее, иначе он попадает в промеры. Адрес — из
+      // конфига: до первого goto страница пустая (about:blank), куку на неё не поставить.
       await page.context().addCookies([
-        { name: 'motophd_consent', value: 'necessary', url: page.url() || 'http://localhost:3100' }
+        { name: 'motophd_consent', value: 'necessary', url: baseURL ?? 'http://127.0.0.1:3100' }
       ]);
       await page.setViewportSize({ width, height: 900 });
 

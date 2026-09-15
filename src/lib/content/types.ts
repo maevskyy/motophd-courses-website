@@ -2,6 +2,8 @@ import type { IconName } from '@/components/ui/Icon';
 
 import type { Locale } from '@/i18n/routing';
 
+// Состав и порядок секций — как в main (242773f): hero → курсы → метод →
+// инструктор → отзывы → «Как это работает» → FAQ → CTA.
 export type HomeContent = {
   heroBadge: string;
   heroTitle: string[];
@@ -30,16 +32,12 @@ export type HomeContent = {
   howLabel: string;
   howTitle: string[];
   steps: Array<{ num: string; title: string; desc: string }>;
-  schoolLabel: string;
-  schoolTitle: string;
-  schoolCopy: string[];
-  schoolFacts: Array<{ value: string; label: string }>;
   instructorLabel: string;
-  instructorTitle: string;
+  instructorTitle: string[];
+  instructorCopy: string[];
   instructorName: string;
   instructorRole: string;
-  instructorQuote: string;
-  instructorCredentials: string[];
+  instructorCredentials?: string[];
   faqLabel: string;
   faqTitle: string;
   faq: Array<{ question: string; answer: string }>;

@@ -3,17 +3,19 @@ import { getPayload, type DefaultDocumentIDType, type Payload } from 'payload';
 
 import { defaultLocale } from '../i18n/locales';
 import {
-  getCourseData,
+  getCommonMistakes,
   getCourseSeeds,
   getDurationSec,
   getFlatLessons,
+  getKeyPoint,
   getLessonType,
+  getOutcomes,
+  getWhatYouShouldFeel,
   legalPageSeeds,
-  locales
+  locales,
+  toRichText
 } from './contentSeedData';
 import { seedFixturePdf } from './fixturePdf';
-import { getLessonBody } from './lessonBody';
-import { toRichText } from './lexical';
 
 const upsertDemoUser = async (payload: Payload, email: string, password: string) => {
   const existing = await payload.find({
@@ -267,7 +269,22 @@ const seedCourses = async () => {
           }
         });
 
-        const data = getCourseData(course, locale, courseIndex + 1);
+        const data = {
+          slug: course.slug,
+          title: course.title,
+          pain: course.pain,
+          description: course.description,
+          priceStandard: 29,
+          priceFeedback: 129,
+          currency: 'EUR' as const,
+          outcomes: getOutcomes(course, locale),
+          keyPoint: getKeyPoint(course),
+          commonMistakes: getCommonMistakes(course),
+          whatYouShouldFeel: getWhatYouShouldFeel(course),
+          teaserVideoId: `${course.slug}-${locale}-teaser`,
+          order: courseIndex + 1,
+          status: 'published' as const
+        };
 
         const currentCourseId = existing.docs[0]?.id;
 
@@ -344,7 +361,7 @@ const seedCourses = async () => {
               getLessonType(lesson) === 'video'
                 ? `${localizedCourse.slug}-${locale}-lesson-${order}`
                 : undefined,
-            body: getLessonBody(localizedCourse, localizedLesson, locale),
+            body: toRichText(`${localizedLesson.moduleTitle}\n\n${localizedLesson.name}`),
             isFreePreview: order === 1
           };
 

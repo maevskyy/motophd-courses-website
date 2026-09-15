@@ -1,7 +1,5 @@
 import type { Course, Lesson } from '@/payload-types';
-import { lessonOrder } from '@/lib/progress';
 import type { CourseCurriculumLesson } from './courses';
-import { richTextToText } from './richText';
 import type {
   AppLocale,
   CourseCardCourse,
@@ -9,7 +7,6 @@ import type {
   DashboardContent,
   PlayerContent,
   PlayerDownload,
-  PlayerLesson,
   SalesContent
 } from './types';
 
@@ -113,6 +110,12 @@ const lessonDuration = (lesson: CourseCurriculumLesson, locale: AppLocale) => {
   return locale === 'ru' ? 'Чтение' : 'Reading';
 };
 
+const toCurriculumLesson = (lesson: CourseCurriculumLesson, locale: AppLocale) => ({
+  name: lesson.title,
+  order: lesson.order ?? 0,
+  duration: lessonDuration(lesson, locale)
+});
+
 const curriculumLevelsByCourse: Record<string, Record<AppLocale, Array<{ title: string; count: number }>>> = {
   lean: {
     en: [
@@ -150,10 +153,7 @@ export const toCurriculumModules = (
         number: '1',
         title: course.title,
         open: true,
-        lessons: lessons.map((lesson) => ({
-          name: lesson.title,
-          duration: lessonDuration(lesson, locale)
-        }))
+        lessons: lessons.map((lesson) => toCurriculumLesson(lesson, locale))
       }
     ];
   }
@@ -168,23 +168,33 @@ export const toCurriculumModules = (
       number: String(levelIndex + 1).padStart(2, '0'),
       title: level.title,
       open: levelIndex === 0,
-      lessons: levelLessons.map((lesson) => ({
-        name: lesson.title,
-        duration: lessonDuration(lesson, locale)
-      }))
+      lessons: levelLessons.map((lesson) => toCurriculumLesson(lesson, locale))
     };
   });
 };
 
-// Урок из URL: только положительное целое без ведущих нулей, иначе 404.
-export const parseLessonOrder = (value: string): number | null =>
-  /^[1-9]\d*$/.test(value) ? Number(value) : null;
+const sortLessonsByOrder = <T extends Pick<Lesson, 'order'>>(lessons: T[]) =>
+  [...lessons].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
-export const getPlayerLesson = <L extends Pick<Lesson, 'order'>>(lessons: L[], order: number) =>
-  lessons.find((lesson) => lessonOrder(lesson) === order);
+// ?lesson=2 → 2. Мусор, пустая строка или массив → undefined: плеер откроет
+// первый урок, а не упадёт и не покажет «урок 0».
+export const parseLessonOrder = (value: string | string[] | undefined) =>
+  typeof value === 'string' && /^\d+$/.test(value) ? Number(value) : undefined;
 
-const pdfFileName = (pdf: Lesson['pdf']) =>
-  typeof pdf === 'object' && pdf?.filename ? pdf.filename : undefined;
+// Урок для плеера: тот, чей order запросили в адресе; без параметра или с
+// неизвестным order — первый по порядку. Раньше всегда играл первый video-урок.
+export const getPlayerLesson = <T extends Pick<Lesson, 'order'>>(
+  lessons: T[],
+  requestedOrder?: number
+): T | undefined => {
+  const sorted = sortLessonsByOrder(lessons);
+  const requested =
+    requestedOrder === undefined
+      ? undefined
+      : sorted.find((lesson) => lesson.order === requestedOrder);
+
+  return requested ?? sorted[0];
+};
 
 // Материалы берём по наличию файла, а не по type: PDF бывает приложен и к
 // видео-уроку, а раньше ссылка строилась только для type === 'pdf' и не
@@ -195,42 +205,36 @@ export const toPlayerDownloads = (lessons: Lesson[], locale: AppLocale): PlayerD
     .map((lesson) => ({
       id: lesson.id,
       title: lesson.title,
-      fileName: pdfFileName(lesson.pdf),
       url: `/api/lessons/${lesson.id}/pdf?locale=${locale}`
     }));
 
-const lessonBody = (body: Lesson['body']): PlayerLesson['body'] =>
-  body && richTextToText(body) ? body : null;
-
-// Плеер получает все уроки курса: активный выбирает клиент (order из URL или
-// следующий непройденный по прогрессу в localStorage).
 export const toPlayerContent = (
   course: Course,
   lessons: Lesson[],
-  locale: AppLocale,
-  media: { playbackUrl: (streamVideoId: Lesson['streamVideoId']) => string | null }
+  {
+    currentLesson,
+    ...media
+  }: Pick<PlayerContent, 'downloads' | 'videoEmbedUrl'> & { currentLesson: Lesson | undefined }
 ): PlayerContent => {
-  const sorted = [...lessons].sort((a, b) => lessonOrder(a) - lessonOrder(b));
-  // Номер модуля по позиции: toCurriculumModules режет тот же отсортированный список.
-  const moduleByIndex = toCurriculumModules(course, sorted, locale).flatMap((module, index) =>
-    module.lessons.map(() => index + 1)
-  );
+  const notes = course.commonMistakes?.split('\n').filter(Boolean) || [];
+  const position = currentLesson ? sortLessonsByOrder(lessons).indexOf(currentLesson) : -1;
 
   return {
-    courseSlug: course.slug,
-    courseTitle: course.title,
-    lessons: sorted.map((lesson, index) => ({
-      id: lesson.id,
-      order: lessonOrder(lesson),
-      title: lesson.title,
-      type: lesson.type,
-      module: moduleByIndex[index] ?? 1,
-      body: lessonBody(lesson.body),
-      videoEmbedUrl: lesson.type === 'video' ? media.playbackUrl(lesson.streamVideoId) : null,
-      download: toPlayerDownloads([lesson], locale)[0] ?? null
-    })),
-    keyTakeaways: course.commonMistakes?.split('\n').filter(Boolean) || [],
-    feel: course.whatYouShouldFeel || ''
+    title: currentLesson?.title || course.title,
+    subtitle: course.keyPoint || course.description || '',
+    videoMeta: currentLesson?.durationSec
+      ? `${Math.round(currentLesson.durationSec / 60)}:00 · MotoPhD Online`
+      : 'MotoPhD Online',
+    notes,
+    feel: course.whatYouShouldFeel || '',
+    overviewTitle: course.title,
+    overviewCopy: course.description || '',
+    moduleOutcome: course.outcomes?.map(({ text }) => text).filter(Boolean) || [],
+    sidebarTitle: course.title,
+    currentLessonOrder: currentLesson?.order ?? null,
+    lessonNumber: position + 1,
+    lessonCount: lessons.length,
+    ...media
   };
 };
 

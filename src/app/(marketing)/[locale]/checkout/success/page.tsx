@@ -18,11 +18,12 @@ export default async function CheckoutSuccessPage({
   const signedIn = signedInFlag === '1';
   const t = await getTranslations({ locale: safeLocale, namespace: 'checkout' });
   const actions = await getTranslations({ locale: safeLocale, namespace: 'actions' });
+  const login = await getTranslations({ locale: safeLocale, namespace: 'login' });
 
   return (
     <PageMessage text={signedIn ? t('successSignedIn') : t('successLogin')} title={t('successTitle')}>
       <Link className={styles.primary} href={signedIn ? '/dashboard' : '/login'}>
-        {signedIn ? actions('backToDashboard') : actions('signIn')}
+        {signedIn ? actions('backToDashboard') : login('button')}
       </Link>
       <Link className={styles.secondary} href="/">
         {actions('backToWebsite')}

@@ -20,12 +20,6 @@
   --sidebar-w: var(--rail-w);
 }
 
-/* Без уроков оболочка не нужна: одна колонка под шапкой. */
-.emptyLayout {
-  min-block-size: calc(100svh - var(--header-h));
-  padding: var(--header-h) var(--gutter) var(--sp-9);
-}
-
 .content {
   padding: var(--sp-5) var(--gutter) var(--sp-9);
 }
@@ -109,10 +103,10 @@
   @include h2;
 }
 
-.empty {
-  @include body;
+.lessonSub {
+  @include lead;
 
-  padding-block: var(--sp-7);
+  margin-block-start: var(--sp-3);
 }
 
 /*

@@ -62,16 +62,16 @@ export function LoginForm({ locale, nextPath }: Props) {
             className={styles.formInput}
             id="login-password"
             name="password"
+            placeholder={t('passwordPlaceholder')}
             required
             type="password"
           />
         </div>
         <LoginSubmitButton />
         <p className={styles.loginFooter}>
-          <span>{t('noAccess')}</span>
-          <Link className={styles.loginFooterLink} href="/courses">
-            {t('noAccessLink')}
-            <Icon name="arrowRight" size={16} />
+          <Link className={styles.loginFooterLink} href="/">
+            <Icon name="arrowLeft" size={16} />
+            {t('back')}
           </Link>
         </p>
       </form>

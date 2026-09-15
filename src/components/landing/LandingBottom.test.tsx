@@ -17,20 +17,28 @@ vi.mock('next-intl', () => ({
 }));
 
 describe('LandingBottom', () => {
-  it('закрывает страницу единственным главным действием', () => {
-    render(<LandingBottom content={homeContent.en} labels={{ startLearning: 'Start Learning' }} />);
+  it('renders the community call-to-action when a label is provided', () => {
+    render(
+      <LandingBottom content={homeContent.en} labels={{ joinCommunity: 'Join our MotoPhD Community' }} />
+    );
 
-    const cta = screen.getByRole('link', { name: 'Start Learning' });
-
-    expect(cta).toHaveAttribute('href', '/courses');
-    // Один primary на экран: в закрывающем блоке ровно одна ссылка-действие.
-    expect(screen.getAllByRole('link', { name: 'Start Learning' })).toHaveLength(1);
+    expect(screen.getByRole('link', { name: 'Join our MotoPhD Community' })).toHaveAttribute(
+      'href',
+      '/courses'
+    );
   });
 
-  it('описывает шаги обучения как результат, а не как покупку', () => {
-    render(<LandingBottom content={homeContent.ru} labels={{ startLearning: 'Начать обучение' }} />);
+  it('renders nothing when the community label is empty', () => {
+    render(<LandingBottom content={homeContent.ru} labels={{ joinCommunity: '' }} />);
 
-    expect(screen.queryByText(/оплат|доступ к курсу/i)).not.toBeInTheDocument();
-    expect(screen.getByText(/Ты читаешь мотоцикл/)).toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: /community|сообществ/i })).not.toBeInTheDocument();
+  });
+
+  it('lists the five "How It Works" steps from the content', () => {
+    render(<LandingBottom content={homeContent.en} labels={{}} />);
+
+    expect(screen.getAllByRole('listitem')).toHaveLength(homeContent.en.steps.length);
+    expect(screen.getByText('Choose Course')).toBeInTheDocument();
+    expect(screen.getByText('Ride Better')).toBeInTheDocument();
   });
 });

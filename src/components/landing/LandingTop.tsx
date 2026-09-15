@@ -13,13 +13,11 @@ interface Props {
   courses: CourseCardCourse[];
   labels: {
     viewCourses: string;
+    browseAllCourses: string;
   };
 }
 
 export function LandingTop({ content, courses, labels }: Props) {
-  // Отзывы приходят из инстаграма школы — даём на него ссылку как на источник.
-  const reviewsSource = content.socialLinks.find((link) => link.platform === 'instagram')?.href;
-
   return (
     <>
       <section className={hero.hero}>
@@ -133,65 +131,56 @@ export function LandingTop({ content, courses, labels }: Props) {
       </Section>
 
       {/*
-        Школа и инструктор — две разные сущности, поэтому и два разных блока.
-        Раньше в одной секции лежали портрет, регалии, рассказ про платформу и
-        не привязанное ни к чему фото с тренировки: читалось как свалка.
+        Инструктор — по составу как в main: портрет и регалии слева, рассказ от
+        первого лица, кнопка в каталог и фото с тренировки справа. Якорь
+        #about-anchor ведёт сюда с пункта «About» в шапке.
       */}
       <Section bordered id="about-anchor">
-        <SectionHeader kicker={content.schoolLabel} title={content.schoolTitle} />
-        <div className={blocks.school}>
-          <div className={blocks.schoolBody}>
-            {content.schoolCopy.map((paragraph) => (
+        <SectionHeader kicker={content.instructorLabel} />
+        <div className={blocks.instructor}>
+          <div className={blocks.instructorAside}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img alt={content.instructorName} className={blocks.instructorPhoto} src="/vlad.jpg" />
+            <div className={blocks.instructorCard}>
+              <p className={blocks.instructorName}>{content.instructorName}</p>
+              <p className={blocks.instructorRole}>{content.instructorRole}</p>
+              {content.instructorCredentials ? (
+                <ul className={blocks.checkList}>
+                  {content.instructorCredentials.map((item) => (
+                    <li className={blocks.checkItem} key={item}>
+                      <Icon className={blocks.checkIcon} name="check" size={16} />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+            </div>
+          </div>
+          <div className={blocks.instructorBody}>
+            {content.instructorTitle.length > 0 ? (
+              <h2 className={blocks.instructorTitle}>{content.instructorTitle.join(' ')}</h2>
+            ) : null}
+            {content.instructorCopy.map((paragraph) => (
               <p className={blocks.prose} key={paragraph}>
                 {paragraph}
               </p>
             ))}
-            <dl className={blocks.schoolFacts}>
-              {content.schoolFacts.map((fact) => (
-                <div key={fact.label}>
-                  <dt className={blocks.schoolFactValue}>{fact.value}</dt>
-                  <dd className={blocks.schoolFactLabel}>{fact.label}</dd>
-                </div>
-              ))}
-            </dl>
+            <Link className={blocks.btnSecondary} href="/courses">
+              {labels.browseAllCourses}
+            </Link>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              alt={content.instructorName}
+              className={blocks.instructorActionPhoto}
+              src="/vlad-training.jpg"
+            />
           </div>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            alt=""
-            className={blocks.schoolPhoto}
-            src="/vlad-training.jpg"
-          />
         </div>
       </Section>
 
       <Section bordered tone="alt">
-        <SectionHeader kicker={content.instructorLabel} title={content.instructorTitle} />
-        <div className={blocks.instructor}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            alt={`${content.instructorName} — ${content.instructorRole}`}
-            className={blocks.instructorPhoto}
-            src="/vlad.jpg"
-          />
-          <div className={blocks.instructorCard}>
-            <p className={blocks.instructorName}>{content.instructorName}</p>
-            <p className={blocks.instructorRole}>{content.instructorRole}</p>
-            <blockquote className={blocks.instructorQuote}>{content.instructorQuote}</blockquote>
-            <ul className={blocks.checkList}>
-              {content.instructorCredentials.map((item) => (
-                <li className={blocks.checkItem} key={item}>
-                  <Icon className={blocks.checkIcon} name="check" size={16} />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </Section>
-
-      <Section bordered>
         <SectionHeader kicker={content.testimonialsLabel} title={content.testimonialsTitle.join(' ')} />
-        <Testimonials items={content.testimonials} sourceHref={reviewsSource} />
+        <Testimonials items={content.testimonials} />
       </Section>
     </>
   );

@@ -3,39 +3,30 @@ import { Link } from '@/i18n/routing';
 import { AppSidebar } from '@/components/app/AppShell';
 import { Icon } from '@/components/ui/Icon';
 import type { CurriculumModule, PlayerContent } from '@/lib/data';
-import { getProgressSummary, type CourseProgress } from '@/lib/progress';
 import { PlayerModules } from './PlayerModules';
 import styles from './PlayerSidebar.module.scss';
 
 interface Props {
-  activeOrder: number;
+  courseSlug: string;
   curriculum: CurriculumModule[];
   // Узкий экран: сайдбар — drawer, кнопка в шапке закрывает его, а не сворачивает.
   narrow: boolean;
   onHide: () => void;
-  player: PlayerContent;
-  progress: CourseProgress;
+  player: Pick<PlayerContent, 'currentLessonOrder' | 'sidebarTitle'>;
 }
 
 // Оглавление курса на общей колонке AppSidebar (как в кабинете): шапка со
-// ссылкой «← Мой курс», названием и прогрессом, дерево модулей, «На сайт».
-export function PlayerSidebar({
-  activeOrder,
-  curriculum,
-  narrow,
-  onHide,
-  player,
-  progress
-}: Props) {
+// ссылкой «← Назад в кабинет» и названием курса, дерево модулей. Прогресса
+// прохождения нет (ADR-9).
+export function PlayerSidebar({ courseSlug, curriculum, narrow, onHide, player }: Props) {
   const t = useTranslations();
-  const summary = getProgressSummary(player.lessons, progress);
 
   const header = (
     <>
       <div className={styles.head}>
         <Link className={styles.back} href="/dashboard">
           <Icon name="arrowLeft" size={16} />
-          {t('dashboard.myCourse')}
+          {t('actions.backToDashboard')}
         </Link>
         <button
           aria-label={narrow ? t('player.closeContents') : t('player.collapseSidebar')}
@@ -50,33 +41,16 @@ export function PlayerSidebar({
           )}
         </button>
       </div>
-      <p className={styles.title}>{player.courseTitle}</p>
-      <progress
-        aria-label={t('player.courseProgress')}
-        className={styles.bar}
-        max={Math.max(summary.total, 1)}
-        value={summary.done}
-      />
-      <p className={styles.meta}>
-        {t('player.lessonsComplete', { done: summary.done, total: summary.total })}
-      </p>
+      <p className={styles.title}>{player.sidebarTitle}</p>
     </>
   );
 
-  const footer = (
-    <Link className={styles.siteLink} href="/">
-      <Icon name="arrowLeft" size={16} />
-      {t('actions.backToWebsite')}
-    </Link>
-  );
-
   return (
-    <AppSidebar footer={footer} header={header} navLabel={t('player.contents')}>
+    <AppSidebar header={header} navLabel={t('player.contents')}>
       <PlayerModules
-        activeOrder={activeOrder}
+        activeOrder={player.currentLessonOrder}
+        courseSlug={courseSlug}
         curriculum={curriculum}
-        player={player}
-        progress={progress}
       />
     </AppSidebar>
   );

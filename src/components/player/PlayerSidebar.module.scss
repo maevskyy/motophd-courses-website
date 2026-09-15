@@ -60,41 +60,6 @@
   font-size: var(--fs-small);
   font-weight: 600;
   line-height: var(--lh-snug);
-  margin-block-end: var(--sp-3);
-}
-
-/* Нативный <progress>: ширина заливки без инлайн-стиля (как в кабинете). */
-.bar {
-  appearance: none;
-  background: var(--surface-3);
-  block-size: var(--sp-2);
-  border: 0;
-  border-radius: var(--radius-full);
-  display: block;
-  inline-size: 100%;
-  overflow: hidden;
-
-  &::-webkit-progress-bar {
-    background: var(--surface-3);
-    border-radius: var(--radius-full);
-  }
-
-  &::-webkit-progress-value {
-    background: var(--brand);
-    border-radius: var(--radius-full);
-    transition: inline-size var(--dur-slow) var(--ease);
-  }
-
-  &::-moz-progress-bar {
-    background: var(--brand);
-    border-radius: var(--radius-full);
-  }
-}
-
-.meta {
-  @include caption;
-
-  margin-block-start: var(--sp-2);
 }
 
 /* ---------- Дерево модулей ---------- */
@@ -211,39 +176,11 @@
   justify-content: center;
 }
 
-.lessonMarkDone {
-  background: var(--brand);
-  border-color: var(--brand);
-  color: var(--text-on-brand);
-}
-
 .lessonLabel {
   flex: 1;
   font-size: var(--fs-small);
   line-height: var(--lh-normal);
   min-inline-size: 0;
-}
-
-.lessonDoc {
-  color: var(--text-3);
-  flex: none;
-}
-
-.siteLink {
-  align-items: center;
-  color: var(--text-3);
-  display: flex;
-  font-size: var(--fs-small);
-  gap: var(--sp-2);
-  min-block-size: var(--control-h);
-  text-decoration: none;
-  transition: color var(--dur) var(--ease);
-
-  @include focus-ring;
-
-  &:hover {
-    color: var(--text-1);
-  }
 }
 
 /* ---------- Свёрнутый рейл: 56px, только номера модулей ---------- */

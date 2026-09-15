@@ -57,11 +57,52 @@
 }
 
 .dashGreeting {
+  display: grid;
+  gap: var(--sp-2);
   margin-block-end: var(--sp-7);
 }
 
 .dashGreetingTitle {
   @include h2;
+}
+
+.dashGreetingSub {
+  color: var(--text-2);
+  font-size: var(--fs-small);
+  line-height: var(--lh-normal);
+}
+
+/* ---------- Обзор: плашки статистики ---------- */
+
+.dashStats {
+  display: grid;
+  gap: var(--sp-4);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr));
+  margin-block-end: var(--sp-7);
+}
+
+.dashStat {
+  @include card;
+
+  padding: var(--sp-5);
+}
+
+.dashStatNum {
+  color: var(--brand);
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  font-weight: 700;
+  letter-spacing: var(--ls-tight);
+  line-height: var(--lh-tight);
+}
+
+.dashStatLabel {
+  color: var(--text-3);
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  letter-spacing: var(--ls-caps);
+  margin-block-start: var(--sp-1);
+  text-transform: uppercase;
 }
 
 .dashSectionTitle {
@@ -76,20 +117,7 @@
   text-transform: uppercase;
 }
 
-/* ---------- Купленные курсы: блоки во всю ширину контента ---------- */
-
-.dashCourseList {
-  display: grid;
-  gap: var(--sp-7);
-  margin-block-end: var(--sp-7);
-}
-
-.dashCourseBlock {
-  display: grid;
-  gap: var(--sp-4);
-}
-
-/* ---------- «Можно купить»: карточки курсов ---------- */
+/* ---------- Карточки курсов: купленные и «Можно купить» ---------- */
 
 .dashCourses {
   display: grid;
@@ -129,7 +157,14 @@
   color: var(--text-3);
   display: flex;
   justify-content: center;
+  overflow: hidden;
   position: relative;
+}
+
+.dashCourseThumbImg {
+  block-size: 100%;
+  inline-size: 100%;
+  object-fit: cover;
 }
 
 .dashLockOverlay {
@@ -166,10 +201,74 @@
   padding-block-start: var(--sp-3);
 }
 
+.dashCourseFooter {
+  border-block-start: 1px solid var(--border);
+  padding: var(--sp-4);
+}
+
+.btnContinue {
+  @include btn-primary;
+  @include btn-sm;
+  @include btn-block;
+}
+
 .btnUnlock {
   @include btn-secondary;
   @include btn-sm;
   @include btn-block;
+}
+
+/* ---------- Материалы: список PDF ---------- */
+
+.dashDownloads {
+  display: grid;
+  gap: var(--sp-3);
+}
+
+.pdfDownloadCard {
+  @include card-interactive;
+
+  align-items: center;
+  color: inherit;
+  display: flex;
+  gap: var(--sp-4);
+  padding: var(--sp-4);
+  text-decoration: none;
+}
+
+.pdfIcon {
+  align-items: center;
+  color: var(--text-3);
+  display: flex;
+  flex: none;
+}
+
+.pdfInfo {
+  flex: 1;
+  min-inline-size: 0;
+}
+
+.pdfName {
+  font-size: var(--fs-small);
+  font-weight: 600;
+}
+
+.pdfBtn {
+  @include btn-secondary;
+  @include btn-sm;
+
+  flex: none;
+  pointer-events: none;
+}
+
+/*
+  Профиль: одна колонка 672px — канон одноколоночных настроек аккаунта
+  (Notion, Linear, GitHub); в шкале токенов такого размера нет.
+*/
+.dashProfile {
+  display: grid;
+  gap: var(--sp-7);
+  max-inline-size: 672px;
 }
 
 @media (max-width: 900px) {

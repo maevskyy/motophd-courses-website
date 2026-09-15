@@ -1,3 +1,4 @@
+import type { Lesson } from '@/payload-types';
 import { salesContent } from './fixtures/coursePages';
 import { localizedCourses } from './fixtures/courses';
 import { getCurriculumForCourse } from './fixtures/curriculum';
@@ -72,6 +73,34 @@ export const legalPageSeeds: LegalPageSeed[] = [
   }
 ];
 
+export const toRichText = (text: string): NonNullable<Lesson['body']> => ({
+  root: {
+    children: text.split('\n\n').map((paragraph) => ({
+      children: [
+        {
+          detail: 0,
+          format: 0,
+          mode: 'normal',
+          style: '',
+          text: paragraph,
+          type: 'text',
+          version: 1
+        }
+      ],
+      direction: 'ltr' as const,
+      format: '' as const,
+      indent: 0,
+      type: 'paragraph',
+      version: 1
+    })),
+    direction: 'ltr' as const,
+    format: '' as const,
+    indent: 0,
+    type: 'root',
+    version: 1
+  }
+});
+
 export const getCourseSeeds = (): CourseSeed[] =>
   localizedCourses.en.slice(0, 2).map((course) => {
     const ruCourse = localizedCourses.ru.find(({ slug }) => slug === course.slug);
@@ -123,36 +152,11 @@ export const getFlatLessons = (courseSlug: string, locale: Locale) =>
     }))
   );
 
-export type FlatLesson = ReturnType<typeof getFlatLessons>[number];
+export const getKeyPoint = (course: Course) =>
+  course.slug === 'lean' ? playerContent.overviewCopy : course.includes[0] || course.description;
 
-// Поля keyPoint / commonMistakes / whatYouShouldFeel локализованы: без locale
-// в обе локали уезжала EN-фикстура, и плеер под RU показывал английский текст.
-export const getKeyPoint = (course: Course, locale: Locale) =>
-  course.slug === 'lean'
-    ? playerContent[locale].overviewCopy
-    : course.includes[0] || course.description;
+export const getCommonMistakes = (course: Course) =>
+  course.slug === 'lean' ? playerContent.notes.join('\n') : course.includes.slice(1).join('\n');
 
-export const getCommonMistakes = (course: Course, locale: Locale) =>
-  course.slug === 'lean'
-    ? playerContent[locale].notes.join('\n')
-    : course.includes.slice(1).join('\n');
-
-export const getWhatYouShouldFeel = (course: Course, locale: Locale) =>
-  course.slug === 'lean' ? playerContent[locale].feel : course.description;
-
-export const getCourseData = (course: Course, locale: Locale, order: number) => ({
-  slug: course.slug,
-  title: course.title,
-  pain: course.pain,
-  description: course.description,
-  priceStandard: 29,
-  priceFeedback: 129,
-  currency: 'EUR' as const,
-  outcomes: getOutcomes(course, locale),
-  keyPoint: getKeyPoint(course, locale),
-  commonMistakes: getCommonMistakes(course, locale),
-  whatYouShouldFeel: getWhatYouShouldFeel(course, locale),
-  teaserVideoId: `${course.slug}-${locale}-teaser`,
-  order,
-  status: 'published' as const
-});
+export const getWhatYouShouldFeel = (course: Course) =>
+  course.slug === 'lean' ? playerContent.feel : course.description;

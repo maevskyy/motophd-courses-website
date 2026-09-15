@@ -201,7 +201,7 @@ test('login page shows the form', async ({ page }) => {
 
   await expect(page.locator('#login-email')).toBeVisible();
   await expect(page.locator('#login-password')).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Sign in' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Sign In to My Dashboard' })).toBeVisible();
   await expect(page.locator('#login-email')).toHaveValue('');
 });
 
@@ -209,7 +209,7 @@ test('student can sign in and returns to the requested page', async ({ page }) =
   await page.goto('/en/login?next=%2Fen%2Fcourses');
   await page.locator('#login-email').fill('student@motophd.com');
   await page.locator('#login-password').fill('student1234');
-  await page.getByRole('button', { name: 'Sign in' }).click();
+  await page.getByRole('button', { name: 'Sign In to My Dashboard' }).click();
 
   await expect(page).toHaveURL(/\/en\/courses$/);
   await expect(
@@ -221,7 +221,7 @@ test('direct login opens the dashboard', async ({ page }) => {
   await page.goto('/en/login');
   await page.locator('#login-email').fill('guest@motophd.com');
   await page.locator('#login-password').fill('guest1234');
-  await page.getByRole('button', { name: 'Sign in' }).click();
+  await page.getByRole('button', { name: 'Sign In to My Dashboard' }).click();
 
   await expect(page).toHaveURL(/\/en\/dashboard$/);
 });
@@ -242,7 +242,7 @@ test('guest without a purchase is returned to the course page', async ({ page })
   await page.goto('/en/login?next=%2Fen%2Flearn%2Flean');
   await page.locator('#login-email').fill('guest@motophd.com');
   await page.locator('#login-password').fill('guest1234');
-  await page.getByRole('button', { name: 'Sign in' }).click();
+  await page.getByRole('button', { name: 'Sign In to My Dashboard' }).click();
 
   await expect(page).toHaveURL(/\/en\/courses\/lean\?access=denied$/);
   await expect(page.getByText('This course is not included in your purchases.')).toBeVisible();
@@ -252,10 +252,10 @@ test('student with a purchase can open the course player', async ({ page }) => {
   await page.goto('/en/login?next=%2Fen%2Flearn%2Flean');
   await page.locator('#login-email').fill('student@motophd.com');
   await page.locator('#login-password').fill('student1234');
-  await page.getByRole('button', { name: 'Sign in' }).click();
+  await page.getByRole('button', { name: 'Sign In to My Dashboard' }).click();
 
   await expect(page).toHaveURL(/\/en\/learn\/lean$/);
-  await expect(page.getByText(/Module \d+ · Lesson \d+ of \d+/)).toBeVisible();
+  await expect(page.getByText('Lesson Notes')).toBeVisible();
 
   if (isStreamConfigured()) {
     // Ключи Cloudflare на месте: видео-уроки рендерят iframe с подписанным
@@ -266,13 +266,34 @@ test('student with a purchase can open the course player', async ({ page }) => {
     await expect(page.getByText('Video is unavailable in this environment.')).toBeVisible();
     await expect(page.locator('iframe')).toHaveCount(0);
   }
+
+  // Без ?lesson плеер открывает первый урок (в сиде — «Video Lesson»), он же
+  // подсвечен в боковой панели.
+  const sidebarLessons = page.locator('aside a[href*="lesson="]');
+  const firstLesson = sidebarLessons.nth(0);
+  const secondLesson = sidebarLessons.nth(1);
+
+  await expect(page.locator('h1')).toHaveText('Video Lesson');
+  await expect(page.getByText('LESSON 1 OF 15')).toBeVisible();
+  await expect(firstLesson).toHaveAttribute('aria-current', 'page');
+  await expect(firstLesson).toHaveClass(/lessonActive/);
+
+  // Клик по второму уроку переключает адрес, заголовок и подсветку.
+  await secondLesson.click();
+
+  await expect(page).toHaveURL(/\/en\/learn\/lean\?lesson=2$/);
+  await expect(page.locator('h1')).toHaveText('Video Tutorial');
+  await expect(page.getByText('LESSON 2 OF 15')).toBeVisible();
+  await expect(secondLesson).toHaveAttribute('aria-current', 'page');
+  await expect(secondLesson).toHaveClass(/lessonActive/);
+  await expect(firstLesson).not.toHaveClass(/lessonActive/);
 });
 
 test('logout removes access to private pages', async ({ page }) => {
   await page.goto('/en/login');
   await page.locator('#login-email').fill('student@motophd.com');
   await page.locator('#login-password').fill('student1234');
-  await page.getByRole('button', { name: 'Sign in' }).click();
+  await page.getByRole('button', { name: 'Sign In to My Dashboard' }).click();
   await expect(page).toHaveURL(/\/en\/dashboard$/);
 
   await page.getByRole('button', { name: 'Sign Out' }).click();
@@ -287,7 +308,7 @@ test('invalid login shows a generic error message', async ({ page }) => {
   await page.goto('/en/login');
   await page.locator('#login-email').fill('student@motophd.com');
   await page.locator('#login-password').fill('wrong-password');
-  await page.getByRole('button', { name: 'Sign in' }).click();
+  await page.getByRole('button', { name: 'Sign In to My Dashboard' }).click();
 
   await expect(page).toHaveURL(/\/en\/login$/);
   const loginError = page.locator('form [role="alert"]');

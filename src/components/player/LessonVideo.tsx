@@ -1,16 +1,16 @@
 import { useTranslations } from 'next-intl';
 
-import type { PlayerLesson } from '@/lib/data';
+import type { PlayerContent } from '@/lib/data';
 import styles from './CoursePlayer.module.scss';
 
 interface Props {
-  lesson: Pick<PlayerLesson, 'title' | 'videoEmbedUrl'>;
+  player: Pick<PlayerContent, 'title' | 'videoEmbedUrl'>;
 }
 
-export function LessonVideo({ lesson }: Props) {
+export function LessonVideo({ player }: Props) {
   const t = useTranslations('player');
 
-  if (!lesson.videoEmbedUrl) {
+  if (!player.videoEmbedUrl) {
     return (
       <div className={styles.videoPlaceholder}>
         <p>{t('videoUnavailable')}</p>
@@ -24,8 +24,8 @@ export function LessonVideo({ lesson }: Props) {
       allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
       allowFullScreen
       className={styles.videoFrame}
-      src={lesson.videoEmbedUrl}
-      title={lesson.title}
+      src={player.videoEmbedUrl}
+      title={player.title}
     />
   );
 }

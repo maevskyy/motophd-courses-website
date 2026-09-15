@@ -1,22 +1,44 @@
 @use '@/styles/mixins' as *;
 
-/* ---------- Навигация между уроками ---------- */
+/* ---------- Вкладки под видео: заметки · материалы · обзор ---------- */
 
-.lessonNav {
-  border-block: 1px solid var(--border);
+.tabs {
+  border-block-end: 1px solid var(--border);
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--sp-3);
-  justify-content: space-between;
-  padding-block: var(--sp-4);
+  gap: var(--sp-2);
+  overflow-x: auto;
 }
 
-.navPrev {
-  @include btn-secondary;
+.tab {
+  background: transparent;
+  border: 0;
+  border-block-end: 2px solid transparent;
+  color: var(--text-3);
+  cursor: pointer;
+  font-family: var(--font-text);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  margin-block-end: -1px;
+  min-block-size: var(--control-h);
+  padding-inline: var(--sp-3);
+  transition: color var(--dur) var(--ease);
+  white-space: nowrap;
+
+  @include focus-ring;
+
+  &:hover {
+    color: var(--text-1);
+  }
 }
 
-.navNext {
-  @include btn-primary;
+/* Активная вкладка помечена и цветом, и полосой снизу. */
+.tabActive {
+  border-block-end-color: var(--brand);
+  color: var(--text-1);
+}
+
+.tabContent {
+  padding-block: var(--sp-2);
 }
 
 /* ---------- Текст урока: мерой --measure по левому краю колонки ---------- */
@@ -28,47 +50,14 @@
   padding-block: var(--sp-6);
 }
 
-/* Разметка приходит из Lexical без классов — стилизуем элементы внутри обёртки. */
-.richText {
-  display: grid;
-  gap: var(--sp-3);
-
-  h2 {
-    @include h3;
-
-    margin-block-start: var(--sp-3);
-  }
-
-  h3 {
-    color: var(--text-1);
-    font-size: var(--fs-lead);
-    font-weight: 600;
-    line-height: var(--lh-snug);
-    margin-block-start: var(--sp-2);
-  }
-
-  p,
-  li {
-    @include body;
-  }
-
-  ul,
-  ol {
-    display: grid;
-    gap: var(--sp-2);
-    padding-inline-start: var(--sp-5);
-  }
-
-  a {
-    color: var(--text-1);
-    text-decoration: underline;
-  }
-}
-
 .sectionTitle {
   @include h3;
 
   margin-block-end: var(--sp-4);
+}
+
+.prose {
+  @include body;
 }
 
 .takeaways {
@@ -115,11 +104,12 @@
   line-height: var(--lh-relaxed);
 }
 
-/* ---------- Материалы урока: во всю ширину колонки ---------- */
+/* ---------- Материалы курса: список PDF во всю ширину колонки ---------- */
 
 .materials {
-  border-block-start: 1px solid var(--border);
-  padding-block-start: var(--sp-6);
+  display: grid;
+  gap: var(--sp-3);
+  padding-block: var(--sp-4);
 }
 
 .pdfDownloadCard {

@@ -46,7 +46,7 @@ test('guest payment creates one paid mock purchase and opens the course', async 
   await pay(page);
 
   await page.goto('/en/learn/lean');
-  await expect(page.getByText(/Module \d+ · Lesson \d+ of \d+/)).toBeVisible();
+  await expect(page.getByText('Lesson Notes')).toBeVisible();
 
   expect(await getOwnPurchases(page)).toEqual([
     expect.objectContaining({ provider: 'mock', status: 'paid' })
@@ -79,7 +79,7 @@ test('declining payment leaves the purchase pending and access closed', async ({
 
   await page.locator('#login-email').fill(email);
   await page.locator('#login-password').fill('checkout-decline1234');
-  await page.getByRole('button', { name: 'Sign in' }).click();
+  await page.getByRole('button', { name: 'Sign In to My Dashboard' }).click();
   await expect(page).toHaveURL(/\/en\/courses\/lean\?access=denied$/);
 
   // Покупки decline-юзера чистит только сид, а между e2e-прогонами он не

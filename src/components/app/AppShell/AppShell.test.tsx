@@ -1,6 +1,6 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import { AppNavLink, AppShell, AppSidebar } from './index';
+import { AppNavButton, AppNavLink, AppShell, AppSidebar } from './index';
 
 const route = vi.hoisted(() => ({ pathname: '/dashboard' }));
 
@@ -47,5 +47,29 @@ describe('AppNavLink', () => {
 
     expect(screen.getByRole('link', { name: 'Settings' })).toHaveAttribute('aria-current', 'page');
     expect(screen.getByRole('link', { name: 'Course' })).not.toHaveAttribute('aria-current');
+  });
+});
+
+describe('AppNavButton', () => {
+  it('marks the active tab and reports clicks', () => {
+    const onClick = vi.fn();
+
+    render(
+      <>
+        <AppNavButton active icon="grid" onClick={onClick}>
+          Overview
+        </AppNavButton>
+        <AppNavButton active={false} onClick={onClick}>
+          Profile
+        </AppNavButton>
+      </>
+    );
+
+    expect(screen.getByRole('button', { name: 'Overview' })).toHaveAttribute('aria-current', 'page');
+    expect(screen.getByRole('button', { name: 'Profile' })).not.toHaveAttribute('aria-current');
+
+    fireEvent.click(screen.getByRole('button', { name: 'Profile' }));
+
+    expect(onClick).toHaveBeenCalledTimes(1);
   });
 });

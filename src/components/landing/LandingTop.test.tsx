@@ -18,7 +18,8 @@ vi.mock('next-intl', () => ({
 }));
 
 const labels = {
-  viewCourses: 'Начать обучение'
+  viewCourses: 'Смотреть курсы',
+  browseAllCourses: 'Смотреть все курсы'
 };
 
 describe('LandingTop', () => {
@@ -35,19 +36,51 @@ describe('LandingTop', () => {
     expect(video).toHaveAttribute('playsinline');
   });
 
-  it('разводит школу и инструктора по разным блокам', () => {
+  it('links the instructor section to the course catalog', () => {
     render(<LandingTop content={homeContent.ru} courses={[]} labels={labels} />);
 
-    expect(screen.getByText(homeContent.ru.schoolTitle)).toBeInTheDocument();
-    expect(screen.getByText(homeContent.ru.instructorTitle)).toBeInTheDocument();
-    expect(screen.getByText(homeContent.ru.instructorQuote)).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Смотреть все курсы' })).toHaveAttribute(
+      'href',
+      '/courses'
+    );
   });
 
-  it('не ставит кнопок в блоке инструктора: действие живёт в хиро и в финальном блоке', () => {
-    render(<LandingTop content={homeContent.ru} courses={[]} labels={labels} />);
+  it('shows the coach with both photos and the credentials from the content', () => {
+    const { container } = render(
+      <LandingTop content={homeContent.en} courses={[]} labels={labels} />
+    );
 
-    // Единственная ссылка-действие верхней части — кнопка хиро.
-    expect(screen.getAllByRole('link', { name: 'Начать обучение' })).toHaveLength(1);
-    expect(screen.queryByRole('link', { name: /смотреть все курсы/i })).not.toBeInTheDocument();
+    expect(container.querySelector('#about-anchor')).toBeInTheDocument();
+    expect(container.querySelector('img[src="/vlad.jpg"]')).toBeInTheDocument();
+    expect(container.querySelector('img[src="/vlad-training.jpg"]')).toBeInTheDocument();
+    expect(screen.getByText(homeContent.en.instructorTitle.join(' '))).toBeInTheDocument();
+    expect(screen.getByText(homeContent.en.instructorCredentials![0])).toBeInTheDocument();
+  });
+
+  it('shows every testimonial from the content after the coach, without a source link', () => {
+    render(<LandingTop content={homeContent.en} courses={[]} labels={labels} />);
+
+    const { testimonials } = homeContent.en;
+
+    expect(screen.getByText(homeContent.en.testimonialsLabel)).toBeInTheDocument();
+    expect(screen.getByText(homeContent.en.testimonialsTitle.join(' '))).toBeInTheDocument();
+    expect(testimonials).toHaveLength(11);
+    testimonials.forEach((item) => {
+      expect(screen.getByText(item.quote)).toBeInTheDocument();
+    });
+    // Как в main: все отзывы сразу, без «Показать ещё» и без ссылки на Instagram.
+    expect(screen.queryByRole('button', { name: /showMore/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: /reviewsSource/ })).not.toBeInTheDocument();
+
+    const coach = screen.getByText(homeContent.en.instructorName);
+    const reviews = screen.getByText(homeContent.en.testimonialsLabel);
+
+    expect(coach.compareDocumentPosition(reviews) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it('has no "About the school" section', () => {
+    render(<LandingTop content={homeContent.en} courses={[]} labels={labels} />);
+
+    expect(screen.queryByText(/about the school/i)).not.toBeInTheDocument();
   });
 });

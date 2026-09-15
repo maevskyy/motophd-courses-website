@@ -3,7 +3,7 @@ import type { Course, LocalizedContent } from './types';
 const coursesEn: Course[] = [
   {
     slug: 'lean',
-    icon: 'motorcycle',
+    icon: '🏍️',
     badge: 'Flagship',
     imageTone: 'red',
     featured: true,
@@ -20,7 +20,7 @@ const coursesEn: Course[] = [
   },
   {
     slug: 'counter-steering',
-    icon: 'flag',
+    icon: '⚡',
     imageTone: 'green',
     pain: 'Confusion → Mastery',
     title: 'The Art of Braking',
@@ -35,7 +35,7 @@ const coursesEn: Course[] = [
   },
   {
     slug: 'emergency-braking',
-    icon: 'wrench',
+    icon: '🛑',
     imageTone: 'blue',
     pain: 'Panic → Control',
     title: 'Emergency Braking',
@@ -53,7 +53,7 @@ const coursesEn: Course[] = [
 const coursesRu: Course[] = [
   {
     slug: 'lean',
-    icon: 'motorcycle',
+    icon: '🏍️',
     badge: 'Флагман',
     imageTone: 'red',
     featured: true,
@@ -70,7 +70,7 @@ const coursesRu: Course[] = [
   },
   {
     slug: 'counter-steering',
-    icon: 'flag',
+    icon: '⚡',
     imageTone: 'green',
     pain: 'Растерянность → Мастерство',
     title: 'Искусство торможения',
@@ -80,7 +80,7 @@ const coursesRu: Course[] = [
   },
   {
     slug: 'emergency-braking',
-    icon: 'wrench',
+    icon: '🛑',
     imageTone: 'blue',
     pain: 'Паника → Контроль',
     title: 'Экстренное торможение',

@@ -1,16 +1,11 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { useRouter } from '@/i18n/routing';
 import { AppShell } from '@/components/app/AppShell';
 import { Icon } from '@/components/ui/Icon';
 import { cx } from '@/lib/classNames';
 import type { CurriculumModule, PlayerContent } from '@/lib/data';
-import { lessonHref, useCourseProgress } from '@/lib/progress';
-import { getActiveLesson } from './activeLesson';
-import { LessonBody } from './LessonBody';
-import { LessonDownloads } from './LessonDownloads';
-import { LessonNav } from './LessonNav';
+import { LessonTabs } from './LessonTabs';
 import { LessonVideo } from './LessonVideo';
 import { PlayerRail } from './PlayerRail';
 import { PlayerSidebar } from './PlayerSidebar';
@@ -18,39 +13,18 @@ import { usePlayerSidebar } from './usePlayerSidebar';
 import styles from './CoursePlayer.module.scss';
 
 interface Props {
-  // order из URL; без него активный урок — следующий непройденный.
-  activeOrder?: number;
+  courseSlug: string;
   curriculum: CurriculumModule[];
   player: PlayerContent;
 }
 
-export function CoursePlayerClient({ activeOrder, curriculum, player }: Props) {
+// Текущий урок выбирает сервер по ?lesson=<order> (см. learn/[slug]/page.tsx):
+// клиент только рисует его и оглавление, где уроки — ссылки на тот же плеер.
+export function CoursePlayerClient({ courseSlug, curriculum, player }: Props) {
   const t = useTranslations('player');
-  const router = useRouter();
-  const { markDone, progress } = useCourseProgress(player.courseSlug);
-  const lesson = getActiveLesson(player.lessons, activeOrder, progress);
-  const sidebar = usePlayerSidebar(lesson?.order ?? 0);
-
-  if (!lesson) {
-    return (
-      <main className={styles.emptyLayout}>
-        <p className={styles.empty}>{t('noLessons')}</p>
-      </main>
-    );
-  }
-
-  const index = player.lessons.indexOf(lesson);
-  const prev = player.lessons[index - 1];
-  const next = player.lessons[index + 1];
+  const sidebar = usePlayerSidebar(player.currentLessonOrder ?? 0);
   // На узком экране свёрнутость не действует: там оглавление — drawer.
   const showRail = sidebar.collapsed && !sidebar.narrow;
-
-  // «Завершить и продолжить»: отметка в localStorage и переход на канонический
-  // адрес следующего урока; на последнем — в кабинет.
-  const complete = () => {
-    markDone(lesson.order);
-    router.push(next ? lessonHref(player.courseSlug, next) : '/dashboard');
-  };
 
   return (
     <div
@@ -64,19 +38,18 @@ export function CoursePlayerClient({ activeOrder, curriculum, player }: Props) {
         sidebar={
           showRail ? (
             <PlayerRail
-              activeOrder={lesson.order}
+              activeOrder={player.currentLessonOrder}
+              courseSlug={courseSlug}
               curriculum={curriculum}
               onExpand={sidebar.toggleCollapsed}
-              player={player}
             />
           ) : (
             <PlayerSidebar
-              activeOrder={lesson.order}
+              courseSlug={courseSlug}
               curriculum={curriculum}
               narrow={sidebar.narrow}
               onHide={sidebar.narrow ? sidebar.closeDrawer : sidebar.toggleCollapsed}
               player={player}
-              progress={progress}
             />
           )
         }
@@ -94,31 +67,19 @@ export function CoursePlayerClient({ activeOrder, curriculum, player }: Props) {
               {t('contents')}
             </button>
 
-            {lesson.type === 'video' ? (
-              <div className={styles.videoContainer}>
-                <LessonVideo lesson={lesson} />
-              </div>
-            ) : null}
+            <div className={styles.videoContainer}>
+              <LessonVideo player={player} />
+            </div>
 
             <header className={styles.lessonHeader}>
               <p className={styles.lessonMeta}>
-                {t('lessonMeta', {
-                  lesson: lesson.order,
-                  module: lesson.module,
-                  total: player.lessons.length
-                })}
+                {t('lessonMeta', { current: player.lessonNumber, total: player.lessonCount })}
               </p>
-              <h1 className={styles.lessonTitle}>{lesson.title}</h1>
+              <h1 className={styles.lessonTitle}>{player.title}</h1>
+              <p className={styles.lessonSub}>{player.subtitle}</p>
             </header>
 
-            <LessonNav
-              courseSlug={player.courseSlug}
-              hasNext={Boolean(next)}
-              onComplete={complete}
-              prev={prev}
-            />
-            <LessonBody body={lesson.body} feel={player.feel} keyTakeaways={player.keyTakeaways} />
-            <LessonDownloads download={lesson.download} />
+            <LessonTabs player={player} />
           </div>
         </div>
       </AppShell>
