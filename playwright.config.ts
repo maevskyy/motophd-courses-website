@@ -25,6 +25,9 @@ export default defineConfig({
   reporter: process.env.CI ? 'github' : 'list',
   retries: process.env.CI ? 1 : 0,
   testDir: './e2e',
+  // Один воркер: сессия у аккаунта одна (singleSession.ts), и второй тест,
+  // залогинившись тем же student@, выбивает первый. Локально задай --workers.
+  workers: process.env.CI ? 1 : undefined,
   use: {
     baseURL,
     trace: 'retain-on-failure'
