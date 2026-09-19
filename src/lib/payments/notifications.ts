@@ -1,5 +1,5 @@
+import { defaultLocale, type Locale } from '@/i18n/locales';
 import { sendFeedbackInstructions, sendPurchaseConfirmation } from '@/lib/email';
-import type { EmailLocale } from '@/lib/email/types';
 
 import type { PaymentTier } from './types';
 
@@ -7,7 +7,7 @@ type PaymentNotification = {
   courseTitle: string;
   email: string;
   // Покупки, созданные до MOT-38, локали не хранят — им письма по-английски, как раньше.
-  locale?: EmailLocale | null;
+  locale?: Locale | null;
   tier: PaymentTier;
 };
 
@@ -17,7 +17,7 @@ export const sendPaymentNotifications = async ({
   locale,
   tier
 }: PaymentNotification) => {
-  const emailLocale: EmailLocale = locale ?? 'en';
+  const emailLocale: Locale = locale ?? defaultLocale;
 
   await sendPurchaseConfirmation({
     courseTitle,

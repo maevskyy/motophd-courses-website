@@ -45,6 +45,16 @@ describe('getPurchaseHistory', () => {
     mocks.getPayloadClient.mockResolvedValue({ find: mocks.find });
   });
 
+  it('reads ukrainian purchase history with russian course titles as the fallback', async () => {
+    mocks.find.mockResolvedValue({ docs: [] });
+
+    await getPurchaseHistory('uk', user);
+
+    expect(mocks.find).toHaveBeenCalledWith(
+      expect.objectContaining({ collection: 'purchases', fallbackLocale: 'ru', locale: 'uk' })
+    );
+  });
+
   it('queries purchases as the signed-in user, newest first', async () => {
     mocks.find.mockResolvedValue({ docs: [] });
 

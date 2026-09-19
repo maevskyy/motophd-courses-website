@@ -4,6 +4,7 @@ import { randomBytes } from 'node:crypto';
 import { redirect } from 'next/navigation';
 import type { Where } from 'payload';
 
+import { toLocale, type Locale } from '@/i18n/locales';
 import { getCurrentUser } from '@/lib/auth/currentUser';
 import { getPayloadClient } from '@/lib/data/payload';
 
@@ -27,7 +28,7 @@ export type CheckoutResult = { error: CheckoutError } | { redirectUrl: string };
 export type CheckoutInput = {
   courseSlug: string;
   email?: string;
-  locale: 'en' | 'ru';
+  locale: Locale;
   promoCode?: string;
   tier: string;
 };
@@ -227,7 +228,7 @@ export async function checkoutAction(
   const result = await createCheckout({
     courseSlug: String(formData.get('courseSlug') || ''),
     email: String(formData.get('email') || ''),
-    locale: formData.get('locale') === 'ru' ? 'ru' : 'en',
+    locale: toLocale(formData.get('locale')),
     promoCode: String(formData.get('promoCode') || ''),
     tier: String(formData.get('tier') || '')
   });

@@ -3,9 +3,9 @@ import { salesContent } from './fixtures/coursePages';
 import { localizedCourses } from './fixtures/courses';
 import { getCurriculumForCourse } from './fixtures/curriculum';
 import { playerContent } from './fixtures/player';
-import type { Course } from './fixtures/types';
+import type { Course, Locale } from './fixtures/types';
 
-export type Locale = 'en' | 'ru';
+export type { Locale } from './fixtures/types';
 
 export type CourseSeed = {
   en: Course;
@@ -24,7 +24,7 @@ export type LegalPageSeed = {
   };
 };
 
-export const locales: Locale[] = ['en', 'ru'];
+export const locales: readonly Locale[] = ['en', 'ru'];
 
 export const legalPageSeeds: LegalPageSeed[] = [
   {

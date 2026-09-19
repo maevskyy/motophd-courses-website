@@ -1,14 +1,12 @@
 import { NextResponse } from 'next/server';
 
+import { getFallbackLocale, isLocale } from '@/i18n/locales';
 import { hasPaidAccess } from '@/lib/access/hasPaidAccess';
 import { getCurrentUser } from '@/lib/auth';
-import { toAppLocale } from '@/lib/data';
 import { getPayloadClient } from '@/lib/data/payload';
 import { readMediaObject } from '@/lib/media';
 import { consumeRateLimit, getClientIp, RATE_LIMITS } from '@/lib/rateLimit';
 import type { Course, Lesson, Media } from '@/payload-types';
-
-const isLocale = (value: string | null): value is 'en' | 'ru' => value === 'en' || value === 'ru';
 
 const getFilename = (pdf: number | Media | null | undefined) =>
   pdf && typeof pdf === 'object' ? pdf.filename : undefined;
@@ -28,9 +26,9 @@ export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ): Promise<Response> {
-  const localeParam = new URL(request.url).searchParams.get('locale');
+  const locale = new URL(request.url).searchParams.get('locale');
 
-  if (!isLocale(localeParam)) {
+  if (!isLocale(locale)) {
     return new NextResponse(null, { status: 404 });
   }
 
@@ -56,10 +54,10 @@ export async function GET(
       collection: 'lessons',
       depth: 1,
       // Тот же fallback, что и у getCourseLessons: иначе плеер показывает
-      // ссылку (там EN-файл подставился), а роут отвечает 404.
-      fallbackLocale: 'en',
+      // ссылку (там подставился файл из фолбэк-локали), а роут отвечает 404.
+      fallbackLocale: getFallbackLocale(locale),
       id,
-      locale: toAppLocale(localeParam),
+      locale,
       overrideAccess: true
     });
   } catch {

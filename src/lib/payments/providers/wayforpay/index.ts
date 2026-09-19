@@ -1,6 +1,10 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
 
+import type { Locale } from '@/i18n/locales';
 import type { PaymentProvider } from '../../types';
+
+// Язык платёжной страницы WayForPay: у банка украинский — это 'UA'.
+const wayForPayLanguage: Record<Locale, string> = { en: 'EN', ru: 'RU', uk: 'UA' };
 
 type WayForPayCallback = Record<string, string | number | null | undefined>;
 
@@ -96,7 +100,7 @@ export const wayForPayProvider: PaymentProvider = {
         amount: amountText,
         clientEmail,
         currency,
-        language: locale === 'ru' ? 'RU' : 'EN',
+        language: wayForPayLanguage[locale],
         merchantAccount,
         merchantDomainName,
         merchantSignature: signature,

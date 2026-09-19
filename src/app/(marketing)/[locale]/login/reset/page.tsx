@@ -1,10 +1,11 @@
+import type { Locale } from '@/i18n/locales';
 import { ResetPasswordForm } from '@/components/login/ResetPasswordForm';
 
 export default async function ResetPasswordPage({
   params,
   searchParams
 }: {
-  params: Promise<{ locale: 'en' | 'ru' }>;
+  params: Promise<{ locale: Locale }>;
   searchParams: Promise<{ token?: string | string[] }>;
 }) {
   const [{ locale }, { token }] = await Promise.all([params, searchParams]);

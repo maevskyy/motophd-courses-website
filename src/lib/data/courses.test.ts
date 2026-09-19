@@ -11,7 +11,12 @@ vi.mock('./payload', () => ({
   getPayloadClient: mocks.getPayloadClient
 }));
 
-import { getCourseCurriculum, getDashboardCourses, getPublishedCourses } from './courses';
+import {
+  getCourseCurriculum,
+  getCourseLessons,
+  getDashboardCourses,
+  getPublishedCourses
+} from './courses';
 
 const user = {
   collection: 'users',
@@ -22,10 +27,67 @@ const user = {
   updatedAt: '2026-01-01T00:00:00.000Z'
 } satisfies User;
 
+// Урок, как он лежит в Payload до сведения локалей: заголовок есть на трёх
+// языках, видео и PDF — только на en и ru.
+const storedLesson = {
+  id: 3,
+  pdf: { en: 21, ru: 22 },
+  streamVideoId: { en: 'lean-en-lesson-1', ru: 'lean-ru-lesson-1' },
+  title: { en: 'Lesson', ru: 'Урок', uk: 'Урок українською' }
+};
+
+type LocalizedValues = Record<string, unknown>;
+
+// То, что делает afterRead в Payload: значение запрошенной локали, а если его
+// нет — из fallbackLocale. Fake нужен, чтобы тест читался как сценарий, а не
+// как проверка аргументов.
+const findWithFallback = ({ fallbackLocale, locale }: { fallbackLocale: string; locale: string }) => ({
+  docs: [
+    Object.fromEntries(
+      Object.entries(storedLesson).map(([key, value]) =>
+        typeof value === 'object'
+          ? [key, (value as LocalizedValues)[locale] ?? (value as LocalizedValues)[fallbackLocale] ?? null]
+          : [key, value]
+      )
+    )
+  ]
+});
+
 describe('course data access', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mocks.getPayloadClient.mockResolvedValue({ find: mocks.find });
+  });
+
+  it('reads ukrainian lessons with russian as the fallback and keeps ukrainian fields', async () => {
+    mocks.find.mockImplementation(findWithFallback);
+
+    const [lesson] = await getCourseLessons(11, 'uk', user);
+
+    expect(mocks.find).toHaveBeenCalledWith(
+      expect.objectContaining({ collection: 'lessons', fallbackLocale: 'ru', locale: 'uk' })
+    );
+    expect(lesson).toMatchObject({
+      pdf: 22,
+      streamVideoId: 'lean-ru-lesson-1',
+      title: 'Урок українською'
+    });
+  });
+
+  it('keeps english as the fallback for russian and english readers', async () => {
+    mocks.find.mockImplementation(findWithFallback);
+
+    await getCourseLessons(11, 'ru', user);
+    await getCourseLessons(11, 'en', user);
+
+    expect(mocks.find).toHaveBeenNthCalledWith(
+      1,
+      expect.objectContaining({ fallbackLocale: 'en', locale: 'ru' })
+    );
+    expect(mocks.find).toHaveBeenNthCalledWith(
+      2,
+      expect.objectContaining({ fallbackLocale: 'en', locale: 'en' })
+    );
   });
 
   it('passes the authenticated user to public course queries', async () => {

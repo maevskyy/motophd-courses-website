@@ -1,4 +1,9 @@
-import type { Locale } from '@/i18n/routing';
+import type { Locale as SiteLocale } from '@/i18n/locales';
+
+// Сид-контент есть только на en и ru: украинская версия читает русские поля
+// через фолбэк Payload (localeFallbacks в src/i18n/locales.ts). Extract
+// гарантирует, что сид не разъедется со списком локалей сайта.
+export type Locale = Extract<SiteLocale, 'en' | 'ru'>;
 
 export type Course = {
   slug: string;

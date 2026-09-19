@@ -1,5 +1,6 @@
 import type { Course, Lesson } from '@/payload-types';
 import type { CourseCurriculumLesson } from './courses';
+import { curriculumLevelsByCourse, readingLabels, salesText } from './localizedText';
 import type {
   AppLocale,
   CourseCardCourse,
@@ -15,37 +16,6 @@ const visualByIndex = [
   { icon: '⚡', imageTone: 'green' as const, image: '/course-braking.jpg' },
   { icon: '🛑', imageTone: 'blue' as const, image: undefined }
 ];
-
-const localized = {
-  en: {
-    allCourses: 'All Courses',
-    courseOnly: 'Course only',
-    courseOnlyDesc: 'Videos + PDFs. Learn at your pace.',
-    feedback: 'Course + feedback',
-    feedbackDesc: 'Includes one personal video review.',
-    guarantee: 'Instant access · Secure checkout · Lifetime access',
-    lifetime: 'Lifetime access. No subscription.',
-    disclaimer:
-      'I understand that motorcycle riding involves risk and I am responsible for my own safety when applying course material.',
-    modulesTitle: 'COURSE MODULES',
-    enrollCta: 'ENROLL FOR TRAINING',
-    studentName: 'Demo Student'
-  },
-  ru: {
-    allCourses: 'Все курсы',
-    courseOnly: 'Только курс',
-    courseOnlyDesc: 'Видео + PDF. Учись в своём темпе.',
-    feedback: 'Курс + разбор',
-    feedbackDesc: 'Включает персональную обратную связь.',
-    guarantee: 'Мгновенный доступ · Безопасная оплата · Доступ навсегда',
-    lifetime: 'Доступ навсегда. Без подписки.',
-    disclaimer:
-      'Я понимаю, что езда на мотоцикле связана с риском, и сам отвечаю за безопасность при применении материалов курса.',
-    modulesTitle: 'МОДУЛИ КУРСА',
-    enrollCta: 'ЗАПИСАТЬСЯ НА ОБУЧЕНИЕ',
-    studentName: 'Demo Student'
-  }
-};
 
 export const toCourseCardCourse = (
   course: Course,
@@ -71,7 +41,7 @@ export const toCourseCardCourse = (
 };
 
 export const toSalesContent = (course: Course, locale: AppLocale): SalesContent => {
-  const text = localized[locale];
+  const text = salesText[locale];
   const outcomes = course.outcomes?.map(({ text: outcome }) => outcome).filter(Boolean) || [];
 
   return {
@@ -98,7 +68,8 @@ export const toSalesContent = (course: Course, locale: AppLocale): SalesContent 
     disclaimer: text.disclaimer,
     guarantee: text.guarantee,
     modulesTitle: text.modulesTitle,
-    enrollCta: text.enrollCta
+    enrollCta: text.enrollCta,
+    teaserTitle: text.teaserTitle
   };
 };
 
@@ -107,7 +78,7 @@ const lessonDuration = (lesson: CourseCurriculumLesson, locale: AppLocale) => {
     return '';
   }
 
-  return locale === 'ru' ? 'Чтение' : 'Reading';
+  return readingLabels[locale];
 };
 
 const toCurriculumLesson = (lesson: CourseCurriculumLesson, locale: AppLocale) => ({
@@ -115,25 +86,6 @@ const toCurriculumLesson = (lesson: CourseCurriculumLesson, locale: AppLocale) =
   order: lesson.order ?? 0,
   duration: lessonDuration(lesson, locale)
 });
-
-const curriculumLevelsByCourse: Record<string, Record<AppLocale, Array<{ title: string; count: number }>>> = {
-  lean: {
-    en: [
-      { title: 'Level 01 — Theory', count: 1 },
-      { title: 'Level 02 — Preparation', count: 4 },
-      { title: 'Level 03 — Hanging Off', count: 3 },
-      { title: 'Level 04 — Trajectory & Deep Lean', count: 3 },
-      { title: 'Level 05 — Mixing Different Steering Methods', count: 4 }
-    ],
-    ru: [
-      { title: 'Уровень 01 — Теория', count: 1 },
-      { title: 'Уровень 02 — Подготовка', count: 4 },
-      { title: 'Уровень 03 — Свешивание', count: 3 },
-      { title: 'Уровень 04 — Траектория и глубокий наклон', count: 3 },
-      { title: 'Уровень 05 — Микс разных инструментов руления', count: 4 }
-    ]
-  }
-};
 
 export const toCurriculumModules = (
   course: Course,

@@ -3,6 +3,7 @@ import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { Unbounded } from 'next/font/google';
 import { notFound } from 'next/navigation';
+import { locales } from '@/i18n/locales';
 import { AuthStatusProvider } from '@/components/providers/AuthStatusProvider';
 import { ToastProvider } from '@/components/providers/ToastProvider';
 import { Consent } from '@/components/consent';
@@ -31,7 +32,7 @@ export default async function AppLocaleLayout({
 }) {
   const { locale } = await params;
 
-  if (!hasLocale(['en', 'ru'], locale)) {
+  if (!hasLocale(locales, locale)) {
     notFound();
   }
 

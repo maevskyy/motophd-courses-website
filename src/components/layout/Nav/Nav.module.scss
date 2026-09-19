@@ -49,21 +49,6 @@
   color: var(--white);
 }
 
-.nav__lang {
-  border: 1px solid #333;
-  border-radius: 4px;
-  color: var(--gray);
-  cursor: pointer;
-  font-size: 13px;
-  padding: 4px 10px;
-  text-decoration: none;
-}
-
-.nav__langActive {
-  color: var(--white);
-  font-weight: 700;
-}
-
 .nav__cta,
 .nav__ctaGhost,
 .button,
@@ -140,7 +125,6 @@
 @media (max-width: 480px) {
   .nav { padding: 0 10px; }
   .nav__links { gap: 4px; }
-  .nav__lang { font-size: 10px; padding: 2px 5px; }
   .nav__ctaGhost { font-size: 11px; padding: 5px 8px; }
   .nav__cta { display: none; }
 }

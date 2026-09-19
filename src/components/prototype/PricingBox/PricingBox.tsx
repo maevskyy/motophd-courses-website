@@ -2,6 +2,7 @@
 
 import { useActionState, useState } from 'react';
 import { useTranslations } from 'next-intl';
+import type { Locale } from '@/i18n/locales';
 import { useToast } from '@/components/providers/ToastProvider';
 import { cx } from '@/lib/classNames';
 import type { SalesContent } from '@/lib/data';
@@ -11,7 +12,7 @@ import styles from './PricingBox.module.scss';
 interface Props {
   checkoutEnabled: boolean;
   courseSlug: string;
-  locale: 'en' | 'ru';
+  locale: Locale;
   sales: SalesContent;
 }
 

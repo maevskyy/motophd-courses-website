@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { cache } from 'react';
 import { Link } from '@/i18n/routing';
 import { AccessNotice } from '@/components/courseSales/AccessNotice';
+import { CourseTeaser } from '@/components/courseSales/CourseTeaser';
 import { CurriculumAccordion } from '@/components/prototype/CurriculumAccordion';
 import { Footer } from '@/components/prototype/Footer';
 import { PricingBox } from '@/components/prototype/PricingBox';
@@ -14,6 +15,7 @@ import {
   type AppLocale
 } from '@/lib/data';
 import { getPaymentProvider } from '@/lib/payments';
+import { getTeaserEmbedUrl } from '@/lib/video';
 import { buildPageMetadata, courseCoverImage, resolveSeoLocale } from '@/lib/seo';
 import { requireLocale } from '@/i18n/requireLocale';
 import styles from '@/components/courseSales/CourseSalesPage.module.scss';
@@ -106,6 +108,12 @@ export default async function CourseSalesPage({
           />
         </div>
       </section>
+
+      <CourseTeaser
+        courseTitle={course.title}
+        embedUrl={getTeaserEmbedUrl(course.teaserVideoId)}
+        title={sales.teaserTitle}
+      />
 
       <section className={styles.salesSection}>
         <h2 className={styles.salesSection__title}>{sales.modulesTitle}</h2>

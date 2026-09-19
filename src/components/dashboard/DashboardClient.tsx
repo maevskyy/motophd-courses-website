@@ -2,6 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
+import type { Locale } from '@/i18n/locales';
 import { Link } from '@/i18n/routing';
 import { logoutAction } from '@/lib/auth/actions';
 import type { CourseCardCourse, DashboardContent, PurchaseHistoryItem } from '@/lib/data';
@@ -30,7 +31,7 @@ export function DashboardClient({
   displayName: string;
   email: string;
   feedbackUpgradeSlugs: string[];
-  locale: 'en' | 'ru';
+  locale: Locale;
   name: string;
   purchases: PurchaseHistoryItem[];
 }) {

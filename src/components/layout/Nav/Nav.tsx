@@ -1,20 +1,14 @@
 'use client';
 
-import { useLocale, useTranslations } from 'next-intl';
-import { Link, usePathname } from '@/i18n/routing';
+import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/routing';
+import { LocaleSelect } from '@/components/layout/LocaleSelect';
 import { useAuthStatus } from '@/components/providers/AuthStatusProvider';
-import { useToast } from '@/components/providers/ToastProvider';
 import styles from './Nav.module.scss';
-import type { Locale } from '@/i18n/routing';
 
 export function Nav() {
   const isLoggedIn = useAuthStatus();
   const t = useTranslations();
-  const locale = useLocale() as Locale;
-  const pathname = usePathname();
-  const localeAgnosticPathname = stripLocalePrefix(pathname);
-  const { showToast } = useToast();
-  const otherLocale = locale === 'en' ? 'ru' : 'en';
 
   return (
     <nav className={styles.nav}>
@@ -29,15 +23,7 @@ export function Nav() {
         <Link className={styles.nav__link} href="/#about-anchor">
           {t('nav.about')}
         </Link>
-        <Link
-          className={styles.nav__lang}
-          href={localeAgnosticPathname}
-          locale={otherLocale}
-          onClick={() => showToast(otherLocale === 'ru' ? t('toast.langRu') : t('toast.langEn'))}
-        >
-          <span className={locale === 'en' ? styles.nav__langActive : undefined}>EN</span> |{' '}
-          <span className={locale === 'ru' ? styles.nav__langActive : undefined}>RU</span>
-        </Link>
+        <LocaleSelect />
         <Link className={styles.nav__ctaGhost} href={isLoggedIn ? '/dashboard' : '/login'}>
           {isLoggedIn ? t('nav.dashboard') : t('nav.login')}
         </Link>
@@ -47,10 +33,4 @@ export function Nav() {
       </div>
     </nav>
   );
-}
-
-function stripLocalePrefix(pathname: string) {
-  const pathnameWithoutLocale = pathname.replace(/^\/(?:en|ru)(?=\/|$)/, '');
-
-  return pathnameWithoutLocale || '/';
 }

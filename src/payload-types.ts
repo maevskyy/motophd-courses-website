@@ -96,10 +96,10 @@ export interface Config {
   db: {
     defaultIDType: number;
   };
-  fallbackLocale: ('false' | 'none' | 'null') | false | null | ('en' | 'ru') | ('en' | 'ru')[];
+  fallbackLocale: ('false' | 'none' | 'null') | false | null | ('en' | 'ru' | 'uk') | ('en' | 'ru' | 'uk')[];
   globals: {};
   globalsSelect: {};
-  locale: 'en' | 'ru';
+  locale: 'en' | 'ru' | 'uk';
   widgets: {
     collections: CollectionsWidget;
   };
@@ -277,7 +277,7 @@ export interface Purchase {
   orderReference?: string | null;
   promoCode?: (number | null) | PromoCode;
   status: 'pending' | 'paid' | 'failed' | 'refunded';
-  locale: 'en' | 'ru';
+  locale: 'en' | 'ru' | 'uk';
   paidAt?: string | null;
   providerPayload?:
     | {

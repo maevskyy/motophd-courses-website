@@ -3,6 +3,7 @@
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 
+import { toLocale } from '@/i18n/locales';
 import { consumePostPaymentSession } from '@/lib/payments/session';
 import { signMockCallback } from '@/lib/payments/providers/mock';
 
@@ -15,7 +16,7 @@ const getOrigin = async () => {
 };
 
 export async function mockPaymentAction(formData: FormData) {
-  const locale = formData.get('locale') === 'ru' ? 'ru' : 'en';
+  const locale = toLocale(formData.get('locale'));
   const orderReference = String(formData.get('order') || '');
   const postPaymentToken = String(formData.get('t') || '');
   const status = formData.get('decision') === 'paid' ? 'paid' : 'failed';

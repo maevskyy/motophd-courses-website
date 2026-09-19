@@ -11,9 +11,11 @@
 //   CF_ACCOUNT_ID=... CF_API_TOKEN=... node scripts/stream-videos.mjs --apply # показать и защитить
 //
 // Токен создаётся в Cloudflare → My Profile → API Tokens с правом Stream:Edit.
+// CF_ACCOUNT_ID можно не задавать: он берётся из R2_ENDPOINT.
 // Ни токен, ни UID в репозиторий не попадают — скрипт только читает переменные.
 
-const ACCOUNT_ID = process.env.CF_ACCOUNT_ID;
+const ACCOUNT_ID =
+  process.env.CF_ACCOUNT_ID || process.env.R2_ENDPOINT?.match(/^https:\/\/([0-9a-f]{32})\./)?.[1];
 const API_TOKEN = process.env.CF_API_TOKEN;
 const APPLY = process.argv.includes('--apply');
 const ORIGINS = (process.env.STREAM_ALLOWED_ORIGINS || 'motophd.com,www.motophd.com')

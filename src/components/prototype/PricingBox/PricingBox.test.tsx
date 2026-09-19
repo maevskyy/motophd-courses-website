@@ -15,6 +15,7 @@ const sales = {
   enrollCta: 'Enroll',
   guarantee: 'Lifetime access',
   modulesTitle: 'Modules',
+  teaserTitle: 'Watch a preview',
   options: [
     { desc: 'Videos', name: 'Course only', price: '€29', tier: 'standard' as const },
     { desc: 'Feedback', name: 'Course + feedback', price: '€129', tier: 'feedback' as const }

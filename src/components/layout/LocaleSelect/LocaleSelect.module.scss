@@ -1,0 +1,37 @@
+// Стрелка — инлайн SVG, чтобы не тянуть иконку и не зависеть от системного вида select.
+$chevron: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23888888' stroke-width='1.5'/%3E%3C/svg%3E";
+
+.localeSelect {
+  appearance: none;
+  background: transparent url($chevron) no-repeat right 10px center;
+  border: 1px solid #333;
+  border-radius: 4px;
+  color: var(--light);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.2;
+  padding: 5px 26px 5px 10px;
+  transition: border-color 0.2s;
+}
+
+.localeSelect:hover,
+.localeSelect:focus-visible {
+  border-color: var(--white);
+  outline: none;
+}
+
+// Выпадающий список системный, но фон под тёмную шапку задать можно.
+.localeSelect option {
+  background: var(--dark);
+  color: var(--light);
+}
+
+@media (max-width: 480px) {
+  .localeSelect {
+    background-position: right 6px center;
+    font-size: 11px;
+    padding: 3px 18px 3px 6px;
+  }
+}

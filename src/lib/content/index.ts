@@ -1,10 +1,12 @@
 import type { LocalizedContent, HomeContent } from './types';
 import { homeEn } from './home.en';
 import { homeRu } from './home.ru';
+import { homeUk } from './home.uk';
 
 export type { HomeContent, LocalizedContent } from './types';
 
 export const homeContent: LocalizedContent<HomeContent> = {
   en: homeEn,
-  ru: homeRu
+  ru: homeRu,
+  uk: homeUk
 };

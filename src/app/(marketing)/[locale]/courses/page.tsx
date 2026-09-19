@@ -3,6 +3,7 @@ import { CourseCard } from '@/components/prototype/CourseCard';
 import { Footer } from '@/components/prototype/Footer';
 import { getPublishedCourses, toCourseCardCourse } from '@/lib/data';
 import { buildPageMetadata, resolveSeoLocale } from '@/lib/seo';
+import type { Locale } from '@/i18n/locales';
 import { requireLocale } from '@/i18n/requireLocale';
 import styles from '@/components/catalog/CatalogPage.module.scss';
 
@@ -14,7 +15,8 @@ export function generateStaticParams() {
   return [];
 }
 
-const catalogContent = {
+// Record<Locale, …>: новая локаль без своего текста не пройдёт typecheck.
+const catalogContent: Record<Locale, { label: string; title: string; sub: string }> = {
   en: {
     label: 'All Courses',
     title: 'The MotoPhD Curriculum',
@@ -24,6 +26,11 @@ const catalogContent = {
     label: 'Все курсы',
     title: 'Программа MotoPhD',
     sub: 'Каждый курс решает одну конкретную проблему. Разбери её полностью и переходи к следующей.'
+  },
+  uk: {
+    label: 'Усі курси',
+    title: 'Програма MotoPhD',
+    sub: 'Кожен курс розв’язує одну конкретну проблему. Розбери її повністю і переходь до наступної.'
   }
 };
 

@@ -2,6 +2,7 @@
 
 import { useActionState } from 'react';
 import { useTranslations } from 'next-intl';
+import type { Locale } from '@/i18n/locales';
 import { Link } from '@/i18n/routing';
 import { loginAction } from '@/lib/auth/actions';
 import { initialLoginFormState } from '@/lib/auth/formState';
@@ -9,7 +10,7 @@ import { LoginSubmitButton } from './LoginSubmitButton';
 import styles from './LoginPage.module.scss';
 
 interface Props {
-  locale: 'en' | 'ru';
+  locale: Locale;
   nextPath?: string;
 }
 

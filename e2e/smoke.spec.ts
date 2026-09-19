@@ -58,7 +58,7 @@ test('home page ends with a call to action into the courses', async ({ page }) =
 
 test('language switcher toggles the locale', async ({ page }) => {
   await page.goto('/en');
-  await page.getByRole('link', { name: /EN.*RU/ }).click();
+  await page.getByRole('combobox', { name: 'Language' }).selectOption('ru');
 
   await expect(page).toHaveURL(/\/ru(\/|$)/);
   await expect(

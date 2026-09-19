@@ -288,6 +288,27 @@
   margin-bottom: 32px;
 }
 
+.teaserSection {
+  margin: 0 auto;
+  max-width: 1200px;
+  padding: 0 40px 20px;
+}
+
+.teaserFrame {
+  aspect-ratio: 16 / 9;
+  background: #000;
+  border: 1px solid #333;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.teaserFrame__video {
+  border: 0;
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
 .ctaSection {
   margin: 0 auto;
   max-width: 1200px;
@@ -412,5 +433,6 @@
 @media (max-width: 900px) {
   .salesHero__inner { grid-template-columns: 1fr; }
   .salesSection { padding-left: 20px; padding-right: 20px; }
+  .teaserSection { padding-left: 20px; padding-right: 20px; }
   .ctaSection { padding-left: 20px; padding-right: 20px; }
 }
