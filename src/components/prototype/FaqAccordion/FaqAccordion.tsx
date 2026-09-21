@@ -55,7 +55,9 @@ export function FaqAccordion({ items }: { items: Array<{ question: string; answe
             >
               {/* Внутренняя обёртка нужна приёму 0fr → 1fr: она несёт отступы и умеет сжиматься до нуля. */}
               <div className={styles.faqAnswerInner}>
-                <p className={styles.faqAnswerText}>{item.answer}</p>
+                <p className={styles.faqAnswerText}>
+                  <span>{item.answer}</span>
+                </p>
               </div>
             </div>
           </div>

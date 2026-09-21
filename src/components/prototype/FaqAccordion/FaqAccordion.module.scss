@@ -49,9 +49,24 @@
 
 .faqIcon {
   align-items: center;
+  background: var(--brand-tint);
+  block-size: 32px;
+  border: 1px solid var(--brand-line);
+  border-radius: var(--radius-full);
   color: var(--brand);
   display: flex;
   flex: none;
+  inline-size: 32px;
+  justify-content: center;
+  transition:
+    background-color var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+}
+
+.faqItemOpen .faqIcon {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: var(--text-on-brand);
 }
 
 /*
@@ -70,18 +85,28 @@
   grid-template-rows: 1fr;
 }
 
-/* min-block-size: 0 обязателен — у grid-элемента он по умолчанию auto, и трек не сожмётся. */
+/*
+  min-block-size: 0 обязателен — у grid-элемента он по умолчанию auto, и трек не сожмётся.
+  Отступы и разделитель лежат на тексте, а не на обёртке: padding обёртки
+  трек 0fr не сжимает, и в закрытом вопросе торчала первая строка ответа.
+*/
 .faqAnswerInner {
-  border-block-start: 1px solid var(--border);
   min-block-size: 0;
   overflow: hidden;
-  padding: var(--sp-4) var(--sp-5) var(--sp-5);
 }
 
 .faqAnswerText {
+  border-block-start: 1px solid var(--border);
   color: var(--text-2);
   font-size: var(--fs-small);
   line-height: var(--lh-relaxed);
+  margin-inline: var(--sp-5);
+  padding-block: var(--sp-4) var(--sp-5);
+}
+
+/* Мера строки — на самом тексте, разделитель тянется на всю ширину карточки. */
+.faqAnswerText > span {
+  display: block;
   max-inline-size: var(--measure);
 }
 
@@ -90,8 +115,8 @@
     padding-inline: var(--sp-4);
   }
 
-  .faqAnswerInner {
-    padding-inline: var(--sp-4);
+  .faqAnswerText {
+    margin-inline: var(--sp-4);
   }
 }
 
