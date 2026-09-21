@@ -163,13 +163,20 @@
 */
 @media (min-width: 769px) {
   .hero {
-    block-size: min(760px, 100svh);
+    block-size: 100svh;
     display: flex;
   }
 
   .inner {
     align-self: center;
+    block-size: 100%;
+    display: flex;
+    flex-direction: column;
     padding-block: var(--header-h) 0;
+  }
+
+  .stats {
+    margin-block-start: auto;
   }
 }
 
