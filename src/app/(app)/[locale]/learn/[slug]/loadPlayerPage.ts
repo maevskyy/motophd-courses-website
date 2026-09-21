@@ -11,7 +11,8 @@ import {
   parseLessonOrder,
   toAppLocale,
   toCurriculumModules,
-  toPlayerContent
+  toPlayerContent,
+  toPlayerDownloads
 } from '@/lib/data';
 import type { PlayerLesson } from '@/lib/data';
 import { getPayloadClient } from '@/lib/data/payload';
@@ -49,8 +50,14 @@ export const loadPlayerPage = async ({ locale, order, slug }: Params) => {
     payload,
     await getCourseLessons(course.id, safeLocale, user)
   );
-  const player = toPlayerContent(course, lessons, safeLocale, {
-    playbackUrl: (streamVideoId) => getPlaybackUrl(streamVideoId, { free: false })
+  const currentLesson = getPlayerLesson(lessons, parseLessonOrder(order));
+  const player = toPlayerContent(course, lessons, {
+    currentLesson,
+    downloads: toPlayerDownloads(lessons, safeLocale),
+    locale: safeLocale,
+    videoEmbedUrl: currentLesson?.streamVideoId
+      ? getPlaybackUrl(currentLesson.streamVideoId, { free: false })
+      : null
   });
   return {
     activeOrder: order === undefined ? undefined : requireLessonOrder(player.lessons, order),
@@ -89,7 +96,7 @@ const withPdfMedia = async (payload: Payload, lessons: Lesson[]): Promise<Lesson
 const requireLessonOrder = (lessons: PlayerLesson[], segment: string) => {
   const order = parseLessonOrder(segment);
 
-  if (order === null || !getPlayerLesson(lessons, order)) {
+  if (order === undefined || !getPlayerLesson(lessons, order)) {
     notFound();
   }
 

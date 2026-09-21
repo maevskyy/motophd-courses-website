@@ -53,16 +53,6 @@ export type PlayerContent = {
   courseSlug: string;
   courseTitle: string;
   lessons: PlayerLesson[];
-  title?: string;
-  subtitle?: string;
-  videoMeta?: string;
-  notes?: string[];
-  feel?: string;
-  overviewTitle?: string;
-  overviewCopy?: string;
-  moduleOutcome?: string[];
-  sidebarTitle?: string;
-  keyTakeaways?: string[];
   // Текущий урок: order для подсветки в боковой панели, номер и общее число —
   // для подписи «УРОК N ИЗ M». Прогресса прохождения нет (ADR-9).
   currentLessonOrder?: number | null;

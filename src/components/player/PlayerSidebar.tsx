@@ -2,14 +2,13 @@ import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
 import { AppSidebar } from '@/components/app/AppShell';
 import { Icon } from '@/components/ui/Icon';
-import type { CurriculumModule, PlayerContent } from '@/lib/data';
+import type { PlayerContent } from '@/lib/data';
 import { getProgressSummary, type CourseProgress } from '@/lib/progress';
 import { PlayerModules } from './PlayerModules';
 import styles from './PlayerSidebar.module.scss';
 
 interface Props {
   activeOrder: number;
-  curriculum: CurriculumModule[];
   // Узкий экран: сайдбар — drawer, кнопка в шапке закрывает его, а не сворачивает.
   narrow: boolean;
   onHide: () => void;
@@ -21,7 +20,6 @@ interface Props {
 // ссылкой «← Мой курс», названием и прогрессом, дерево модулей, «На сайт».
 export function PlayerSidebar({
   activeOrder,
-  curriculum,
   narrow,
   onHide,
   player,
@@ -74,7 +72,6 @@ export function PlayerSidebar({
     <AppSidebar footer={footer} header={header} navLabel={t('player.contents')}>
       <PlayerModules
         activeOrder={activeOrder}
-        curriculum={curriculum}
         player={player}
         progress={progress}
       />

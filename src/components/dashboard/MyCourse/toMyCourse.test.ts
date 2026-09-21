@@ -31,9 +31,8 @@ describe('toMyCourse', () => {
       title: 'The Art of Braking',
       upgradePrice: 100
     });
-    expect(result.modules).toHaveLength(1);
-    expect(result.modules[0].title).toBe('The Art of Braking');
-    expect(result.modules[0].lessons).toEqual([
+    expect(result.modules).toHaveLength(2);
+    expect(result.modules.flatMap((module) => module.lessons)).toEqual([
       { durationSec: 300, hasPdf: false, order: 1, title: 'Intro' },
       { durationSec: null, hasPdf: true, order: 2, title: 'Drill sheet' }
     ]);

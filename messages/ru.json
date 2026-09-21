@@ -137,7 +137,7 @@
   },
   "player": {
     "downloads": "Материалы урока",
-    "lessonMeta": "Модуль {module} · Урок {lesson} из {total}",
+    "lessonMeta": "Урок {current} из {total}",
     "lessonNav": "Навигация по урокам",
     "prevLesson": "Предыдущий",
     "completeAndContinue": "Завершить и продолжить",

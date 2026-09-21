@@ -116,24 +116,19 @@ describe('MyCoursesPanel', () => {
       '/learn/lean/2'
     );
     expect(screen.getByRole('progressbar')).toHaveAttribute('value', '1');
-    // Пройденный урок — в свёрнутом модуле, поэтому ищем и среди скрытых.
-    expect(
-      screen.getByRole('link', { hidden: true, name: /lessonDone\s*video lesson/i })
-    ).toHaveAttribute('href', '/learn/lean/1');
-    expect(screen.getByRole('link', { name: /motorcycle preparation\s*lessonPdf/i })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: /video lesson/i })).toHaveAttribute('href', '/learn/lean/1');
+    expect(screen.getByRole('link', { name: /motorcycle preparation/i })).toHaveAttribute(
       'href',
       '/learn/lean/3'
     );
   });
 
-  it('opens only the module with the next lesson', async () => {
+  it('shows the course lessons without module controls', async () => {
     storeProgress('lean', [1]);
     render(<MyCoursesPanel courses={[lean]} name="Student" />);
 
-    expect(await screen.findByRole('button', { expanded: true })).toHaveTextContent(
-      'Level 02 — Preparation'
-    );
-    expect(screen.getByRole('button', { expanded: false })).toHaveTextContent('Level 01 — Theory');
+    expect(await screen.findByRole('link', { name: /video lesson/i })).toBeVisible();
+    expect(screen.queryByRole('button', { expanded: true })).not.toBeInTheDocument();
   });
 
   it('renders one block per purchased course', () => {

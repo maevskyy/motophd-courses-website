@@ -1,6 +1,6 @@
 import type { Course, Lesson } from '@/payload-types';
 import type { CourseCurriculumLesson } from './courses';
-import { curriculumLevelsByCourse, readingLabels, salesText } from './localizedText';
+import { readingLabels, salesText } from './localizedText';
 import type {
   AppLocale,
   CourseCardCourse,
@@ -95,33 +95,12 @@ export const toCurriculumModules = (
     return [];
   }
 
-  const levels = curriculumLevelsByCourse[course.slug]?.[locale];
-  const totalLevelLessons = levels?.reduce((sum, level) => sum + level.count, 0);
-
-  if (!levels || totalLevelLessons !== lessons.length) {
-    return [
-      {
-        number: '1',
-        title: course.title,
-        open: true,
-        lessons: lessons.map((lesson) => toCurriculumLesson(lesson, locale))
-      }
-    ];
-  }
-
-  let cursor = 0;
-
-  return levels.map((level, levelIndex) => {
-    const levelLessons = lessons.slice(cursor, cursor + level.count);
-    cursor += level.count;
-
-    return {
-      number: String(levelIndex + 1).padStart(2, '0'),
-      title: level.title,
-      open: levelIndex === 0,
-      lessons: levelLessons.map((lesson) => toCurriculumLesson(lesson, locale))
-    };
-  });
+  return lessons.map((lesson, index) => ({
+    number: String(index + 1).padStart(2, '0'),
+    title: lesson.title,
+    open: index === 0,
+    lessons: [toCurriculumLesson(lesson, locale)]
+  }));
 };
 
 const sortLessonsByOrder = <T extends Pick<Lesson, 'order'>>(lessons: T[]) =>
@@ -168,7 +147,6 @@ export const toPlayerContent = (
     locale?: AppLocale;
   }
 ): PlayerContent => {
-  const notes = course.commonMistakes?.split('\n').filter(Boolean) || [];
   const position = currentLesson ? sortLessonsByOrder(lessons).indexOf(currentLesson) : -1;
 
   return {
@@ -185,18 +163,6 @@ export const toPlayerContent = (
       type: lesson.type,
       videoEmbedUrl: lesson.id === currentLesson?.id ? videoEmbedUrl || null : null
     })),
-    title: currentLesson?.title || course.title,
-    subtitle: course.keyPoint || course.description || '',
-    videoMeta: currentLesson?.durationSec
-      ? `${Math.round(currentLesson.durationSec / 60)}:00 · MotoPhD Online`
-      : 'MotoPhD Online',
-    notes,
-    feel: course.whatYouShouldFeel || '',
-    overviewTitle: course.title,
-    overviewCopy: course.description || '',
-    moduleOutcome: course.outcomes?.map(({ text }) => text).filter(Boolean) || [],
-    sidebarTitle: course.title,
-    keyTakeaways: course.keyPoint?.split('\n').filter(Boolean) || [],
     currentLessonOrder: currentLesson?.order ?? null,
     lessonNumber: position + 1,
     lessonCount: lessons.length,

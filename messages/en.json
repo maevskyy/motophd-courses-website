@@ -137,7 +137,7 @@
   },
   "player": {
     "downloads": "Lesson materials",
-    "lessonMeta": "Module {module} · Lesson {lesson} of {total}",
+    "lessonMeta": "Lesson {current} of {total}",
     "lessonNav": "Lesson navigation",
     "prevLesson": "Previous",
     "completeAndContinue": "Complete and continue",

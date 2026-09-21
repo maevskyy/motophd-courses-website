@@ -8,7 +8,6 @@ import { cx } from '@/lib/classNames';
 import type { CurriculumModule, PlayerContent } from '@/lib/data';
 import { lessonHref, useCourseProgress } from '@/lib/progress';
 import { getActiveLesson } from './activeLesson';
-import { LessonBody } from './LessonBody';
 import { LessonDownloads } from './LessonDownloads';
 import { LessonNav } from './LessonNav';
 import { LessonVideo } from './LessonVideo';
@@ -72,7 +71,6 @@ export function CoursePlayerClient({ activeOrder, curriculum, player }: Props) {
           ) : (
             <PlayerSidebar
               activeOrder={lesson.order}
-              curriculum={curriculum}
               narrow={sidebar.narrow}
               onHide={sidebar.narrow ? sidebar.closeDrawer : sidebar.toggleCollapsed}
               player={player}
@@ -103,22 +101,20 @@ export function CoursePlayerClient({ activeOrder, curriculum, player }: Props) {
             <header className={styles.lessonHeader}>
               <p className={styles.lessonMeta}>
                 {t('lessonMeta', {
-                  lesson: lesson.order,
-                  module: lesson.module,
+                  current: index + 1,
                   total: player.lessons.length
                 })}
               </p>
               <h1 className={styles.lessonTitle}>{lesson.title}</h1>
             </header>
 
+            <LessonDownloads download={lesson.download} />
             <LessonNav
               courseSlug={player.courseSlug}
               hasNext={Boolean(next)}
               onComplete={complete}
               prev={prev}
             />
-            <LessonBody body={lesson.body} feel={player.feel} keyTakeaways={player.keyTakeaways} />
-            <LessonDownloads download={lesson.download} />
           </div>
         </div>
       </AppShell>

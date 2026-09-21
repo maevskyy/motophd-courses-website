@@ -49,8 +49,6 @@ const body: NonNullable<PlayerLesson['body']> = {
 const player: PlayerContent = {
   courseSlug: 'lean',
   courseTitle: 'Lean',
-  feel: 'Calm',
-  keyTakeaways: ['Look through the turn'],
   lessons: [
     makeLesson(1),
     makeLesson(2),
@@ -99,20 +97,18 @@ describe('CoursePlayerClient', () => {
     render(<CoursePlayerClient activeOrder={3} curriculum={curriculum} player={player} />);
 
     expect(heading()).toHaveTextContent('L3');
-    expect(screen.getByText('lessonMeta {"lesson":3,"module":2,"total":4}')).toBeInTheDocument();
+    expect(screen.getByText('lessonMeta {"current":3,"total":4}')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /prevLesson/ })).toHaveAttribute('href', '/learn/lean/2');
-    expect(screen.getByTestId('rich-text')).toBeInTheDocument();
-    expect(screen.getByText('Look through the turn')).toBeInTheDocument();
     expect(lessonLink(3)).toHaveAttribute('aria-current', 'page');
     expect(lessonLink(4)).toHaveAttribute('href', '/learn/lean/4');
     expect(lessonLink(4)).not.toHaveAttribute('aria-current');
-    expect(screen.getByRole('link', { name: 'L4pdf' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: '04 L4pdf' })).toBeInTheDocument();
     expect(screen.queryByRole('link', { name: /lessonDone/ })).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: /completeAndContinue/ }));
 
     expect(storedDone()).toEqual([3]);
-    expect(screen.getByRole('link', { name: 'lessonDoneL3' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'lessonDone03 L3' })).toBeInTheDocument();
     expect(mocks.push).toHaveBeenCalledWith('/learn/lean/4');
   });
 
@@ -140,18 +136,10 @@ describe('CoursePlayerClient', () => {
     expect(mocks.push).not.toHaveBeenCalled();
   });
 
-  it('opens the module of the active lesson and lets the others be toggled', () => {
+  it('shows every lesson as a flat list', () => {
     render(<CoursePlayerClient activeOrder={3} curriculum={curriculum} player={player} />);
 
-    const theory = screen.getByRole('button', { name: /Theory/ });
-
-    expect(theory).toHaveAttribute('aria-expanded', 'false');
-    expect(screen.getByRole('button', { name: /Prep/ })).toHaveAttribute('aria-expanded', 'true');
-    expect(screen.queryByRole('link', { name: /L1$/ })).not.toBeInTheDocument();
-
-    fireEvent.click(theory);
-
-    expect(theory).toHaveAttribute('aria-expanded', 'true');
+    expect(screen.getAllByRole('link', { name: /L[1-4]/ })).toHaveLength(4);
     expect(lessonLink(1)).toHaveAttribute('href', '/learn/lean/1');
   });
 
@@ -243,9 +231,10 @@ describe('CoursePlayerClient', () => {
   it('on the last lesson leads to the dashboard and lists only that lesson PDF by file name', () => {
     render(<CoursePlayerClient activeOrder={4} curriculum={curriculum} player={player} />);
 
-    expect(screen.getByText('pdfForLesson')).toBeInTheDocument();
-    expect(screen.getByText('lesson-4.pdf')).toBeInTheDocument();
-    expect(screen.queryByText('Видеоролик')).not.toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'pdfLinkLabel' })).toHaveAttribute(
+      'href',
+      '/api/lessons/4/pdf'
+    );
     expect(screen.queryByText('videoUnavailable')).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: 'finishCourse' }));
