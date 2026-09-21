@@ -1,18 +1,36 @@
 @use '@/styles/mixins' as *;
 
+/*
+  Лента со snap-остановками на всех ширинах — как на проде: одна строка
+  карточек, скролл живёт внутри ленты. contain: paint — не украшение,
+  а починка: без него Chromium отдаёт scrollWidth ленты наружу, и по
+  горизонтали начинает ездить вся страница (замер: документ 2337px при
+  экране 390px). Ни overflow: clip на обёртке, ни отключение scroll-snap
+  этого не снимают, а `contain` возвращает документу честную ширину.
+*/
 .list {
-  @include grid-cards(300px);
-
+  contain: paint;
+  display: flex;
+  gap: var(--sp-5);
   list-style: none;
+  min-inline-size: 0;
+  overflow: auto hidden;
+  overscroll-behavior-x: contain;
+  padding-block-end: var(--sp-3);
+  scroll-snap-type: x mandatory;
+  scrollbar-color: var(--border-strong) transparent;
+  scrollbar-width: thin;
 }
 
 .card {
   @include card;
 
   display: flex;
+  flex: 0 0 300px;
   flex-direction: column;
   gap: var(--sp-3);
   padding: var(--sp-5);
+  scroll-snap-align: start;
 }
 
 .stars {
@@ -87,31 +105,13 @@
   justify-content: center;
 }
 
-/*
-  Телефон: не столбец из двенадцати карточек, а лента со snap-остановками.
-  Скролл живёт внутри ленты — карточки шире экрана не становятся, поэтому
-  горизонтальной прокрутки у страницы не появляется.
-*/
+/* Телефон: карточка чуть уже экрана, чтобы был виден край следующей. */
 @media (max-width: 700px) {
   .list {
-    /*
-      contain: paint — не украшение, а починка. Без него Chromium отдаёт
-      scrollWidth ленты наружу, и по горизонтали начинает ездить вся страница
-      (замер: документ 2337px при экране 390px). Ни overflow: clip на обёртке,
-      ни отключение scroll-snap этого не снимают, а `contain` возвращает
-      документу честные 390px. Лента внутри листается как прежде.
-    */
-    contain: paint;
-    display: flex;
-    min-inline-size: 0;
-    overflow: auto hidden;
-    overscroll-behavior-x: contain;
-    padding-block-end: var(--sp-2);
-    scroll-snap-type: x mandatory;
+    gap: var(--sp-4);
   }
 
   .card {
-    flex: 0 0 min(84%, 320px);
-    scroll-snap-align: start;
+    flex-basis: min(84%, 320px);
   }
 }
