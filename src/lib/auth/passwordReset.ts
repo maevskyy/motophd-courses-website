@@ -2,6 +2,7 @@
 
 import { cookies, headers } from 'next/headers';
 import { redirect } from 'next/navigation';
+import { toLocale } from '@/i18n/locales';
 import { getPayloadClient } from '@/lib/data/payload';
 import { sendPasswordReset } from '@/lib/email';
 import { getAppUrl } from '@/lib/email/templates';
@@ -10,8 +11,6 @@ import { MIN_PASSWORD_LENGTH } from './accountFormState';
 import { setAuthCookie } from './authCookie';
 import type { ForgotPasswordFormState, ResetPasswordFormState } from './passwordResetFormState';
 
-const getLocale = (value: FormDataEntryValue | null) => (value === 'ru' ? 'ru' : 'en');
-
 export async function forgotPasswordAction(
   _previousState: ForgotPasswordFormState,
   formData: FormData
@@ -19,7 +18,7 @@ export async function forgotPasswordAction(
   const email = String(formData.get('email') || '')
     .trim()
     .toLowerCase();
-  const locale = getLocale(formData.get('locale'));
+  const locale = toLocale(formData.get('locale'));
 
   const ip = getClientIp(await headers());
   const ipDecision = consumeRateLimit(`forgot:ip:${ip}`, RATE_LIMITS.forgotIp);
@@ -60,7 +59,7 @@ export async function resetPasswordAction(
   const token = String(formData.get('token') || '');
   const password = String(formData.get('password') || '');
   const confirmPassword = String(formData.get('confirmPassword') || '');
-  const locale = getLocale(formData.get('locale'));
+  const locale = toLocale(formData.get('locale'));
 
   if (password.length < MIN_PASSWORD_LENGTH) {
     return { status: 'tooShort' };

@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
+import { toLocale } from '@/i18n/locales';
 import { consumePostPaymentSession } from '@/lib/payments/session';
-
-const toLocale = (value: string | null) => (value === 'ru' ? 'ru' : 'en');
 
 export async function POST(
   request: Request,

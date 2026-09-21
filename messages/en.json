@@ -2,6 +2,7 @@
   "nav": {
     "courses": "Courses",
     "about": "About",
+    "language": "Language",
     "login": "Login",
     "dashboard": "My Dashboard",
     "cta": "Start Learning",
@@ -131,8 +132,6 @@
     "pdfLinkDescription": "PDF opens securely in your browser"
   },
   "toast": {
-    "langEn": "Switched to English",
-    "langRu": "Переключено на русский",
     "login": "Welcome back! Redirecting to dashboard...",
     "logout": "Signed out.",
     "acceptDisclaimer": "Please accept the riding disclaimer to continue.",

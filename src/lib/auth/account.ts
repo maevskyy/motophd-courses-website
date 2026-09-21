@@ -4,6 +4,7 @@ import { randomBytes } from 'node:crypto';
 import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+import { toLocale } from '@/i18n/locales';
 import { getPayloadClient } from '@/lib/data/payload';
 import { MIN_PASSWORD_LENGTH } from './accountFormState';
 import type {
@@ -122,7 +123,7 @@ export async function deleteAccountAction(
   const confirmEmail = String(formData.get('confirmEmail') || '')
     .trim()
     .toLowerCase();
-  const locale = formData.get('locale') === 'ru' ? 'ru' : 'en';
+  const locale = toLocale(formData.get('locale'));
 
   const user = await getCurrentUser();
 

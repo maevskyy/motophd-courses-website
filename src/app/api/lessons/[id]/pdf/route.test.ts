@@ -78,6 +78,33 @@ describe('GET /api/lessons/[id]/pdf', () => {
     expect(mocks.readMediaObject).not.toHaveBeenCalled();
   });
 
+  it('rejects unknown locales before touching Payload', async () => {
+    mocks.getCurrentUser.mockResolvedValue({ id: 7, role: 'student' });
+
+    const response = await GET(new Request('http://localhost/api/lessons/2/pdf?locale=de'), {
+      params: Promise.resolve({ id: '2' })
+    });
+
+    expect(response.status).toBe(404);
+    expect(mocks.getPayloadClient).not.toHaveBeenCalled();
+  });
+
+  it('serves the ukrainian link from the russian file: uk lessons fall back to ru', async () => {
+    const findByID = vi.fn().mockResolvedValue(lesson);
+    mocks.getPayloadClient.mockResolvedValue({ findByID });
+    mocks.getCurrentUser.mockResolvedValue({ id: 7, role: 'student' });
+    mocks.hasPaidAccess.mockResolvedValue(true);
+
+    const response = await GET(new Request('http://localhost/api/lessons/2/pdf?locale=uk'), {
+      params: Promise.resolve({ id: '2' })
+    });
+
+    expect(response.status).toBe(200);
+    expect(findByID).toHaveBeenCalledWith(
+      expect.objectContaining({ collection: 'lessons', fallbackLocale: 'ru', id: '2', locale: 'uk' })
+    );
+  });
+
   it('returns a private inline PDF only after paid-access verification', async () => {
     const user = { id: 7, role: 'student' };
     mocks.getCurrentUser.mockResolvedValue(user);

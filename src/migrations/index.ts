@@ -3,6 +3,7 @@ import * as migration_20260819_202728_add_media_prefix from './20260819_202728_a
 import * as migration_20260819_203905 from './20260819_203905';
 import * as migration_20260831_193143 from './20260831_193143';
 import * as migration_20260906_140321_purchase_locale from './20260906_140321_purchase_locale';
+import * as migration_20260914_175146_add_uk_locale from './20260914_175146_add_uk_locale';
 
 export const migrations = [
   {
@@ -28,6 +29,11 @@ export const migrations = [
   {
     up: migration_20260906_140321_purchase_locale.up,
     down: migration_20260906_140321_purchase_locale.down,
-    name: '20260906_140321_purchase_locale'
+    name: '20260906_140321_purchase_locale',
+  },
+  {
+    up: migration_20260914_175146_add_uk_locale.up,
+    down: migration_20260914_175146_add_uk_locale.down,
+    name: '20260914_175146_add_uk_locale'
   },
 ];

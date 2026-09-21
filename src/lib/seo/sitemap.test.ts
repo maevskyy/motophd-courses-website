@@ -14,22 +14,28 @@ const source = {
 };
 
 describe('buildSitemapEntries', () => {
-  it('lists landing, catalog, every course and every legal page in both locales', () => {
+  it('lists landing, catalog, every course and every legal page in every locale', () => {
     const urls = buildSitemapEntries(source).map((entry) => entry.url);
 
     expect(urls).toEqual([
       'https://motophd.com/en',
       'https://motophd.com/ru',
+      'https://motophd.com/uk',
       'https://motophd.com/en/courses',
       'https://motophd.com/ru/courses',
+      'https://motophd.com/uk/courses',
       'https://motophd.com/en/courses/lean',
       'https://motophd.com/ru/courses/lean',
+      'https://motophd.com/uk/courses/lean',
       'https://motophd.com/en/courses/counter-steering',
       'https://motophd.com/ru/courses/counter-steering',
+      'https://motophd.com/uk/courses/counter-steering',
       'https://motophd.com/en/privacy',
       'https://motophd.com/ru/privacy',
+      'https://motophd.com/uk/privacy',
       'https://motophd.com/en/terms',
-      'https://motophd.com/ru/terms'
+      'https://motophd.com/ru/terms',
+      'https://motophd.com/uk/terms'
     ]);
   });
 
@@ -37,12 +43,13 @@ describe('buildSitemapEntries', () => {
     const entries = buildSitemapEntries(source);
     const lean = entries.filter((entry) => entry.url.endsWith('/courses/lean'));
 
-    expect(lean).toHaveLength(2);
+    expect(lean).toHaveLength(3);
 
     for (const entry of lean) {
       expect(entry.alternates?.languages).toEqual({
         en: 'https://motophd.com/en/courses/lean',
         ru: 'https://motophd.com/ru/courses/lean',
+        uk: 'https://motophd.com/uk/courses/lean',
         'x-default': 'https://motophd.com/en/courses/lean'
       });
     }
@@ -78,8 +85,10 @@ describe('buildSitemapEntries', () => {
     expect(urls).toEqual([
       'https://motophd.com/en',
       'https://motophd.com/ru',
+      'https://motophd.com/uk',
       'https://motophd.com/en/courses',
-      'https://motophd.com/ru/courses'
+      'https://motophd.com/ru/courses',
+      'https://motophd.com/uk/courses'
     ]);
   });
 });

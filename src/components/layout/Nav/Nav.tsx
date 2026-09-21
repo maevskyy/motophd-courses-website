@@ -2,23 +2,20 @@
 
 import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useId, useRef, useState } from 'react';
-import { Link, usePathname } from '@/i18n/routing';
+import { Link, usePathname, useRouter } from '@/i18n/routing';
 import { useAuthStatus } from '@/components/providers/AuthStatusProvider';
-import { useToast } from '@/components/providers/ToastProvider';
 import { Icon } from '@/components/ui/Icon';
 import { cx } from '@/lib/classNames';
+import { locales, type Locale } from '@/i18n/locales';
 import styles from './Nav.module.scss';
-import type { Locale } from '@/i18n/routing';
-
-const LOCALES: Locale[] = ['en', 'ru'];
 
 export function Nav() {
   const isLoggedIn = useAuthStatus();
   const t = useTranslations();
   const locale = useLocale() as Locale;
+  // usePathname из next-intl отдаёт путь уже без префикса локали.
   const pathname = usePathname();
-  const localeAgnosticPathname = stripLocalePrefix(pathname);
-  const { showToast } = useToast();
+  const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuId = useId();
   const panelRef = useRef<HTMLDivElement>(null);
@@ -71,18 +68,19 @@ export function Nav() {
   );
 
   const langSwitch = (
-    <div aria-label="Language" className={styles.lang} role="group">
-      {LOCALES.map((item) => (
+    <div aria-label={t('nav.language')} className={styles.lang} role="group">
+      {locales.map((item) => (
         <Link
           aria-current={item === locale ? 'true' : undefined}
           className={cx(styles.langOption, item === locale && styles.langOptionActive)}
-          href={localeAgnosticPathname}
+          href={pathname}
           key={item}
           locale={item}
-          onClick={() => {
-            if (item !== locale) {
-              showToast(item === 'ru' ? t('toast.langRu') : t('toast.langEn'));
-            }
+          onClick={(event) => {
+            // Query сохраняем (например, ?next= на логине): страница та же,
+            // меняется только язык. href остаётся рабочим и без JS.
+            event.preventDefault();
+            router.replace(`${pathname}${window.location.search}`, { locale: item });
           }}
         >
           {item.toUpperCase()}
@@ -145,10 +143,4 @@ export function Nav() {
       </div>
     </header>
   );
-}
-
-function stripLocalePrefix(pathname: string) {
-  const pathnameWithoutLocale = pathname.replace(/^\/(?:en|ru)(?=\/|$)/, '');
-
-  return pathnameWithoutLocale || '/';
 }

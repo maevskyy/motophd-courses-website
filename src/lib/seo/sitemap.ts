@@ -49,7 +49,7 @@ const collectPages = ({ courses, legalPages }: SitemapSource): SitemapPage[] => 
 ];
 
 // Каждая страница — по записи на локаль, и в каждой записи полный набор
-// hreflang-альтернатив (en, ru, x-default), как требует Google для sitemap.
+// hreflang-альтернатив (en, ru, uk, x-default), как требует Google для sitemap.
 export const buildSitemapEntries = (source: SitemapSource): MetadataRoute.Sitemap =>
   collectPages(source).flatMap((page) => {
     const languages = buildLanguageAlternates(source.siteUrl, page.path);

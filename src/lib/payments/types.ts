@@ -1,3 +1,5 @@
+import type { Locale } from '@/i18n/locales';
+
 export const paymentTiers = ['standard', 'feedback', 'feedback_upgrade'] as const;
 
 export type PaymentTier = (typeof paymentTiers)[number];
@@ -5,7 +7,7 @@ export type PaymentTier = (typeof paymentTiers)[number];
 export type CheckoutRequest = {
   amount: number;
   currency: 'EUR';
-  locale: 'en' | 'ru';
+  locale: Locale;
   orderReference: string;
   postPaymentToken?: string;
   productName: string;

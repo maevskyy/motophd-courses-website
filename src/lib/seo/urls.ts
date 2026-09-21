@@ -19,7 +19,7 @@ export const resolveSeoLocale = (locale: string): Locale | null =>
   (locales as readonly string[]).includes(locale) ? (locale as Locale) : null;
 
 // Пары hreflang одной страницы: каждая локаль + x-default на дефолтную.
-// Без этого Google склеивает EN и RU как дубли.
+// Без этого Google склеивает языковые версии как дубли.
 export const buildLanguageAlternates = (siteUrl: string, path: string): LanguageAlternates => {
   const byLocale = Object.fromEntries(
     locales.map((locale) => [locale, toAbsoluteUrl(siteUrl, localizedPath(locale, path))])

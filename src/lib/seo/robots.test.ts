@@ -24,7 +24,12 @@ describe('buildRobots', () => {
       '/ru/login',
       '/ru/dashboard',
       '/ru/feedback',
-      '/ru/learn'
+      '/ru/learn',
+      '/uk/checkout',
+      '/uk/login',
+      '/uk/dashboard',
+      '/uk/feedback',
+      '/uk/learn'
     ]);
   });
 

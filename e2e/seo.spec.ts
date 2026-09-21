@@ -20,10 +20,11 @@ test('robots.txt closes admin, api and private sections and links the sitemap', 
   expect(body).toMatch(/^Disallow: \/ru\/login$/m);
   expect(body).toMatch(/^Disallow: \/en\/dashboard$/m);
   expect(body).toMatch(/^Disallow: \/ru\/learn$/m);
+  expect(body).toMatch(/^Disallow: \/uk\/dashboard$/m);
   expect(body).toMatch(/^Sitemap: https?:\/\/[^/\s]+\/sitemap\.xml$/m);
 });
 
-test('sitemap.xml lists both locales with hreflang alternates', async ({ request }) => {
+test('sitemap.xml lists every locale with hreflang alternates', async ({ request }) => {
   const response = await request.get('/sitemap.xml');
   const body = await response.text();
 
@@ -37,8 +38,12 @@ test('sitemap.xml lists both locales with hreflang alternates', async ({ request
     '/ru/courses',
     '/en/courses/lean',
     '/ru/courses/lean',
+    '/uk',
+    '/uk/courses',
+    '/uk/courses/lean',
     '/en/privacy',
-    '/ru/privacy'
+    '/ru/privacy',
+    '/uk/privacy'
   ]) {
     expect(body, `sitemap lacks ${path}`).toMatch(
       new RegExp(`<loc>https?://[^<]+${path.replace(/\//g, '\\/')}</loc>`)
@@ -47,6 +52,7 @@ test('sitemap.xml lists both locales with hreflang alternates', async ({ request
 
   expect(body).toMatch(/hreflang="en" href="https?:\/\/[^"]+\/en\/courses\/lean"/);
   expect(body).toMatch(/hreflang="ru" href="https?:\/\/[^"]+\/ru\/courses\/lean"/);
+  expect(body).toMatch(/hreflang="uk" href="https?:\/\/[^"]+\/uk\/courses\/lean"/);
   expect(body).toMatch(/hreflang="x-default" href="https?:\/\/[^"]+\/en\/courses\/lean"/);
   expect(body).not.toContain('/checkout');
   expect(body).not.toContain('/login');
@@ -67,6 +73,9 @@ test('course page head carries canonical, hreflang, description and social cards
   );
   expect(await headAttribute(page, 'link[rel="alternate"][hreflang="en"]', 'href')).toMatch(
     /\/en\/courses\/lean$/
+  );
+  expect(await headAttribute(page, 'link[rel="alternate"][hreflang="uk"]', 'href')).toMatch(
+    /\/uk\/courses\/lean$/
   );
   expect(await headAttribute(page, 'link[rel="alternate"][hreflang="x-default"]', 'href')).toMatch(
     /\/en\/courses\/lean$/

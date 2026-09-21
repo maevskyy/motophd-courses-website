@@ -1,5 +1,7 @@
 import type { CollectionConfig, PayloadRequest } from 'payload';
 
+import { keepOnlyCurrentSession } from '@/lib/auth/singleSession';
+
 const canAccessAdmin = ({ req: { user } }: { req: PayloadRequest }) => user?.role === 'admin';
 
 // Payload при неуказанном access пускает любого залогиненного, поэтому каждая
@@ -60,6 +62,8 @@ export const Users: CollectionConfig = {
     update: isAdminOrSelf
   },
   hooks: {
+    // Одна активная сессия: вход с компа выбивает телефон (см. singleSession.ts).
+    afterLogin: [keepOnlyCurrentSession],
     beforeChange: [
       async ({ data, operation, req }) => {
         if (operation !== 'create') {

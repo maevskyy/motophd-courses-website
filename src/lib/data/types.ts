@@ -1,7 +1,8 @@
 import type { IconName } from '@/components/ui/Icon';
+import type { Locale } from '@/i18n/locales';
 import type { Course, LegalPage, Lesson } from '@/payload-types';
 
-export type AppLocale = 'en' | 'ru';
+export type AppLocale = Locale;
 
 export type CourseCardCourse = {
   slug: string;
@@ -41,6 +42,7 @@ export type SalesContent = {
   guarantee: string;
   modulesTitle: string;
   enrollCta: string;
+  teaserTitle: string;
 };
 
 export type DashboardContent = {

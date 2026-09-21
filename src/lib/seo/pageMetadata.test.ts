@@ -19,6 +19,7 @@ describe('buildPageMetadata', () => {
       languages: {
         en: 'https://motophd.com/en/courses/lean',
         ru: 'https://motophd.com/ru/courses/lean',
+        uk: 'https://motophd.com/uk/courses/lean',
         'x-default': 'https://motophd.com/en/courses/lean'
       }
     });
@@ -26,7 +27,7 @@ describe('buildPageMetadata', () => {
 
   it('fills open graph with the localized page data and the default image', () => {
     expect(metadata.openGraph).toMatchObject({
-      alternateLocale: ['en_US'],
+      alternateLocale: ['en_US', 'uk_UA'],
       description: 'Learn to lean.',
       images: [
         {
@@ -74,6 +75,17 @@ describe('buildPageMetadata', () => {
       { alt: 'Lean', height: 800, url: 'https://motophd.com/api/media/file/cover.jpg', width: 1200 }
     ]);
     expect(withImage.twitter?.images).toEqual(['https://motophd.com/api/media/file/cover.jpg']);
+  });
+
+  it('marks ukrainian pages with the uk_UA open graph locale', () => {
+    const ukrainian = buildPageMetadata({ locale: 'uk', path: '/courses', siteUrl, title: 'Курси' });
+
+    expect(ukrainian.openGraph).toMatchObject({
+      alternateLocale: ['en_US', 'ru_RU'],
+      locale: 'uk_UA',
+      url: 'https://motophd.com/uk/courses'
+    });
+    expect(ukrainian.alternates?.canonical).toBe('https://motophd.com/uk/courses');
   });
 
   it('falls back to the site description when the page has none', () => {

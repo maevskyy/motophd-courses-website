@@ -2,6 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
+import type { Locale } from '@/i18n/locales';
 import { Link } from '@/i18n/routing';
 import { AppNavButton, AppShell, AppSidebar } from '@/components/app/AppShell';
 import { Icon, type IconName } from '@/components/ui/Icon';
@@ -28,7 +29,7 @@ interface Props {
   displayName: string;
   email: string;
   feedbackUpgradeSlugs: string[];
-  locale: 'en' | 'ru';
+  locale: Locale;
   name: string;
   purchases: PurchaseHistoryItem[];
 }

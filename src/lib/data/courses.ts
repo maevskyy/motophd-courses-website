@@ -1,8 +1,9 @@
+import { getFallbackLocale, toLocale } from '@/i18n/locales';
 import type { LegalPage, Lesson, User } from '@/payload-types';
 import { getPayloadClient } from './payload';
 import type { AppLocale } from './types';
 
-export const toAppLocale = (locale: string): AppLocale => (locale === 'ru' ? 'ru' : 'en');
+export const toAppLocale = (locale: string): AppLocale => toLocale(locale);
 
 export const getPublishedCourses = async (locale: AppLocale, user?: User) => {
   const payload = await getPayloadClient();
@@ -10,7 +11,7 @@ export const getPublishedCourses = async (locale: AppLocale, user?: User) => {
   const courses = await payload.find({
     collection: 'courses',
     depth: 1,
-    fallbackLocale: 'en',
+    fallbackLocale: getFallbackLocale(locale),
     limit: 100,
     locale,
     overrideAccess: false,
@@ -32,7 +33,7 @@ export const getCourseBySlug = async (slug: string, locale: AppLocale, user?: Us
   const courses = await payload.find({
     collection: 'courses',
     depth: 1,
-    fallbackLocale: 'en',
+    fallbackLocale: getFallbackLocale(locale),
     limit: 1,
     locale,
     overrideAccess: false,
@@ -62,7 +63,7 @@ export const getCourseLessons = async (courseId: number, locale: AppLocale, user
   const lessons = await payload.find({
     collection: 'lessons',
     depth: 1,
-    fallbackLocale: 'en',
+    fallbackLocale: getFallbackLocale(locale),
     limit: 100,
     locale,
     overrideAccess: false,
@@ -93,7 +94,7 @@ export const getCourseCurriculum = async (
   const lessons = await payload.find({
     collection: 'lessons',
     depth: 0,
-    fallbackLocale: 'en',
+    fallbackLocale: getFallbackLocale(locale),
     limit: 100,
     locale,
     overrideAccess: false,
@@ -150,7 +151,7 @@ export const getDashboardCourses = async (locale: AppLocale, user: User) => {
   const courses = await payload.find({
     collection: 'courses',
     depth: 1,
-    fallbackLocale: 'en',
+    fallbackLocale: getFallbackLocale(locale),
     limit: 100,
     locale,
     overrideAccess: false,
@@ -181,7 +182,7 @@ export const getLegalPage = async (slug: LegalPage['slug'], locale: AppLocale, u
   const pages = await payload.find({
     collection: 'legalPages',
     depth: 0,
-    fallbackLocale: 'en',
+    fallbackLocale: getFallbackLocale(locale),
     limit: 1,
     locale,
     overrideAccess: false,

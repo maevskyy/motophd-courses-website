@@ -2,13 +2,12 @@
 
 import { cookies, headers } from 'next/headers';
 import { redirect } from 'next/navigation';
+import { toLocale } from '@/i18n/locales';
 import { getPayloadClient } from '@/lib/data/payload';
 import { consumeRateLimit, getClientIp, RATE_LIMITS } from '@/lib/rateLimit';
 import { AUTH_COOKIE, setAuthCookie } from './authCookie';
 import { getSafeNextPath } from './redirect';
 import type { LoginFormState } from './formState';
-
-const getLocale = (value: FormDataEntryValue | null) => (value === 'ru' ? 'ru' : 'en');
 
 export async function loginAction(
   _previousState: LoginFormState,
@@ -16,7 +15,7 @@ export async function loginAction(
 ): Promise<LoginFormState> {
   const email = String(formData.get('email') || '').trim();
   const password = String(formData.get('password') || '');
-  const locale = getLocale(formData.get('locale'));
+  const locale = toLocale(formData.get('locale'));
   const fallbackPath = `/${locale}/dashboard`;
 
   // По IP и по email одновременно: IP режет потоп с одной машины, email —
@@ -57,7 +56,7 @@ export async function loginAction(
 }
 
 export async function logoutAction(formData: FormData) {
-  const locale = getLocale(formData.get('locale'));
+  const locale = toLocale(formData.get('locale'));
   const cookieStore = await cookies();
 
   cookieStore.delete(AUTH_COOKIE);

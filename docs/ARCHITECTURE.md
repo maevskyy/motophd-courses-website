@@ -65,7 +65,8 @@ Users ─┬─< Purchases >─┬─ Courses ──< Lessons
 
 Правило доступа: контент курса открыт ⇔ существует `Purchase{user, course, status:'paid'}`.
 Feedback-тариф активен ⇔ `tier ∈ {feedback, feedback_upgrade}`.
-Локализация: текстовые поля и **ассеты** (Stream-ID, PDF) — per-locale (EN/RU-табы в админке).
+Локализация: текстовые поля и **ассеты** (Stream-ID, PDF) — per-locale (EN/RU/UK-табы в админке);
+пустые UK-поля читаются из RU (фолбэк локали в `payload.config.ts` ← `src/i18n/locales.ts`).
 
 ## Репозиторий
 

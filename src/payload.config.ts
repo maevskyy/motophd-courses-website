@@ -14,6 +14,7 @@ import { Media } from './collections/Media';
 import { Purchases } from './collections/Purchases';
 import { PromoCodes } from './collections/PromoCodes';
 import { Users } from './collections/Users';
+import { defaultLocale, localeFallbacks, localeLabels, locales } from './i18n/locales';
 import { getR2StorageConfig, isR2StorageEnabled } from './lib/media/r2';
 
 const filename = fileURLToPath(import.meta.url);
@@ -34,10 +35,17 @@ export default buildConfig({
     }
   }),
   editor: lexicalEditor(),
+  // Коды, подписи и фолбэки — из src/i18n/locales.ts: у сайта и админки один
+  // список. Украинского контента нет, поэтому пустые uk-поля читаются из ru
+  // (localeFallbacks); у остальных локалей фолбэк — defaultLocale.
   localization: {
-    defaultLocale: 'en',
+    defaultLocale,
     fallback: true,
-    locales: ['en', 'ru']
+    locales: locales.map((code) => ({
+      code,
+      fallbackLocale: localeFallbacks[code],
+      label: localeLabels[code]
+    }))
   },
   plugins: [
     s3Storage({

@@ -2,6 +2,7 @@
   "nav": {
     "courses": "Курсы",
     "about": "О нас",
+    "language": "Язык",
     "login": "Войти",
     "dashboard": "Мой кабинет",
     "cta": "Начать обучение",
@@ -131,8 +132,6 @@
     "pdfLinkDescription": "PDF безопасно откроется в браузере"
   },
   "toast": {
-    "langEn": "Switched to English",
-    "langRu": "Переключено на русский",
     "login": "Добро пожаловать! Переход в кабинет...",
     "logout": "Вы вышли из системы.",
     "acceptDisclaimer": "Пожалуйста, примите дисклеймер.",

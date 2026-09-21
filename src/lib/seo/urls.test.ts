@@ -25,6 +25,7 @@ describe('buildLanguageAlternates', () => {
     expect(buildLanguageAlternates(siteUrl, '/courses/lean')).toEqual({
       en: 'https://motophd.com/en/courses/lean',
       ru: 'https://motophd.com/ru/courses/lean',
+      uk: 'https://motophd.com/uk/courses/lean',
       'x-default': 'https://motophd.com/en/courses/lean'
     });
   });
@@ -33,6 +34,7 @@ describe('buildLanguageAlternates', () => {
     expect(buildLanguageAlternates(siteUrl, '/')).toEqual({
       en: 'https://motophd.com/en',
       ru: 'https://motophd.com/ru',
+      uk: 'https://motophd.com/uk',
       'x-default': 'https://motophd.com/en'
     });
   });
@@ -40,10 +42,13 @@ describe('buildLanguageAlternates', () => {
   it('keeps every pair symmetric: the ru page lists the en page and vice versa', () => {
     const fromEn = buildLanguageAlternates(siteUrl, '/privacy');
     const fromRu = buildLanguageAlternates(siteUrl, '/privacy');
+    const fromUk = buildLanguageAlternates(siteUrl, '/privacy');
 
     expect(fromEn.ru).toBe(canonicalUrl(siteUrl, 'ru', '/privacy'));
     expect(fromRu.en).toBe(canonicalUrl(siteUrl, 'en', '/privacy'));
+    expect(fromUk.en).toBe(canonicalUrl(siteUrl, 'en', '/privacy'));
     expect(fromEn).toEqual(fromRu);
+    expect(fromEn).toEqual(fromUk);
   });
 });
 
@@ -64,6 +69,7 @@ describe('resolveSeoLocale', () => {
   it('accepts only configured locales', () => {
     expect(resolveSeoLocale('en')).toBe('en');
     expect(resolveSeoLocale('ru')).toBe('ru');
+    expect(resolveSeoLocale('uk')).toBe('uk');
     expect(resolveSeoLocale('de')).toBeNull();
     expect(resolveSeoLocale('favicon.ico')).toBeNull();
   });

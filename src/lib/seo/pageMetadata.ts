@@ -30,7 +30,8 @@ export const DEFAULT_OG_IMAGE: SeoImage = {
 
 const OG_LOCALES: Record<Locale, string> = {
   en: 'en_US',
-  ru: 'ru_RU'
+  ru: 'ru_RU',
+  uk: 'uk_UA'
 };
 
 export type PageMetadataInput = {

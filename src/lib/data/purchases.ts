@@ -1,3 +1,4 @@
+import { getFallbackLocale } from '@/i18n/locales';
 import { getPayloadClient } from './payload';
 import type { AppLocale } from './types';
 import type { Purchase, User } from '@/payload-types';
@@ -28,7 +29,7 @@ export const getPurchaseHistory = async (
   const purchases = await payload.find({
     collection: 'purchases',
     depth: 1,
-    fallbackLocale: 'en',
+    fallbackLocale: getFallbackLocale(locale),
     limit: 100,
     locale,
     overrideAccess: false,
