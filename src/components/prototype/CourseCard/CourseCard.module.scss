@@ -121,16 +121,12 @@
   letter-spacing: var(--ls-tight);
 }
 
-/*
-  Действие карточки — текстовое: главный красный CTA на странице должен быть
-  один, иначе с ним конкурируют восемь одинаково ярких кнопок.
-*/
 .action {
+  @include btn-primary;
+  @include btn-sm;
+
   align-items: center;
-  color: var(--text-1);
   display: inline-flex;
-  font-size: var(--fs-small);
-  font-weight: 600;
   gap: var(--sp-2);
   white-space: nowrap;
 }
