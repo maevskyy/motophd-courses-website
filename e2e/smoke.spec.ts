@@ -276,23 +276,23 @@ test('student with a purchase can open the course player', async ({ page }) => {
     await expect(page.locator('iframe')).toHaveCount(0);
   }
 
-  // Без ?lesson плеер открывает первый урок (в сиде — «Video Lesson»), он же
+  // Без номера плеер открывает первый урок, он же
   // подсвечен в боковой панели.
-  const sidebarLessons = page.locator('aside a[href*="lesson="]');
+  const sidebarLessons = page.locator('aside a[href*="/learn/lean/"]');
   const firstLesson = sidebarLessons.nth(0);
   const secondLesson = sidebarLessons.nth(1);
 
-  await expect(page.locator('h1')).toHaveText('Video Lesson');
-  await expect(page.getByText('LESSON 1 OF 15')).toBeVisible();
+  await expect(page.locator('h1')).toHaveText('Level 01 — Theory');
+  await expect(page.getByText('Lesson 1 of 5')).toBeVisible();
   await expect(firstLesson).toHaveAttribute('aria-current', 'page');
   await expect(firstLesson).toHaveClass(/lessonActive/);
 
   // Клик по второму уроку переключает адрес, заголовок и подсветку.
   await secondLesson.click();
 
-  await expect(page).toHaveURL(/\/en\/learn\/lean\?lesson=2$/);
-  await expect(page.locator('h1')).toHaveText('Video Tutorial');
-  await expect(page.getByText('LESSON 2 OF 15')).toBeVisible();
+  await expect(page).toHaveURL(/\/en\/learn\/lean\/2$/);
+  await expect(page.locator('h1')).toHaveText('Level 02 — Preparation');
+  await expect(page.getByText('Lesson 2 of 5')).toBeVisible();
   await expect(secondLesson).toHaveAttribute('aria-current', 'page');
   await expect(secondLesson).toHaveClass(/lessonActive/);
   await expect(firstLesson).not.toHaveClass(/lessonActive/);

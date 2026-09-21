@@ -46,7 +46,7 @@ test('guest payment creates one paid mock purchase and opens the course', async 
   await pay(page);
 
   await page.goto('/en/learn/lean');
-  await expect(page.getByText('Lesson Notes')).toBeVisible();
+  await expect(page.getByText('Lesson 1 of 5')).toBeVisible();
 
   expect(await getOwnPurchases(page)).toEqual([
     expect.objectContaining({ provider: 'mock', status: 'paid' })
