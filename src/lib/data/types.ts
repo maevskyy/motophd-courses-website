@@ -42,7 +42,6 @@ export type SalesContent = {
   guarantee: string;
   modulesTitle: string;
   enrollCta: string;
-  teaserTitle: string;
 };
 
 export type DashboardContent = {

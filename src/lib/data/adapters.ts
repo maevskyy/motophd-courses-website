@@ -68,8 +68,7 @@ export const toSalesContent = (course: Course, locale: AppLocale): SalesContent 
     disclaimer: text.disclaimer,
     guarantee: text.guarantee,
     modulesTitle: text.modulesTitle,
-    enrollCta: text.enrollCta,
-    teaserTitle: text.teaserTitle
+    enrollCta: text.enrollCta
   };
 };
 

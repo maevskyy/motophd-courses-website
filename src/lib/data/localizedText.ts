@@ -14,7 +14,6 @@ export type SalesText = Record<
   | 'disclaimer'
   | 'modulesTitle'
   | 'enrollCta'
-  | 'teaserTitle'
   | 'studentName',
   string
 >;
@@ -32,7 +31,6 @@ export const salesText: Record<AppLocale, SalesText> = {
       'I understand that motorcycle riding involves risk and I am responsible for my own safety when applying course material.',
     modulesTitle: 'COURSE MODULES',
     enrollCta: 'ENROLL FOR TRAINING',
-    teaserTitle: 'WATCH A PREVIEW',
     studentName: 'Demo Student'
   },
   ru: {
@@ -47,7 +45,6 @@ export const salesText: Record<AppLocale, SalesText> = {
       'Я понимаю, что езда на мотоцикле связана с риском, и сам отвечаю за безопасность при применении материалов курса.',
     modulesTitle: 'МОДУЛИ КУРСА',
     enrollCta: 'ЗАПИСАТЬСЯ НА ОБУЧЕНИЕ',
-    teaserTitle: 'ПОСМОТРИ ОТРЫВОК',
     studentName: 'Demo Student'
   },
   uk: {
@@ -62,7 +59,6 @@ export const salesText: Record<AppLocale, SalesText> = {
       'Я розумію, що їзда на мотоциклі пов’язана з ризиком, і сам відповідаю за безпеку під час застосування матеріалів курсу.',
     modulesTitle: 'МОДУЛІ КУРСУ',
     enrollCta: 'ЗАПИСАТИСЯ НА НАВЧАННЯ',
-    teaserTitle: 'ПОДИВИСЬ УРИВОК',
     studentName: 'Demo Student'
   }
 };
