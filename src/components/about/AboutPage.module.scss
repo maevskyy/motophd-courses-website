@@ -1,0 +1,141 @@
+@use '@/styles/mixins' as *;
+
+.school,
+.instructor {
+  display: grid;
+  gap: var(--sp-7);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.schoolImage,
+.portrait {
+  border-radius: var(--radius);
+  inline-size: 100%;
+  object-fit: cover;
+}
+
+.schoolImage {
+  aspect-ratio: 16 / 10;
+  object-position: center 35%;
+}
+
+.schoolContent,
+.instructorContent {
+  min-inline-size: 0;
+}
+
+.stats {
+  border-block: 1px solid var(--border);
+  display: flex;
+  gap: var(--sp-8);
+  margin-block-end: var(--sp-6);
+  padding-block: var(--sp-5);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+
+  dt {
+    color: var(--text-3);
+    font-size: var(--fs-caption);
+    font-weight: 600;
+    letter-spacing: var(--ls-caps);
+    text-transform: uppercase;
+  }
+
+  dd {
+    color: var(--text-1);
+    font-family: var(--font-display);
+    font-size: var(--fs-h2);
+    font-weight: 700;
+    letter-spacing: var(--ls-tight);
+    line-height: var(--lh-tight);
+    margin: 0;
+  }
+}
+
+.prose {
+  @include body;
+
+  color: var(--text-2);
+  margin-block-end: var(--sp-4);
+}
+
+.portrait {
+  aspect-ratio: 4 / 5;
+  object-position: center 20%;
+}
+
+.name {
+  @include h2;
+
+  color: var(--text-1);
+}
+
+.role {
+  color: var(--text-3);
+  font-size: var(--fs-small);
+  margin-block-start: var(--sp-2);
+}
+
+.credentials {
+  display: grid;
+  gap: var(--sp-3);
+  list-style: none;
+  margin-block-start: var(--sp-6);
+
+  li {
+    align-items: flex-start;
+    color: var(--text-2);
+    display: flex;
+    font-size: var(--fs-small);
+    gap: var(--sp-3);
+    line-height: var(--lh-normal);
+  }
+
+  svg {
+    color: var(--brand);
+    flex: none;
+    margin-block-start: 2px;
+  }
+}
+
+.socials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  margin-block-start: var(--sp-6);
+}
+
+.social {
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-2);
+  display: inline-flex;
+  font-size: var(--fs-small);
+  gap: var(--sp-2);
+  min-block-size: var(--control-h);
+  padding-inline: var(--sp-3);
+  text-decoration: none;
+
+  @include focus-ring;
+
+  &:hover {
+    border-color: var(--border-strong);
+    color: var(--text-1);
+  }
+}
+
+@media (max-width: 700px) {
+  .school,
+  .instructor {
+    grid-template-columns: 1fr;
+  }
+
+  .portrait {
+    max-inline-size: 320px;
+  }
+}

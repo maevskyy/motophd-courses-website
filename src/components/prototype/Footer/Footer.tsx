@@ -42,7 +42,7 @@ export function Footer({ compact = false, socialLinks }: Props) {
               <Link className={styles.footer__link} href="/dashboard">
                 {t('myDashboard')}
               </Link>
-              <Link className={styles.footer__link} href="/">
+              <Link className={styles.footer__link} href="/about">
                 {t('about')}
               </Link>
             </div>

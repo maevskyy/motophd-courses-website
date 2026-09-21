@@ -13,7 +13,7 @@ interface Props {
   courses: CourseCardCourse[];
   labels: {
     viewCourses: string;
-    browseAllCourses: string;
+    about: string;
   };
 }
 
@@ -112,51 +112,28 @@ export function LandingTop({ content, courses, labels }: Props) {
         </ol>
       </Section>
 
-      {/*
-        Инструктор — по составу как в main: портрет и регалии слева, рассказ от
-        первого лица, кнопка в каталог и фото с тренировки справа. Якорь
-        #about-anchor ведёт сюда с пункта «About» в шапке.
-      */}
-      <Section bordered id="about-anchor">
+      <Section bordered className={blocks.instructorCompactSection}>
         <SectionHeader kicker={content.instructorLabel} />
-        <div className={blocks.instructor}>
-          <div className={blocks.instructorAside}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img alt={content.instructorName} className={blocks.instructorPhoto} src="/vlad.jpg" />
-            <div className={blocks.instructorCard}>
-              <p className={blocks.instructorName}>{content.instructorName}</p>
-              <p className={blocks.instructorRole}>{content.instructorRole}</p>
-              {content.instructorCredentials ? (
-                <ul className={blocks.checkList}>
-                  {content.instructorCredentials.map((item) => (
-                    <li className={blocks.checkItem} key={item}>
-                      <Icon className={blocks.checkIcon} name="check" size={16} />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              ) : null}
-            </div>
-          </div>
-          <div className={blocks.instructorBody}>
-            {content.instructorTitle.length > 0 ? (
-              <h2 className={blocks.instructorTitle}>{content.instructorTitle.join(' ')}</h2>
+        <div className={blocks.instructorCompact}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img alt={content.instructorName} className={blocks.instructorCompactPhoto} src="/vlad.jpg" />
+          <div>
+            <p className={blocks.instructorName}>{content.instructorName}</p>
+            <p className={blocks.instructorRole}>{content.instructorRole}</p>
+            {content.instructorCredentials ? (
+              <ul className={blocks.instructorCompactCredentials}>
+                {content.instructorCredentials.slice(0, 2).map((item) => (
+                  <li className={blocks.checkItem} key={item}>
+                    <Icon className={blocks.checkIcon} name="check" size={16} />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
             ) : null}
-            {content.instructorCopy.map((paragraph) => (
-              <p className={blocks.prose} key={paragraph}>
-                {paragraph}
-              </p>
-            ))}
-            <Link className={blocks.btnSecondary} href="/courses">
-              {labels.browseAllCourses}
-            </Link>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              alt={content.instructorName}
-              className={blocks.instructorActionPhoto}
-              src="/vlad-training.jpg"
-            />
           </div>
+          <Link className={blocks.btnSecondary} href="/about">
+            {labels.about} →
+          </Link>
         </div>
       </Section>
 

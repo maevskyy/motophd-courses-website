@@ -142,6 +142,33 @@
   max-width: var(--measure);
 }
 
+.instructorCompactSection {
+  padding-block: var(--sp-6);
+}
+
+.instructorCompact {
+  align-items: center;
+  display: grid;
+  gap: var(--sp-5);
+  grid-template-columns: 80px minmax(0, 1fr) auto;
+}
+
+.instructorCompactPhoto {
+  block-size: 80px;
+  border-radius: var(--radius);
+  inline-size: 80px;
+  object-fit: cover;
+  object-position: center 20%;
+}
+
+.instructorCompactCredentials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2) var(--sp-5);
+  list-style: none;
+  margin-block-start: var(--sp-3);
+}
+
 .checkList {
   display: grid;
   gap: var(--sp-3);
@@ -255,6 +282,17 @@
   }
 }
 
+@media (max-width: 600px) {
+  .instructorCompact {
+    align-items: start;
+    grid-template-columns: 80px minmax(0, 1fr);
+  }
+
+  .instructorCompact .btnSecondary {
+    grid-column: 1 / -1;
+  }
+}
+
 /* ---------- Финальный призыв ---------- */
 
 .cta {
@@ -307,4 +345,3 @@
     object-position: center 18%;
   }
 }
-

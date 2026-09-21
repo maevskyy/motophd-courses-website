@@ -34,6 +34,15 @@ test('home page renders in English', async ({ page }) => {
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
 });
 
+test('About in the header opens the dedicated About page', async ({ page }) => {
+  await page.goto('/en');
+
+  await page.getByRole('navigation').getByRole('link', { exact: true, name: 'About' }).click();
+
+  await expect(page).toHaveURL(/\/en\/about$/);
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+});
+
 test('home page renders in Russian', async ({ page }) => {
   await page.goto('/ru');
 

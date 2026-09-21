@@ -24,6 +24,9 @@ describe('buildSitemapEntries', () => {
       'https://motophd.com/en/courses',
       'https://motophd.com/ru/courses',
       'https://motophd.com/uk/courses',
+      'https://motophd.com/en/about',
+      'https://motophd.com/ru/about',
+      'https://motophd.com/uk/about',
       'https://motophd.com/en/courses/lean',
       'https://motophd.com/ru/courses/lean',
       'https://motophd.com/uk/courses/lean',
@@ -73,6 +76,7 @@ describe('buildSitemapEntries', () => {
 
     expect(priority('https://motophd.com/en')).toBe(1);
     expect(priority('https://motophd.com/ru/courses')).toBe(0.9);
+    expect(priority('https://motophd.com/uk/about')).toBe(0.6);
     expect(priority('https://motophd.com/en/courses/lean')).toBe(0.8);
     expect(priority('https://motophd.com/ru/terms')).toBe(0.3);
   });
@@ -88,7 +92,10 @@ describe('buildSitemapEntries', () => {
       'https://motophd.com/uk',
       'https://motophd.com/en/courses',
       'https://motophd.com/ru/courses',
-      'https://motophd.com/uk/courses'
+      'https://motophd.com/uk/courses',
+      'https://motophd.com/en/about',
+      'https://motophd.com/ru/about',
+      'https://motophd.com/uk/about'
     ]);
   });
 });

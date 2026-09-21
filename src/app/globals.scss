@@ -18,7 +18,6 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
-/* Якорь #about-anchor не должен уезжать под фиксированную шапку. */
 html {
   scroll-padding-top: calc(var(--header-h) + var(--sp-5));
 }

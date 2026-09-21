@@ -34,6 +34,7 @@ const toDate = (value?: string | null) => {
 const collectPages = ({ courses, legalPages }: SitemapSource): SitemapPage[] => [
   { changeFrequency: 'weekly', path: '/', priority: 1 },
   { changeFrequency: 'weekly', path: '/courses', priority: 0.9 },
+  { changeFrequency: 'monthly', path: '/about', priority: 0.6 },
   ...courses.map<SitemapPage>((course) => ({
     changeFrequency: 'weekly',
     lastModified: toDate(course.updatedAt),

@@ -18,8 +18,8 @@ vi.mock('next-intl', () => ({
 }));
 
 const labels = {
-  viewCourses: 'Смотреть курсы',
-  browseAllCourses: 'Смотреть все курсы'
+  about: 'О школе',
+  viewCourses: 'Смотреть курсы'
 };
 
 describe('LandingTop', () => {
@@ -36,25 +36,24 @@ describe('LandingTop', () => {
     expect(video).toHaveAttribute('playsinline');
   });
 
-  it('links the instructor section to the course catalog', () => {
+  it('links the compact instructor block to the About page', () => {
     render(<LandingTop content={homeContent.ru} courses={[]} labels={labels} />);
 
-    expect(screen.getByRole('link', { name: 'Смотреть все курсы' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'О школе →' })).toHaveAttribute(
       'href',
-      '/courses'
+      '/about'
     );
   });
 
-  it('shows the coach with both photos and the credentials from the content', () => {
+  it('shows a compact coach block with two credentials', () => {
     const { container } = render(
       <LandingTop content={homeContent.en} courses={[]} labels={labels} />
     );
 
-    expect(container.querySelector('#about-anchor')).toBeInTheDocument();
     expect(container.querySelector('img[src="/vlad.jpg"]')).toBeInTheDocument();
-    expect(container.querySelector('img[src="/vlad-training.jpg"]')).toBeInTheDocument();
-    expect(screen.getByText(homeContent.en.instructorTitle.join(' '))).toBeInTheDocument();
     expect(screen.getByText(homeContent.en.instructorCredentials![0])).toBeInTheDocument();
+    expect(screen.getByText(homeContent.en.instructorCredentials![1])).toBeInTheDocument();
+    expect(screen.queryByText(homeContent.en.instructorCredentials![2])).not.toBeInTheDocument();
   });
 
   it('shows every testimonial from the content after the coach, without a source link', () => {

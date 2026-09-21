@@ -52,7 +52,10 @@ export default async function HomePage({
   // показывает второй. После выбора проигравший вариант и параметр снести.
   const { how } = await searchParams;
   const safeLocale = requireLocale(locale);
-  const t = await getTranslations({ locale: safeLocale, namespace: 'actions' });
+  const [actions, nav] = await Promise.all([
+    getTranslations({ locale: safeLocale, namespace: 'actions' }),
+    getTranslations({ locale: safeLocale, namespace: 'nav' })
+  ]);
   const content = homeContent[safeLocale];
   const payloadCourses = await getPublishedCourses(safeLocale);
   const courses = payloadCourses.map((course, index) => toCourseCardCourse(course, index));
@@ -63,14 +66,14 @@ export default async function HomePage({
         content={content}
         courses={courses}
         labels={{
-          viewCourses: t('viewCourses'),
-          browseAllCourses: t('browseAllCourses')
+          about: nav('about'),
+          viewCourses: actions('viewCourses')
         }}
       />
       <LandingBottom
         content={content}
         howVariant={how === 'cards' ? 'cards' : 'timeline'}
-        labels={{ joinCommunity: t('joinCommunity') }}
+        labels={{ joinCommunity: actions('joinCommunity') }}
       />
     </>
   );

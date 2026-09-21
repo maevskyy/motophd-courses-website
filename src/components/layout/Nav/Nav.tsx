@@ -61,7 +61,7 @@ export function Nav() {
       <Link className={styles.link} href="/courses">
         {t('nav.courses')}
       </Link>
-      <Link className={styles.link} href="/#about-anchor">
+      <Link className={styles.link} href="/about">
         {t('nav.about')}
       </Link>
     </>
