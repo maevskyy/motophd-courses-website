@@ -48,6 +48,7 @@ export function LandingTop({ content, courses, labels }: Props) {
             <source src="/hero-loop.mp4" type="video/mp4" />
           </video>
           <div className={hero.scrim} />
+          <div className={hero.glow} />
         </div>
 
         <div className={hero.inner}>

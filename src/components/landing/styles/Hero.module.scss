@@ -17,15 +17,29 @@
   object-position: center 35%;
 }
 
-/* Единственный слой затемнения на хиро. */
+/*
+  Затемнение как на проде: чистый чёрный 82 → 62 → 48%. Тёплый оттенок
+  поверхности и 96% в левой части делали видео серым.
+*/
 .scrim {
   background: linear-gradient(
-    100deg,
-    rgb(20 20 18 / 96%) 0%,
-    rgb(20 20 18 / 86%) 40%,
-    rgb(20 20 18 / 45%) 100%
+    115deg,
+    rgb(0 0 0 / 82%) 0%,
+    rgb(0 0 0 / 62%) 45%,
+    rgb(0 0 0 / 48%) 100%
   );
   inset: 0;
+  position: absolute;
+}
+
+/* Красное свечение справа — единственный цветовой акцент на видео. */
+.glow {
+  background: radial-gradient(circle, var(--brand-tint) 0%, transparent 70%);
+  block-size: 500px;
+  inline-size: 500px;
+  inset-block-start: 20%;
+  inset-inline-end: 10%;
+  pointer-events: none;
   position: absolute;
 }
 
