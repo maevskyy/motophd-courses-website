@@ -112,25 +112,6 @@
   margin-block-end: var(--sp-6);
 }
 
-/* ---------- Закрывающий призыв ---------- */
-
-.cta {
-  @include container;
-
-  border-block-start: 1px solid var(--border);
-  display: flex;
-  justify-content: center;
-  padding-block: var(--sp-8);
-}
-
-.ctaButton {
-  @include btn-primary;
-
-  font-size: var(--fs-body);
-  padding-inline: var(--sp-7);
-  white-space: normal;
-}
-
 @media (max-width: 900px) {
   /* Блок цены поднимается сразу под вступление: до программы курса на телефоне
      ещё надо долистать, а решение о покупке зреет выше. */

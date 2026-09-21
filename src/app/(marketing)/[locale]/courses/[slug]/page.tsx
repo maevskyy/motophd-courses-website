@@ -109,13 +109,6 @@ export default async function CourseSalesPage({
         </div>
       </section>
 
-      {/* Закрывающий призыв — как в main: ведёт на ту же страницу, к блоку цены. */}
-      <section className={styles.cta}>
-        <Link className={styles.ctaButton} href={`/courses/${course.slug}`}>
-          {sales.enrollCta}
-        </Link>
-      </section>
-
       <Footer compact />
       {/* Единственный дубль главного действия — и только там, где блок цены
           уехал с экрана: на телефоне. */}

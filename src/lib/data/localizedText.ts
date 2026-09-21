@@ -13,7 +13,6 @@ export type SalesText = Record<
   | 'lifetime'
   | 'disclaimer'
   | 'modulesTitle'
-  | 'enrollCta'
   | 'studentName',
   string
 >;
@@ -30,7 +29,6 @@ export const salesText: Record<AppLocale, SalesText> = {
     disclaimer:
       'I understand that motorcycle riding involves risk and I am responsible for my own safety when applying course material.',
     modulesTitle: 'COURSE MODULES',
-    enrollCta: 'ENROLL FOR TRAINING',
     studentName: 'Demo Student'
   },
   ru: {
@@ -44,7 +42,6 @@ export const salesText: Record<AppLocale, SalesText> = {
     disclaimer:
       'Я понимаю, что езда на мотоцикле связана с риском, и сам отвечаю за безопасность при применении материалов курса.',
     modulesTitle: 'МОДУЛИ КУРСА',
-    enrollCta: 'ЗАПИСАТЬСЯ НА ОБУЧЕНИЕ',
     studentName: 'Demo Student'
   },
   uk: {
@@ -58,7 +55,6 @@ export const salesText: Record<AppLocale, SalesText> = {
     disclaimer:
       'Я розумію, що їзда на мотоциклі пов’язана з ризиком, і сам відповідаю за безпеку під час застосування матеріалів курсу.',
     modulesTitle: 'МОДУЛІ КУРСУ',
-    enrollCta: 'ЗАПИСАТИСЯ НА НАВЧАННЯ',
     studentName: 'Demo Student'
   }
 };

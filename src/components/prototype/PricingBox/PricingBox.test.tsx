@@ -12,7 +12,6 @@ import { PricingBox } from './PricingBox';
 const sales = {
   breadcrumb: 'Courses',
   disclaimer: 'Riding disclaimer',
-  enrollCta: 'Enroll',
   guarantee: 'Lifetime access',
   modulesTitle: 'Modules',
   options: [
