@@ -12,11 +12,7 @@ export type HomeContent = {
   heroSub: string;
   stats: Array<{
     value: string;
-    accent?: string;
     label: string;
-    note?: string;
-    noteAccent?: string;
-    href?: string;
   }>;
   socialLinks: Array<{ platform: 'youtube' | 'instagram'; href: string; label: string }>;
   coursesLabel: string;

@@ -73,31 +73,12 @@ export function LandingTop({ content, courses, labels }: Props) {
           </div>
 
           <dl className={hero.stats}>
-            {content.stats.map((stat) => {
-              const body = (
-                <>
-                  <dt className={hero.statLabel}>{stat.label}</dt>
-                  <dd className={hero.statValue}>{stat.value}</dd>
-                  {stat.note ? <dd className={hero.statNote}>{stat.note}</dd> : null}
-                </>
-              );
-
-              return stat.href ? (
-                <a
-                  className={hero.stat}
-                  href={stat.href}
-                  key={stat.label}
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
-                  {body}
-                </a>
-              ) : (
-                <div className={hero.stat} key={stat.label}>
-                  {body}
-                </div>
-              );
-            })}
+            {content.stats.map((stat) => (
+              <div className={hero.stat} key={stat.label}>
+                <dt className={hero.statLabel}>{stat.label}</dt>
+                <dd className={hero.statValue}>{stat.value}</dd>
+              </div>
+            ))}
           </dl>
         </div>
       </section>

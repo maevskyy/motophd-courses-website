@@ -9,13 +9,7 @@ export const homeEn: HomeContent = {
     'The same methods that transformed riders in our motoschool — now available online, at our platform, from anywhere in the world.',
   stats: [
     { value: '5,000+', label: 'Riders Coached' },
-    { value: '10+', label: 'Years Coaching' },
-    {
-      value: '4',
-      label: 'Courses at Launch',
-      note: '2 live now · 2 coming soon',
-      noteAccent: '2 coming soon'
-    }
+    { value: '10+', label: 'Years Coaching' }
   ],
   socialLinks: [
     { platform: 'youtube', href: 'https://www.youtube.com/@MotoPhD', label: 'YouTube' },

@@ -126,25 +126,16 @@
 
 .stats {
   border-block-start: 1px solid var(--border);
-  display: grid;
-  gap: var(--sp-5);
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+  display: flex;
+  gap: var(--sp-8);
   margin-block-start: var(--sp-8);
   padding-block-start: var(--sp-5);
 }
 
 .stat {
-  color: inherit;
   display: flex;
   flex-direction: column;
   gap: var(--sp-1);
-  text-decoration: none;
-
-  @include focus-ring;
-}
-
-a.stat:hover .statValue {
-  color: var(--brand);
 }
 
 .statLabel {
@@ -162,14 +153,6 @@ a.stat:hover .statValue {
   font-weight: 700;
   letter-spacing: var(--ls-tight);
   line-height: var(--lh-tight);
-  margin: 0;
-  transition: color var(--dur) var(--ease);
-}
-
-.statNote {
-  color: var(--text-3);
-  font-size: var(--fs-small);
-  line-height: var(--lh-normal);
   margin: 0;
 }
 
@@ -231,7 +214,6 @@ a.stat:hover .statValue {
 
   .stats {
     gap: var(--sp-4);
-    grid-template-columns: 1fr 1fr;
     margin-block-start: var(--sp-7);
   }
 }
