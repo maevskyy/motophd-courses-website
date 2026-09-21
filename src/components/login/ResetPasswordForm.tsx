@@ -2,7 +2,6 @@
 
 import { useActionState } from 'react';
 import { useTranslations } from 'next-intl';
-import type { Locale } from '@/i18n/locales';
 import { Link } from '@/i18n/routing';
 import { Icon } from '@/components/ui/Icon';
 import { MIN_PASSWORD_LENGTH } from '@/lib/auth/accountFormState';
@@ -16,7 +15,7 @@ const errorKeys = {
   tooShort: 'resetTooShort'
 } as const;
 
-export function ResetPasswordForm({ locale, token }: { locale: Locale; token: string }) {
+export function ResetPasswordForm({ locale, token }: { locale: 'en' | 'ru'; token: string }) {
   const t = useTranslations('login');
   const [state, formAction] = useActionState(resetPasswordAction, initialResetPasswordFormState);
 

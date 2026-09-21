@@ -1,6 +1,8 @@
 import { connection } from 'next/server';
-import { DashboardClient } from '@/components/dashboard/DashboardClient';
+import { AvailableCoursesSection, MyCoursesPanel } from '@/components/dashboard/DashboardPanels';
+import { toMyCourse } from '@/components/dashboard/MyCourse';
 import { getFeedbackUpgradeCourseSlugs } from '@/lib/access/feedbackUpgrade';
+import { hasFeedbackAccess } from '@/lib/access/hasFeedbackAccess';
 import { requireUser } from '@/lib/auth';
 import {
   getCourseLessons,
@@ -8,12 +10,13 @@ import {
   getPublishedCourses,
   getPurchaseHistory,
   toAppLocale,
-  toCourseCardCourse,
-  toDashboardContent
+  toCourseCardCourse
 } from '@/lib/data';
+import { getPayloadClient } from '@/lib/data/payload';
 
 export const dynamic = 'force-dynamic';
 
+// Экран «Мой курс»: купленные курсы с прогрессом и то, что можно докупить.
 export default async function DashboardPage({ params }: { params: Promise<{ locale: string }> }) {
   await connection();
 
@@ -22,38 +25,37 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
   const user = await requireUser(
     `/${safeLocale}/login?next=${encodeURIComponent(`/${safeLocale}/dashboard`)}`
   );
-  const [payloadCourses, publishedCourses, purchases] = await Promise.all([
+  const payload = await getPayloadClient();
+  const [payloadCourses, publishedCourses, purchases, hasFeedback] = await Promise.all([
     getDashboardCourses(safeLocale, user),
     getPublishedCourses(safeLocale, user),
-    getPurchaseHistory(safeLocale, user)
+    getPurchaseHistory(safeLocale, user),
+    hasFeedbackAccess(payload, user)
   ]);
   const purchasedCourseIds = new Set(payloadCourses.map((course) => course.id));
-  const courses = payloadCourses.map((course, index) => toCourseCardCourse(course, index));
   const availableCourses = publishedCourses
     .filter((course) => !purchasedCourseIds.has(course.id))
     .map((course, index) => toCourseCardCourse(course, index));
-  // Материалы по всем купленным курсам: раньше брался только первый.
+  // Уроки всех купленных курсов — в плоские DTO: объекты Payload в клиент не уезжают.
   const lessonsPerCourse = await Promise.all(
     payloadCourses.map((course) => getCourseLessons(course.id, safeLocale, user))
   );
-  const content = toDashboardContent(lessonsPerCourse.flat(), safeLocale);
+  const courses = payloadCourses.map((course, index) =>
+    toMyCourse(course, lessonsPerCourse[index], safeLocale, index)
+  );
   // Докупка обратной связи: paid standard без paid feedback — считаем здесь,
   // в клиент уезжает только список slug'ов.
   const feedbackUpgradeSlugs = getFeedbackUpgradeCourseSlugs(purchases);
 
   return (
-    <DashboardClient
-      availableCourses={availableCourses}
-      content={content}
-      courses={courses}
-      displayName={user.name || user.email}
-      email={user.email}
-      feedbackUpgradeSlugs={feedbackUpgradeSlugs}
-      locale={safeLocale}
-      // В форму профиля пустое имя, а не email: иначе первое же сохранение
-      // записывало email покупателя в поле «Имя» навсегда.
-      name={user.name || ''}
-      purchases={purchases}
-    />
+    <>
+      <MyCoursesPanel
+        courses={courses}
+        feedbackUpgradeSlugs={feedbackUpgradeSlugs}
+        hasFeedback={hasFeedback}
+        name={user.name || user.email}
+      />
+      <AvailableCoursesSection availableCourses={availableCourses} />
+    </>
   );
 }

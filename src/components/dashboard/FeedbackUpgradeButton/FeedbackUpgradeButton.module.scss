@@ -1,9 +1,9 @@
 @use '@/styles/mixins' as *;
 
-/* Живёт в подвале карточки купленного курса (DashboardCards): рамку и
-   отступы задаёт карточка, здесь только кнопка и подписи. */
+/* Живёт в карточке «Обратная связь от инструктора» (MyCourse/FeedbackCard):
+   рамку и отступы задаёт карточка, здесь только кнопка и подписи. */
 .upgrade {
-  align-items: stretch;
+  align-items: flex-end;
   display: flex;
   flex-direction: column;
   gap: var(--sp-2);
@@ -11,8 +11,6 @@
 
 .upgrade__button {
   @include btn-secondary;
-  @include btn-sm;
-  @include btn-block;
 }
 
 .upgrade__hint {
@@ -20,10 +18,23 @@
   font-size: var(--fs-caption);
   line-height: var(--lh-normal);
   margin: 0;
+  text-align: end;
 }
 
 .upgrade__error {
   color: var(--brand);
   font-size: var(--fs-caption);
   margin: 0;
+  text-align: end;
+}
+
+@media (max-width: 600px) {
+  .upgrade {
+    align-items: stretch;
+  }
+
+  .upgrade__hint,
+  .upgrade__error {
+    text-align: start;
+  }
 }

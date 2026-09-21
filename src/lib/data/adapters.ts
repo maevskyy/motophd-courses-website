@@ -8,6 +8,7 @@ import type {
   DashboardContent,
   PlayerContent,
   PlayerDownload,
+  PlayerLesson,
   SalesContent
 } from './types';
 
@@ -154,6 +155,7 @@ export const toPlayerDownloads = (lessons: Lesson[], locale: AppLocale): PlayerD
     .filter((lesson) => Boolean(lesson.pdf))
     .map((lesson) => ({
       id: lesson.id,
+      fileName: lesson.pdf && typeof lesson.pdf === 'object' ? lesson.pdf.filename : null,
       title: lesson.title,
       url: `/api/lessons/${lesson.id}/pdf?locale=${locale}`
     }));
@@ -161,15 +163,28 @@ export const toPlayerDownloads = (lessons: Lesson[], locale: AppLocale): PlayerD
 export const toPlayerContent = (
   course: Course,
   lessons: Lesson[],
-  {
-    currentLesson,
-    ...media
-  }: Pick<PlayerContent, 'downloads' | 'videoEmbedUrl'> & { currentLesson: Lesson | undefined }
+  { currentLesson, downloads, locale = 'en', videoEmbedUrl }: Pick<PlayerContent, 'downloads' | 'videoEmbedUrl'> & {
+    currentLesson: Lesson | undefined;
+    locale?: AppLocale;
+  }
 ): PlayerContent => {
   const notes = course.commonMistakes?.split('\n').filter(Boolean) || [];
   const position = currentLesson ? sortLessonsByOrder(lessons).indexOf(currentLesson) : -1;
 
   return {
+    courseSlug: course.slug,
+    courseTitle: course.title,
+    lessons: sortLessonsByOrder(lessons).map<PlayerLesson>((lesson) => ({
+      body: lesson.body,
+      download: toPlayerDownloads([lesson], locale)[0] || null,
+      durationSec: lesson.durationSec ?? null,
+      id: lesson.id,
+      module: 1,
+      order: lesson.order ?? 0,
+      title: lesson.title,
+      type: lesson.type,
+      videoEmbedUrl: lesson.id === currentLesson?.id ? videoEmbedUrl || null : null
+    })),
     title: currentLesson?.title || course.title,
     subtitle: course.keyPoint || course.description || '',
     videoMeta: currentLesson?.durationSec
@@ -181,10 +196,12 @@ export const toPlayerContent = (
     overviewCopy: course.description || '',
     moduleOutcome: course.outcomes?.map(({ text }) => text).filter(Boolean) || [],
     sidebarTitle: course.title,
+    keyTakeaways: course.keyPoint?.split('\n').filter(Boolean) || [],
     currentLessonOrder: currentLesson?.order ?? null,
     lessonNumber: position + 1,
     lessonCount: lessons.length,
-    ...media
+    downloads,
+    videoEmbedUrl
   };
 };
 

@@ -2,22 +2,22 @@ import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
 import { Icon } from '@/components/ui/Icon';
 import { cx } from '@/lib/classNames';
-import type { CurriculumModule } from '@/lib/data';
-import { findModuleNumber } from './PlayerModules';
+import type { CurriculumModule, PlayerContent } from '@/lib/data';
+import { lessonHref } from '@/lib/progress';
 import styles from './PlayerSidebar.module.scss';
 
 interface Props {
-  activeOrder: number | null;
-  courseSlug: string;
+  activeOrder: number;
   curriculum: CurriculumModule[];
   onExpand: () => void;
+  player: PlayerContent;
 }
 
 // Свёрнутое оглавление: узкий рейл с кнопкой «развернуть» и номерами
 // модулей — каждый ведёт на первый урок своего модуля.
-export function PlayerRail({ activeOrder, courseSlug, curriculum, onExpand }: Props) {
+export function PlayerRail({ activeOrder, curriculum, onExpand, player }: Props) {
   const t = useTranslations('player');
-  const activeModule = findModuleNumber(curriculum, activeOrder);
+  const activeModule = player.lessons.find((lesson) => lesson.order === activeOrder)?.module;
 
   return (
     <aside className={styles.rail}>
@@ -30,21 +30,21 @@ export function PlayerRail({ activeOrder, courseSlug, curriculum, onExpand }: Pr
         <Icon name="chevronRight" size={18} />
       </button>
       <nav aria-label={t('contents')} className={styles.railNav}>
-        {curriculum.map((module) => {
-          const first = module.lessons[0];
+        {curriculum.map((module, index) => {
+          const first = player.lessons.find((lesson) => lesson.module === index + 1);
 
           if (!first) {
             return null;
           }
 
-          const active = module.number === activeModule;
+          const active = index + 1 === activeModule;
 
           return (
             <Link
               aria-current={active ? 'true' : undefined}
               aria-label={module.title}
               className={cx(styles.railItem, active && styles.railItemActive)}
-              href={`/learn/${courseSlug}?lesson=${first.order}`}
+              href={lessonHref(player.courseSlug, first)}
               key={module.number}
               title={module.title}
             >

@@ -1,69 +1,81 @@
 import { useTranslations } from 'next-intl';
-import { Icon } from '@/components/ui/Icon';
-import type { CourseCardCourse, DashboardContent, PurchaseHistoryItem } from '@/lib/data';
-import { AccountProfileForm } from './AccountProfileForm';
-import { ChangePasswordForm } from './ChangePasswordForm';
-import { DeleteAccountSection } from './DeleteAccountSection';
-import { PurchaseHistory } from './PurchaseHistory';
-import { DashStat, LockedDashCourse, PurchasedDashCourse } from './DashboardCards';
+import type { CourseCardCourse } from '@/lib/data';
+import { LockedDashCourse } from './DashboardCards';
+import { FeedbackCard, MyCourse, type FeedbackStatus, type MyCourseData } from './MyCourse';
 import styles from './Dashboard.module.scss';
 
-interface PanelProps {
-  availableCourses?: CourseCardCourse[];
-  content: DashboardContent;
-  courses: CourseCardCourse[];
-  email: string;
+interface MyCoursesPanelProps {
+  courses: MyCourseData[];
   // Slug'и курсов, у которых можно докупить обратную связь — считает сервер.
   feedbackUpgradeSlugs?: string[];
+  // Обратная связь уже оплачена (hasFeedbackAccess) — карточка со статусом.
+  hasFeedback?: boolean;
   name: string;
-  purchases?: PurchaseHistoryItem[];
 }
 
-export function OverviewPanel({ courses, feedbackUpgradeSlugs = [], name }: PanelProps) {
+const feedbackStatus = (
+  slug: string,
+  upgradeSlugs: string[],
+  hasFeedback: boolean
+): FeedbackStatus | undefined => {
+  if (upgradeSlugs.includes(slug)) {
+    return 'upgrade';
+  }
+
+  return hasFeedback ? 'connected' : undefined;
+};
+
+// Экран «Мой курс»: приветствие, затем на каждый купленный курс —
+// resume-карточка, модули и карточка обратной связи. Плашек статистики нет:
+// единственная цифра на экране — прогресс.
+export function MyCoursesPanel({
+  courses,
+  feedbackUpgradeSlugs = [],
+  hasFeedback = false,
+  name
+}: MyCoursesPanelProps) {
   const t = useTranslations();
+  let upgradeAnchorUsed = false;
 
   return (
     <>
       <div className={styles.dashGreeting}>
         <h1 className={styles.dashGreetingTitle}>{t('dashboard.welcomeTitle', { name })}</h1>
-        <p className={styles.dashGreetingSub}>{t('dashboard.welcomeSub')}</p>
       </div>
-      <div className={styles.dashStats}>
-        <DashStat label={t('dashboard.purchasedCourses')} value={String(courses.length)} />
-      </div>
-      <div className={styles.dashSectionTitle}>{t('dashboard.myCourses')}</div>
-      <div className={styles.dashCourses}>
-        {courses.map((course) => (
-          <PurchasedDashCourse
-            course={course}
-            feedbackUpgrade={feedbackUpgradeSlugs.includes(course.slug)}
-            key={course.slug}
-          />
-        ))}
+      <div className={styles.dashCourseList}>
+        {courses.map((course) => {
+          const status = feedbackStatus(course.slug, feedbackUpgradeSlugs, hasFeedback);
+          // Якорь #upgrade (ссылка из настроек) — только у первой карточки.
+          const id = status && !upgradeAnchorUsed ? 'upgrade' : undefined;
+
+          upgradeAnchorUsed = upgradeAnchorUsed || Boolean(id);
+
+          return (
+            <div className={styles.dashCourseBlock} key={course.slug}>
+              <MyCourse course={course} />
+              {status ? <FeedbackCard course={course} id={id} status={status} /> : null}
+            </div>
+          );
+        })}
       </div>
     </>
   );
 }
 
-export function CoursesPanel({ availableCourses = [], courses, feedbackUpgradeSlugs = [] }: PanelProps) {
+// Секция «Можно купить» — только при наличии непокупленных курсов.
+export function AvailableCoursesSection({
+  availableCourses = []
+}: {
+  availableCourses?: CourseCardCourse[];
+}) {
   const t = useTranslations();
+
+  if (availableCourses.length === 0) {
+    return null;
+  }
 
   return (
     <>
-      <div className={styles.dashGreeting}>
-        <h1 className={styles.dashGreetingTitle}>{t('dashboard.myCourses')}</h1>
-        <p className={styles.dashGreetingSub}>{t('dashboard.purchasedContent')}</p>
-      </div>
-      <div className={styles.dashSectionTitle}>{t('dashboard.activeEnrollments')}</div>
-      <div className={styles.dashCourses}>
-        {courses.map((course) => (
-          <PurchasedDashCourse
-            course={course}
-            feedbackUpgrade={feedbackUpgradeSlugs.includes(course.slug)}
-            key={course.slug}
-          />
-        ))}
-      </div>
       <div className={styles.dashSectionTitle}>{t('dashboard.availableToPurchase')}</div>
       <div className={styles.dashCourses}>
         {availableCourses.map((course) => (
@@ -71,54 +83,5 @@ export function CoursesPanel({ availableCourses = [], courses, feedbackUpgradeSl
         ))}
       </div>
     </>
-  );
-}
-
-export function DownloadsPanel({ content }: PanelProps) {
-  const t = useTranslations();
-
-  return (
-    <>
-      <div className={styles.dashGreeting}>
-        <h1 className={styles.dashGreetingTitle}>{t('dashboard.downloads')}</h1>
-        <p className={styles.dashGreetingSub}>{t('dashboard.downloadsSub')}</p>
-      </div>
-      <div className={styles.dashSectionTitle}>{t('dashboard.availablePdfs')}</div>
-      <div className={styles.dashDownloads}>
-        {content.dashboard.downloads.map((download) => (
-          <a
-            className={styles.pdfDownloadCard}
-            href={download.url}
-            key={download.id}
-            rel="noopener"
-            target="_blank"
-          >
-            <span className={styles.pdfIcon}>
-              <Icon name="document" size={22} />
-            </span>
-            <div className={styles.pdfInfo}>
-              <div className={styles.pdfName}>{download.title}</div>
-            </div>
-            <span className={styles.pdfBtn}>{t('actions.download')}</span>
-          </a>
-        ))}
-      </div>
-    </>
-  );
-}
-
-export function ProfilePanel({ email, name, purchases = [] }: PanelProps) {
-  const t = useTranslations();
-
-  return (
-    <div className={styles.dashProfile}>
-      <div className={styles.dashGreeting}>
-        <h1 className={styles.dashGreetingTitle}>{t('dashboard.profileSettings')}</h1>
-      </div>
-      <AccountProfileForm email={email} name={name} />
-      <ChangePasswordForm />
-      <PurchaseHistory purchases={purchases} />
-      <DeleteAccountSection />
-    </div>
   );
 }

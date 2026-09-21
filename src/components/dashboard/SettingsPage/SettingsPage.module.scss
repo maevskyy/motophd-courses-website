@@ -1,0 +1,12 @@
+@use '@/styles/mixins' as *;
+
+.settings {
+  display: grid;
+  min-inline-size: 0;
+}
+
+.settings__title {
+  @include h2;
+
+  margin-block-end: var(--sp-3);
+}

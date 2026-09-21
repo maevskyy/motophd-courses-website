@@ -1,6 +1,6 @@
 @use '@/styles/mixins' as *;
 
-/* Ширину колонки задаёт панель профиля — здесь только ритм полей. */
+/* Ширину колонки задаёт SettingsSection — здесь только ритм полей. */
 .profileForm {
   display: grid;
   gap: var(--sp-5);

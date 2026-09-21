@@ -2,14 +2,13 @@
 
 import { useActionState } from 'react';
 import { useTranslations } from 'next-intl';
-import type { Locale } from '@/i18n/locales';
 import { Link } from '@/i18n/routing';
 import { Icon } from '@/components/ui/Icon';
 import { forgotPasswordAction } from '@/lib/auth/passwordReset';
 import { initialForgotPasswordFormState } from '@/lib/auth/passwordResetFormState';
 import styles from './LoginPage.module.scss';
 
-export function ForgotPasswordForm({ locale }: { locale: Locale }) {
+export function ForgotPasswordForm({ locale }: { locale: 'en' | 'ru' }) {
   const t = useTranslations('login');
   const [state, formAction] = useActionState(forgotPasswordAction, initialForgotPasswordFormState);
 
