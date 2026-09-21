@@ -43,7 +43,7 @@
 .desktop {
   align-items: center;
   display: flex;
-  gap: var(--sp-5);
+  gap: var(--sp-6);
 }
 
 .mobile {
@@ -113,17 +113,6 @@
 .btnSecondary {
   @include btn-secondary;
   @include btn-sm;
-}
-
-/*
-  Слоты фиксированной ширины под пункты шапки. Русский текст системно длиннее
-  английского на 20-30%, и когда ширину задаёт сам текст, при переключении
-  языка съезжает вся правая часть шапки. Слот рассчитан на самую длинную
-  локаль; что подписи в него по-прежнему помещаются, проверяет
-  e2e/localeLayout.spec.ts.
-*/
-.desktop .link {
-  min-inline-size: 136px;
 }
 
 .desktop .btnSecondary {

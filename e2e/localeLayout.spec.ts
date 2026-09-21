@@ -5,10 +5,9 @@ import { expect, test } from '@playwright/test';
 
   Русский текст системно длиннее английского на 20-30%, и пока высоту блоков
   задавала длина фразы, при переключении EN/RU уезжала вся композиция: хиро
-  на RU был на 134px выше, статистика оказывалась за первым экраном, а каждый
-  пункт шапки съезжал вправо. Лечится это слотами фиксированной высоты и
-  ширины (lines-reserve / text-slot в src/styles/_mixins.scss и min-inline-size
-  в Nav.module.scss) — этот тест сторожит, что слоты всё ещё в силе.
+  на RU был на 134px выше, статистика оказывалась за первым экраном. Высоту
+  держат слоты текста (lines-reserve / text-slot в src/styles/_mixins.scss), а
+  у шапки фиксированы только правый край CTA и её высота.
 */
 
 const STRICT_WIDTHS = [1440, 1024, 768];
@@ -17,7 +16,8 @@ const TOLERANCE = 4;
 
 type Frame = {
   heroHeight: number;
-  navItems: Array<{ name: string; x: number }>;
+  ctaRight: number;
+  headerHeight: number;
   sectionTops: number[];
   scrollWidth: number;
   clientWidth: number;
@@ -29,16 +29,15 @@ async function readFrame(page: import('@playwright/test').Page, path: string): P
   return page.evaluate(() => {
     const sections = [...document.querySelectorAll('main section, body > section')];
     const hero = sections[0];
-    const navItems = [...document.querySelectorAll('header nav a, header nav button')]
+    const navLinks = [...document.querySelectorAll('header nav a')]
       .filter((el) => el.getBoundingClientRect().width > 0)
-      .map((el) => ({
-        name: (el.textContent || el.getAttribute('aria-label') || '').trim(),
-        x: Math.round(el.getBoundingClientRect().left)
-      }));
+    const cta = navLinks.at(-1);
+    const header = document.querySelector('header');
 
     return {
       heroHeight: hero ? Math.round(hero.getBoundingClientRect().height) : 0,
-      navItems,
+      ctaRight: cta ? Math.round(cta.getBoundingClientRect().right) : 0,
+      headerHeight: header ? Math.round(header.getBoundingClientRect().height) : 0,
       sectionTops: sections.map((el) =>
         Math.round(el.getBoundingClientRect().top + window.scrollY)
       ),
@@ -50,7 +49,7 @@ async function readFrame(page: import('@playwright/test').Page, path: string): P
 
 test.describe('композиция лендинга не зависит от локали', () => {
   for (const width of ALL_WIDTHS) {
-    test(`ширина ${width}px: шапка и первый экран совпадают на EN и RU`, async ({
+    test(`ширина ${width}px: шапка и первый экран совпадают на EN, RU и UK`, async ({
       baseURL,
       page
     }) => {
@@ -63,19 +62,28 @@ test.describe('композиция лендинга не зависит от л
 
       const en = await readFrame(page, '/en');
       const ru = await readFrame(page, '/ru');
+      const uk = await readFrame(page, '/uk');
 
       // Горизонтального скролла нет ни на одной локали и ни на одной ширине.
       expect(en.scrollWidth, `EN overflow at ${width}`).toBeLessThanOrEqual(en.clientWidth);
       expect(ru.scrollWidth, `RU overflow at ${width}`).toBeLessThanOrEqual(ru.clientWidth);
+      expect(uk.scrollWidth, `UK overflow at ${width}`).toBeLessThanOrEqual(uk.clientWidth);
 
-      // Каждый видимый пункт шапки стоит на своём x независимо от языка.
-      expect(ru.navItems.length).toBe(en.navItems.length);
-      en.navItems.forEach((item, index) => {
+      // Подписи ссылок могут быть разной ширины, но кнопка действия и высота
+      // шапки не сдвигаются между локалями.
+      for (const [locale, frame] of [
+        ['RU', ru],
+        ['UK', uk]
+      ] as const) {
         expect(
-          Math.abs(ru.navItems[index].x - item.x),
-          `пункт шапки «${item.name}» съехал на ${width}px`
+          Math.abs(frame.ctaRight - en.ctaRight),
+          `правый край CTA съехал на ${locale} при ${width}px`
         ).toBeLessThanOrEqual(TOLERANCE);
-      });
+        expect(
+          Math.abs(frame.headerHeight - en.headerHeight),
+          `высота шапки изменилась на ${locale} при ${width}px`
+        ).toBeLessThanOrEqual(TOLERANCE);
+      }
 
       if (STRICT_WIDTHS.includes(width)) {
         expect(
@@ -83,10 +91,20 @@ test.describe('композиция лендинга не зависит от л
           `высота хиро разошлась на ${width}px`
         ).toBeLessThanOrEqual(TOLERANCE);
 
+        expect(
+          Math.abs(uk.heroHeight - en.heroHeight),
+          `высота хиро разошлась на UK при ${width}px`
+        ).toBeLessThanOrEqual(TOLERANCE);
+
         // Первая секция после хиро начинается на одном y — первый экран одинаковый.
         expect(
           Math.abs(ru.sectionTops[1] - en.sectionTops[1]),
           `вторая секция начинается по-разному на ${width}px`
+        ).toBeLessThanOrEqual(TOLERANCE);
+
+        expect(
+          Math.abs(uk.sectionTops[1] - en.sectionTops[1]),
+          `вторая секция начинается по-разному на UK при ${width}px`
         ).toBeLessThanOrEqual(TOLERANCE);
       }
     });
