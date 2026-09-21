@@ -179,21 +179,80 @@
   gap: var(--sp-3);
 }
 
-/* Та же геометрия, что у остальных элементов: скруглённый прямоугольник,
-   а не отдельный «круглый номер» из другого визуального языка. */
 .stepBadge {
   align-items: center;
-  background: var(--surface-3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  block-size: 44px;
-  color: var(--text-1);
   display: flex;
   font-family: var(--font-display);
-  font-size: var(--fs-h3);
   font-weight: 700;
-  inline-size: 44px;
   justify-content: center;
+}
+
+/*
+  Вариант A — таймлайн, как на проде: круглые номера с красной обводкой на
+  общей красной линии, текст по центру. Линия лежит под номерами, поэтому
+  у номера непрозрачный фон страницы.
+*/
+.stepsTimeline {
+  gap: var(--sp-4);
+  position: relative;
+
+  &::before {
+    background: linear-gradient(90deg, transparent, var(--brand), transparent);
+    block-size: 1px;
+    content: '';
+    inset-block-start: 32px;
+    inset-inline: 10%;
+    position: absolute;
+  }
+
+  .step {
+    align-items: center;
+    text-align: center;
+  }
+
+  .stepBadge {
+    background: var(--surface-1);
+    block-size: 64px;
+    border: 2px solid var(--brand);
+    border-radius: var(--radius-full);
+    color: var(--brand);
+    font-size: var(--fs-h2);
+    inline-size: 64px;
+    position: relative;
+  }
+
+  .cardText {
+    text-align: center;
+  }
+}
+
+/*
+  Вариант B — карточки: та же сетка, номер в красном бейдже, у карточки
+  красная верхняя полоска. Компактнее таймлайна, без линии.
+*/
+.stepsCards {
+  .step {
+    @include card;
+
+    background: var(--surface-2);
+    border-block-start: 3px solid var(--brand);
+    padding: var(--sp-5);
+  }
+
+  .stepBadge {
+    background: var(--brand);
+    block-size: 44px;
+    border-radius: var(--radius);
+    color: var(--text-on-brand);
+    font-size: var(--fs-h3);
+    inline-size: 44px;
+  }
+}
+
+@media (max-width: 900px) {
+  .stepsTimeline::before {
+    display: none;
+  }
 }
 
 /* ---------- Финальный призыв ---------- */

@@ -3,21 +3,24 @@ import { FaqAccordion } from '@/components/prototype/FaqAccordion';
 import { Footer } from '@/components/prototype/Footer';
 import { Section, SectionHeader } from '@/components/ui/Section';
 import type { HomeContent } from '@/lib/content';
+import { cx } from '@/lib/classNames';
 import blocks from './styles/MarketingBlocks.module.scss';
 
 interface Props {
   content: HomeContent;
+  /* MOT-66: два варианта на выбор Димы; после выбора остаётся один. */
+  howVariant?: 'cards' | 'timeline';
   labels: {
     joinCommunity?: string;
   };
 }
 
-export function LandingBottom({ content, labels }: Props) {
+export function LandingBottom({ content, howVariant = 'timeline', labels }: Props) {
   return (
     <>
       <Section bordered>
         <SectionHeader kicker={content.howLabel} title={content.howTitle.join(' ')} />
-        <ol className={blocks.steps}>
+        <ol className={cx(blocks.steps, howVariant === 'cards' ? blocks.stepsCards : blocks.stepsTimeline)}>
           {content.steps.map((step) => (
             <li className={blocks.step} key={step.num}>
               <span className={blocks.stepBadge}>{step.num}</span>

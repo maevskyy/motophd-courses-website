@@ -40,8 +40,17 @@ export async function generateMetadata({
   });
 }
 
-export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
+export default async function HomePage({
+  params,
+  searchParams
+}: {
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<{ how?: string }>;
+}) {
   const { locale } = await params;
+  // MOT-66: два варианта секции «Как это работает» на выбор — ?how=cards
+  // показывает второй. После выбора проигравший вариант и параметр снести.
+  const { how } = await searchParams;
   const safeLocale = requireLocale(locale);
   const t = await getTranslations({ locale: safeLocale, namespace: 'actions' });
   const content = homeContent[safeLocale];
@@ -58,7 +67,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           browseAllCourses: t('browseAllCourses')
         }}
       />
-      <LandingBottom content={content} labels={{ joinCommunity: t('joinCommunity') }} />
+      <LandingBottom
+        content={content}
+        howVariant={how === 'cards' ? 'cards' : 'timeline'}
+        labels={{ joinCommunity: t('joinCommunity') }}
+      />
     </>
   );
 }
