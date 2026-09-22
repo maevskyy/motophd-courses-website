@@ -3,9 +3,8 @@ import type { PurchaseHistoryItem } from '@/lib/data';
 import { AccountProfileForm } from '@/components/dashboard/AccountProfileForm';
 import { ChangePasswordForm } from '@/components/dashboard/ChangePasswordForm';
 import { DeleteAccountSection } from '@/components/dashboard/DeleteAccountSection';
-import { PurchaseHistory } from '@/components/dashboard/PurchaseHistory';
 import { SettingsSection } from '@/components/dashboard/SettingsSection';
-import { CourseTiers } from './CourseTiers';
+import { CoursePurchases } from './CoursePurchases';
 import styles from './SettingsPage.module.scss';
 
 interface Props {
@@ -15,8 +14,9 @@ interface Props {
   purchases: PurchaseHistoryItem[];
 }
 
-// Экран «Настройки»: одна колонка, секции одной ширины в каноническом порядке
-// Профиль → Безопасность → Тариф и покупки → Опасная зона.
+// Экран «Настройки»: одна колонка по центру области контента, секции одной
+// ширины в каноническом порядке Профиль → Безопасность → Тариф и покупки →
+// Опасная зона.
 export function SettingsPage({ email, feedbackUpgradeSlugs, name, purchases }: Props) {
   const t = useTranslations('dashboard');
 
@@ -30,8 +30,7 @@ export function SettingsPage({ email, feedbackUpgradeSlugs, name, purchases }: P
         <ChangePasswordForm />
       </SettingsSection>
       <SettingsSection description={t('billingSub')} title={t('billing')}>
-        <CourseTiers feedbackUpgradeSlugs={feedbackUpgradeSlugs} purchases={purchases} />
-        <PurchaseHistory purchases={purchases} />
+        <CoursePurchases feedbackUpgradeSlugs={feedbackUpgradeSlugs} purchases={purchases} />
       </SettingsSection>
       <SettingsSection description={t('dangerZoneSub')} title={t('dangerZone')}>
         <DeleteAccountSection />

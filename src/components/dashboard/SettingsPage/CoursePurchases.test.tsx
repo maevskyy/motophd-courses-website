@@ -1,9 +1,10 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import type { PurchaseHistoryItem } from '@/lib/data/purchases';
-import { CourseTiers } from './CourseTiers';
+import { CoursePurchases } from './CoursePurchases';
 
 vi.mock('next-intl', () => ({
+  useLocale: () => 'en',
   useTranslations: () => (key: string) => key
 }));
 
@@ -27,10 +28,10 @@ const purchase = (overrides: Partial<PurchaseHistoryItem>): PurchaseHistoryItem 
   ...overrides
 });
 
-describe('CourseTiers', () => {
-  it('lists one row per paid course with its tier and the upgrade link', () => {
+describe('CoursePurchases', () => {
+  it('lists one row per paid course with its tier, date, amount and the upgrade link', () => {
     render(
-      <CourseTiers
+      <CoursePurchases
         feedbackUpgradeSlugs={['lean']}
         purchases={[
           purchase({}),
@@ -41,8 +42,8 @@ describe('CourseTiers', () => {
     );
 
     expect(screen.getAllByRole('listitem')).toHaveLength(2);
-    expect(screen.getByText('courseTierStandard')).toBeInTheDocument();
-    expect(screen.getByText('courseTierFeedback')).toBeInTheDocument();
+    expect(screen.getByText(/courseTierStandard · Aug 1, 2026 · €29\.00/)).toBeInTheDocument();
+    expect(screen.getByText(/courseTierFeedback/)).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'feedbackUpgrade' })).toHaveAttribute(
       'href',
       '/dashboard#upgrade'
@@ -51,22 +52,24 @@ describe('CourseTiers', () => {
 
   it('counts a paid feedback upgrade as feedback for the same course', () => {
     render(
-      <CourseTiers
+      <CoursePurchases
         feedbackUpgradeSlugs={[]}
         purchases={[purchase({}), purchase({ id: 2, tier: 'feedback_upgrade' })]}
       />
     );
 
+    // Курс и апгрейд к нему — одна строка с суммой обеих оплат.
     expect(screen.getAllByRole('listitem')).toHaveLength(1);
-    expect(screen.getByText('courseTierFeedback')).toBeInTheDocument();
+    expect(screen.getByText(/courseTierFeedback · Aug 1, 2026 · €58\.00/)).toBeInTheDocument();
     expect(screen.queryByRole('link')).not.toBeInTheDocument();
   });
 
-  it('renders nothing without paid courses', () => {
-    const { container } = render(
-      <CourseTiers feedbackUpgradeSlugs={[]} purchases={[purchase({ status: 'failed' })]} />
+  it('says there are no purchases yet when nothing is paid', () => {
+    render(
+      <CoursePurchases feedbackUpgradeSlugs={[]} purchases={[purchase({ status: 'failed' })]} />
     );
 
-    expect(container).toBeEmptyDOMElement();
+    expect(screen.getByText('purchaseHistoryEmpty')).toBeInTheDocument();
+    expect(screen.queryAllByRole('listitem')).toHaveLength(0);
   });
 });

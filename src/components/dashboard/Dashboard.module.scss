@@ -2,12 +2,14 @@
 
 /* ---------- Сайдбар кабинета: содержимое слотов AppSidebar ---------- */
 
+/* Инициал — опознавательный знак, а не действие: акцентный цвет тут не нужен. */
 .dashAvatar {
   align-items: center;
-  background: var(--brand);
+  background: var(--surface-3);
   block-size: var(--control-h);
+  border: 1px solid var(--border);
   border-radius: var(--radius-full);
-  color: var(--text-on-brand);
+  color: var(--text-2);
   display: flex;
   font-family: var(--font-display);
   font-size: var(--fs-body);

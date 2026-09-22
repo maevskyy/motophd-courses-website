@@ -31,8 +31,9 @@
   margin-block-start: var(--sp-2);
 }
 
+/* В настройках нет главного действия — сохранение оформлено вторичной кнопкой. */
 .profileForm__submit {
-  @include btn-primary;
+  @include btn-secondary;
 
   justify-self: start;
 }
