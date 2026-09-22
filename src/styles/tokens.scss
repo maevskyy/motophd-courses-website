@@ -39,7 +39,9 @@
   --font-text: var(--font-inter), 'Segoe UI', system-ui, sans-serif;
 
   /* 8 размеров на весь сайт, не больше */
-  --fs-display: clamp(26px, 3.9vw, 48px);
+  /* Размер хиро-заголовка с прода: clamp(36px, 5vw, 68px). Используется
+     только миксином display, то есть только в заголовке первого экрана. */
+  --fs-display: clamp(36px, 5vw, 68px);
   --fs-h1: clamp(28px, 4vw, 44px);
   --fs-h2: clamp(24px, 2.6vw, 32px);
   --fs-h3: 20px;

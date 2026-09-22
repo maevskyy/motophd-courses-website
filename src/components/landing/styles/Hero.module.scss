@@ -86,18 +86,15 @@
 }
 
 /*
-  Высоту текстовых блоков хиро задаёт слот в строках, а не длина фразы.
-  Иначе русский вариант тянет хиро на 130px выше английского, и первый экран
-  у двух локалей выглядит по-разному: на EN видно статистику, на RU — нет.
-  Слот считается в em, поэтому едет вместе со шкалой шрифта.
+  Отступы и ширины — как на проде: бейдж 28px до заголовка, заголовок 24px до
+  текста, текст 40px до кнопки, кнопка 60px до статистики. Слотов фиксированной
+  высоты здесь нет: на десктопе высоту первого экрана держит сам хиро (100svh),
+  а на телефоне слоты заданы в мобильном медиа ниже.
 */
 .title {
   @include display;
 
-  margin-block: var(--sp-5) 0;
-  max-width: 22ch;
-  min-block-size: calc(5em * var(--lh-tight));
-  text-wrap: balance;
+  margin-block: var(--sp-6) 0;
 }
 
 /* Красный на display-размере проходит контраст и остаётся единственным акцентом. */
@@ -109,8 +106,7 @@
   @include lead;
 
   margin-block-start: var(--sp-5);
-  max-width: 52ch;
-  min-block-size: calc(3em * var(--lh-normal));
+  max-width: 560px;
 }
 
 .actions {
@@ -163,20 +159,15 @@
 */
 @media (min-width: 769px) {
   .hero {
+    align-items: center;
     block-size: 100svh;
     display: flex;
+    padding-block-start: var(--header-h);
   }
 
   .inner {
-    align-self: center;
-    block-size: 100%;
-    display: flex;
-    flex-direction: column;
-    padding-block: var(--header-h) 0;
-  }
-
-  .stats {
-    margin-block-start: auto;
+    inline-size: 100%;
+    padding-block: var(--sp-9);
   }
 }
 
@@ -210,7 +201,10 @@
     padding-block: 0 var(--section-y);
   }
 
+  /* Слоты в строках: на телефоне высоту хиро задаёт текст, и без них RU и UK
+     уводят первый экран относительно EN (см. e2e/localeLayout.spec.ts). */
   .title {
+    margin-block-start: var(--sp-5);
     max-width: 18ch;
     min-block-size: calc(10em * var(--lh-tight));
   }

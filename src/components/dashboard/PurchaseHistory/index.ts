@@ -1,1 +1,0 @@
-export { PurchaseHistory } from './PurchaseHistory';
