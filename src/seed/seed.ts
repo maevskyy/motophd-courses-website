@@ -346,6 +346,7 @@ const seedCourses = async () => {
           const localizedCourse = courseSeed[locale];
           const localizedLesson = flatLessonsByLocale[locale][lessonIndex];
           const data = {
+            body: null,
             course: courseId,
             order,
             type: getLessonType(lesson),
@@ -378,12 +379,13 @@ const seedCourses = async () => {
           }
         }
 
-        if (courseIndex === 0 && getLessonType(lesson) === 'pdf') {
+        // Уроки теперь все видео, но к первым двум всё ещё прикрепляем PDF:
+        // один открыт в тизере, второй проверяет защищённую выдачу материалов.
+        if (courseIndex === 0) {
           if (!firstPdfLessonId) {
             firstPdfLessonId = lessonId;
           }
 
-          // isFreePreview выставляется выше как order === 1.
           if (order !== 1 && !firstPaidPdfLessonId) {
             firstPaidPdfLessonId = lessonId;
           }
