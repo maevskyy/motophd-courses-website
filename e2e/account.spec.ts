@@ -71,8 +71,9 @@ test('feedback tier owner sees the purchase history and the instructions', async
   await expect(page).toHaveURL(/\/en\/dashboard$/);
 
   await page.getByRole('link', { name: 'Settings' }).click();
-  await expect(page.getByText('Purchase History')).toBeVisible();
-  await expect(page.getByText('Paid', { exact: true })).toBeVisible();
+  // Тариф и оплата курса — одной строкой в «Plan and purchases».
+  await expect(page.getByText('Plan and purchases')).toBeVisible();
+  await expect(page.getByText(/With feedback ·/)).toBeVisible();
 
   await page.goto('/en/feedback');
   await expect(page.getByRole('heading', { name: 'Personal Feedback' })).toBeVisible();

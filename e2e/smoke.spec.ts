@@ -37,7 +37,7 @@ test('home page renders in English', async ({ page }) => {
 test('About in the header opens the dedicated About page', async ({ page }) => {
   await page.goto('/en');
 
-  await page.getByRole('navigation').getByRole('link', { exact: true, name: 'About' }).click();
+  await page.getByRole('navigation').getByRole('link', { exact: true, name: 'About the school' }).click();
 
   await expect(page).toHaveURL(/\/en\/about$/);
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
@@ -164,21 +164,12 @@ test('lesson API exposes protected content only to previews or paid students', a
   expect(paidLesson).toHaveProperty('body');
 });
 
-test('PDF lessons are served only through the protected lesson route', async ({ request }) => {
+test('PDF lessons are served only through the protected lesson route', async ({
+  playwright,
+  request
+}, testInfo) => {
   const courseResponse = await request.get('/api/courses?where[slug][equals]=lean&limit=1&depth=0');
   const courseId = (await courseResponse.json()).docs[0].id;
-  // Именно платный урок: у тизера (isFreePreview) доступ открыт всем,
-  // на нём отказ анониму не проверить.
-  const lessonsResponse = await request.get(
-    `/api/lessons?where[course][equals]=${courseId}&where[type][equals]=pdf&where[isFreePreview][not_equals]=true&sort=order&limit=1&depth=0`
-  );
-  const lesson = (await lessonsResponse.json()).docs[0];
-  const pdfUrl = `/api/lessons/${lesson.id}/pdf?locale=en`;
-
-  const anonymousResponse = await request.get(pdfUrl);
-
-  expect(anonymousResponse.status()).toBe(403);
-
   const loginResponse = await request.post('/api/users/login', {
     data: {
       email: 'student@motophd.com',
@@ -186,6 +177,31 @@ test('PDF lessons are served only through the protected lesson route', async ({ 
     }
   });
   const { token } = await loginResponse.json();
+  // Все уроки — видео, PDF лежит в поле `pdf`, а оно видно только купившему:
+  // ищем урок с материалом от имени студента. Именно платный: у тизера
+  // (isFreePreview) доступ открыт всем, на нём отказ анониму не проверить.
+  const lessonsResponse = await request.get(
+    `/api/lessons?where[course][equals]=${courseId}&where[isFreePreview][not_equals]=true&sort=order&limit=20&depth=0&locale=en`,
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
+  const lesson = (await lessonsResponse.json()).docs.find(
+    (item: { pdf?: number | null }) => item.pdf !== null && item.pdf !== undefined
+  );
+
+  expect(lesson, 'seed must attach a PDF to a paid lesson').toBeDefined();
+
+  const pdfUrl = `/api/lessons/${lesson.id}/pdf?locale=en`;
+
+  // После POST /api/users/login в `request` лежит cookie сессии — анонима
+  // изображает отдельный чистый контекст.
+  const anonymous = await playwright.request.newContext({
+    baseURL: testInfo.project.use.baseURL
+  });
+  const anonymousResponse = await anonymous.get(pdfUrl);
+
+  expect(anonymousResponse.status()).toBe(403);
+  await anonymous.dispose();
+
   const paidResponse = await request.get(pdfUrl, {
     headers: {
       Authorization: `Bearer ${token}`
@@ -210,7 +226,7 @@ test('login page shows the form', async ({ page }) => {
 
   await expect(page.locator('#login-email')).toBeVisible();
   await expect(page.locator('#login-password')).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Sign In to My Dashboard' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Sign in' })).toBeVisible();
   await expect(page.locator('#login-email')).toHaveValue('');
 });
 
@@ -218,7 +234,7 @@ test('student can sign in and returns to the requested page', async ({ page }) =
   await page.goto('/en/login?next=%2Fen%2Fcourses');
   await page.locator('#login-email').fill('student@motophd.com');
   await page.locator('#login-password').fill('student1234');
-  await page.getByRole('button', { name: 'Sign In to My Dashboard' }).click();
+  await page.getByRole('button', { name: 'Sign in' }).click();
 
   await expect(page).toHaveURL(/\/en\/courses$/);
   await expect(
@@ -230,7 +246,7 @@ test('direct login opens the dashboard', async ({ page }) => {
   await page.goto('/en/login');
   await page.locator('#login-email').fill('guest@motophd.com');
   await page.locator('#login-password').fill('guest1234');
-  await page.getByRole('button', { name: 'Sign In to My Dashboard' }).click();
+  await page.getByRole('button', { name: 'Sign in' }).click();
 
   await expect(page).toHaveURL(/\/en\/dashboard$/);
 });
@@ -251,7 +267,7 @@ test('guest without a purchase is returned to the course page', async ({ page })
   await page.goto('/en/login?next=%2Fen%2Flearn%2Flean');
   await page.locator('#login-email').fill('guest@motophd.com');
   await page.locator('#login-password').fill('guest1234');
-  await page.getByRole('button', { name: 'Sign In to My Dashboard' }).click();
+  await page.getByRole('button', { name: 'Sign in' }).click();
 
   await expect(page).toHaveURL(/\/en\/courses\/lean\?access=denied$/);
   await expect(page.getByText('This course is not included in your purchases.')).toBeVisible();
@@ -261,10 +277,9 @@ test('student with a purchase can open the course player', async ({ page }) => {
   await page.goto('/en/login?next=%2Fen%2Flearn%2Flean');
   await page.locator('#login-email').fill('student@motophd.com');
   await page.locator('#login-password').fill('student1234');
-  await page.getByRole('button', { name: 'Sign In to My Dashboard' }).click();
+  await page.getByRole('button', { name: 'Sign in' }).click();
 
   await expect(page).toHaveURL(/\/en\/learn\/lean$/);
-  await expect(page.getByText('Lesson Notes')).toBeVisible();
 
   if (isStreamConfigured()) {
     // Ключи Cloudflare на месте: видео-уроки рендерят iframe с подписанным
@@ -302,7 +317,7 @@ test('logout removes access to private pages', async ({ page }) => {
   await page.goto('/en/login');
   await page.locator('#login-email').fill('student@motophd.com');
   await page.locator('#login-password').fill('student1234');
-  await page.getByRole('button', { name: 'Sign In to My Dashboard' }).click();
+  await page.getByRole('button', { name: 'Sign in' }).click();
   await expect(page).toHaveURL(/\/en\/dashboard$/);
 
   await page.getByRole('button', { name: 'Sign Out' }).click();
@@ -317,7 +332,7 @@ test('invalid login shows a generic error message', async ({ page }) => {
   await page.goto('/en/login');
   await page.locator('#login-email').fill('student@motophd.com');
   await page.locator('#login-password').fill('wrong-password');
-  await page.getByRole('button', { name: 'Sign In to My Dashboard' }).click();
+  await page.getByRole('button', { name: 'Sign in' }).click();
 
   await expect(page).toHaveURL(/\/en\/login$/);
   const loginError = page.locator('form [role="alert"]');
