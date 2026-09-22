@@ -1,11 +1,10 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { CurriculumModule, PlayerContent, PlayerLesson } from '@/lib/data';
+import type { PlayerContent, PlayerLesson } from '@/lib/data';
 import { progressStorageKey } from '@/lib/progress';
 import { createMemoryStorage } from '@/lib/progress/storage.mock';
 import { CoursePlayerClient } from './CoursePlayerClient';
-import { SIDEBAR_STORAGE_KEY } from './usePlayerSidebar';
 
 const mocks = vi.hoisted(() => ({ push: vi.fn() }));
 
@@ -60,15 +59,6 @@ const player: PlayerContent = {
   ]
 };
 
-const curriculum: CurriculumModule[] = [
-  { lessons: [{ duration: '', name: 'L1' }], number: '01', title: 'Theory' },
-  {
-    lessons: [2, 3, 4].map((order) => ({ duration: '', name: `L${order}` })),
-    number: '02',
-    title: 'Prep'
-  }
-];
-
 const key = progressStorageKey('lean');
 const storedDone = () => JSON.parse(window.localStorage.getItem(key) ?? '{}').done;
 const heading = () => screen.getByRole('heading', { level: 1 });
@@ -94,7 +84,7 @@ describe('CoursePlayerClient', () => {
   });
 
   it('opens the lesson from the URL, marks it done and continues to the next one', () => {
-    render(<CoursePlayerClient activeOrder={3} curriculum={curriculum} player={player} />);
+    render(<CoursePlayerClient activeOrder={3} player={player} />);
 
     expect(heading()).toHaveTextContent('L3');
     expect(screen.getByText('lessonMeta {"current":3,"total":4}')).toBeInTheDocument();
@@ -115,7 +105,7 @@ describe('CoursePlayerClient', () => {
   it('puts the contents on the left of the lesson and counts progress from storage', () => {
     window.localStorage.setItem(key, JSON.stringify({ done: [1, 2], updatedAt: '2026-01-01' }));
 
-    render(<CoursePlayerClient curriculum={curriculum} player={player} />);
+    render(<CoursePlayerClient player={player} />);
 
     const aside = screen.getByRole('complementary');
     const main = screen.getByRole('main');
@@ -132,51 +122,29 @@ describe('CoursePlayerClient', () => {
       'href',
       '/dashboard'
     );
-    expect(screen.getByRole('link', { name: 'actions.backToWebsite' })).toHaveAttribute('href', '/');
     expect(mocks.push).not.toHaveBeenCalled();
   });
 
   it('shows every lesson as a flat list', () => {
-    render(<CoursePlayerClient activeOrder={3} curriculum={curriculum} player={player} />);
+    render(<CoursePlayerClient activeOrder={3} player={player} />);
 
     expect(screen.getAllByRole('link', { name: /L[1-4]/ })).toHaveLength(4);
     expect(lessonLink(1)).toHaveAttribute('href', '/learn/lean/1');
   });
 
-  it('collapses to a rail, persists the state and restores it on the next mount', () => {
-    const { unmount } = render(
-      <CoursePlayerClient activeOrder={3} curriculum={curriculum} player={player} />
-    );
+  it('keeps the contents open on desktop: no collapse button, no second way back', () => {
+    render(<CoursePlayerClient activeOrder={3} player={player} />);
 
-    fireEvent.click(screen.getByRole('button', { name: 'player.collapseSidebar' }));
-
-    expect(window.localStorage.getItem(SIDEBAR_STORAGE_KEY)).toBe('collapsed');
-    expect(screen.queryByRole('navigation', { name: 'contents' })).toBeInTheDocument();
-    expect(screen.queryByRole('link', { name: /L3$/ })).not.toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Prep' })).toHaveAttribute('aria-current', 'true');
-    expect(screen.getByRole('link', { name: 'Theory' })).toHaveAttribute('href', '/learn/lean/1');
-
-    fireEvent.click(screen.getByRole('button', { name: 'expandSidebar' }));
-
-    expect(window.localStorage.getItem(SIDEBAR_STORAGE_KEY)).toBe('open');
+    expect(screen.queryByRole('button', { name: /player\.(collapse|close)/ })).not.toBeInTheDocument();
+    expect(screen.getAllByRole('link', { name: 'dashboard.myCourse' })).toHaveLength(1);
+    expect(screen.queryByRole('link', { name: 'actions.backToWebsite' })).not.toBeInTheDocument();
     expect(lessonLink(3)).toBeInTheDocument();
-
-    fireEvent.click(screen.getByRole('button', { name: 'player.collapseSidebar' }));
-    unmount();
-    render(<CoursePlayerClient activeOrder={3} curriculum={curriculum} player={player} />);
-
-    expect(screen.getByRole('button', { name: 'expandSidebar' })).toBeInTheDocument();
-    expect(screen.queryByRole('link', { name: /L3$/ })).not.toBeInTheDocument();
   });
 
   it('on a narrow screen opens the contents as a drawer and closes it on Escape', () => {
     stubNarrow();
-    window.localStorage.setItem(SIDEBAR_STORAGE_KEY, 'collapsed');
 
-    render(<CoursePlayerClient activeOrder={3} curriculum={curriculum} player={player} />);
-
-    // Свёрнутость на узком экране не действует — вместо рейла drawer.
-    expect(screen.queryByRole('button', { name: 'expandSidebar' })).not.toBeInTheDocument();
+    render(<CoursePlayerClient activeOrder={3} player={player} />);
 
     const toggle = screen.getByRole('button', { name: 'contents' });
 
@@ -198,7 +166,7 @@ describe('CoursePlayerClient', () => {
   it('closes the drawer on a click outside and on a lesson change', () => {
     stubNarrow();
     const { rerender } = render(
-      <CoursePlayerClient activeOrder={3} curriculum={curriculum} player={player} />
+      <CoursePlayerClient activeOrder={3} player={player} />
     );
     const toggle = screen.getByRole('button', { name: 'contents' });
 
@@ -212,7 +180,7 @@ describe('CoursePlayerClient', () => {
     expect(toggle).toHaveAttribute('aria-expanded', 'true');
 
     act(() => {
-      rerender(<CoursePlayerClient activeOrder={4} curriculum={curriculum} player={player} />);
+      rerender(<CoursePlayerClient activeOrder={4} player={player} />);
     });
 
     expect(heading()).toHaveTextContent('L4');
@@ -221,7 +189,7 @@ describe('CoursePlayerClient', () => {
   });
 
   it('starts from the first lesson without progress and disables "previous"', () => {
-    render(<CoursePlayerClient curriculum={curriculum} player={player} />);
+    render(<CoursePlayerClient player={player} />);
 
     expect(heading()).toHaveTextContent('L1');
     expect(screen.queryByRole('link', { name: /prevLesson/ })).not.toBeInTheDocument();
@@ -229,7 +197,7 @@ describe('CoursePlayerClient', () => {
   });
 
   it('on the last lesson leads to the dashboard and lists only that lesson PDF by file name', () => {
-    render(<CoursePlayerClient activeOrder={4} curriculum={curriculum} player={player} />);
+    render(<CoursePlayerClient activeOrder={4} player={player} />);
 
     expect(screen.getByRole('link', { name: 'pdfLinkLabel' })).toHaveAttribute(
       'href',

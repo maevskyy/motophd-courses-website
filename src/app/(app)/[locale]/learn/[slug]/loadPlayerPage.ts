@@ -10,7 +10,6 @@ import {
   getPlayerLesson,
   parseLessonOrder,
   toAppLocale,
-  toCurriculumModules,
   toPlayerContent,
   toPlayerDownloads
 } from '@/lib/data';
@@ -61,7 +60,6 @@ export const loadPlayerPage = async ({ locale, order, slug }: Params) => {
   });
   return {
     activeOrder: order === undefined ? undefined : requireLessonOrder(player.lessons, order),
-    curriculum: toCurriculumModules(course, lessons, safeLocale),
     player
   };
 };

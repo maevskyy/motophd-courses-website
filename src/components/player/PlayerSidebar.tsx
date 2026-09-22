@@ -9,19 +9,20 @@ import styles from './PlayerSidebar.module.scss';
 
 interface Props {
   activeOrder: number;
-  // Узкий экран: сайдбар — drawer, кнопка в шапке закрывает его, а не сворачивает.
+  // Узкий экран: сайдбар — drawer, и только там у него есть кнопка закрытия.
   narrow: boolean;
-  onHide: () => void;
+  onClose: () => void;
   player: PlayerContent;
   progress: CourseProgress;
 }
 
 // Оглавление курса на общей колонке AppSidebar (как в кабинете): шапка со
-// ссылкой «← Мой курс», названием и прогрессом, дерево модулей, «На сайт».
+// ссылкой «← Мой курс», названием и прогрессом, список уроков. Другого выхода
+// здесь нет: на сайт уводят логотип и пункты верхней шапки.
 export function PlayerSidebar({
   activeOrder,
   narrow,
-  onHide,
+  onClose,
   player,
   progress
 }: Props) {
@@ -35,18 +36,16 @@ export function PlayerSidebar({
           <Icon name="arrowLeft" size={16} />
           {t('dashboard.myCourse')}
         </Link>
-        <button
-          aria-label={narrow ? t('player.closeContents') : t('player.collapseSidebar')}
-          className={styles.hide}
-          onClick={onHide}
-          type="button"
-        >
-          {narrow ? (
+        {narrow ? (
+          <button
+            aria-label={t('player.closeContents')}
+            className={styles.hide}
+            onClick={onClose}
+            type="button"
+          >
             <Icon name="close" size={18} />
-          ) : (
-            <Icon className={styles.hideIcon} name="chevronRight" size={18} />
-          )}
-        </button>
+          </button>
+        ) : null}
       </div>
       <p className={styles.title}>{player.courseTitle}</p>
       <progress
@@ -61,15 +60,8 @@ export function PlayerSidebar({
     </>
   );
 
-  const footer = (
-    <Link className={styles.siteLink} href="/">
-      <Icon name="arrowLeft" size={16} />
-      {t('actions.backToWebsite')}
-    </Link>
-  );
-
   return (
-    <AppSidebar footer={footer} header={header} navLabel={t('player.contents')}>
+    <AppSidebar header={header} navLabel={t('player.contents')}>
       <PlayerModules
         activeOrder={activeOrder}
         player={player}

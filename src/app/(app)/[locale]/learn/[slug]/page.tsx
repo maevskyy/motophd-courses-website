@@ -11,7 +11,7 @@ export default async function CoursePlayerPage({
   params: Promise<{ slug: string; locale: string }>;
 }) {
   const { locale, slug } = await params;
-  const { activeOrder, curriculum, player } = await loadPlayerPage({ locale, slug });
+  const { activeOrder, player } = await loadPlayerPage({ locale, slug });
 
-  return <CoursePlayerClient activeOrder={activeOrder} curriculum={curriculum} player={player} />;
+  return <CoursePlayerClient activeOrder={activeOrder} player={player} />;
 }

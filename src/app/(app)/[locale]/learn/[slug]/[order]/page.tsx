@@ -10,7 +10,7 @@ export default async function LessonPage({
   params: Promise<{ slug: string; locale: string; order: string }>;
 }) {
   const { locale, order, slug } = await params;
-  const { activeOrder, curriculum, player } = await loadPlayerPage({ locale, order, slug });
+  const { activeOrder, player } = await loadPlayerPage({ locale, order, slug });
 
-  return <CoursePlayerClient activeOrder={activeOrder} curriculum={curriculum} player={player} />;
+  return <CoursePlayerClient activeOrder={activeOrder} player={player} />;
 }

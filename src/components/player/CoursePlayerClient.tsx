@@ -5,13 +5,12 @@ import { useRouter } from '@/i18n/routing';
 import { AppShell } from '@/components/app/AppShell';
 import { Icon } from '@/components/ui/Icon';
 import { cx } from '@/lib/classNames';
-import type { CurriculumModule, PlayerContent } from '@/lib/data';
+import type { PlayerContent } from '@/lib/data';
 import { lessonHref, useCourseProgress } from '@/lib/progress';
 import { getActiveLesson } from './activeLesson';
 import { LessonDownloads } from './LessonDownloads';
 import { LessonNav } from './LessonNav';
 import { LessonVideo } from './LessonVideo';
-import { PlayerRail } from './PlayerRail';
 import { PlayerSidebar } from './PlayerSidebar';
 import { usePlayerSidebar } from './usePlayerSidebar';
 import styles from './CoursePlayer.module.scss';
@@ -19,11 +18,10 @@ import styles from './CoursePlayer.module.scss';
 interface Props {
   // order из URL; без него активный урок — следующий непройденный.
   activeOrder?: number;
-  curriculum: CurriculumModule[];
   player: PlayerContent;
 }
 
-export function CoursePlayerClient({ activeOrder, curriculum, player }: Props) {
+export function CoursePlayerClient({ activeOrder, player }: Props) {
   const t = useTranslations('player');
   const router = useRouter();
   const { markDone, progress } = useCourseProgress(player.courseSlug);
@@ -41,8 +39,6 @@ export function CoursePlayerClient({ activeOrder, curriculum, player }: Props) {
   const index = player.lessons.indexOf(lesson);
   const prev = player.lessons[index - 1];
   const next = player.lessons[index + 1];
-  // На узком экране свёрнутость не действует: там оглавление — drawer.
-  const showRail = sidebar.collapsed && !sidebar.narrow;
 
   // «Завершить и продолжить»: отметка в localStorage и переход на канонический
   // адрес следующего урока; на последнем — в кабинет.
@@ -52,31 +48,16 @@ export function CoursePlayerClient({ activeOrder, curriculum, player }: Props) {
   };
 
   return (
-    <div
-      className={cx(
-        styles.player,
-        showRail && styles.playerCollapsed,
-        sidebar.drawerOpen && styles.playerDrawerOpen
-      )}
-    >
+    <div className={cx(styles.player, sidebar.drawerOpen && styles.playerDrawerOpen)}>
       <AppShell
         sidebar={
-          showRail ? (
-            <PlayerRail
-              activeOrder={lesson.order}
-              curriculum={curriculum}
-              onExpand={sidebar.toggleCollapsed}
-              player={player}
-            />
-          ) : (
-            <PlayerSidebar
-              activeOrder={lesson.order}
-              narrow={sidebar.narrow}
-              onHide={sidebar.narrow ? sidebar.closeDrawer : sidebar.toggleCollapsed}
-              player={player}
-              progress={progress}
-            />
-          )
+          <PlayerSidebar
+            activeOrder={lesson.order}
+            narrow={sidebar.narrow}
+            onClose={sidebar.closeDrawer}
+            player={player}
+            progress={progress}
+          />
         }
       >
         <div className={styles.content}>
@@ -93,8 +74,10 @@ export function CoursePlayerClient({ activeOrder, curriculum, player }: Props) {
             </button>
 
             {lesson.type === 'video' ? (
-              <div className={styles.videoContainer}>
-                <LessonVideo lesson={lesson} />
+              <div className={styles.videoSlot}>
+                <div className={styles.videoContainer}>
+                  <LessonVideo lesson={lesson} />
+                </div>
               </div>
             ) : null}
 

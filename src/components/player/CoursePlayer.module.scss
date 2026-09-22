@@ -2,22 +2,18 @@
 
 /*
   Плеер на общей оболочке AppShell: слева оглавление (AppSidebar), справа урок.
-  Ширины колонки — локальные токены. AppShell задаёт --sidebar-w на своём
-  корне, поэтому наследованием от обёртки её не перебить — переопределяем
-  прямому потомку (`.player > div` специфичнее `.shell`).
+  На десктопе колонка открыта всегда, сворачивания нет. Ширина колонки —
+  локальный токен. AppShell задаёт --sidebar-w на своём корне, поэтому
+  наследованием от обёртки её не перебить — переопределяем прямому потомку
+  (`.player > div` специфичнее `.shell`).
 */
 
 .player {
-  --rail-w: 56px;
   --sidebar-open-w: 320px;
 }
 
 .player > div {
   --sidebar-w: var(--sidebar-open-w);
-}
-
-.playerCollapsed > div {
-  --sidebar-w: var(--rail-w);
 }
 
 /* Без уроков оболочка не нужна: одна колонка под шапкой. */
@@ -28,6 +24,44 @@
 
 .content {
   padding: var(--sp-5) var(--gutter) var(--sp-9);
+}
+
+/*
+  Десктоп: урок помещается в экран целиком, прокручивать нечего. Высоту делят
+  видео (забирает остаток) и подпись с навигацией; на узких экранах — обычный
+  поток, там вертикальная прокрутка уместна.
+*/
+@media (min-width: 1025px) {
+  .content {
+    block-size: calc(100svh - var(--header-h));
+    display: flex;
+    overflow: hidden;
+    padding-block: var(--sp-5);
+  }
+
+  .column {
+    display: flex;
+    flex-direction: column;
+    inline-size: 100%;
+    min-block-size: 0;
+  }
+
+  .videoSlot {
+    display: flex;
+    flex: 1 1 auto;
+    justify-content: center;
+    min-block-size: 0;
+  }
+
+  .videoContainer {
+    block-size: 100%;
+    inline-size: auto;
+    max-inline-size: 100%;
+  }
+
+  .lessonHeader {
+    padding-block: var(--sp-4) var(--sp-4);
+  }
 }
 
 /*
@@ -58,6 +92,11 @@
   padding: 0;
   position: fixed;
   z-index: 80;
+}
+
+/* Обёртка видео: на десктопе она и отдаёт кадру всю свободную высоту. */
+.videoSlot {
+  min-inline-size: 0;
 }
 
 .videoContainer {

@@ -52,9 +52,6 @@
 }
 
 /* «Свернуть» — шеврон влево: в наборе иконок есть только правый. */
-.hideIcon {
-  transform: scaleX(-1);
-}
 
 .title {
   font-size: var(--fs-small);
@@ -247,79 +244,3 @@
 }
 
 /* ---------- Свёрнутый рейл: 56px, только номера модулей ---------- */
-
-.rail {
-  align-items: center;
-  background: var(--surface-2);
-  block-size: calc(100svh - var(--header-h));
-  border-inline-end: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-2);
-  inset-block-start: var(--header-h);
-  overflow-y: auto;
-  padding-block: var(--sp-4);
-  position: sticky;
-}
-
-.railBtn {
-  align-items: center;
-  background: transparent;
-  block-size: var(--control-h-sm);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  color: var(--text-2);
-  cursor: pointer;
-  display: flex;
-  flex: none;
-  inline-size: var(--control-h-sm);
-  justify-content: center;
-  margin-block-end: var(--sp-2);
-  transition:
-    border-color var(--dur) var(--ease),
-    color var(--dur) var(--ease);
-
-  @include focus-ring;
-
-  &:hover {
-    border-color: var(--border-strong);
-    color: var(--text-1);
-  }
-}
-
-.railNav {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-2);
-}
-
-.railItem {
-  align-items: center;
-  background: var(--surface-3);
-  block-size: var(--control-h-sm);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  color: var(--text-2);
-  display: flex;
-  flex: none;
-  font-family: var(--font-display);
-  font-size: var(--fs-caption);
-  inline-size: var(--control-h-sm);
-  justify-content: center;
-  text-decoration: none;
-  transition:
-    border-color var(--dur) var(--ease),
-    color var(--dur) var(--ease);
-
-  @include focus-ring;
-
-  &:hover {
-    border-color: var(--border-strong);
-    color: var(--text-1);
-  }
-}
-
-.railItemActive {
-  border-color: var(--brand);
-  color: var(--text-1);
-}
