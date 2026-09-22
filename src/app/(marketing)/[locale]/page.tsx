@@ -40,22 +40,10 @@ export async function generateMetadata({
   });
 }
 
-export default async function HomePage({
-  params,
-  searchParams
-}: {
-  params: Promise<{ locale: string }>;
-  searchParams: Promise<{ how?: string }>;
-}) {
+export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-  // При первом ISR-рендере Next может не передать searchParams: воспринимаем
-  // это как вариант по умолчанию, а не роняем главную страницу.
-  const { how } = (await searchParams) ?? {};
   const safeLocale = requireLocale(locale);
-  const [actions, nav] = await Promise.all([
-    getTranslations({ locale: safeLocale, namespace: 'actions' }),
-    getTranslations({ locale: safeLocale, namespace: 'nav' })
-  ]);
+  const actions = await getTranslations({ locale: safeLocale, namespace: 'actions' });
   const content = homeContent[safeLocale];
   const payloadCourses = await getPublishedCourses(safeLocale);
   const courses = payloadCourses.map((course, index) => toCourseCardCourse(course, index));
@@ -70,11 +58,7 @@ export default async function HomePage({
           viewCourses: actions('viewCourses')
         }}
       />
-      <LandingBottom
-        content={content}
-        howVariant={how === 'cards' ? 'cards' : 'timeline'}
-        labels={{ joinCommunity: actions('joinCommunity') }}
-      />
+      <LandingBottom content={content} labels={{ joinCommunity: actions('joinCommunity') }} />
     </>
   );
 }
