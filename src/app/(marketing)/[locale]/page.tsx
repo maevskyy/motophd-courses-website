@@ -48,9 +48,9 @@ export default async function HomePage({
   searchParams: Promise<{ how?: string }>;
 }) {
   const { locale } = await params;
-  // MOT-66: два варианта секции «Как это работает» на выбор — ?how=cards
-  // показывает второй. После выбора проигравший вариант и параметр снести.
-  const { how } = await searchParams;
+  // При первом ISR-рендере Next может не передать searchParams: воспринимаем
+  // это как вариант по умолчанию, а не роняем главную страницу.
+  const { how } = (await searchParams) ?? {};
   const safeLocale = requireLocale(locale);
   const [actions, nav] = await Promise.all([
     getTranslations({ locale: safeLocale, namespace: 'actions' }),
@@ -66,7 +66,7 @@ export default async function HomePage({
         content={content}
         courses={courses}
         labels={{
-          about: nav('about'),
+          browseAllCourses: actions('browseAllCourses'),
           viewCourses: actions('viewCourses')
         }}
       />
