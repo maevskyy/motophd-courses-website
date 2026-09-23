@@ -1,7 +1,8 @@
 import { connection } from 'next/server';
 import { DashboardShell } from '@/components/dashboard/DashboardShell';
 import { requireUser } from '@/lib/auth';
-import { getDashboardCourses, toAppLocale } from '@/lib/data';
+import { getDashboardCourses } from '@/lib/data';
+import { requireLocale } from '@/i18n/requireLocale';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,7 +18,7 @@ export default async function DashboardLayout({
   await connection();
 
   const { locale } = await params;
-  const safeLocale = toAppLocale(locale);
+  const safeLocale = requireLocale(locale);
   const user = await requireUser(
     `/${safeLocale}/login?next=${encodeURIComponent(`/${safeLocale}/dashboard`)}`
   );

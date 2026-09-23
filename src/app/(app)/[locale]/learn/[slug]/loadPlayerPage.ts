@@ -9,13 +9,13 @@ import {
   getCourseLessons,
   getPlayerLesson,
   parseLessonOrder,
-  toAppLocale,
   toPlayerContent,
   toPlayerDownloads
 } from '@/lib/data';
 import type { PlayerLesson } from '@/lib/data';
 import { getPayloadClient } from '@/lib/data/payload';
-import { getPlaybackUrl } from '@/lib/video';
+import { getPlaybackUrl, lessonPosterUrl } from '@/lib/video';
+import { requireLocale } from '@/i18n/requireLocale';
 
 interface Params {
   locale: string;
@@ -30,7 +30,7 @@ interface Params {
 export const loadPlayerPage = async ({ locale, order, slug }: Params) => {
   await connection();
 
-  const safeLocale = toAppLocale(locale);
+  const safeLocale = requireLocale(locale);
   const path = [`/${safeLocale}/learn/${slug}`, order].filter(Boolean).join('/');
   const user = await requireUser(`/${safeLocale}/login?next=${encodeURIComponent(path)}`);
   const course = await getCourseBySlug(slug, safeLocale, user);
@@ -54,8 +54,12 @@ export const loadPlayerPage = async ({ locale, order, slug }: Params) => {
     currentLesson,
     downloads: toPlayerDownloads(lessons, safeLocale),
     locale: safeLocale,
+    // Постер — обложка урока: Stream иначе показывает случайный кадр.
     videoEmbedUrl: currentLesson?.streamVideoId
-      ? getPlaybackUrl(currentLesson.streamVideoId, { free: false })
+      ? getPlaybackUrl(currentLesson.streamVideoId, {
+          free: false,
+          poster: lessonPosterUrl(currentLesson)
+        })
       : null
   });
   return {

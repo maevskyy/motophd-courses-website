@@ -9,10 +9,10 @@ import {
   getDashboardCourses,
   getPublishedCourses,
   getPurchaseHistory,
-  toAppLocale,
   toCourseCardCourse
 } from '@/lib/data';
 import { getPayloadClient } from '@/lib/data/payload';
+import { requireLocale } from '@/i18n/requireLocale';
 
 export const dynamic = 'force-dynamic';
 
@@ -21,7 +21,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
   await connection();
 
   const { locale } = await params;
-  const safeLocale = toAppLocale(locale);
+  const safeLocale = requireLocale(locale);
   const user = await requireUser(
     `/${safeLocale}/login?next=${encodeURIComponent(`/${safeLocale}/dashboard`)}`
   );

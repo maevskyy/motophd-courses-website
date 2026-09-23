@@ -2,7 +2,8 @@ import { connection } from 'next/server';
 import { SettingsPage } from '@/components/dashboard/SettingsPage';
 import { getFeedbackUpgradeCourseSlugs } from '@/lib/access/feedbackUpgrade';
 import { requireUser } from '@/lib/auth';
-import { getPurchaseHistory, toAppLocale } from '@/lib/data';
+import { getPurchaseHistory } from '@/lib/data';
+import { requireLocale } from '@/i18n/requireLocale';
 
 export const dynamic = 'force-dynamic';
 
@@ -15,7 +16,7 @@ export default async function DashboardSettingsPage({
   await connection();
 
   const { locale } = await params;
-  const safeLocale = toAppLocale(locale);
+  const safeLocale = requireLocale(locale);
   const user = await requireUser(
     `/${safeLocale}/login?next=${encodeURIComponent(`/${safeLocale}/dashboard/settings`)}`
   );
