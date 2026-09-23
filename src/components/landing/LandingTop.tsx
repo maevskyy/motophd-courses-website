@@ -1,5 +1,6 @@
 import { Link } from '@/i18n/routing';
 import { CourseCard } from '@/components/prototype/CourseCard';
+import { HeroVideo } from './HeroVideo';
 import { Icon } from '@/components/ui/Icon';
 import { Section, SectionHeader } from '@/components/ui/Section';
 import { Testimonials } from './Testimonials';
@@ -25,28 +26,9 @@ export function LandingTop({ content, courses, labels }: Props) {
           Один слой затемнения вместо трёх (сетка + радиальное свечение убраны):
           на мобильном градиент разворачивается снизу вверх, потому что там видео —
           отдельный медиа-блок над текстом, а не фон под ним.
-
-          preload="none", а не "auto": не просим браузер качать ролик заранее —
-          LCP-элемент хиро это постер (`poster`), страница рисуется без видео.
-          Оговорка: по спецификации autoplay перекрывает подсказку preload, и там,
-          где muted-autoplay разрешён (Chrome и др.), загрузка mp4 стартует сразу,
-          но с низким приоритетом. "none" экономит трафик там, где автозапуск
-          заблокирован (iOS Low Power Mode, экономия данных), а главный рычаг
-          скорости — вес файла: бюджет и команда пережатия —
-          docs/ARCHITECTURE.md, раздел «Статические медиа лендинга».
         */}
         <div className={hero.media}>
-          <video
-            autoPlay
-            className={hero.video}
-            loop
-            muted
-            playsInline
-            poster="/hero-poster.jpg"
-            preload="none"
-          >
-            <source src="/hero-loop.mp4" type="video/mp4" />
-          </video>
+          <HeroVideo className={hero.video} poster="/hero-poster.jpg" src="/hero-loop.mp4" />
           <div className={hero.scrim} />
           <div className={hero.glow} />
         </div>
@@ -62,8 +44,8 @@ export function LandingTop({ content, courses, labels }: Props) {
             заметно длиннее EN) и требовали правок размера через :lang(ru).
           */}
           <h1 className={hero.title}>
-            {content.heroTitle.join(' ')} <span className={hero.titleAccent}>{content.heroRed}</span>{' '}
-            {content.heroAfterRed}
+            {content.heroTitle.join(' ')}{' '}
+            <span className={hero.titleAccent}>{content.heroRed}</span> {content.heroAfterRed}
           </h1>
           <p className={hero.sub}>{content.heroSub}</p>
           <div className={hero.actions}>
@@ -97,7 +79,11 @@ export function LandingTop({ content, courses, labels }: Props) {
       </Section>
 
       <Section bordered tone="alt">
-        <SectionHeader kicker={content.methodLabel} lead={content.methodSub} title={content.methodTitle} />
+        <SectionHeader
+          kicker={content.methodLabel}
+          lead={content.methodSub}
+          title={content.methodTitle}
+        />
         <ol className={blocks.methodGrid}>
           {content.method.map((item) => (
             <li className={blocks.methodCard} key={item.title}>
@@ -161,7 +147,10 @@ export function LandingTop({ content, courses, labels }: Props) {
       </Section>
 
       <Section bordered tone="alt">
-        <SectionHeader kicker={content.testimonialsLabel} title={content.testimonialsTitle.join(' ')} />
+        <SectionHeader
+          kicker={content.testimonialsLabel}
+          title={content.testimonialsTitle.join(' ')}
+        />
         <Testimonials items={content.testimonials} />
       </Section>
     </>
