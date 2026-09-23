@@ -8,7 +8,7 @@
 }
 
 .grid {
-  @include grid-cards(300px);
+  @include grid-courses;
 }
 
 /* Длинные юридические тексты: одна колонка читаемой ширины. */

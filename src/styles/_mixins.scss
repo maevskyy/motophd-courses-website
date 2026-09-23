@@ -277,6 +277,24 @@
 
 /* ---------- Сетки карточек: три разрешённых раскладки ---------- */
 
+/*
+  Карточки курсов: три колонки независимо от того, сколько курсов опубликовано
+  — как на проде. auto-fit растягивал единственный курс на всю ширину секции.
+*/
+@mixin grid-courses {
+  display: grid;
+  gap: var(--sp-5);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  @media (max-width: 900px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 @mixin grid-cards($min: 300px) {
   display: grid;
   gap: var(--sp-5);

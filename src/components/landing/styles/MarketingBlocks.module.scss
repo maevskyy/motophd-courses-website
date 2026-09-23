@@ -3,7 +3,7 @@
 /* ---------- Общие примитивы блоков ---------- */
 
 .cardsGrid {
-  @include grid-cards(300px);
+  @include grid-courses;
 }
 
 /* Заголовок и текст карточки — слоты в строках, см. _mixins.scss. */
