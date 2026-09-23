@@ -95,6 +95,25 @@
   margin-block-start: var(--sp-5);
 }
 
+/* Документы под галочкой: подпись, а не действие — акцент только на ссылках. */
+.legalNote {
+  color: var(--text-3);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-normal);
+  margin-block-start: var(--sp-3);
+
+  a {
+    color: var(--text-2);
+    text-decoration: underline;
+
+    @include focus-ring;
+
+    &:hover {
+      color: var(--text-1);
+    }
+  }
+}
+
 .disclaimerLabel {
   align-items: flex-start;
   color: var(--text-2);

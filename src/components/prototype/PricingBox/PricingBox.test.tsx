@@ -1,7 +1,14 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
-vi.mock('next-intl', () => ({ useTranslations: () => (key: string) => key }));
+// t.rich рендерит теги ссылок из строки — в моке возвращаем содержимое как есть.
+vi.mock('next-intl', () => {
+  const t = (key: string) => key;
+
+  t.rich = (key: string) => key;
+
+  return { useTranslations: () => t };
+});
 vi.mock('@/components/providers/ToastProvider', () => ({
   useToast: () => ({ showToast: vi.fn() })
 }));

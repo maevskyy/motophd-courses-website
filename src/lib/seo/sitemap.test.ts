@@ -9,12 +9,13 @@ const source = {
     { slug: 'lean', updatedAt: '2026-09-01T10:00:00.000Z' },
     { slug: 'counter-steering', updatedAt: 'not-a-date' }
   ],
-  legalPages: [{ slug: 'privacy', updatedAt: null }, { slug: 'terms' }],
+  // privacy/terms живут в базе, но на сайте их больше нет — в карту не идут.
+  legalPages: [{ slug: 'contact', updatedAt: null }, { slug: 'privacy' }, { slug: 'terms' }],
   siteUrl
 };
 
 describe('buildSitemapEntries', () => {
-  it('lists landing, catalog, every course and every legal page in every locale', () => {
+  it('lists landing, catalog, every course and the legal pages that still exist', () => {
     const urls = buildSitemapEntries(source).map((entry) => entry.url);
 
     expect(urls).toEqual([
@@ -33,12 +34,9 @@ describe('buildSitemapEntries', () => {
       'https://motophd.com/en/courses/counter-steering',
       'https://motophd.com/ru/courses/counter-steering',
       'https://motophd.com/uk/courses/counter-steering',
-      'https://motophd.com/en/privacy',
-      'https://motophd.com/ru/privacy',
-      'https://motophd.com/uk/privacy',
-      'https://motophd.com/en/terms',
-      'https://motophd.com/ru/terms',
-      'https://motophd.com/uk/terms'
+      'https://motophd.com/en/contact',
+      'https://motophd.com/ru/contact',
+      'https://motophd.com/uk/contact'
     ]);
   });
 
@@ -67,7 +65,7 @@ describe('buildSitemapEntries', () => {
       new Date('2026-09-01T10:00:00.000Z')
     );
     expect(byUrl['https://motophd.com/ru/courses/counter-steering']).toBeUndefined();
-    expect(byUrl['https://motophd.com/en/privacy']).toBeUndefined();
+    expect(byUrl['https://motophd.com/en/contact']).toBeUndefined();
   });
 
   it('gives the landing page the highest priority and legal pages the lowest', () => {
@@ -78,7 +76,7 @@ describe('buildSitemapEntries', () => {
     expect(priority('https://motophd.com/ru/courses')).toBe(0.9);
     expect(priority('https://motophd.com/uk/about')).toBe(0.6);
     expect(priority('https://motophd.com/en/courses/lean')).toBe(0.8);
-    expect(priority('https://motophd.com/ru/terms')).toBe(0.3);
+    expect(priority('https://motophd.com/ru/contact')).toBe(0.3);
   });
 
   it('only contains what it was given: no courses means only static and legal pages', () => {

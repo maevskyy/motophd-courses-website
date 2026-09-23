@@ -2,6 +2,7 @@
 
 import { useActionState, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { legalDocumentHref } from '@/lib/legal';
 import type { Locale } from '@/i18n/locales';
 import { useToast } from '@/components/providers/ToastProvider';
 import { Icon } from '@/components/ui/Icon';
@@ -105,6 +106,25 @@ export function PricingBox({ checkoutEnabled, className, courseSlug, locale, sal
               {t('toast.acceptDisclaimer')}
             </p>
           ) : null}
+          {/* Документы, с которыми соглашаются оплатой, — рядом с кнопкой, а не только в подвале. */}
+          <p className={styles.legalNote}>
+            {t.rich('checkout.legalNote', {
+              offer: (chunks) => (
+                <a href={legalDocumentHref('offer', locale)} rel="noopener noreferrer" target="_blank">
+                  {chunks}
+                </a>
+              ),
+              privacy: (chunks) => (
+                <a
+                  href={legalDocumentHref('privacy', locale)}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  {chunks}
+                </a>
+              )
+            })}
+          </p>
         </div>
         {state && 'error' in state ? (
           <p className={styles.error} role="alert">

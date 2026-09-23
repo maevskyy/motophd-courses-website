@@ -4,6 +4,7 @@ import { cache } from 'react';
 import { Footer } from '@/components/prototype/Footer';
 import { Section, SectionHeader } from '@/components/ui/Section';
 import { getLegalPage, richTextToParagraphs, type AppLocale } from '@/lib/data';
+import { isLegalPageSlug } from '@/lib/legal';
 import { buildPageMetadata, resolveSeoLocale } from '@/lib/seo';
 import { requireLocale } from '@/i18n/requireLocale';
 import type { LegalPage } from '@/payload-types';
@@ -17,10 +18,7 @@ export function generateStaticParams() {
   return [];
 }
 
-const legalSlugs = ['privacy', 'terms', 'refund', 'contact'] satisfies LegalPage['slug'][];
-
-const isLegalSlug = (slug: string): slug is LegalPage['slug'] =>
-  legalSlugs.includes(slug as LegalPage['slug']);
+const isLegalSlug = (slug: string): slug is LegalPage['slug'] => isLegalPageSlug(slug);
 
 // Один запрос на рендер: generateMetadata и страница читают ту же запись.
 const loadLegalPage = cache((slug: LegalPage['slug'], locale: AppLocale) =>
