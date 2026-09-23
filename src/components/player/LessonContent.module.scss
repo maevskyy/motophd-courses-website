@@ -36,13 +36,23 @@
     z-index: 70;
   }
 
+  /*
+    «Предыдущий» держит свою ширину, а «Завершить и продолжить» забирает остаток
+    и переносит подпись на вторую строку вместо того, чтобы выпирать за экран:
+    в одну строку она не влезает ни на одном из трёх языков.
+  */
   .navPrev {
     flex: 0 0 auto;
+    padding-inline: var(--sp-4);
   }
 
   .navNext {
     flex: 1 1 auto;
     justify-content: center;
+    min-inline-size: 0;
+    padding-inline: var(--sp-4);
+    text-wrap: balance;
+    white-space: normal;
   }
 }
 

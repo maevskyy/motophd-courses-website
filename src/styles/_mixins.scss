@@ -124,6 +124,13 @@
   line-height: var(--lh-normal);
   max-inline-size: 100%;
   min-block-size: var(--control-h);
+  /*
+    Подпись не выходит за кнопку физически: длинное слово ломается по буквам
+    (там, где кнопке разрешён перенос), а всё, что всё равно не влезло, режется
+    по границе. Раньше `white-space: nowrap` просто выносил текст наружу.
+  */
+  overflow: hidden;
+  overflow-wrap: anywhere;
   padding-block: var(--sp-2);
   padding-inline: var(--sp-5);
   text-align: center;
@@ -133,6 +140,11 @@
     border-color var(--dur) var(--ease),
     color var(--dur) var(--ease);
   white-space: nowrap;
+
+  /* Иконка в кнопке не ужимается вместе с подписью и не режется по краю. */
+  svg {
+    flex: none;
+  }
 
   @include focus-ring;
 
