@@ -1,7 +1,7 @@
 {
   "nav": {
     "courses": "Courses",
-    "about": "About the school",
+    "about": "About us",
     "language": "Language",
     "login": "Login",
     "dashboard": "My Dashboard",
@@ -166,6 +166,7 @@
   "checkout": {
     "email": "Email",
     "promoCode": "Promo code",
+    "legalNote": "By paying you accept the <offer>public offer</offer> and the <privacy>privacy policy</privacy>.",
     "unavailable": "We cannot accept payment right now — please contact us.",
     "mockTitle": "Mock bank",
     "mockDescription": "This is a test payment page.",
@@ -197,8 +198,8 @@
     "about": "About",
     "legalHeading": "Legal",
     "privacyPolicy": "Privacy Policy",
-    "terms": "Terms & Conditions",
-    "refundPolicy": "Refund Policy",
+    "offer": "Public Offer",
+    "license": "License Agreement",
     "contact": "Contact",
     "copy": "© 2026 MotoPhD Online. All rights reserved. Educational content for informational purposes only."
   },

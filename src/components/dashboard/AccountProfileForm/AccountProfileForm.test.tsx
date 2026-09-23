@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { AccountProfileForm } from './AccountProfileForm';
 
 vi.mock('next-intl', () => ({
+  useLocale: () => 'en',
   useTranslations: () => (key: string) => key
 }));
 

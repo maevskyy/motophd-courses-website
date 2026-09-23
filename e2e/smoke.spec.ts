@@ -37,7 +37,7 @@ test('home page renders in English', async ({ page }) => {
 test('About in the header opens the dedicated About page', async ({ page }) => {
   await page.goto('/en');
 
-  await page.getByRole('navigation').getByRole('link', { exact: true, name: 'About the school' }).click();
+  await page.getByRole('navigation').getByRole('link', { exact: true, name: 'About us' }).click();
 
   await expect(page).toHaveURL(/\/en\/about$/);
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
@@ -342,9 +342,22 @@ test('invalid login shows a generic error message', async ({ page }) => {
 });
 
 test('legal page renders content from Payload', async ({ page }) => {
-  await page.goto('/en/privacy');
+  await page.goto('/en/contact');
 
   await expect(page.locator('h1').first()).toBeVisible();
+});
+
+test('legal documents are served as PDFs in the page language', async ({ page, request }) => {
+  await page.goto('/uk');
+
+  const offer = page.getByRole('contentinfo').getByRole('link', { name: 'Публічна оферта' });
+
+  await expect(offer).toHaveAttribute('href', '/legal/public-offer-uk.pdf');
+
+  const response = await request.get('/legal/public-offer-uk.pdf');
+
+  expect(response.status()).toBe(200);
+  expect(response.headers()['content-type']).toContain('application/pdf');
 });
 
 test('admin panel responds', async ({ request }) => {

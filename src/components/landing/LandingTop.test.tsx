@@ -14,6 +14,7 @@ vi.mock('@/i18n/routing', () => ({
 
 // Секция отзывов — клиентский компонент и берёт подписи из next-intl.
 vi.mock('next-intl', () => ({
+  useLocale: () => 'en',
   useTranslations: () => (key: string) => key
 }));
 
@@ -75,11 +76,5 @@ describe('LandingTop', () => {
     const reviews = screen.getByText(homeContent.en.testimonialsLabel);
 
     expect(coach.compareDocumentPosition(reviews) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-  });
-
-  it('has no "About the school" section', () => {
-    render(<LandingTop content={homeContent.en} courses={[]} labels={labels} />);
-
-    expect(screen.queryByText(/about the school/i)).not.toBeInTheDocument();
   });
 });
