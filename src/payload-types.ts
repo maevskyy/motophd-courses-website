@@ -215,6 +215,7 @@ export interface Lesson {
   title: string;
   durationSec?: number | null;
   streamVideoId?: string | null;
+  cover?: (number | null) | Media;
   pdf?: (number | null) | Media;
   body?: {
     root: {
@@ -487,6 +488,7 @@ export interface LessonsSelect<T extends boolean = true> {
   title?: T;
   durationSec?: T;
   streamVideoId?: T;
+  cover?: T;
   pdf?: T;
   body?: T;
   isFreePreview?: T;
