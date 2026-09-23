@@ -204,6 +204,13 @@
     padding-block: var(--sp-4) var(--sp-8);
   }
 
+  /* Под липкой полосой кнопок (см. LessonContent.module.scss) — её высота. */
+  @media (max-width: 768px) {
+    .content {
+      padding-block-end: calc(var(--sp-9) + env(safe-area-inset-bottom));
+    }
+  }
+
   .contentsBtn {
     display: inline-flex;
   }

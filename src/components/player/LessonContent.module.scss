@@ -19,6 +19,33 @@
   @include btn-primary;
 }
 
+/*
+  Телефон: пара кнопок живёт полосой у нижнего края, а не посреди пустого
+  экрана под коротким уроком. «Предыдущий» — по ширине текста, «Завершить и
+  продолжить» забирает остаток, чтобы это читалось как одна пара.
+*/
+@media (max-width: 768px) {
+  .lessonNav {
+    background: var(--surface-1);
+    border-block-end: 0;
+    flex-wrap: nowrap;
+    inset-block-end: 0;
+    inset-inline: 0;
+    padding: var(--sp-3) var(--gutter) calc(var(--sp-3) + env(safe-area-inset-bottom));
+    position: fixed;
+    z-index: 70;
+  }
+
+  .navPrev {
+    flex: 0 0 auto;
+  }
+
+  .navNext {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+}
+
 /* ---------- Текст урока: мерой --measure по левому краю колонки ---------- */
 
 .lessonText {
