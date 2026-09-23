@@ -107,17 +107,24 @@ export function Nav() {
             В шапке действие вторичное: главный красный CTA на первом экране —
             кнопка в хиро, а на последнем — закрывающий блок. Два primary
             одновременно на экране размывают главное действие.
+
+            Залогиненному «Начать обучение» не показываем: он уже учится, и в
+            портале эта кнопка только отнимала место у шапки.
           */}
-          <Link className={styles.btnSecondary} href="/courses">
-            {t('nav.cta')}
-          </Link>
+          {isLoggedIn ? null : (
+            <Link className={styles.btnSecondary} href="/courses">
+              {t('nav.cta')}
+            </Link>
+          )}
         </div>
 
         <div className={styles.mobile}>
-          {/* Ключевое действие остаётся на виду и на телефоне. */}
-          <Link className={cx(styles.btnPrimary, styles.btnCompact)} href="/courses">
-            {t('nav.cta')}
-          </Link>
+          {/* Ключевое действие остаётся на виду и на телефоне — до входа. */}
+          {isLoggedIn ? null : (
+            <Link className={cx(styles.btnPrimary, styles.btnCompact)} href="/courses">
+              {t('nav.cta')}
+            </Link>
+          )}
           <button
             aria-controls={menuId}
             aria-expanded={menuOpen}
