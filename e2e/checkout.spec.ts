@@ -20,6 +20,11 @@ const startCheckout = async (page: Page, email: string, promoCode?: string) => {
 const pay = async (page: Page) => {
   await page.getByRole('button', { name: 'Pay', exact: true }).click();
   await expect(page).toHaveURL(/\/en\/checkout\/success\?order=.*signedIn=1/);
+  await expect(page.getByRole('heading', { name: 'Payment complete' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Back to Dashboard' })).toHaveAttribute(
+    'href',
+    '/en/dashboard'
+  );
 };
 
 const getOwnPurchases = async (page: Page) => {
@@ -72,6 +77,8 @@ test('declining payment leaves the purchase pending and access closed', async ({
   await page.getByRole('button', { name: 'Decline', exact: true }).click();
 
   await expect(page).toHaveURL(/\/en\/checkout\/fail\?order=/);
+  await expect(page.getByRole('heading', { name: 'Payment was not completed' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'All Courses' })).toHaveAttribute('href', '/en/courses');
   expect((await page.context().cookies()).some(({ name }) => name === 'payload-token')).toBe(false);
 
   await page.goto('/en/learn/lean');
