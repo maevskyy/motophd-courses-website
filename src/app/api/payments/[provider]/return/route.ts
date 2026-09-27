@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { toLocale } from '@/i18n/locales';
 import { consumePostPaymentSession } from '@/lib/payments/session';
+import { getSiteUrl } from '@/lib/seo/siteUrl';
 
 export async function POST(
   request: Request,
@@ -13,7 +14,8 @@ export async function POST(
   const orderReference = String(body.get('orderReference') || query.get('order') || '');
   const approved = body.get('status') === 'paid' || String(body.get('transactionStatus') || '').toLowerCase() === 'approved';
   const status = approved ? 'success' : 'fail';
-  const url = new URL(`/${locale}/checkout/${status}`, request.url);
+  // Не request.url: за Caddy это внутренний адрес контейнера (https://0.0.0.0:3000).
+  const url = new URL(`/${locale}/checkout/${status}`, getSiteUrl());
 
   url.searchParams.set('provider', provider);
 
