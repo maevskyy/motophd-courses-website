@@ -140,8 +140,11 @@
     "successTitle": "Payment complete",
     "successSignedIn": "You are signed in and your course is ready.",
     "successLogin": "Payment is complete. Sign in to access your course.",
+    "successCta": "Go to my courses",
+    "successLoginCta": "Sign in",
     "failTitle": "Payment was not completed",
     "failDescription": "Your order is still pending. You can try again later.",
+    "failCta": "Back to courses",
     "errors": {
       "alreadyPurchased": "This course is already in your purchases.",
       "checkoutUnavailable": "We cannot accept payment right now — please contact us.",

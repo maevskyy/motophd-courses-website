@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 
+import { CheckoutResult } from '@/components/checkout/CheckoutResult';
 import { requireLocale } from '@/i18n/requireLocale';
 
 export default async function CheckoutSuccessPage({
@@ -17,9 +18,14 @@ export default async function CheckoutSuccessPage({
   const t = await getTranslations({ locale: safeLocale, namespace: 'checkout' });
 
   return (
-    <main>
-      <h1>{t('successTitle')}</h1>
-      <p>{signedIn ? t('successSignedIn') : t('successLogin')}</p>
-    </main>
+    <CheckoutResult
+      action={
+        signedIn
+          ? { href: '/dashboard', label: t('successCta') }
+          : { href: '/login', label: t('successLoginCta') }
+      }
+      description={signedIn ? t('successSignedIn') : t('successLogin')}
+      title={t('successTitle')}
+    />
   );
 }

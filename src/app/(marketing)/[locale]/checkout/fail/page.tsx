@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 
+import { CheckoutResult } from '@/components/checkout/CheckoutResult';
 import { requireLocale } from '@/i18n/requireLocale';
 
 export default async function CheckoutFailPage({ params }: { params: Promise<{ locale: string }> }) {
@@ -7,9 +8,10 @@ export default async function CheckoutFailPage({ params }: { params: Promise<{ l
   const t = await getTranslations({ locale: requireLocale(locale), namespace: 'checkout' });
 
   return (
-    <main>
-      <h1>{t('failTitle')}</h1>
-      <p>{t('failDescription')}</p>
-    </main>
+    <CheckoutResult
+      action={{ href: '/courses', label: t('failCta') }}
+      description={t('failDescription')}
+      title={t('failTitle')}
+    />
   );
 }
