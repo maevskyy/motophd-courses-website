@@ -1,0 +1,33 @@
+@use '@/styles/mixins' as *;
+
+/* Ширину колонки задаёт SettingsPage — здесь только ритм секции. */
+.section {
+  display: grid;
+  gap: var(--sp-5);
+  padding-block: var(--sp-6);
+
+  & + & {
+    border-block-start: 1px solid var(--border);
+  }
+}
+
+.section__header {
+  display: grid;
+  gap: var(--sp-1);
+}
+
+.section__title {
+  @include h3;
+}
+
+.section__description {
+  color: var(--text-2);
+  font-size: var(--fs-small);
+  line-height: var(--lh-normal);
+}
+
+.section__body {
+  display: grid;
+  gap: var(--sp-5);
+  min-inline-size: 0;
+}

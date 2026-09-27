@@ -1,6 +1,6 @@
 import type { Course, Lesson } from '@/payload-types';
 import type { CourseCurriculumLesson } from './courses';
-import { curriculumLevelsByCourse, readingLabels, salesText } from './localizedText';
+import { readingLabels, salesText } from './localizedText';
 import type {
   AppLocale,
   CourseCardCourse,
@@ -8,13 +8,14 @@ import type {
   DashboardContent,
   PlayerContent,
   PlayerDownload,
+  PlayerLesson,
   SalesContent
 } from './types';
 
 const visualByIndex = [
-  { icon: '🏍️', imageTone: 'red' as const, image: '/course-lean.jpg' },
-  { icon: '⚡', imageTone: 'green' as const, image: '/course-braking.jpg' },
-  { icon: '🛑', imageTone: 'blue' as const, image: undefined }
+  { icon: 'motorcycle' as const, imageTone: 'red' as const, image: '/course-lean.jpg' },
+  { icon: 'flag' as const, imageTone: 'green' as const, image: '/course-braking.jpg' },
+  { icon: 'wrench' as const, imageTone: 'blue' as const, image: undefined }
 ];
 
 export const toCourseCardCourse = (
@@ -67,9 +68,7 @@ export const toSalesContent = (course: Course, locale: AppLocale): SalesContent 
     ],
     disclaimer: text.disclaimer,
     guarantee: text.guarantee,
-    modulesTitle: text.modulesTitle,
-    enrollCta: text.enrollCta,
-    teaserTitle: text.teaserTitle
+    modulesTitle: text.modulesTitle
   };
 };
 
@@ -96,33 +95,12 @@ export const toCurriculumModules = (
     return [];
   }
 
-  const levels = curriculumLevelsByCourse[course.slug]?.[locale];
-  const totalLevelLessons = levels?.reduce((sum, level) => sum + level.count, 0);
-
-  if (!levels || totalLevelLessons !== lessons.length) {
-    return [
-      {
-        number: '1',
-        title: course.title,
-        open: true,
-        lessons: lessons.map((lesson) => toCurriculumLesson(lesson, locale))
-      }
-    ];
-  }
-
-  let cursor = 0;
-
-  return levels.map((level, levelIndex) => {
-    const levelLessons = lessons.slice(cursor, cursor + level.count);
-    cursor += level.count;
-
-    return {
-      number: String(levelIndex + 1).padStart(2, '0'),
-      title: level.title,
-      open: levelIndex === 0,
-      lessons: levelLessons.map((lesson) => toCurriculumLesson(lesson, locale))
-    };
-  });
+  return lessons.map((lesson, index) => ({
+    number: String(index + 1).padStart(2, '0'),
+    title: lesson.title,
+    open: index === 0,
+    lessons: [toCurriculumLesson(lesson, locale)]
+  }));
 };
 
 const sortLessonsByOrder = <T extends Pick<Lesson, 'order'>>(lessons: T[]) =>
@@ -156,6 +134,7 @@ export const toPlayerDownloads = (lessons: Lesson[], locale: AppLocale): PlayerD
     .filter((lesson) => Boolean(lesson.pdf))
     .map((lesson) => ({
       id: lesson.id,
+      fileName: lesson.pdf && typeof lesson.pdf === 'object' ? lesson.pdf.filename : null,
       title: lesson.title,
       url: `/api/lessons/${lesson.id}/pdf?locale=${locale}`
     }));
@@ -163,30 +142,32 @@ export const toPlayerDownloads = (lessons: Lesson[], locale: AppLocale): PlayerD
 export const toPlayerContent = (
   course: Course,
   lessons: Lesson[],
-  {
-    currentLesson,
-    ...media
-  }: Pick<PlayerContent, 'downloads' | 'videoEmbedUrl'> & { currentLesson: Lesson | undefined }
+  { currentLesson, downloads, locale = 'en', videoEmbedUrl }: Pick<PlayerContent, 'downloads' | 'videoEmbedUrl'> & {
+    currentLesson: Lesson | undefined;
+    locale?: AppLocale;
+  }
 ): PlayerContent => {
-  const notes = course.commonMistakes?.split('\n').filter(Boolean) || [];
   const position = currentLesson ? sortLessonsByOrder(lessons).indexOf(currentLesson) : -1;
 
   return {
-    title: currentLesson?.title || course.title,
-    subtitle: course.keyPoint || course.description || '',
-    videoMeta: currentLesson?.durationSec
-      ? `${Math.round(currentLesson.durationSec / 60)}:00 · MotoPhD Online`
-      : 'MotoPhD Online',
-    notes,
-    feel: course.whatYouShouldFeel || '',
-    overviewTitle: course.title,
-    overviewCopy: course.description || '',
-    moduleOutcome: course.outcomes?.map(({ text }) => text).filter(Boolean) || [],
-    sidebarTitle: course.title,
+    courseSlug: course.slug,
+    courseTitle: course.title,
+    lessons: sortLessonsByOrder(lessons).map<PlayerLesson>((lesson) => ({
+      body: lesson.body,
+      download: toPlayerDownloads([lesson], locale)[0] || null,
+      durationSec: lesson.durationSec ?? null,
+      id: lesson.id,
+      module: 1,
+      order: lesson.order ?? 0,
+      title: lesson.title,
+      type: lesson.type,
+      videoEmbedUrl: lesson.id === currentLesson?.id ? videoEmbedUrl || null : null
+    })),
     currentLessonOrder: currentLesson?.order ?? null,
     lessonNumber: position + 1,
     lessonCount: lessons.length,
-    ...media
+    downloads,
+    videoEmbedUrl
   };
 };
 

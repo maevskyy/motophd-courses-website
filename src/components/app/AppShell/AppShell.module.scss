@@ -1,0 +1,134 @@
+@use '@/styles/mixins' as *;
+
+/*
+  Общая оболочка приложения (кабинет, плеер): слева сайдбар, справа рабочая
+  область. Ширина сайдбара — локальный токен: единственное число, которого
+  нет в tokens.scss.
+*/
+
+.shell {
+  --sidebar-w: 264px;
+
+  display: grid;
+  grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+  min-block-size: calc(100svh - var(--header-h));
+  padding-block-start: var(--header-h);
+}
+
+.main {
+  min-inline-size: 0;
+}
+
+/* ---------- Сайдбар ---------- */
+
+.sidebar {
+  background: var(--surface-2);
+  block-size: calc(100svh - var(--header-h));
+  border-inline-end: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding-block: var(--sp-6);
+  position: sticky;
+  top: var(--header-h);
+}
+
+.header {
+  border-block-end: 1px solid var(--border);
+  margin-block-end: var(--sp-4);
+  padding: 0 var(--sp-5) var(--sp-5);
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+}
+
+.navItem {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-inline-start: 2px solid transparent;
+  color: var(--text-2);
+  cursor: pointer;
+  display: flex;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  gap: var(--sp-3);
+  min-block-size: var(--control-h);
+  padding-inline: var(--sp-5);
+  text-align: start;
+  text-decoration: none;
+  transition:
+    background-color var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+
+  @include focus-ring;
+
+  &:hover {
+    background: var(--surface-3);
+    color: var(--text-1);
+  }
+}
+
+/* Активный пункт помечен и полосой, и заливкой — не только цветом. */
+.navItemActive {
+  background: var(--surface-3);
+  border-inline-start-color: var(--brand);
+  color: var(--text-1);
+}
+
+.navIcon {
+  color: currentcolor;
+  flex: none;
+}
+
+.footer {
+  border-block-start: 1px solid var(--border);
+  display: grid;
+  gap: var(--sp-1);
+  margin-block-start: var(--sp-6);
+  padding: var(--sp-4) var(--sp-5);
+}
+
+@media (max-width: 900px) {
+  .shell {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    block-size: auto;
+    border-block-end: 1px solid var(--border);
+    border-inline-end: 0;
+    padding-block: var(--sp-5);
+    position: static;
+  }
+
+  /* На телефоне навигация — горизонтальная лента, а не длинный столбец. */
+  .nav {
+    flex-direction: row;
+    gap: var(--sp-1);
+    overflow-x: auto;
+    padding-inline: var(--sp-5);
+  }
+
+  .navItem {
+    border-block-end: 2px solid transparent;
+    border-inline-start: 0;
+    flex: none;
+    padding-inline: var(--sp-3);
+    white-space: nowrap;
+  }
+
+  .navItemActive {
+    border-block-end-color: var(--brand);
+    border-inline-start-color: transparent;
+  }
+
+  .footer {
+    display: flex;
+    gap: var(--sp-5);
+    margin-block-start: var(--sp-4);
+    padding-block-end: 0;
+  }
+}

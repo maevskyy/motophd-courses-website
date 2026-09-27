@@ -1,0 +1,41 @@
+@use '@/styles/mixins' as *;
+
+.list {
+  display: grid;
+  gap: var(--sp-2);
+  list-style: none;
+}
+
+.item {
+  @include card;
+
+  align-items: center;
+  display: flex;
+  gap: var(--sp-4);
+  min-block-size: var(--control-h);
+  padding: var(--sp-4) var(--sp-5);
+}
+
+/* Номер уровня — красный акцент, как у номеров шагов на лендинге. */
+.number {
+  align-items: center;
+  background: var(--brand-tint);
+  block-size: var(--control-h-sm);
+  border: 1px solid var(--brand-line);
+  border-radius: var(--radius);
+  color: var(--brand);
+  display: flex;
+  flex: none;
+  font-family: var(--font-display);
+  font-size: var(--fs-caption);
+  font-weight: 700;
+  inline-size: var(--control-h-sm);
+  justify-content: center;
+}
+
+.title {
+  color: var(--text-1);
+  font-size: var(--fs-body);
+  font-weight: 600;
+  line-height: var(--lh-normal);
+}

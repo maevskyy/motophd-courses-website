@@ -1,363 +1,127 @@
-.red {
-  color: var(--red);
-}
-.nav__cta,
-.nav__ctaGhost,
-.button,
-.buttonGhost {
-  border-radius: 6px;
-  cursor: pointer;
-  display: inline-block;
-  font-size: 13px;
-  font-weight: 700;
-  text-decoration: none;
-  transition: all 0.2s;
-}
+@use '@/styles/mixins' as *;
 
-.nav__cta {
-  background: var(--red);
-  border: 0;
-  color: var(--white);
-  padding: 9px 22px;
-}
-
-.nav__cta:hover {
-  opacity: 0.88;
-}
-
-.nav__ctaGhost {
-  background: transparent;
-  border: 1px solid #333;
-  color: var(--white);
-  font-weight: 600;
-  padding: 9px 22px;
-}
-
-.nav__ctaGhost:hover {
-  border-color: var(--white);
-}
-
-.button {
-  background: var(--red);
-  border: 0;
-  color: #fff;
-  font-size: 15px;
-  padding: 16px 32px;
-}
-
-.button:hover {
-  background: #c91a1f;
-  transform: translateY(-1px);
-}
-
-.buttonGhost {
-  background: transparent;
-  border: 1px solid #444;
-  color: var(--white);
-  font-size: 15px;
-  font-weight: 600;
-  padding: 16px 32px;
-}
-
-.buttonGhost:hover {
-  border-color: #888;
-}
-
-.buttonLarge {
-  font-size: 17px;
-  padding: 18px 48px;
-}
-.methodCard,
-.testiCard,
-.dashStat,
-.pdfDownloadCard,
-.profilePanel {
-  background: #0d0d0d;
-  border: 1px solid #1a1a1a;
-  border-radius: 12px;
-}
-
-.methodCard {
-  padding: 32px;
-  text-align: center;
-  transition: border-color 0.3s;
-}
-
-.methodCard:hover {
-  border-color: var(--red);
-}
-
-.methodIcon {
-  font-size: 48px;
-  margin-bottom: 20px;
-}
-
-.methodNum {
-  color: var(--red);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 3px;
-  margin-bottom: 8px;
-  text-transform: uppercase;
-}
-
-.methodTitle {
-  font-size: 20px;
-  font-weight: 800;
-  margin-bottom: 12px;
-}
-
-.methodDesc {
-  color: var(--gray);
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-.testiCard {
-  padding: 28px;
-}
-
-.testiStars {
-  color: var(--red);
-  font-size: 16px;
-  letter-spacing: 2px;
-  margin-bottom: 16px;
-}
-
-.testiQuote {
-  color: var(--light);
-  font-size: 15px;
-  font-style: italic;
-  line-height: 1.7;
-  margin-bottom: 20px;
-}
-
-.testiAuthor {
-  align-items: center;
-  display: flex;
-  gap: 12px;
-}
-
-.testiAvatar,
-.dashAvatar {
-  align-items: center;
-  background: var(--red);
-  border-radius: 50%;
-  display: flex;
-  font-weight: 700;
-  justify-content: center;
-}
-
-.testiAvatar {
-  font-size: 16px;
-  height: 40px;
-  width: 40px;
-}
-
-.testiName {
-  font-size: 14px;
-  font-weight: 700;
-}
-
-.testiCountry {
-  color: var(--gray);
-  font-size: 12px;
-}
-
-.howSteps {
-  display: grid;
-  gap: 0;
-  grid-template-columns: repeat(5, 1fr);
-  margin-top: 48px;
-  position: relative;
-}
-
-.howSteps::before {
-  background: linear-gradient(90deg, transparent, var(--red), transparent);
-  content: '';
-  height: 1px;
-  left: 10%;
-  position: absolute;
-  right: 10%;
-  top: 32px;
-}
-
-.howStep {
-  padding: 0 16px;
-  position: relative;
-  text-align: center;
-}
-
-.howStep__num {
-  align-items: center;
-  background: var(--dark);
-  border: 2px solid var(--red);
-  border-radius: 50%;
-  color: var(--red);
-  display: flex;
-  font-size: 22px;
-  font-weight: 900;
-  height: 64px;
-  justify-content: center;
-  margin: 0 auto 20px;
-  width: 64px;
-}
-
-.howStep__title {
-  font-size: 14px;
-  font-weight: 700;
-  margin-bottom: 8px;
-}
-
-.howStep__desc {
-  color: var(--gray);
-  font-size: 12px;
-  line-height: 1.5;
-}
-
-.instructorGrid {
-  align-items: center;
-  display: grid;
-  gap: 60px;
-  grid-template-columns: 1fr 1fr;
-}
-
-.instructorCopy {
-  color: var(--gray);
-  font-size: 16px;
-  line-height: 1.7;
-  margin-bottom: 24px;
-}
-
-.instructorCard {
-  background: #0d0d0d;
-  border: 1px solid #1a1a1a;
-  border-radius: 12px;
-  padding: 40px;
-  text-align: center;
-}
-
-.instructorIcon {
-  font-size: 80px;
-  margin-bottom: 20px;
-}
-
-.instructorName {
-  font-size: 20px;
-  font-weight: 800;
-  margin-bottom: 4px;
-}
-
-.instructorRole {
-  color: var(--gray);
-  font-size: 14px;
-  margin-bottom: 24px;
-}
-
-.miniStats {
-  display: grid;
-  gap: 16px;
-  grid-template-columns: 1fr 1fr;
-}
-
-.miniStat {
-  background: #111;
-  border-radius: 8px;
-  padding: 16px;
-}
-
-.miniStat__num {
-  color: var(--red);
-  font-size: 28px;
-  font-weight: 900;
-}
-
-.miniStat__label {
-  color: var(--gray);
-  font-size: 11px;
-}
-
+/* Аккордеон занимает всю ширину своей колонки: узкую меру строки держит только текст ответа. */
 .faqList {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  margin-top: 40px;
+  display: grid;
+  gap: var(--sp-2);
 }
 
 .faqItem {
-  border: 1px solid #1a1a1a;
-  border-radius: 8px;
+  @include card;
+
   overflow: hidden;
+  transition: border-color var(--dur) var(--ease);
+}
+
+.faqItemOpen {
+  border-color: var(--border-strong);
+}
+
+.faqHeading {
+  font: inherit;
+  letter-spacing: normal;
 }
 
 .faqQuestion {
   align-items: center;
   background: transparent;
   border: 0;
-  color: var(--white);
+  color: var(--text-1);
   cursor: pointer;
   display: flex;
-  font-size: 15px;
+  font-size: var(--fs-body);
   font-weight: 600;
+  gap: var(--sp-4);
+  inline-size: 100%;
   justify-content: space-between;
-  padding: 20px 24px;
-  text-align: left;
-  transition: background 0.2s;
-  width: 100%;
-}
+  line-height: var(--lh-normal);
+  min-block-size: var(--control-h);
+  padding: var(--sp-4) var(--sp-5);
+  text-align: start;
+  transition: background-color var(--dur) var(--ease);
 
-.faqQuestion:hover {
-  background: #0d0d0d;
+  @include focus-ring;
+
+  &:hover {
+    background: var(--surface-2);
+  }
 }
 
 .faqIcon {
-  color: var(--red);
-  flex-shrink: 0;
-  font-size: 20px;
-  transition: transform 0.3s;
+  align-items: center;
+  background: var(--brand-tint);
+  block-size: 32px;
+  border: 1px solid var(--brand-line);
+  border-radius: var(--radius-full);
+  color: var(--brand);
+  display: flex;
+  flex: none;
+  inline-size: 32px;
+  justify-content: center;
+  transition:
+    background-color var(--dur) var(--ease),
+    color var(--dur) var(--ease);
 }
 
 .faqItemOpen .faqIcon {
-  transform: rotate(45deg);
+  background: var(--brand);
+  border-color: var(--brand);
+  color: var(--text-on-brand);
 }
 
+/*
+  Раскрытие через grid-template-rows 0fr → 1fr: высота анимируется без JS и без
+  фиксированных величин, а текст ответа остаётся в DOM и в закрытом состоянии
+  (display: none или hidden его бы оттуда убрали).
+*/
 .faqAnswer {
-  color: var(--gray);
-  display: none;
-  font-size: 14px;
-  line-height: 1.7;
-  padding: 0 24px 20px;
+  display: grid;
+  grid-template-rows: 0fr;
+  overflow: hidden;
+  transition: grid-template-rows var(--dur-slow) var(--ease);
 }
 
 .faqItemOpen .faqAnswer {
+  grid-template-rows: 1fr;
+}
+
+/*
+  min-block-size: 0 обязателен — у grid-элемента он по умолчанию auto, и трек не сожмётся.
+  Отступы и разделитель лежат на тексте, а не на обёртке: padding обёртки
+  трек 0fr не сжимает, и в закрытом вопросе торчала первая строка ответа.
+*/
+.faqAnswerInner {
+  min-block-size: 0;
+  overflow: hidden;
+}
+
+.faqAnswerText {
+  border-block-start: 1px solid var(--border);
+  color: var(--text-2);
+  font-size: var(--fs-small);
+  line-height: var(--lh-relaxed);
+  margin-inline: var(--sp-5);
+  padding-block: var(--sp-4) var(--sp-5);
+}
+
+/* Мера строки — на самом тексте, разделитель тянется на всю ширину карточки. */
+.faqAnswerText > span {
   display: block;
+  max-inline-size: var(--measure);
 }
 
-.ctaSection {
-  background: linear-gradient(135deg, #0d0000, #1a0000);
-  border-bottom: 1px solid #2a0000;
-  border-top: 1px solid #2a0000;
-  padding: 100px 40px;
-  text-align: center;
+@media (max-width: 480px) {
+  .faqQuestion {
+    padding-inline: var(--sp-4);
+  }
+
+  .faqAnswerText {
+    margin-inline: var(--sp-4);
+  }
 }
 
-.ctaTitle {
-  font-size: clamp(32px, 5vw, 60px);
-  font-weight: 900;
-  line-height: 1.1;
-  margin-bottom: 16px;
-}
-
-.ctaSub {
-  color: var(--gray);
-  font-size: 18px;
-  margin-bottom: 40px;
-}
-
-
-@media (max-width: 900px) {
-  .methodGrid, .testimonialsGrid, .instructorGrid { grid-template-columns: 1fr; }
-  .howSteps { grid-template-columns: 1fr 1fr; }
-  .howSteps::before { display: none; }
-  .section { padding-left: 20px; padding-right: 20px; }
+@media (prefers-reduced-motion: reduce) {
+  .faqAnswer {
+    transition: none;
+  }
 }

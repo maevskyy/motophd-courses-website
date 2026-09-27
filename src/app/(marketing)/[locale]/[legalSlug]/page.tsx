@@ -2,7 +2,9 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
 import { Footer } from '@/components/prototype/Footer';
+import { Section, SectionHeader } from '@/components/ui/Section';
 import { getLegalPage, richTextToParagraphs, type AppLocale } from '@/lib/data';
+import { isLegalPageSlug } from '@/lib/legal';
 import { buildPageMetadata, resolveSeoLocale } from '@/lib/seo';
 import { requireLocale } from '@/i18n/requireLocale';
 import type { LegalPage } from '@/payload-types';
@@ -16,10 +18,7 @@ export function generateStaticParams() {
   return [];
 }
 
-const legalSlugs = ['privacy', 'terms', 'refund', 'contact'] satisfies LegalPage['slug'][];
-
-const isLegalSlug = (slug: string): slug is LegalPage['slug'] =>
-  legalSlugs.includes(slug as LegalPage['slug']);
+const isLegalSlug = (slug: string): slug is LegalPage['slug'] => isLegalPageSlug(slug);
 
 // Один запрос на рендер: generateMetadata и страница читают ту же запись.
 const loadLegalPage = cache((slug: LegalPage['slug'], locale: AppLocale) =>
@@ -74,16 +73,15 @@ export default async function LegalPageRoute({
 
   return (
     <>
-      <main className={styles.catalogShell}>
-        <section className={styles.catalogInner}>
-          <div className={styles.section__label}>MotoPhD</div>
-          <h1 className={styles.section__title}>{page.title}</h1>
-          <div className={styles.section__sub}>
+      <main className={styles.shell}>
+        <Section>
+          <SectionHeader as="h1" kicker="MotoPhD" title={page.title} />
+          <div className={styles.prose}>
             {paragraphs.map((paragraph) => (
               <p key={paragraph}>{paragraph}</p>
             ))}
           </div>
-        </section>
+        </Section>
       </main>
       <Footer compact />
     </>

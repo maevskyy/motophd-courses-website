@@ -1,29 +1,13 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
 import { ConsentSettingsLink } from '@/components/consent/ConsentSettingsLink';
+import { Icon } from '@/components/ui/Icon';
 import type { HomeContent } from '@/lib/content';
+import { legalDocumentHref } from '@/lib/legal';
+import type { Locale } from '@/i18n/locales';
 import styles from './Footer.module.scss';
-
-function SocialIcon({ platform }: { platform: 'youtube' | 'instagram' }) {
-  if (platform === 'youtube') {
-    return (
-      <svg fill="none" height="18" viewBox="0 0 24 24" width="18">
-        <rect height="14" rx="4" stroke="currentColor" strokeWidth="1.6" width="20" x="2" y="5" />
-        <path d="M10 9l5 3-5 3V9z" fill="currentColor" />
-      </svg>
-    );
-  }
-
-  return (
-    <svg fill="none" height="18" viewBox="0 0 24 24" width="18">
-      <rect height="18" rx="5" stroke="currentColor" strokeWidth="1.6" width="18" x="3" y="3" />
-      <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.6" />
-      <circle cx="17.3" cy="6.7" fill="currentColor" r="1.1" />
-    </svg>
-  );
-}
 
 interface Props {
   compact?: boolean;
@@ -32,6 +16,7 @@ interface Props {
 
 export function Footer({ compact = false, socialLinks }: Props) {
   const t = useTranslations('footer');
+  const locale = useLocale() as Locale;
 
   return (
     <footer className={styles.footer}>
@@ -39,13 +24,12 @@ export function Footer({ compact = false, socialLinks }: Props) {
         {!compact ? (
           <div className={styles.footer__top}>
             <div>
-              <div className={styles.footer__logo}>
-                MOTO<span className={styles.red}>PhD</span>
-              </div>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img alt="MotoPhD" className={styles.footer__logo} height={28} src="/logo.png" width={101} />
               <p className={styles.footer__copyText}>{t('tagline')}</p>
             </div>
             <div>
-              <h4 className={styles.footer__heading}>{t('coursesHeading')}</h4>
+              <h2 className={styles.footer__heading}>{t('coursesHeading')}</h2>
               <Link className={styles.footer__link} href="/courses/lean">
                 {t('course1')}
               </Link>
@@ -54,28 +38,47 @@ export function Footer({ compact = false, socialLinks }: Props) {
               </Link>
             </div>
             <div>
-              <h4 className={styles.footer__heading}>{t('platformHeading')}</h4>
+              <h2 className={styles.footer__heading}>{t('platformHeading')}</h2>
               <Link className={styles.footer__link} href="/login">
                 {t('studentLogin')}
               </Link>
               <Link className={styles.footer__link} href="/dashboard">
                 {t('myDashboard')}
               </Link>
-              <Link className={styles.footer__link} href="/">
+              <Link className={styles.footer__link} href="/about">
                 {t('about')}
               </Link>
             </div>
             <div>
-              <h4 className={styles.footer__heading}>{t('legalHeading')}</h4>
-              <Link className={styles.footer__link} href="/privacy">
+              <h2 className={styles.footer__heading}>{t('legalHeading')}</h2>
+              {/*
+                Документы — готовые PDF из public/legal на языке страницы, а не
+                записи в базе: их правят юристы, а не админка.
+              */}
+              <a
+                className={styles.footer__link}
+                href={legalDocumentHref('privacy', locale)}
+                rel="noopener noreferrer"
+                target="_blank"
+              >
                 {t('privacyPolicy')}
-              </Link>
-              <Link className={styles.footer__link} href="/terms">
-                {t('terms')}
-              </Link>
-              <Link className={styles.footer__link} href="/refund">
-                {t('refundPolicy')}
-              </Link>
+              </a>
+              <a
+                className={styles.footer__link}
+                href={legalDocumentHref('offer', locale)}
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                {t('offer')}
+              </a>
+              <a
+                className={styles.footer__link}
+                href={legalDocumentHref('license', locale)}
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                {t('license')}
+              </a>
               <Link className={styles.footer__link} href="/contact">
                 {t('contact')}
               </Link>
@@ -86,6 +89,11 @@ export function Footer({ compact = false, socialLinks }: Props) {
           <div className={styles.footer__copy}>{t('copy')}</div>
           <ConsentSettingsLink />
           {socialLinks && socialLinks.length > 0 ? (
+            /*
+              Два аккаунта в Instagram (школа и личный Влада) с одинаковой иконкой
+              читались как дубль. Подпись рядом с иконкой видна всегда — различать
+              их наведением мыши нельзя.
+            */
             <div className={styles.footer__social}>
               {socialLinks.map((item) => (
                 <a
@@ -95,9 +103,9 @@ export function Footer({ compact = false, socialLinks }: Props) {
                   key={item.href}
                   rel="noopener noreferrer"
                   target="_blank"
-                  title={item.label}
                 >
-                  <SocialIcon platform={item.platform} />
+                  <Icon className={styles.footer__socialIcon} name={item.platform} size={18} />
+                  <span className={styles.footer__socialLabel}>{item.label}</span>
                 </a>
               ))}
             </div>

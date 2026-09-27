@@ -1,11 +1,10 @@
-import { render, screen } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
-import {
-  getFeedbackUpgradeCourseSlugs,
-  type FeedbackUpgradeCandidate
-} from '@/lib/access/feedbackUpgrade';
-import type { CourseCardCourse, DashboardContent } from '@/lib/data';
-import { CoursesPanel, DownloadsPanel, OverviewPanel } from './DashboardPanels';
+import { render, screen, within } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import type { CourseCardCourse } from '@/lib/data';
+import { progressStorageKey } from '@/lib/progress';
+import { createMemoryStorage } from '@/lib/progress/storage.mock';
+import { AvailableCoursesSection, MyCoursesPanel } from './DashboardPanels';
+import type { MyCourseData } from './MyCourse';
 
 vi.mock('@/i18n/routing', () => ({
   Link: ({ children, href, ...rest }: React.ComponentProps<'a'>) => (
@@ -32,173 +31,173 @@ vi.mock('@/lib/payments/checkout', () => ({
   checkoutAction: vi.fn()
 }));
 
-const content: DashboardContent = {
-  dashboard: { downloads: [] }
+const lean: MyCourseData = {
+  currency: 'EUR',
+  icon: 'motorcycle',
+  modules: [
+    {
+      lessons: [{ durationSec: 600, hasPdf: false, order: 1, title: 'Video Lesson' }],
+      number: '01',
+      title: 'Level 01 — Theory'
+    },
+    {
+      lessons: [
+        { durationSec: 300, hasPdf: false, order: 2, title: 'Video Tutorial' },
+        { durationSec: null, hasPdf: true, order: 3, title: 'Motorcycle Preparation' }
+      ],
+      number: '02',
+      title: 'Level 02 — Preparation'
+    }
+  ],
+  slug: 'lean',
+  title: 'Lean with confidence',
+  upgradePrice: 100
 };
 
-const contentWithDownloads: DashboardContent = {
-  dashboard: {
-    downloads: [
-      { id: 4, title: 'Lean Angle & Physics', url: '/api/lessons/4/pdf?locale=en' },
-      { id: 9, title: 'Grip & Contact Patch', url: '/api/lessons/9/pdf?locale=en' }
-    ]
-  }
+const braking: MyCourseData = {
+  ...lean,
+  modules: [
+    {
+      lessons: [{ durationSec: 120, hasPdf: false, order: 1, title: 'Brake Intro' }],
+      number: '1',
+      title: 'The Art of Braking'
+    }
+  ],
+  slug: 'braking',
+  title: 'The Art of Braking'
 };
 
-const courses = [
-  {
-    currency: 'EUR',
-    description: '',
-    icon: '🏍️',
-    imageTone: 'red',
-    includes: [],
-    pain: '',
-    priceFeedback: 129,
-    priceStandard: 29,
-    slug: 'lean',
-    title: 'Lean with confidence'
-  },
-  {
-    currency: 'EUR',
-    description: '',
-    icon: '⚡',
-    imageTone: 'green',
-    includes: [],
-    pain: '',
-    priceFeedback: 129,
-    priceStandard: 29,
-    slug: 'counter-steering',
-    title: 'Counter steering'
-  }
-] satisfies CourseCardCourse[];
+const available: CourseCardCourse = {
+  currency: 'EUR',
+  description: '',
+  icon: 'flag',
+  imageTone: 'green',
+  includes: [],
+  pain: '',
+  priceFeedback: 129,
+  priceStandard: 29,
+  slug: 'counter-steering',
+  title: 'Counter steering'
+};
 
-describe('OverviewPanel', () => {
-  it('shows the actual number of purchased courses and links to each course', () => {
-    render(<OverviewPanel content={content} courses={courses} email="student@motophd.com" name="Student" />);
+const storeProgress = (slug: string, done: number[]) =>
+  window.localStorage.setItem(
+    progressStorageKey(slug),
+    JSON.stringify({ done, updatedAt: '2026-01-01' })
+  );
 
-    expect(screen.getByText('2')).toBeInTheDocument();
+describe('MyCoursesPanel', () => {
+  beforeEach(() => {
+    vi.stubGlobal('localStorage', createMemoryStorage());
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('starts the course from the first lesson when there is no progress', () => {
+    render(<MyCoursesPanel courses={[lean]} name="Student" />);
+
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('dashboard.welcomeTitle');
+    expect(screen.getByRole('link', { name: 'startCourse' })).toHaveAttribute('href', '/learn/lean/1');
     expect(screen.getByRole('link', { name: /lean with confidence/i })).toHaveAttribute(
       'href',
-      '/learn/lean'
+      '/learn/lean/1'
     );
-    expect(screen.getByRole('link', { name: /counter steering/i })).toHaveAttribute(
+    expect(screen.getByRole('progressbar')).toHaveAttribute('value', '0');
+  });
+
+  it('resumes from the next unfinished lesson and marks done lessons', async () => {
+    storeProgress('lean', [1]);
+    render(<MyCoursesPanel courses={[lean]} name="Student" />);
+
+    expect(await screen.findByRole('link', { name: 'resumeLesson' })).toHaveAttribute(
       'href',
-      '/learn/counter-steering'
+      '/learn/lean/2'
+    );
+    expect(screen.getByRole('progressbar')).toHaveAttribute('value', '1');
+    expect(screen.getByRole('link', { name: /video lesson/i })).toHaveAttribute('href', '/learn/lean/1');
+    expect(screen.getByRole('link', { name: /motorcycle preparation/i })).toHaveAttribute(
+      'href',
+      '/learn/lean/3'
     );
   });
 
-  it('shows zero when the student has no purchased courses', () => {
-    render(<OverviewPanel content={content} courses={[]} email="student@motophd.com" name="Student" />);
+  it('shows the course lessons without module controls', async () => {
+    storeProgress('lean', [1]);
+    render(<MyCoursesPanel courses={[lean]} name="Student" />);
 
-    expect(screen.getByText('0')).toBeInTheDocument();
-    expect(screen.queryByRole('link')).not.toBeInTheDocument();
+    expect(await screen.findByRole('link', { name: /video lesson/i })).toBeVisible();
+    expect(screen.queryByRole('button', { expanded: true })).not.toBeInTheDocument();
   });
 
-  it('shows published courses that are not purchased in the purchase section', () => {
+  it('renders one block per purchased course', () => {
+    render(<MyCoursesPanel courses={[lean, braking]} name="Student" />);
+
+    expect(screen.getAllByRole('progressbar')).toHaveLength(2);
+    expect(screen.getByRole('link', { name: /the art of braking/i })).toHaveAttribute(
+      'href',
+      '/learn/braking/1'
+    );
+  });
+
+  it('offers the feedback upgrade only for courses in feedbackUpgradeSlugs', () => {
     render(
-      <CoursesPanel
-        availableCourses={[courses[1]]}
-        content={content}
-        courses={[courses[0]]}
-        email="student@motophd.com"
+      <MyCoursesPanel courses={[lean, braking]} feedbackUpgradeSlugs={['braking']} name="Student" />
+    );
+
+    const buttons = screen.getAllByRole('button', { name: 'feedbackUpgrade' });
+
+    expect(buttons).toHaveLength(1);
+    expect(within(document.getElementById('upgrade') as HTMLElement).getByRole('button')).toBe(
+      buttons[0]
+    );
+    expect(screen.getByText('feedbackPrice')).toBeInTheDocument();
+  });
+
+  it('shows the connected status with a link to /feedback once feedback is paid', () => {
+    render(<MyCoursesPanel courses={[lean]} hasFeedback name="Student" />);
+
+    expect(screen.queryByRole('button', { name: 'feedbackUpgrade' })).not.toBeInTheDocument();
+    expect(screen.getByText('feedbackConnected')).toBeVisible();
+    expect(screen.getByRole('link', { name: 'feedbackSend' })).toHaveAttribute('href', '/feedback');
+  });
+
+  it('hides the feedback card without an upgrade or paid feedback', () => {
+    render(<MyCoursesPanel courses={[lean]} name="Student" />);
+
+    expect(screen.queryByText('feedbackTitle')).not.toBeInTheDocument();
+    expect(document.getElementById('upgrade')).toBeNull();
+  });
+
+  it('puts the #upgrade anchor on the first feedback card only', () => {
+    render(
+      <MyCoursesPanel
+        courses={[lean, braking]}
+        feedbackUpgradeSlugs={['lean', 'braking']}
         name="Student"
       />
     );
 
-    expect(screen.getByRole('link', { name: /lean with confidence/i })).toHaveAttribute(
-      'href',
-      '/learn/lean'
-    );
+    expect(document.querySelectorAll('#upgrade')).toHaveLength(1);
+    expect(screen.getAllByRole('button', { name: 'feedbackUpgrade' })).toHaveLength(2);
+  });
+});
+
+describe('AvailableCoursesSection', () => {
+  it('renders nothing without courses to buy', () => {
+    const { container } = render(<AvailableCoursesSection availableCourses={[]} />);
+
+    expect(container).toBeEmptyDOMElement();
+  });
+
+  it('links unpurchased courses to their sales page', () => {
+    render(<AvailableCoursesSection availableCourses={[available]} />);
+
+    expect(screen.getByText('dashboard.availableToPurchase')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /counter steering/i })).toHaveAttribute(
       'href',
       '/courses/counter-steering'
     );
-  });
-});
-
-describe('feedback upgrade button', () => {
-  const paid = (
-    courseSlug: string,
-    tier: FeedbackUpgradeCandidate['tier']
-  ): FeedbackUpgradeCandidate => ({ courseSlug, status: 'paid', tier });
-  const upgradeButton = () => screen.queryByRole('button', { name: 'feedbackUpgrade' });
-  // Как на сервере: список купленных курсов и slug'и для докупки — из покупок.
-  const renderOverview = (
-    purchasedCourses: CourseCardCourse[],
-    purchases: FeedbackUpgradeCandidate[]
-  ) =>
-    render(
-      <OverviewPanel
-        content={content}
-        courses={purchasedCourses}
-        email="student@motophd.com"
-        feedbackUpgradeSlugs={getFeedbackUpgradeCourseSlugs(purchases)}
-        name="Student"
-      />
-    );
-
-  it('offers the upgrade for a paid standard course without feedback', () => {
-    renderOverview([courses[0]], [paid('lean', 'standard')]);
-
-    expect(upgradeButton()).toBeVisible();
-    expect(screen.getByRole('link', { name: /lean with confidence/i })).toHaveAttribute(
-      'href',
-      '/learn/lean'
-    );
-  });
-
-  it('hides the upgrade once feedback is paid for the course', () => {
-    renderOverview([courses[0]], [paid('lean', 'standard'), paid('lean', 'feedback_upgrade')]);
-
-    expect(upgradeButton()).not.toBeInTheDocument();
-  });
-
-  it('hides the upgrade for a course bought with feedback outright', () => {
-    renderOverview([courses[0]], [paid('lean', 'feedback')]);
-
-    expect(upgradeButton()).not.toBeInTheDocument();
-  });
-
-  it('shows nothing without purchases', () => {
-    renderOverview([], []);
-
-    expect(upgradeButton()).not.toBeInTheDocument();
-  });
-
-  it('shows the upgrade only on the matching course card', () => {
-    render(
-      <CoursesPanel
-        content={content}
-        courses={courses}
-        email="student@motophd.com"
-        feedbackUpgradeSlugs={['counter-steering']}
-        name="Student"
-      />
-    );
-
-    expect(screen.getAllByRole('button', { name: 'feedbackUpgrade' })).toHaveLength(1);
-    expect(screen.getByRole('link', { name: /counter steering/i })).toHaveAttribute(
-      'href',
-      '/learn/counter-steering'
-    );
-  });
-});
-
-describe('DownloadsPanel', () => {
-  it('links every purchased PDF to the protected lesson route', () => {
-    render(
-      <DownloadsPanel
-        content={contentWithDownloads}
-        courses={courses}
-        email="student@motophd.com"
-        name="Student"
-      />
-    );
-
-    expect(screen.getByRole('link', { name: /lean angle/i })).toHaveAttribute(
-      'href',
-      '/api/lessons/4/pdf?locale=en'
-    );
-    expect(screen.getAllByRole('link')).toHaveLength(2);
   });
 });

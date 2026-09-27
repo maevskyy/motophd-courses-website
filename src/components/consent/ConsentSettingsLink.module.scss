@@ -1,14 +1,23 @@
+@use '@/styles/mixins' as *;
+
 .link {
   background: transparent;
   border: 0;
-  color: #666;
+  color: var(--text-3);
   cursor: pointer;
+  align-items: center;
+  display: inline-flex;
   font: inherit;
-  font-size: 12px;
+  font-size: var(--fs-caption);
+  min-block-size: var(--control-h);
   padding: 0;
   text-decoration: underline;
-}
+  text-underline-offset: 2px;
+  transition: color var(--dur) var(--ease);
 
-.link:hover {
-  color: var(--white);
+  @include focus-ring;
+
+  &:hover {
+    color: var(--text-1);
+  }
 }

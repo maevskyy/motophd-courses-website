@@ -1,1 +1,0 @@
-export { CurriculumAccordion } from './CurriculumAccordion';

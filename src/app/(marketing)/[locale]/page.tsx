@@ -43,7 +43,7 @@ export async function generateMetadata({
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const safeLocale = requireLocale(locale);
-  const t = await getTranslations({ locale: safeLocale, namespace: 'actions' });
+  const actions = await getTranslations({ locale: safeLocale, namespace: 'actions' });
   const content = homeContent[safeLocale];
   const payloadCourses = await getPublishedCourses(safeLocale);
   const courses = payloadCourses.map((course, index) => toCourseCardCourse(course, index));
@@ -54,11 +54,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         content={content}
         courses={courses}
         labels={{
-          viewCourses: t('viewCourses'),
-          browseAllCourses: t('browseAllCourses')
+          browseAllCourses: actions('browseAllCourses'),
+          viewCourses: actions('viewCourses')
         }}
       />
-      <LandingBottom content={content} labels={{ joinCommunity: t('joinCommunity') }} />
+      <LandingBottom content={content} labels={{ joinCommunity: actions('joinCommunity') }} />
     </>
   );
 }

@@ -1,68 +1,75 @@
+@use '@/styles/mixins' as *;
+
 .page {
-  margin: 0 auto;
-  max-width: 720px;
-  padding: 60px 24px;
+  margin-inline: auto;
+  max-inline-size: 760px;
+  padding: calc(var(--header-h) + var(--sp-7)) var(--gutter) var(--sp-9);
 }
 
 .title {
-  font-size: 32px;
-  margin: 0 0 12px;
+  @include h2;
 }
 
 .intro {
-  color: var(--gray);
-  font-size: 16px;
-  margin: 0 0 32px;
+  @include lead;
+
+  margin-block: var(--sp-3) var(--sp-7);
 }
 
 .step {
-  border: 1px solid #2a2a2a;
-  border-radius: 8px;
-  margin-bottom: 16px;
-  padding: 20px 24px;
+  @include card;
+
+  display: grid;
+  gap: var(--sp-2);
+  margin-block-end: var(--sp-3);
+  padding: var(--sp-5);
 }
 
 .step__number {
-  color: var(--red);
-  font-size: 13px;
-  font-weight: 800;
-  letter-spacing: 1px;
+  color: var(--text-3);
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  letter-spacing: var(--ls-caps);
   text-transform: uppercase;
 }
 
 .step__text {
-  font-size: 15px;
-  margin: 8px 0 0;
+  color: var(--text-1);
+  font-size: var(--fs-body);
+  line-height: var(--lh-relaxed);
 }
 
 .contactCta {
-  background: var(--red);
-  border-radius: 6px;
-  color: #fff;
-  display: inline-block;
-  font-weight: 700;
-  margin-top: 12px;
-  padding: 12px 24px;
-  text-decoration: none;
+  @include btn-primary;
+
+  justify-self: start;
+  margin-block-start: var(--sp-2);
 }
 
 .included {
-  background: #111;
-  border-radius: 8px;
-  color: var(--gray);
-  font-size: 14px;
-  margin-top: 32px;
-  padding: 16px 20px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-2);
+  font-size: var(--fs-small);
+  line-height: var(--lh-relaxed);
+  margin-block-start: var(--sp-6);
+  padding: var(--sp-4) var(--sp-5);
 }
 
 .back {
-  color: var(--gray);
-  display: inline-block;
-  font-size: 14px;
-  margin-top: 32px;
+  align-items: center;
+  color: var(--text-3);
+  display: inline-flex;
+  font-size: var(--fs-small);
+  gap: var(--sp-2);
+  margin-block-start: var(--sp-6);
+  min-block-size: var(--control-h);
   text-decoration: none;
-}
 
-.back:hover {
-  color: var(--white);
+  @include focus-ring;
+
+  &:hover {
+    color: var(--text-1);
+  }
 }

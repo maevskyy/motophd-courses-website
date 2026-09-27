@@ -1,0 +1,19 @@
+@use '@/styles/mixins' as *;
+
+/*
+  672px — канон одноколоночных настроек аккаунта (Notion, Linear, GitHub).
+  Колонка стоит по центру области контента: прижатая влево, она оставляла
+  справа треть пустого экрана.
+*/
+.settings {
+  display: grid;
+  margin-inline: auto;
+  max-inline-size: 672px;
+  min-inline-size: 0;
+}
+
+.settings__title {
+  @include h2;
+
+  margin-block-end: var(--sp-3);
+}

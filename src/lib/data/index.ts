@@ -27,6 +27,7 @@ export type {
   DashboardContent,
   PlayerContent,
   PlayerDownload,
+  PlayerLesson,
   SalesContent
 } from './types';
 export type { CourseCurriculumLesson } from './courses';

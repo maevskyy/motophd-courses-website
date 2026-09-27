@@ -41,9 +41,9 @@ test('sitemap.xml lists every locale with hreflang alternates', async ({ request
     '/uk',
     '/uk/courses',
     '/uk/courses/lean',
-    '/en/privacy',
-    '/ru/privacy',
-    '/uk/privacy'
+    '/en/contact',
+    '/ru/contact',
+    '/uk/contact'
   ]) {
     expect(body, `sitemap lacks ${path}`).toMatch(
       new RegExp(`<loc>https?://[^<]+${path.replace(/\//g, '\\/')}</loc>`)
@@ -131,10 +131,11 @@ test('landing, catalog and legal pages carry localized titles and canonicals', a
   expect(await headAttribute(page, 'link[rel="canonical"]', 'href')).toMatch(/\/en\/courses$/);
   await expect(page).toHaveTitle(/The MotoPhD Curriculum/);
 
-  await page.goto('/en/privacy');
-  expect(await headAttribute(page, 'link[rel="canonical"]', 'href')).toMatch(/\/en\/privacy$/);
+  // Политика, оферта и лицензия — PDF в public/legal; из страниц осталась одна.
+  await page.goto('/en/contact');
+  expect(await headAttribute(page, 'link[rel="canonical"]', 'href')).toMatch(/\/en\/contact$/);
   expect(await headAttribute(page, 'link[rel="alternate"][hreflang="ru"]', 'href')).toMatch(
-    /\/ru\/privacy$/
+    /\/ru\/contact$/
   );
   expect(await headAttribute(page, 'meta[name="description"]', 'content')).not.toBe('');
 });

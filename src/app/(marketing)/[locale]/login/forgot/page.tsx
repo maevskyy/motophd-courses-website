@@ -1,10 +1,9 @@
-import type { Locale } from '@/i18n/locales';
 import { ForgotPasswordForm } from '@/components/login/ForgotPasswordForm';
 
 export default async function ForgotPasswordPage({
   params
 }: {
-  params: Promise<{ locale: Locale }>;
+  params: Promise<{ locale: 'en' | 'ru' }>;
 }) {
   const { locale } = await params;
 

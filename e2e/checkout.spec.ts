@@ -20,6 +20,11 @@ const startCheckout = async (page: Page, email: string, promoCode?: string) => {
 const pay = async (page: Page) => {
   await page.getByRole('button', { name: 'Pay', exact: true }).click();
   await expect(page).toHaveURL(/\/en\/checkout\/success\?order=.*signedIn=1/);
+  await expect(page.getByRole('heading', { name: 'Payment complete' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Back to Dashboard' })).toHaveAttribute(
+    'href',
+    '/en/dashboard'
+  );
 };
 
 const getOwnPurchases = async (page: Page) => {
@@ -46,7 +51,7 @@ test('guest payment creates one paid mock purchase and opens the course', async 
   await pay(page);
 
   await page.goto('/en/learn/lean');
-  await expect(page.getByText('Lesson Notes')).toBeVisible();
+  await expect(page.getByText('Lesson 1 of 5')).toBeVisible();
 
   expect(await getOwnPurchases(page)).toEqual([
     expect.objectContaining({ provider: 'mock', status: 'paid' })
@@ -72,6 +77,8 @@ test('declining payment leaves the purchase pending and access closed', async ({
   await page.getByRole('button', { name: 'Decline', exact: true }).click();
 
   await expect(page).toHaveURL(/\/en\/checkout\/fail\?order=/);
+  await expect(page.getByRole('heading', { name: 'Payment was not completed' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'All Courses' })).toHaveAttribute('href', '/en/courses');
   expect((await page.context().cookies()).some(({ name }) => name === 'payload-token')).toBe(false);
 
   await page.goto('/en/learn/lean');
@@ -79,7 +86,7 @@ test('declining payment leaves the purchase pending and access closed', async ({
 
   await page.locator('#login-email').fill(email);
   await page.locator('#login-password').fill('checkout-decline1234');
-  await page.getByRole('button', { name: 'Sign In to My Dashboard' }).click();
+  await page.getByRole('button', { name: 'Sign in' }).click();
   await expect(page).toHaveURL(/\/en\/courses\/lean\?access=denied$/);
 
   // Покупки decline-юзера чистит только сид, а между e2e-прогонами он не

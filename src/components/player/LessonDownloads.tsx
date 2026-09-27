@@ -1,39 +1,25 @@
 import { useTranslations } from 'next-intl';
 
-import type { PlayerContent } from '@/lib/data';
-import styles from './CoursePlayer.module.scss';
+import { Icon } from '@/components/ui/Icon';
+import type { PlayerDownload } from '@/lib/data';
+import styles from './LessonContent.module.scss';
 
 interface Props {
-  player: Pick<PlayerContent, 'downloads'>;
+  download: PlayerDownload | null;
 }
 
-export function LessonDownloads({ player }: Props) {
+// Только PDF текущего урока: подпись «PDF к уроку» и имя файла, не название урока.
+export function LessonDownloads({ download }: Props) {
   const t = useTranslations('player');
 
-  if (player.downloads.length === 0) {
+  if (!download) {
     return null;
   }
 
   return (
-    <>
-      {player.downloads.map((download) => (
-        <a
-          className={styles.pdfDownloadCard}
-          href={download.url}
-          key={download.id}
-          rel="noopener"
-          target="_blank"
-        >
-          <div aria-hidden className={styles.pdfIcon}>
-            📄
-          </div>
-          <div className={styles.pdfInfo}>
-            <div className={styles.pdfName}>{download.title}</div>
-            <div className={styles.pdfSize}>{t('pdfLinkDescription')}</div>
-          </div>
-          <span className={styles.pdfBtn}>{t('pdfLinkLabel')}</span>
-        </a>
-      ))}
-    </>
+    <a className={styles.pdfDownloadCard} href={download.url} rel="noopener" target="_blank">
+      <Icon name="document" size={18} />
+      {t('pdfLinkLabel')}
+    </a>
   );
 }

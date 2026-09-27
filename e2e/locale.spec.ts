@@ -24,27 +24,37 @@ test('ukrainian home page renders the header and content in Ukrainian', async ({
   await expect(
     page.getByRole('navigation').getByRole('link', { exact: true, name: 'Курси' })
   ).toBeVisible();
-  await expect(page.getByRole('combobox', { name: 'Мова' })).toHaveValue('uk');
+  await expect(
+    page.getByRole('group', { name: 'Мова' }).getByRole('link', { name: 'UK' })
+  ).toHaveAttribute('aria-current', 'true');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('райдерів');
 });
 
 test('language select switches from Ukrainian to Russian on the same page', async ({ page }) => {
   await page.goto('/uk/courses');
-  await page.getByRole('combobox', { name: 'Мова' }).selectOption('ru');
+  await page
+    .getByRole('group', { name: 'Мова' })
+    .getByRole('link', { exact: true, name: 'RU' })
+    .click();
 
   await expect(page).toHaveURL(/\/ru\/courses$/);
   await expect(
     page.getByRole('navigation').getByRole('link', { exact: true, name: 'Курсы' })
   ).toBeVisible();
-  await expect(page.getByRole('combobox', { name: 'Язык' })).toHaveValue('ru');
+  await expect(
+    page.getByRole('group', { name: 'Язык' }).getByRole('link', { name: 'RU' })
+  ).toHaveAttribute('aria-current', 'true');
 });
 
 test('language select keeps the query string, e.g. ?next= on the login page', async ({ page }) => {
   await page.goto('/uk/login?next=%2Fuk%2Fdashboard');
-  await page.getByRole('combobox', { name: 'Мова' }).selectOption('en');
+  await page
+    .getByRole('group', { name: 'Мова' })
+    .getByRole('link', { exact: true, name: 'EN' })
+    .click();
 
   await expect(page).toHaveURL(/\/en\/login\?next=%2Fuk%2Fdashboard$/);
-  await expect(page.getByRole('button', { name: 'Sign In to My Dashboard' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Sign in' })).toBeVisible();
 });
 
 test('ukrainian course page opens with a title from the fallback locale', async ({ page }) => {
@@ -78,13 +88,20 @@ test('REST API serves Russian lesson media to Ukrainian readers', async ({ reque
 
 test('PDF route serves the Russian file for a Ukrainian link', async ({ request }) => {
   const courseId = await getLeanCourseId(request);
-  const lessonsResponse = await request.get(
-    `/api/lessons?where[course][equals]=${courseId}&where[type][equals]=pdf&sort=order&limit=1&depth=0`
-  );
-  const lesson = (await lessonsResponse.json()).docs[0];
   const token = await login(request, 'student@motophd.com', 'student1234');
 
   expect(token).not.toBeNull();
+
+  // Поле `pdf` видно только купившему, поэтому урок с материалом ищем под токеном.
+  const lessonsResponse = await request.get(
+    `/api/lessons?where[course][equals]=${courseId}&sort=order&limit=20&depth=0&locale=ru`,
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
+  const lesson = (await lessonsResponse.json()).docs.find(
+    (item: { pdf?: number | null }) => item.pdf !== null && item.pdf !== undefined
+  );
+
+  expect(lesson, 'seed must attach a PDF to a lesson').toBeDefined();
 
   const response = await request.get(`/api/lessons/${lesson.id}/pdf?locale=uk`, {
     headers: { Authorization: `Bearer ${token}` }
@@ -114,7 +131,13 @@ test('a Ukrainian title set in the admin stays while empty media still fall back
 
   try {
     const lessonResponse = await request.post('/api/lessons', {
-      data: { course: courseId, order: 1, streamVideoId: 'probe-en', title: 'Probe', type: 'video' },
+      data: {
+        course: courseId,
+        order: 1,
+        streamVideoId: 'probe-en',
+        title: 'Probe',
+        type: 'video'
+      },
       headers
     });
 

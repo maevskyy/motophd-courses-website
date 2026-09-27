@@ -32,7 +32,12 @@ export default buildConfig({
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URI
-    }
+    },
+    // Схему меняют только миграции (см. AGENTS.md). Авто-push в dev-режиме
+    // при расхождении схемы и кода (другая ветка, незакоммиченное поле)
+    // предлагает DROP COLUMN и виснет на вопросе в консоли — каждый запрос
+    // ждёт его по 60-90 с.
+    push: false
   }),
   editor: lexicalEditor(),
   // Коды, подписи и фолбэки — из src/i18n/locales.ts: у сайта и админки один

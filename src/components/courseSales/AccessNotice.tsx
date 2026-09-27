@@ -14,7 +14,7 @@ function AccessNoticeInner() {
   }
 
   return (
-    <p className={styles.salesAccessNotice} role="alert">
+    <p className={styles.accessNotice} role="alert">
       {t('courseDenied')}
     </p>
   );

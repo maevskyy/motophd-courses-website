@@ -2,7 +2,6 @@ import type { Lesson } from '@/payload-types';
 import { salesContent } from './fixtures/coursePages';
 import { localizedCourses } from './fixtures/courses';
 import { getCurriculumForCourse } from './fixtures/curriculum';
-import { playerContent } from './fixtures/player';
 import type { Course, Locale } from './fixtures/types';
 
 export type { Locale } from './fixtures/types';
@@ -151,12 +150,3 @@ export const getFlatLessons = (courseSlug: string, locale: Locale) =>
       ...lesson
     }))
   );
-
-export const getKeyPoint = (course: Course) =>
-  course.slug === 'lean' ? playerContent.overviewCopy : course.includes[0] || course.description;
-
-export const getCommonMistakes = (course: Course) =>
-  course.slug === 'lean' ? playerContent.notes.join('\n') : course.includes.slice(1).join('\n');
-
-export const getWhatYouShouldFeel = (course: Course) =>
-  course.slug === 'lean' ? playerContent.feel : course.description;

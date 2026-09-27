@@ -1,0 +1,62 @@
+@use '@/styles/mixins' as *;
+
+/*
+  Композицию страницы держат стили секции инструктора (MarketingBlocks):
+  здесь — только то, чего нет на главной, цифры школы и ссылки на соцсети.
+*/
+.stats {
+  border-block: 1px solid var(--border);
+  display: flex;
+  gap: var(--sp-8);
+  padding-block: var(--sp-5);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+
+  dt {
+    color: var(--text-3);
+    font-size: var(--fs-caption);
+    font-weight: 600;
+    letter-spacing: var(--ls-caps);
+    text-transform: uppercase;
+  }
+
+  dd {
+    color: var(--text-1);
+    font-family: var(--font-display);
+    font-size: var(--fs-h2);
+    font-weight: 700;
+    letter-spacing: var(--ls-tight);
+    line-height: var(--lh-tight);
+    margin: 0;
+  }
+}
+
+.socials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+}
+
+.social {
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-2);
+  display: inline-flex;
+  font-size: var(--fs-small);
+  gap: var(--sp-2);
+  min-block-size: var(--control-h);
+  padding-inline: var(--sp-3);
+  text-decoration: none;
+
+  @include focus-ring;
+
+  &:hover {
+    border-color: var(--border-strong);
+    color: var(--text-1);
+  }
+}

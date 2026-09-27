@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { AccountProfileForm } from './AccountProfileForm';
 
 vi.mock('next-intl', () => ({
+  useLocale: () => 'en',
   useTranslations: () => (key: string) => key
 }));
 
@@ -11,11 +12,13 @@ vi.mock('@/lib/auth/account', () => ({
 }));
 
 describe('AccountProfileForm', () => {
-  it('allows editing the name while keeping the email read-only', () => {
+  it('allows editing the name while showing the email as plain text', () => {
     render(<AccountProfileForm email="student@motophd.com" name="Student" />);
 
     expect(screen.getByRole('textbox', { name: 'fullName' })).toHaveValue('Student');
-    expect(screen.getByRole('textbox', { name: 'email' })).toHaveValue('student@motophd.com');
-    expect(screen.getByRole('textbox', { name: 'email' })).toHaveAttribute('readonly');
+    // Email — значение с пояснением, не поле ввода: единственный textbox — имя.
+    expect(screen.getAllByRole('textbox')).toHaveLength(1);
+    expect(screen.getByText('student@motophd.com')).toBeInTheDocument();
+    expect(screen.getByText('emailReadOnly')).toBeInTheDocument();
   });
 });

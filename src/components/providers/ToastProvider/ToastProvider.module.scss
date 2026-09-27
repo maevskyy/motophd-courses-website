@@ -1,18 +1,24 @@
+@use '@/styles/mixins' as *;
+
 .toast {
-  background: #0d0d0d;
-  border: 1px solid var(--red);
-  border-radius: 8px;
-  bottom: 24px;
-  color: var(--white);
-  font-size: 13px;
-  max-width: 300px;
+  background: var(--surface-3);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-overlay);
+  color: var(--text-1);
+  font-size: var(--fs-small);
+  inset-block-end: var(--sp-5);
+  inset-inline-end: var(--sp-5);
+  max-inline-size: 320px;
   opacity: 0;
-  padding: 14px 20px;
+  padding: var(--sp-3) var(--sp-4);
+  pointer-events: none;
   position: fixed;
-  right: 24px;
-  transform: translateY(100px);
-  transition: all 0.4s;
-  z-index: 9999;
+  transform: translateY(12px);
+  transition:
+    opacity var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
+  z-index: 300;
 }
 
 .toastShow {

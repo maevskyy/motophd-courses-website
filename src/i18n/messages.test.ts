@@ -26,7 +26,10 @@ const flattenValues = (messages: Messages): Record<string, string> =>
     )
   );
 
-const placeholders = (value: string) => (value.match(/\{[^}]+\}/g) ?? []).sort();
+// Имена ICU-аргументов: '{price}' → price, '{count, plural, one {# урок} …}' → count.
+// Ветки plural/select ('{# урок}') — не аргументы, у каждой локали их своё число.
+const placeholders = (value: string) =>
+  [...value.matchAll(/\{\s*([A-Za-z_]\w*)/g)].map(([, name]) => name).sort();
 
 describe('messages/*.json', () => {
   const reference = flattenKeys(messagesByLocale[defaultLocale]);

@@ -3,10 +3,11 @@ import { notFound } from 'next/navigation';
 import { cache } from 'react';
 import { Link } from '@/i18n/routing';
 import { AccessNotice } from '@/components/courseSales/AccessNotice';
-import { CourseTeaser } from '@/components/courseSales/CourseTeaser';
-import { CurriculumAccordion } from '@/components/prototype/CurriculumAccordion';
+import { CourseProgram } from '@/components/courseSales/CourseProgram';
+import { StickyBuyBar } from '@/components/courseSales/StickyBuyBar';
 import { Footer } from '@/components/prototype/Footer';
 import { PricingBox } from '@/components/prototype/PricingBox';
+import { Icon } from '@/components/ui/Icon';
 import {
   getCourseBySlug,
   getCourseCurriculum,
@@ -15,7 +16,6 @@ import {
   type AppLocale
 } from '@/lib/data';
 import { getPaymentProvider } from '@/lib/payments';
-import { getTeaserEmbedUrl } from '@/lib/video';
 import { buildPageMetadata, courseCoverImage, resolveSeoLocale } from '@/lib/seo';
 import { requireLocale } from '@/i18n/requireLocale';
 import styles from '@/components/courseSales/CourseSalesPage.module.scss';
@@ -75,58 +75,44 @@ export default async function CourseSalesPage({
 
   return (
     <>
-      <section className={styles.salesHero}>
-        <div className={styles.salesHero__inner}>
-          <div>
-            <Link className={styles.salesBreadcrumb} href="/courses">
-              ← <span className={styles.red}>{sales.breadcrumb}</span> / {course.title}
+      <section className={styles.hero}>
+        <div className={styles.heroInner}>
+          <div className={styles.intro}>
+            <Link className={styles.breadcrumb} href="/courses">
+              <Icon name="arrowLeft" size={16} />
+              {sales.breadcrumb}
             </Link>
             <AccessNotice />
-            <div className={styles.salesTag}>{sales.tag}</div>
-            <h1 className={styles.salesTitle}>
-              {sales.title.map((line) => (
-                <span key={line}>
-                  {line}
-                  <br />
-                </span>
-              ))}
-            </h1>
-            <p className={styles.salesPain}>{sales.pain}</p>
-            <div className={styles.outcomes}>
+            <p className={styles.tag}>{sales.tag}</p>
+            <h1 className={styles.title}>{sales.title.join(' ')}</h1>
+            <p className={styles.pain}>{sales.pain}</p>
+            <ul className={styles.outcomes}>
               {sales.outcomes.map((outcome) => (
-                <div className={styles.outcome} key={outcome}>
-                  {outcome}
-                </div>
+                <li className={styles.outcome} key={outcome}>
+                  <Icon className={styles.outcomeIcon} name="check" size={18} />
+                  <span>{outcome}</span>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
           <PricingBox
             checkoutEnabled={Boolean(getPaymentProvider())}
+            className={styles.pricing}
             courseSlug={course.slug}
             locale={safeLocale}
             sales={sales}
           />
+          <div className={styles.modules}>
+            <h2 className={styles.sectionTitle}>{sales.modulesTitle}</h2>
+            <CourseProgram modules={curriculum} />
+          </div>
         </div>
       </section>
 
-      <CourseTeaser
-        courseTitle={course.title}
-        embedUrl={getTeaserEmbedUrl(course.teaserVideoId)}
-        title={sales.teaserTitle}
-      />
-
-      <section className={styles.salesSection}>
-        <h2 className={styles.salesSection__title}>{sales.modulesTitle}</h2>
-        <CurriculumAccordion modules={curriculum} />
-      </section>
-
-      <section className={styles.ctaSection}>
-        <Link className={styles.button} href={`/courses/${course.slug}`}>
-          {sales.enrollCta}
-        </Link>
-      </section>
-
       <Footer compact />
+      {/* Единственный дубль главного действия — и только там, где блок цены
+          уехал с экрана: на телефоне. */}
+      <StickyBuyBar price={sales.options[0].price} targetId="pricing" />
     </>
   );
 }

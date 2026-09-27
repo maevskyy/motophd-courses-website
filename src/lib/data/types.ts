@@ -1,3 +1,4 @@
+import type { IconName } from '@/components/ui/Icon';
 import type { Locale } from '@/i18n/locales';
 import type { Course, LegalPage, Lesson } from '@/payload-types';
 
@@ -5,7 +6,7 @@ export type AppLocale = Locale;
 
 export type CourseCardCourse = {
   slug: string;
-  icon: string;
+  icon: IconName;
   image?: string;
   imageTone: 'red' | 'green' | 'blue';
   featured?: boolean;
@@ -24,7 +25,7 @@ export type CurriculumModule = {
   open?: boolean;
   lessons: Array<{
     name: string;
-    order: number;
+    order?: number;
     duration: string;
   }>;
 };
@@ -40,8 +41,6 @@ export type SalesContent = {
   disclaimer: string;
   guarantee: string;
   modulesTitle: string;
-  enrollCta: string;
-  teaserTitle: string;
 };
 
 export type DashboardContent = {
@@ -51,28 +50,35 @@ export type DashboardContent = {
 };
 
 export type PlayerContent = {
-  title: string;
-  subtitle: string;
-  videoMeta: string;
-  notes: string[];
-  feel: string;
-  overviewTitle: string;
-  overviewCopy: string;
-  moduleOutcome: string[];
-  sidebarTitle: string;
+  courseSlug: string;
+  courseTitle: string;
+  lessons: PlayerLesson[];
   // Текущий урок: order для подсветки в боковой панели, номер и общее число —
   // для подписи «УРОК N ИЗ M». Прогресса прохождения нет (ADR-9).
-  currentLessonOrder: number | null;
-  lessonNumber: number;
-  lessonCount: number;
-  videoEmbedUrl: string | null;
-  downloads: PlayerDownload[];
+  currentLessonOrder?: number | null;
+  lessonNumber?: number;
+  lessonCount?: number;
+  videoEmbedUrl?: string | null;
+  downloads?: PlayerDownload[];
 };
 
 export type PlayerDownload = {
   id: number;
   title: string;
   url: string;
+  fileName?: string | null;
+};
+
+export type PlayerLesson = {
+  body: Lesson['body'];
+  download: PlayerDownload | null;
+  durationSec?: number | null;
+  id: number;
+  module: number;
+  order: number;
+  title: string;
+  type: Lesson['type'];
+  videoEmbedUrl: string | null;
 };
 
 export type PublishedCourse = Course;

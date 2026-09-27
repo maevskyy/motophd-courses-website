@@ -1,6 +1,7 @@
 import { Link } from '@/i18n/routing';
+import { Icon } from '@/components/ui/Icon';
 import { cx } from '@/lib/classNames';
-import styles from './CoursePlayer.module.scss';
+import styles from './PlayerSidebar.module.scss';
 
 interface Props {
   active: boolean;
@@ -9,20 +10,20 @@ interface Props {
   order: number;
 }
 
-// Урок в боковой панели плеера — обычная ссылка на тот же плеер с
-// ?lesson=<order>. Отметок «пройдено» нет: прогресса прохождения в продукте
-// нет (ADR-9), значок ▶ только у текущего урока.
+// Урок в оглавлении плеера — обычная ссылка на тот же плеер с ?lesson=<order>.
+// Отметок «пройдено» нет: прогресса прохождения в продукте нет (ADR-9),
+// значок ▶ только у текущего урока.
 export function PlayerSidebarLesson({ active, courseSlug, label, order }: Props) {
   return (
     <Link
       aria-current={active ? 'page' : undefined}
-      className={cx(styles.sidebarLesson, active && styles.sidebarLessonActive)}
+      className={cx(styles.lesson, active && styles.lessonActive)}
       href={`/learn/${courseSlug}?lesson=${order}`}
     >
-      <span aria-hidden className={styles.sidebarLessonCheck}>
-        {active ? '▶' : ''}
+      <span aria-hidden className={styles.lessonMark}>
+        {active ? <Icon name="play" size={10} /> : null}
       </span>
-      {label}
+      <span className={styles.lessonLabel}>{label}</span>
     </Link>
   );
 }

@@ -56,7 +56,8 @@ test('standard buyer adds feedback from the dashboard and pays only the differen
   await payInMockBank(page);
 
   await page.goto('/en/dashboard');
-  await expect(page.getByRole('link', { name: /lean/i })).toBeVisible();
+  // Название курса — ссылка в resume-карточке; уроки ниже тоже ссылки на /learn/lean/.
+  await expect(page.getByRole('link', { name: 'Motorcycle Leaning Without Fear' })).toBeVisible();
   await expect(upgradeButton(page)).toHaveCount(0);
 
   expect(await getOwnPurchases(page)).toEqual([

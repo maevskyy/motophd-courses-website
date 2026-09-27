@@ -2,8 +2,8 @@
 
 import { useActionState } from 'react';
 import { useTranslations } from 'next-intl';
-import type { Locale } from '@/i18n/locales';
 import { Link } from '@/i18n/routing';
+import { Icon } from '@/components/ui/Icon';
 import { MIN_PASSWORD_LENGTH } from '@/lib/auth/accountFormState';
 import { resetPasswordAction } from '@/lib/auth/passwordReset';
 import { initialResetPasswordFormState } from '@/lib/auth/passwordResetFormState';
@@ -15,7 +15,7 @@ const errorKeys = {
   tooShort: 'resetTooShort'
 } as const;
 
-export function ResetPasswordForm({ locale, token }: { locale: Locale; token: string }) {
+export function ResetPasswordForm({ locale, token }: { locale: 'en' | 'ru'; token: string }) {
   const t = useTranslations('login');
   const [state, formAction] = useActionState(resetPasswordAction, initialResetPasswordFormState);
 
@@ -24,10 +24,11 @@ export function ResetPasswordForm({ locale, token }: { locale: Locale; token: st
       <form action={formAction} className={styles.loginCard}>
         <input name="locale" type="hidden" value={locale} />
         <input name="token" type="hidden" value={token} />
-        <div className={styles.loginLogo}>
-          MOTO<span className={styles.red}>PhD</span>
+        <div className={styles.loginHead}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img alt="MotoPhD" className={styles.loginLogo} height={32} src="/logo.png" width={116} />
+          <h1 className={styles.loginTagline}>{t('resetTagline')}</h1>
         </div>
-        <div className={styles.loginTagline}>{t('resetTagline')}</div>
         {state.status !== 'idle' ? (
           <div className={styles.loginError} role="alert">
             <strong>{t(errorKeys[state.status])}</strong>
@@ -64,9 +65,12 @@ export function ResetPasswordForm({ locale, token }: { locale: Locale; token: st
         <button className={styles.btnLogin} type="submit">
           {t('resetButton')}
         </button>
-        <Link className={styles.loginBack} href="/login/forgot">
-          ← {t('forgotTagline')}
-        </Link>
+        <p className={styles.loginFooter}>
+          <Link className={styles.loginFooterLink} href="/login/forgot">
+            <Icon name="arrowLeft" size={16} />
+            {t('forgotTagline')}
+          </Link>
+        </p>
       </form>
     </main>
   );

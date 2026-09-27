@@ -1,120 +1,116 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { useState } from 'react';
-import { Link } from '@/i18n/routing';
-import type { CurriculumModule, PlayerContent } from '@/lib/data';
+import { useRouter } from '@/i18n/routing';
+import { AppShell } from '@/components/app/AppShell';
+import { Icon } from '@/components/ui/Icon';
 import { cx } from '@/lib/classNames';
+import type { PlayerContent } from '@/lib/data';
+import { lessonHref, useCourseProgress } from '@/lib/progress';
+import { getActiveLesson } from './activeLesson';
 import { LessonDownloads } from './LessonDownloads';
+import { LessonNav } from './LessonNav';
 import { LessonVideo } from './LessonVideo';
-import { PlayerSidebarLesson } from './PlayerSidebarLesson';
+import { PlayerSidebar } from './PlayerSidebar';
+import { usePlayerSidebar } from './usePlayerSidebar';
 import styles from './CoursePlayer.module.scss';
 
-type PlayerTab = 'notes' | 'downloads' | 'overview';
-
 interface Props {
-  courseSlug: string;
-  curriculum: CurriculumModule[];
+  // order из URL; без него активный урок — следующий непройденный.
+  activeOrder?: number;
   player: PlayerContent;
 }
 
-export function CoursePlayerClient({ courseSlug, curriculum, player }: Props) {
-  const t = useTranslations();
-  const [tab, setTab] = useState<PlayerTab>('notes');
+export function CoursePlayerClient({ activeOrder, player }: Props) {
+  const t = useTranslations('player');
+  const router = useRouter();
+  const { markDone, progress } = useCourseProgress(player.courseSlug);
+  const lesson = getActiveLesson(player.lessons, activeOrder, progress);
+  const sidebar = usePlayerSidebar(lesson?.order ?? 0);
+
+  if (!lesson) {
+    return (
+      <main className={styles.emptyLayout}>
+        <p className={styles.empty}>{t('noLessons')}</p>
+      </main>
+    );
+  }
+
+  const index = player.lessons.indexOf(lesson);
+  const prev = player.lessons[index - 1];
+  const next = player.lessons[index + 1];
+
+  // «Завершить и продолжить»: отметка в localStorage и переход на канонический
+  // адрес следующего урока; на последнем — в кабинет.
+  const complete = () => {
+    markDone(lesson.order);
+    router.push(next ? lessonHref(player.courseSlug, next) : '/dashboard');
+  };
 
   return (
-    <main className={styles.playerLayout}>
-      <section className={styles.playerMain}>
-        <div className={styles.videoContainer}>
-          <LessonVideo player={player} />
-        </div>
-        <div className={styles.videoInfo}>
-          <div className={styles.videoInfo__meta}>
-            {t('player.lessonMeta', { current: player.lessonNumber, total: player.lessonCount })}
-          </div>
-          <h1>{player.title}</h1>
-          <p>{player.subtitle}</p>
-        </div>
-        <div className={styles.videoTabs}>
-          {[
-            ['notes', t('player.notes')],
-            ['downloads', t('player.downloads')],
-            ['overview', t('player.overview')]
-          ].map(([id, label]) => (
+    <div className={cx(styles.player, sidebar.drawerOpen && styles.playerDrawerOpen)}>
+      <AppShell
+        sidebar={
+          <PlayerSidebar
+            activeOrder={lesson.order}
+            narrow={sidebar.narrow}
+            onClose={sidebar.closeDrawer}
+            player={player}
+            progress={progress}
+          />
+        }
+      >
+        <div className={styles.content}>
+          <div className={styles.column}>
             <button
-              className={cx(styles.videoTab, tab === id && styles.videoTabActive)}
-              key={id}
-              onClick={() => setTab(id as PlayerTab)}
+              aria-expanded={sidebar.drawerOpen}
+              className={styles.contentsBtn}
+              onClick={sidebar.toggleDrawer}
+              ref={sidebar.toggleRef}
               type="button"
             >
-              {label}
+              <Icon name="menu" size={16} />
+              {t('contents')}
             </button>
-          ))}
-        </div>
-        <div className={styles.videoTabContent}>
-          {tab === 'notes' ? (
-            <div className={styles.contentNarrow}>
-              <h2 className={styles.lessonHeading}>{t('player.keyTakeaways')}</h2>
-              <ul className={styles.takeaways}>
-                {player.notes.map((note) => (
-                  <li key={note}>✓ {note}</li>
-                ))}
-              </ul>
-              <div className={styles.callout}>
-                <div className={styles.calloutLabel}>{t('player.feelLabel')}</div>
-                <div className={styles.calloutText}>{player.feel}</div>
-              </div>
-            </div>
-          ) : null}
 
-          {tab === 'downloads' ? (
-            <LessonDownloads player={player} />
-          ) : null}
-
-          {tab === 'overview' ? (
-            <div className={styles.contentNarrow}>
-              <h2 className={styles.lessonHeading}>{player.overviewTitle}</h2>
-              <p className={styles.instructorCopy}>{player.overviewCopy}</p>
-              <div className={styles.moduleOutcomeBox}>
-                <div className={styles.calloutLabel}>{t('player.moduleOutcome')}</div>
-                <div className={styles.calloutText}>
-                  After completing this module you will:
-                  {player.moduleOutcome.map((outcome) => (
-                    <span key={outcome}>
-                      <br />✓ {outcome}
-                    </span>
-                  ))}
+            {lesson.type === 'video' ? (
+              <div className={styles.videoSlot}>
+                <div className={styles.videoContainer}>
+                  <LessonVideo lesson={lesson} />
                 </div>
               </div>
-            </div>
-          ) : null}
-        </div>
-      </section>
+            ) : null}
 
-      <aside className={styles.playerSidebar}>
-        <div className={styles.playerSidebarTitle}>{player.sidebarTitle}</div>
-        {curriculum.map((module) => (
-          <div className={styles.sidebarModule} key={module.number}>
-            <div className={styles.sidebarModuleHeader}>
-              Module {module.number}: {module.title} <span>›</span>
-            </div>
-            {module.lessons.map((lesson) => (
-              <PlayerSidebarLesson
-                active={lesson.order === player.currentLessonOrder}
-                courseSlug={courseSlug}
-                key={lesson.order}
-                label={lesson.name}
-                order={lesson.order}
-              />
-            ))}
+            <header className={styles.lessonHeader}>
+              <p className={styles.lessonMeta}>
+                {t('lessonMeta', {
+                  current: index + 1,
+                  total: player.lessons.length
+                })}
+              </p>
+              <h1 className={styles.lessonTitle}>{lesson.title}</h1>
+            </header>
+
+            <LessonDownloads download={lesson.download} />
+            <LessonNav
+              courseSlug={player.courseSlug}
+              hasNext={Boolean(next)}
+              onComplete={complete}
+              prev={prev}
+            />
           </div>
-        ))}
-        <div className={styles.sidebarFooter}>
-          <Link className={styles.sidebarBack} href="/dashboard">
-            ← {t('actions.backToDashboard')}
-          </Link>
         </div>
-      </aside>
-    </main>
+      </AppShell>
+
+      {sidebar.drawerOpen ? (
+        <button
+          aria-label={t('closeContents')}
+          className={styles.backdrop}
+          onClick={sidebar.closeDrawer}
+          tabIndex={-1}
+          type="button"
+        />
+      ) : null}
+    </div>
   );
 }

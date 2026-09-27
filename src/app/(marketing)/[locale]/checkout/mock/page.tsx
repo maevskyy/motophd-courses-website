@@ -1,6 +1,7 @@
 import { getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 
+import { PageMessage, pageMessageStyles as styles } from '@/components/ui/PageMessage';
 import { getPaymentProvider } from '@/lib/payments';
 import { requireLocale } from '@/i18n/requireLocale';
 
@@ -25,23 +26,25 @@ export default async function MockCheckoutPage({
   const t = await getTranslations({ locale: safeLocale, namespace: 'checkout' });
 
   return (
-    <main>
-      <h1>{t('mockTitle')}</h1>
-      <p>{t('mockDescription')}</p>
+    <PageMessage text={t('mockDescription')} title={t('mockTitle')}>
       <form action={mockPaymentAction}>
         <input name="decision" type="hidden" value="paid" />
         <input name="locale" type="hidden" value={safeLocale} />
         <input name="order" type="hidden" value={order} />
         <input name="t" type="hidden" value={postPaymentToken} />
-        <button type="submit">{t('pay')}</button>
+        <button className={styles.primary} type="submit">
+          {t('pay')}
+        </button>
       </form>
       <form action={mockPaymentAction}>
         <input name="decision" type="hidden" value="failed" />
         <input name="locale" type="hidden" value={safeLocale} />
         <input name="order" type="hidden" value={order} />
         <input name="t" type="hidden" value={postPaymentToken} />
-        <button type="submit">{t('decline')}</button>
+        <button className={styles.secondary} type="submit">
+          {t('decline')}
+        </button>
       </form>
-    </main>
+    </PageMessage>
   );
 }

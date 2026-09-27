@@ -12,9 +12,15 @@ vi.mock('@/i18n/routing', () => ({
   )
 }));
 
+// Секция отзывов — клиентский компонент и берёт подписи из next-intl.
+vi.mock('next-intl', () => ({
+  useLocale: () => 'en',
+  useTranslations: () => (key: string) => key
+}));
+
 const labels = {
-  viewCourses: 'Смотреть курсы',
-  browseAllCourses: 'Смотреть все курсы'
+  browseAllCourses: 'Смотреть все курсы',
+  viewCourses: 'Смотреть курсы'
 };
 
 describe('LandingTop', () => {
@@ -38,5 +44,37 @@ describe('LandingTop', () => {
       'href',
       '/courses'
     );
+  });
+
+  it('shows the coach with both photos and the credentials from the content', () => {
+    const { container } = render(
+      <LandingTop content={homeContent.en} courses={[]} labels={labels} />
+    );
+
+    expect(container.querySelector('img[src="/vlad.jpg"]')).toBeInTheDocument();
+    expect(container.querySelector('img[src="/vlad-training.jpg"]')).toBeInTheDocument();
+    expect(screen.getByText(homeContent.en.instructorTitle.join(' '))).toBeInTheDocument();
+    expect(screen.getByText(homeContent.en.instructorCredentials![0])).toBeInTheDocument();
+  });
+
+  it('shows every testimonial from the content after the coach, without a source link', () => {
+    render(<LandingTop content={homeContent.en} courses={[]} labels={labels} />);
+
+    const { testimonials } = homeContent.en;
+
+    expect(screen.getByText(homeContent.en.testimonialsLabel)).toBeInTheDocument();
+    expect(screen.getByText(homeContent.en.testimonialsTitle.join(' '))).toBeInTheDocument();
+    expect(testimonials).toHaveLength(11);
+    testimonials.forEach((item) => {
+      expect(screen.getByText(item.quote)).toBeInTheDocument();
+    });
+    // Как в main: все отзывы сразу, без «Показать ещё» и без ссылки на Instagram.
+    expect(screen.queryByRole('button', { name: /showMore/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: /reviewsSource/ })).not.toBeInTheDocument();
+
+    const coach = screen.getByText(homeContent.en.instructorName);
+    const reviews = screen.getByText(homeContent.en.testimonialsLabel);
+
+    expect(coach.compareDocumentPosition(reviews) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 });

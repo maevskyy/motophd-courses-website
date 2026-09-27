@@ -13,19 +13,33 @@ vi.mock('@/i18n/routing', () => ({
 }));
 
 vi.mock('next-intl', () => ({
+  useLocale: () => 'en',
   useTranslations: () => (key: string) => key
 }));
 
 describe('LandingBottom', () => {
   it('renders the community call-to-action when a label is provided', () => {
-    render(<LandingBottom content={homeContent.en} labels={{ joinCommunity: 'Join our MotoPhD Community' }} />);
+    render(
+      <LandingBottom content={homeContent.en} labels={{ joinCommunity: 'Join our MotoPhD Community' }} />
+    );
 
-    expect(screen.getByRole('link', { name: 'Join our MotoPhD Community' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Join our MotoPhD Community' })).toHaveAttribute(
+      'href',
+      '/courses'
+    );
   });
 
   it('renders nothing when the community label is empty', () => {
     render(<LandingBottom content={homeContent.ru} labels={{ joinCommunity: '' }} />);
 
     expect(screen.queryByRole('link', { name: /community|сообществ/i })).not.toBeInTheDocument();
+  });
+
+  it('lists the five "How It Works" steps from the content', () => {
+    render(<LandingBottom content={homeContent.en} labels={{}} />);
+
+    expect(screen.getAllByRole('listitem')).toHaveLength(homeContent.en.steps.length);
+    expect(screen.getByText('Choose Course')).toBeInTheDocument();
+    expect(screen.getByText('Ride Better')).toBeInTheDocument();
   });
 });

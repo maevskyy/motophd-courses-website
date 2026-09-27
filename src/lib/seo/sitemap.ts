@@ -2,6 +2,7 @@ import type { MetadataRoute } from 'next';
 
 import { locales } from '@/i18n/locales';
 import { buildLanguageAlternates, canonicalUrl } from './urls';
+import { isLegalPageSlug } from '@/lib/legal';
 
 export type SitemapDocument = {
   slug: string;
@@ -34,18 +35,23 @@ const toDate = (value?: string | null) => {
 const collectPages = ({ courses, legalPages }: SitemapSource): SitemapPage[] => [
   { changeFrequency: 'weekly', path: '/', priority: 1 },
   { changeFrequency: 'weekly', path: '/courses', priority: 0.9 },
+  { changeFrequency: 'monthly', path: '/about', priority: 0.6 },
   ...courses.map<SitemapPage>((course) => ({
     changeFrequency: 'weekly',
     lastModified: toDate(course.updatedAt),
     path: `/courses/${course.slug}`,
     priority: 0.8
   })),
-  ...legalPages.map<SitemapPage>((page) => ({
-    changeFrequency: 'monthly',
-    lastModified: toDate(page.updatedAt),
-    path: `/${page.slug}`,
-    priority: 0.3
-  }))
+  // Политика, оферта и лицензия ушли в PDF (public/legal) — в карте сайта
+  // остаются только те записи legal_pages, у которых есть своя страница.
+  ...legalPages
+    .filter((page) => isLegalPageSlug(page.slug))
+    .map<SitemapPage>((page) => ({
+      changeFrequency: 'monthly',
+      lastModified: toDate(page.updatedAt),
+      path: `/${page.slug}`,
+      priority: 0.3
+    }))
 ];
 
 // Каждая страница — по записи на локаль, и в каждой записи полный набор

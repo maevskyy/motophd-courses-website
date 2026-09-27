@@ -1,17 +1,23 @@
 import { getTranslations } from 'next-intl/server';
 
-import { CheckoutResult } from '@/components/checkout/CheckoutResult';
+import { Link } from '@/i18n/routing';
+import { PageMessage, pageMessageStyles as styles } from '@/components/ui/PageMessage';
 import { requireLocale } from '@/i18n/requireLocale';
 
 export default async function CheckoutFailPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-  const t = await getTranslations({ locale: requireLocale(locale), namespace: 'checkout' });
+  const safeLocale = requireLocale(locale);
+  const t = await getTranslations({ locale: safeLocale, namespace: 'checkout' });
+  const actions = await getTranslations({ locale: safeLocale, namespace: 'actions' });
 
   return (
-    <CheckoutResult
-      action={{ href: '/courses', label: t('failCta') }}
-      description={t('failDescription')}
-      title={t('failTitle')}
-    />
+    <PageMessage text={t('failDescription')} title={t('failTitle')}>
+      <Link className={styles.primary} href="/courses">
+        {actions('allCourses')}
+      </Link>
+      <Link className={styles.secondary} href="/">
+        {actions('backToWebsite')}
+      </Link>
+    </PageMessage>
   );
 }

@@ -3,14 +3,11 @@ import { getPayload, type DefaultDocumentIDType, type Payload } from 'payload';
 
 import { defaultLocale } from '../i18n/locales';
 import {
-  getCommonMistakes,
   getCourseSeeds,
   getDurationSec,
   getFlatLessons,
-  getKeyPoint,
   getLessonType,
   getOutcomes,
-  getWhatYouShouldFeel,
   legalPageSeeds,
   locales,
   toRichText
@@ -278,9 +275,6 @@ const seedCourses = async () => {
           priceFeedback: 129,
           currency: 'EUR' as const,
           outcomes: getOutcomes(course, locale),
-          keyPoint: getKeyPoint(course),
-          commonMistakes: getCommonMistakes(course),
-          whatYouShouldFeel: getWhatYouShouldFeel(course),
           teaserVideoId: `${course.slug}-${locale}-teaser`,
           order: courseIndex + 1,
           status: 'published' as const
@@ -352,6 +346,7 @@ const seedCourses = async () => {
           const localizedCourse = courseSeed[locale];
           const localizedLesson = flatLessonsByLocale[locale][lessonIndex];
           const data = {
+            body: null,
             course: courseId,
             order,
             type: getLessonType(lesson),
@@ -361,7 +356,6 @@ const seedCourses = async () => {
               getLessonType(lesson) === 'video'
                 ? `${localizedCourse.slug}-${locale}-lesson-${order}`
                 : undefined,
-            body: toRichText(`${localizedLesson.moduleTitle}\n\n${localizedLesson.name}`),
             isFreePreview: order === 1
           };
 
@@ -385,17 +379,38 @@ const seedCourses = async () => {
           }
         }
 
-        if (courseIndex === 0 && getLessonType(lesson) === 'pdf') {
+        // Уроки теперь все видео, но к первым двум всё ещё прикрепляем PDF:
+        // один открыт в тизере, второй проверяет защищённую выдачу материалов.
+        if (courseIndex === 0) {
           if (!firstPdfLessonId) {
             firstPdfLessonId = lessonId;
           }
 
-          // isFreePreview выставляется выше как order === 1.
           if (order !== 1 && !firstPaidPdfLessonId) {
             firstPaidPdfLessonId = lessonId;
           }
         }
       }
+
+      const staleLessons = await payload.find({
+        collection: 'lessons',
+        depth: 0,
+        locale: 'en',
+        overrideAccess: true,
+        pagination: false,
+        where: {
+          and: [
+            { course: { equals: courseId } },
+            { order: { greater_than: canonicalLessons.length } }
+          ]
+        }
+      });
+
+      await Promise.all(
+        staleLessons.docs.map((lesson) =>
+          payload.delete({ collection: 'lessons', id: lesson.id, overrideAccess: true })
+        )
+      );
     }
 
     for (const legalPage of legalPageSeeds) {

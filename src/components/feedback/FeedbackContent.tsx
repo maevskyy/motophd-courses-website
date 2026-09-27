@@ -2,6 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
+import { Icon } from '@/components/ui/Icon';
 import styles from './FeedbackContent.module.scss';
 
 export function FeedbackContent({ contactUrl }: { contactUrl: string | null }) {
@@ -28,7 +29,8 @@ export function FeedbackContent({ contactUrl }: { contactUrl: string | null }) {
       </section>
       <p className={styles.included}>{t('included')}</p>
       <Link className={styles.back} href="/dashboard">
-        ← {t('backToDashboard')}
+        <Icon name="arrowLeft" size={16} />
+        {t('backToDashboard')}
       </Link>
     </main>
   );

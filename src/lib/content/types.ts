@@ -1,5 +1,9 @@
+import type { IconName } from '@/components/ui/Icon';
+
 import type { Locale } from '@/i18n/routing';
 
+// Состав и порядок секций — как в main (242773f): hero → курсы → метод →
+// инструктор → отзывы → «Как это работает» → FAQ → CTA.
 export type HomeContent = {
   heroBadge: string;
   heroTitle: string[];
@@ -8,11 +12,7 @@ export type HomeContent = {
   heroSub: string;
   stats: Array<{
     value: string;
-    accent?: string;
     label: string;
-    note?: string;
-    noteAccent?: string;
-    href?: string;
   }>;
   socialLinks: Array<{ platform: 'youtube' | 'instagram'; href: string; label: string }>;
   coursesLabel: string;
@@ -21,7 +21,7 @@ export type HomeContent = {
   methodLabel: string;
   methodTitle: string;
   methodSub: string;
-  method: Array<{ icon: string; num: string; title: string; desc: string }>;
+  method: Array<{ icon: IconName; num: string; title: string; desc: string }>;
   testimonialsLabel: string;
   testimonialsTitle: string[];
   testimonials: Array<{ initial: string; name: string; quote: string }>;
