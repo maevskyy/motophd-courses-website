@@ -14,7 +14,7 @@ import {
   toPlayerDownloads
 } from '@/lib/data';
 import { getPayloadClient } from '@/lib/data/payload';
-import { getPlaybackUrl } from '@/lib/video';
+import { getPlaybackUrl, lessonPosterUrl } from '@/lib/video';
 
 export const dynamic = 'force-dynamic';
 
@@ -55,7 +55,10 @@ export default async function CoursePlayerPage({
   const player = toPlayerContent(course, lessons, {
     currentLesson,
     downloads: toPlayerDownloads(lessons, safeLocale),
-    videoEmbedUrl: getPlaybackUrl(currentLesson?.streamVideoId, { free: false })
+    videoEmbedUrl: getPlaybackUrl(currentLesson?.streamVideoId, {
+      free: false,
+      poster: lessonPosterUrl(currentLesson)
+    })
   });
 
   return <CoursePlayerClient courseSlug={course.slug} curriculum={curriculum} player={player} />;

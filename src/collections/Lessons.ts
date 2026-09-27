@@ -168,6 +168,19 @@ export const Lessons: CollectionConfig = {
         ru: 'ID Stream-видео'
       }
     },
+    // Обложка показывается в плеере до нажатия play вместо случайного кадра
+    // из Stream. Без access-ограничения: картинка не контент курса, а Stream
+    // грузит её из своего iframe без куки сайта — приватной она быть не может.
+    {
+      name: 'cover',
+      type: 'upload',
+      localized: true,
+      relationTo: 'media',
+      label: {
+        en: 'Cover (shown before play)',
+        ru: 'Обложка (до нажатия play)'
+      }
+    },
     {
       name: 'pdf',
       type: 'upload',
