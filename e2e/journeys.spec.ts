@@ -70,13 +70,35 @@ test('bank return redirects to the public site, never to the container address',
   }
 });
 
-test('admin signs in and opens a course with its prices', async ({ page }) => {
-  test.slow();
+const adminSignIn = async (page: Page) => {
   await page.goto('/admin/login');
   await page.locator('#field-email').fill('admin@motophd.com');
   await page.locator('#field-password').fill('admin1234');
   await page.locator('button[type="submit"]').click();
   await expect(page).toHaveURL(/\/admin\/?$/);
+};
+
+// Гонка Payload 3.86: форму проверяет сервер по мере ввода, и пароль,
+// вставленный мгновенно (автозаполнение) и сразу сохранённый, ловит
+// устаревшую ошибку «обязательное поле» — «Please correct invalid fields».
+// Повторный Save проходит. В тесте печатаем как человек и даём проверке
+// вернуться.
+const typePassword = async (page: Page, password: string) => {
+  for (const field of ['#field-password', '#field-confirm-password']) {
+    await page.locator(field).pressSequentially(password, { delay: 80 });
+    await page.waitForTimeout(1500);
+  }
+};
+
+const siteLoginStatus = async (page: Page, email: string, password: string) => {
+  const response = await page.request.post('/api/users/login', { data: { email, password } });
+
+  return response.status();
+};
+
+test('admin signs in and opens a course with its prices', async ({ page }) => {
+  test.slow();
+  await adminSignIn(page);
 
   await page.goto('/admin/collections/courses');
   await page.getByRole('link', { name: 'Motorcycle Leaning Without Fear' }).first().click();
@@ -84,6 +106,29 @@ test('admin signs in and opens a course with its prices', async ({ page }) => {
   await expect(page).toHaveURL(/\/admin\/collections\/courses\/\d+/);
   await expect(page.locator('#field-priceStandard')).toHaveValue('29');
   await expect(page.locator('#field-priceFeedback')).toHaveValue('129');
+});
+
+test('admin creates a user and changes their password', async ({ page }) => {
+  test.slow();
+  const email = `admin-made-${Date.now()}@motophd.test`;
+
+  await adminSignIn(page);
+  await page.goto('/admin/collections/users/create');
+  await page.locator('#field-email').fill(email);
+  await typePassword(page, 'first-pass-1');
+  await page.locator('#action-save').click();
+
+  await expect(page.locator('.payload-toast-item')).toContainText(/successfully/i);
+  await expect(page).toHaveURL(/\/admin\/collections\/users\/\d+/);
+
+  await page.getByRole('button', { name: /change password/i }).click();
+  await page.waitForTimeout(1500);
+  await typePassword(page, 'second-pass-2');
+  await page.locator('#action-save').click();
+
+  await expect(page.locator('.payload-toast-item').last()).toContainText('Updated successfully');
+  expect(await siteLoginStatus(page, email, 'first-pass-1')).toBe(401);
+  expect(await siteLoginStatus(page, email, 'second-pass-2')).toBe(200);
 });
 
 test.describe('phone layout', () => {
