@@ -167,6 +167,7 @@
     "email": "Email",
     "promoCode": "Промокод",
     "legalNote": "Оплачуючи, ви приймаєте <offer>публічну оферту</offer> і <privacy>політику конфіденційності</privacy>.",
+    "altPayment": "Щодо альтернативних способів оплати ви можете зв’язатися з нами через <email>support@motophd.com</email>",
     "unavailable": "Зараз не вдається оплатити — зв’яжися з нами.",
     "mockTitle": "Тестовий банк",
     "mockDescription": "Це тестова сторінка оплати.",

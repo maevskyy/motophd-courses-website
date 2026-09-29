@@ -167,6 +167,7 @@
     "email": "Email",
     "promoCode": "Promo code",
     "legalNote": "By paying you accept the <offer>public offer</offer> and the <privacy>privacy policy</privacy>.",
+    "altPayment": "For alternative payment methods, contact us at <email>support@motophd.com</email>",
     "unavailable": "We cannot accept payment right now — please contact us.",
     "mockTitle": "Mock bank",
     "mockDescription": "This is a test payment page.",

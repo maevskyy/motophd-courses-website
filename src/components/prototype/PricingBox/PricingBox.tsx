@@ -134,6 +134,11 @@ export function PricingBox({ checkoutEnabled, className, courseSlug, locale, sal
         <button className={styles.submit} disabled={!checkoutEnabled} type="submit">
           {t('actions.pay')}
         </button>
+        <p className={styles.altPayment}>
+          {t.rich('checkout.altPayment', {
+            email: (chunks) => <a href="mailto:support@motophd.com">{chunks}</a>
+          })}
+        </p>
       </form>
       <p className={styles.guarantee}>
         <Icon className={styles.guaranteeIcon} name="check" size={14} />
