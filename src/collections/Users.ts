@@ -85,7 +85,55 @@ export const Users: CollectionConfig = {
       }
     ]
   },
+  /*
+    Штатный локаут Payload (пять промахов — десять минут) не виден ни в API, ни
+    в админке: loginAttempts и lockUntil помечены hidden. Ручка отдаёт их
+    админу — и карточке пользователя, и снаружи, чтобы «почему человек не
+    входит» выяснялось запросом к сайту, а не SQL-запросом на сервере (MOT-95).
+  */
+  endpoints: [
+    {
+      handler: async (req) => {
+        if (req.user?.role !== 'admin') {
+          return Response.json({ errors: [{ message: 'Forbidden' }] }, { status: 403 });
+        }
+
+        const id = req.routeParams?.id;
+
+        if (typeof id !== 'string' && typeof id !== 'number') {
+          return Response.json({ errors: [{ message: 'Not found' }] }, { status: 404 });
+        }
+
+        const user = await req.payload.findByID({
+          collection: 'users',
+          id,
+          showHiddenFields: true
+        });
+
+        return Response.json({
+          email: user.email,
+          lockUntil: user.lockUntil ?? null,
+          loginAttempts: user.loginAttempts ?? 0
+        });
+      },
+      method: 'get',
+      path: '/:id/lock-state'
+    }
+  ],
   fields: [
+    {
+      name: 'lockState',
+      type: 'ui',
+      admin: {
+        components: {
+          Field: '/components/admin/UserLockState#UserLockState'
+        }
+      },
+      label: {
+        en: 'Sign-in lock',
+        ru: 'Блокировка входа'
+      }
+    },
     {
       name: 'name',
       type: 'text',

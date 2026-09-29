@@ -23,7 +23,9 @@ const dirname = path.dirname(filename);
 export default buildConfig({
   admin: {
     importMap: {
-      baseDir: path.resolve(dirname, 'app/(payload)'),
+      // База — src: пути к своим компонентам админки пишутся от него
+      // ('/components/admin/...'), как в остальном коде проекта.
+      baseDir: path.resolve(dirname),
       importMapFile: path.resolve(dirname, 'app/(payload)/admin/importMap.js')
     },
     user: Users.slug

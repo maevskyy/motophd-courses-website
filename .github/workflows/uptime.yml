@@ -1,0 +1,72 @@
+name: Uptime
+
+# Внешняя проверка сайта. Grafana и её алерты живут на том же VPS: умер сервер —
+# умерли и они, и никто ничего не присылает. Этот workflow смотрит на сайт со
+# стороны GitHub и пишет в тот же Telegram.
+#
+# Шлёт только смену состояния: «упал» — один раз, «поднялся» — один раз.
+# Состояние — исход прошлого запуска этого же workflow (success = сайт жил).
+#
+# Расписание GitHub не точное: запуск может опоздать на 5–15 минут. В публичном
+# репозитории GitHub выключает расписание после 60 дней без коммитов (пришлёт
+# письмо) — включить обратно: Actions → Uptime → Enable workflow.
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: uptime
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Probe the site
+        id: probe
+        run: |
+          check() {
+            curl -fsS -o /dev/null --max-time 20 --retry 2 --retry-delay 20 --retry-all-errors "$1"
+          }
+          if check https://motophd.com/api/health && check https://motophd.com/ru; then
+            echo "up=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "up=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Previous state
+        id: previous
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          conclusion=$(gh api "repos/${{ github.repository }}/actions/workflows/uptime.yml/runs?status=completed&per_page=1" \
+            --jq '.workflow_runs[0].conclusion // "success"')
+          echo "was_up=$([ "$conclusion" = failure ] && echo false || echo true)" >> "$GITHUB_OUTPUT"
+
+      - name: Notify Telegram on change
+        if: steps.probe.outputs.up != steps.previous.outputs.was_up
+        env:
+          TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+          TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
+          UP: ${{ steps.probe.outputs.up }}
+        run: |
+          if [ "$UP" = true ]; then
+            text="✅ motophd.com снова отвечает (внешняя проверка GitHub)."
+          else
+            text="🔴 motophd.com не отвечает снаружи — сервер или сайт лёг. Проверка: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          fi
+          curl -fsS -o /dev/null "https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TG_CHAT_ID}" --data-urlencode "text=${text}"
+
+      # Красный запуск = сайт лежит; по нему следующий запуск понимает, что
+      # «упал» уже отправлен.
+      - name: Mark run as down
+        if: steps.probe.outputs.up != 'true'
+        run: exit 1

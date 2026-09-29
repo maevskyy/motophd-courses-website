@@ -151,6 +151,19 @@
   margin-block-start: var(--sp-5);
 }
 
+.altPayment {
+  color: var(--text-3);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-normal);
+  margin-block-start: var(--sp-3);
+  text-align: center;
+
+  a {
+    color: var(--text-2);
+    text-decoration: underline;
+  }
+}
+
 .guarantee {
   align-items: center;
   color: var(--text-3);
