@@ -9,6 +9,7 @@ import { Icon } from '@/components/ui/Icon';
 import { cx } from '@/lib/classNames';
 import type { SalesContent } from '@/lib/data';
 import { checkoutAction } from '@/lib/payments/checkout';
+import { useRegionalPrice } from '@/lib/pricing/useRegionalPrice';
 import styles from './PricingBox.module.scss';
 
 interface Props {
@@ -27,10 +28,15 @@ export function PricingBox({ checkoutEnabled, className, courseSlug, locale, sal
   const [disclaimerError, setDisclaimerError] = useState(false);
   const disclaimerRef = useRef<HTMLInputElement>(null);
   const [state, formAction] = useActionState(checkoutAction, null);
+  const prices = useRegionalPrice(sales.pricing);
+  const priceOf = (index: number) =>
+    `€${sales.options[index].tier === 'standard' ? prices.priceStandard : prices.priceFeedback}`;
+  // Пока браузер узнаёт страну — место цены есть, самой цены нет.
+  const pendingStyle = prices.pending ? { visibility: 'hidden' as const } : undefined;
 
   function selectOption(index: number) {
     setSelected(index);
-    showToast(t('toast.selected', { price: sales.options[index].price }));
+    showToast(t('toast.selected', { price: priceOf(index) }));
   }
 
   /*
@@ -51,7 +57,9 @@ export function PricingBox({ checkoutEnabled, className, courseSlug, locale, sal
   return (
     <aside className={cx(styles.box, className)} id="pricing">
       {!checkoutEnabled ? <p className={styles.fallback}>{t('checkout.unavailable')}</p> : null}
-      <p className={styles.price}>{sales.options[selected].price}</p>
+      <p className={styles.price} style={pendingStyle}>
+        {priceOf(selected)}
+      </p>
       <p className={styles.note}>{sales.priceNote}</p>
       <form action={formAction} onSubmit={guardDisclaimer}>
         <input name="courseSlug" type="hidden" value={courseSlug} />
@@ -68,7 +76,9 @@ export function PricingBox({ checkoutEnabled, className, courseSlug, locale, sal
             >
               <span className={styles.optionTop}>
                 <span className={styles.optionName}>{option.name}</span>
-                <span className={styles.optionPrice}>{option.price}</span>
+                <span className={styles.optionPrice} style={pendingStyle}>
+                  {priceOf(index)}
+                </span>
               </span>
               <span className={styles.optionDesc}>{option.desc}</span>
             </button>
@@ -110,7 +120,11 @@ export function PricingBox({ checkoutEnabled, className, courseSlug, locale, sal
           <p className={styles.legalNote}>
             {t.rich('checkout.legalNote', {
               offer: (chunks) => (
-                <a href={legalDocumentHref('offer', locale)} rel="noopener noreferrer" target="_blank">
+                <a
+                  href={legalDocumentHref('offer', locale)}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
                   {chunks}
                 </a>
               ),

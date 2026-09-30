@@ -1,5 +1,6 @@
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
+import { CoursePrice } from '@/components/pricing/CoursePrice';
 import { Icon } from '@/components/ui/Icon';
 import type { CourseCardCourse } from '@/lib/data';
 import styles from './CourseCard.module.scss';
@@ -45,7 +46,7 @@ export function CourseCard({ course, catalog = false, titleAs: Title = 'h3' }: C
           </div>
         ) : null}
         <p className={styles.footer}>
-          <span className={styles.price}>€{course.priceStandard}</span>
+          <CoursePrice className={styles.price} pricing={course} tier="standard" />
           <span className={styles.action}>
             {catalog ? t('viewCourse') : t('enrollNow')}
             <Icon className={styles.actionIcon} name="arrowRight" size={16} />

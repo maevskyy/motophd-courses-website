@@ -16,6 +16,8 @@ export type CourseCardCourse = {
   includes: string[];
   priceStandard: number;
   priceFeedback: number;
+  // Строки региональных цен: цену для страны выбирает браузер (CoursePrice).
+  regionalPrices: Course['regionalPrices'];
 };
 
 export type CurriculumModule = {
@@ -35,7 +37,10 @@ export type SalesContent = {
   pain: string;
   outcomes: string[];
   priceNote: string;
-  options: Array<{ name: string; price: string; desc: string; tier: 'feedback' | 'standard' }>;
+  options: Array<{ name: string; desc: string; tier: 'feedback' | 'standard' }>;
+  // Цены по умолчанию и по регионам: страница одна на всех (кэш), сумму для
+  // страны посетителя считает браузер.
+  pricing: Pick<Course, 'priceFeedback' | 'priceStandard' | 'regionalPrices'>;
   disclaimer: string;
   guarantee: string;
   modulesTitle: string;

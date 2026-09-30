@@ -135,7 +135,9 @@ const findCourseCurriculum = async (
 export const getCourseCurriculum = (courseId: number, locale: AppLocale, user?: User) =>
   user
     ? findCourseCurriculum(courseId, locale, user)
-    : cachedPublic(`curriculum:${courseId}:${locale}`, () => findCourseCurriculum(courseId, locale));
+    : cachedPublic(`curriculum:${courseId}:${locale}`, () =>
+        findCourseCurriculum(courseId, locale)
+      );
 
 // Купленные курсы; админу — все опубликованные, как купленные.
 export const getDashboardCourses = async (locale: AppLocale, user: User) => {

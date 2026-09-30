@@ -74,6 +74,7 @@ const available: CourseCardCourse = {
   pain: '',
   priceFeedback: 129,
   priceStandard: 29,
+  regionalPrices: [],
   slug: 'counter-steering',
   title: 'Counter steering'
 };

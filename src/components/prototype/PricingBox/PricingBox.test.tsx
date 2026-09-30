@@ -22,9 +22,10 @@ const sales = {
   guarantee: 'Lifetime access',
   modulesTitle: 'Modules',
   options: [
-    { desc: 'Videos', name: 'Course only', price: '€29', tier: 'standard' as const },
-    { desc: 'Feedback', name: 'Course + feedback', price: '€129', tier: 'feedback' as const }
+    { desc: 'Videos', name: 'Course only', tier: 'standard' as const },
+    { desc: 'Feedback', name: 'Course + feedback', tier: 'feedback' as const }
   ],
+  pricing: { priceFeedback: 129, priceStandard: 29, regionalPrices: [] },
   outcomes: [],
   pain: '',
   priceNote: 'No subscription',
@@ -72,10 +73,36 @@ describe('PricingBox', () => {
         checkoutEnabled
         courseSlug="lean"
         locale="en"
-        sales={{ ...sales, options: [{ ...sales.options[0], price: '€31' }, sales.options[1]] }}
+        sales={{ ...sales, pricing: { ...sales.pricing, priceStandard: 31 } }}
       />
     );
 
     expect(screen.getAllByText('€31')).toHaveLength(2);
+  });
+
+  it('shows the price of the visitor country once the browser knows it', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({ ok: true, text: async () => 'fl=1\nloc=UA\ncolo=WAW' })
+    );
+    const regional = {
+      ...sales.pricing,
+      regionalPrices: [{ countries: ['UA' as const], priceFeedback: 79, priceStandard: 19 }]
+    };
+
+    render(
+      <PricingBox
+        checkoutEnabled
+        courseSlug="lean"
+        locale="en"
+        sales={{ ...sales, pricing: regional }}
+      />
+    );
+
+    // До ответа Cloudflare цена скрыта, а не показана по умолчанию.
+    expect(screen.getAllByText('€29')[0]).toHaveStyle({ visibility: 'hidden' });
+    expect(await screen.findAllByText('€19')).toHaveLength(2);
+    expect(screen.getByText('€79')).toBeVisible();
+    vi.unstubAllGlobals();
   });
 });
