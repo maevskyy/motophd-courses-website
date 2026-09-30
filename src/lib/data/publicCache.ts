@@ -13,6 +13,8 @@
   зависит от покупок.
 */
 
+import { revalidatePath } from 'next/cache';
+
 const TTL_MS = 5 * 60 * 1000;
 
 type Entry = { expiresAt: number; value: Promise<unknown> };
@@ -44,6 +46,17 @@ export const cachedPublic = <T>(key: string, load: () => Promise<T>): Promise<T>
   return value.then(copy);
 };
 
+// Страницы витрины ещё и в кэше Next (ISR): сбрасываем и его, чтобы правка
+// была видна сразу, а не через revalidate. Вне запроса Next (CLI, миграции,
+// сид) revalidatePath бросает — там сбрасывать нечего.
+const revalidateStorefront = () => {
+  try {
+    revalidatePath('/', 'layout');
+  } catch {
+    // не в контексте Next
+  }
+};
+
 export const clearPublicCache = () => {
   entries.clear();
 };
@@ -55,5 +68,9 @@ const RECLEAR_AFTER_COMMIT_MS = 2000;
 // TTL. Поэтому сбрасываем ещё раз, когда транзакция точно закоммичена.
 export const clearPublicCacheHook = () => {
   clearPublicCache();
-  setTimeout(clearPublicCache, RECLEAR_AFTER_COMMIT_MS).unref();
+  revalidateStorefront();
+  setTimeout(() => {
+    clearPublicCache();
+    revalidateStorefront();
+  }, RECLEAR_AFTER_COMMIT_MS).unref();
 };

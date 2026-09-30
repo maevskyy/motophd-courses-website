@@ -3,16 +3,22 @@ import { CourseCard } from '@/components/prototype/CourseCard';
 import { Footer } from '@/components/prototype/Footer';
 import { Section, SectionHeader } from '@/components/ui/Section';
 import { getPublishedCourses, toCourseCardCourse } from '@/lib/data';
-import { withRegionalPrice } from '@/lib/pricing/regionalPrice';
-import { getVisitorCountry } from '@/lib/pricing/visitorCountry';
 import { buildPageMetadata, resolveSeoLocale } from '@/lib/seo';
 import type { Locale } from '@/i18n/locales';
 import { requireLocale } from '@/i18n/requireLocale';
 import styles from '@/components/catalog/CatalogPage.module.scss';
 
-// Цены зависят от страны посетителя (regionalPrice.ts), поэтому страница
-// собирается на каждый запрос, а не кэшируется одна на всех.
-export const dynamic = 'force-dynamic';
+// Одна страница на всех, из кэша (ISR + кэш Cloudflare): цену для страны
+// посетителя выбирает браузер (CoursePrice). Правка в админке сбрасывает
+// кэш сразу (clearPublicCacheHook), revalidate — страховка.
+export const revalidate = 60;
+
+// Пустой список — страницы собираются при первом заходе и дальше живут в
+// кэше. Без него Next рендерит страницу на каждый запрос; при сборке базы
+// нет, поэтому заранее ничего не собираем.
+export function generateStaticParams() {
+  return [];
+}
 
 // Record<Locale, …>: новая локаль без своего текста не пройдёт typecheck.
 const catalogContent: Record<Locale, { label: string; title: string; sub: string }> = {
@@ -61,10 +67,7 @@ export default async function CoursesPage({ params }: { params: Promise<{ locale
   const safeLocale = requireLocale(locale);
   const content = catalogContent[safeLocale];
   const payloadCourses = await getPublishedCourses(safeLocale);
-  const country = await getVisitorCountry();
-  const courses = payloadCourses.map((course, index) =>
-    toCourseCardCourse(withRegionalPrice(course, country), index)
-  );
+  const courses = payloadCourses.map((course, index) => toCourseCardCourse(course, index));
 
   return (
     <>

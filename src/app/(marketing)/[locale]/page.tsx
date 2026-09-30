@@ -4,14 +4,20 @@ import { LandingBottom } from '@/components/landing/LandingBottom';
 import { LandingTop } from '@/components/landing/LandingTop';
 import { homeContent } from '@/lib/content';
 import { getPublishedCourses, toCourseCardCourse } from '@/lib/data';
-import { withRegionalPrice } from '@/lib/pricing/regionalPrice';
-import { getVisitorCountry } from '@/lib/pricing/visitorCountry';
 import { buildPageMetadata, resolveSeoLocale, SITE_NAME } from '@/lib/seo';
 import { requireLocale } from '@/i18n/requireLocale';
 
-// Цены зависят от страны посетителя (regionalPrice.ts), поэтому страница
-// собирается на каждый запрос, а не кэшируется одна на всех.
-export const dynamic = 'force-dynamic';
+// Одна страница на всех, из кэша (ISR + кэш Cloudflare): цену для страны
+// посетителя выбирает браузер (CoursePrice). Правка в админке сбрасывает
+// кэш сразу (clearPublicCacheHook), revalidate — страховка.
+export const revalidate = 60;
+
+// Пустой список — страницы собираются при первом заходе и дальше живут в
+// кэше. Без него Next рендерит страницу на каждый запрос; при сборке базы
+// нет, поэтому заранее ничего не собираем.
+export function generateStaticParams() {
+  return [];
+}
 
 // Title/description лендинга — из существующего контента hero
 // (src/lib/content): бейдж и подзаголовок, без новых полей.
@@ -44,10 +50,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const actions = await getTranslations({ locale: safeLocale, namespace: 'actions' });
   const content = homeContent[safeLocale];
   const payloadCourses = await getPublishedCourses(safeLocale);
-  const country = await getVisitorCountry();
-  const courses = payloadCourses.map((course, index) =>
-    toCourseCardCourse(withRegionalPrice(course, country), index)
-  );
+  const courses = payloadCourses.map((course, index) => toCourseCardCourse(course, index));
 
   return (
     <>

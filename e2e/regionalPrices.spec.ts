@@ -1,7 +1,8 @@
-import { expect, test, type APIRequestContext } from '@playwright/test';
+import { expect, test, type APIRequestContext, type Browser } from '@playwright/test';
 
-// Региональные цены: страну сайту сообщает Cloudflare заголовком
-// CF-IPCountry. Локально Cloudflare нет — ставим заголовок сами. Антарктида
+// Региональные цены: страницы одни на всех (кэш), цену для страны выбирает
+// браузер по /cdn-cgi/trace, а оплата считает по заголовку CF-IPCountry.
+// Локально Cloudflare нет — подставляем и то и другое сами. Антарктида
 // (AQ), чтобы строка цены не пересеклась с настоящими регионами.
 test.describe.configure({ mode: 'serial' });
 
@@ -12,6 +13,17 @@ let courseId: number;
 let originalRows: unknown[];
 
 const adminHeaders = () => ({ Authorization: `JWT ${token}` });
+
+// Посетитель из AQ: Cloudflare сказал бы это и браузеру, и серверу.
+const regionalVisitor = async (browser: Browser) => {
+  const context = await browser.newContext({ extraHTTPHeaders: { 'cf-ipcountry': 'AQ' } });
+
+  await context.route('**/cdn-cgi/trace', (route) =>
+    route.fulfill({ body: 'fl=1\nloc=AQ\ncolo=TBS\n', contentType: 'text/plain' })
+  );
+
+  return context;
+};
 
 const setRegionalPrices = (request: APIRequestContext, rows: unknown[]) =>
   request.patch(`/api/courses/${courseId}`, {
@@ -46,7 +58,7 @@ test.afterAll(async ({ request }) => {
 });
 
 test('a visitor from a listed country sees the regional prices', async ({ browser }) => {
-  const regional = await browser.newContext({ extraHTTPHeaders: { 'cf-ipcountry': 'AQ' } });
+  const regional = await regionalVisitor(browser);
   const page = await regional.newPage();
 
   await page.goto('/en/courses/lean');
@@ -62,7 +74,7 @@ test('everyone else keeps the default prices', async ({ page }) => {
 });
 
 test('the regional visitor is charged the regional price', async ({ browser }) => {
-  const regional = await browser.newContext({ extraHTTPHeaders: { 'cf-ipcountry': 'AQ' } });
+  const regional = await regionalVisitor(browser);
   const page = await regional.newPage();
   const email = `regional-${Date.now()}@motophd.test`;
 

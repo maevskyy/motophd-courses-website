@@ -40,7 +40,8 @@ export const toCourseCardCourse = (
     description: course.description || '',
     includes,
     priceStandard: course.priceStandard,
-    priceFeedback: course.priceFeedback
+    priceFeedback: course.priceFeedback,
+    regionalPrices: course.regionalPrices
   };
 };
 
@@ -58,17 +59,20 @@ export const toSalesContent = (course: Course, locale: AppLocale): SalesContent 
     options: [
       {
         name: text.courseOnly,
-        price: `€${course.priceStandard}`,
         desc: text.courseOnlyDesc,
         tier: 'standard'
       },
       {
         name: text.feedback,
-        price: `€${course.priceFeedback}`,
         desc: text.feedbackDesc,
         tier: 'feedback'
       }
     ],
+    pricing: {
+      priceFeedback: course.priceFeedback,
+      priceStandard: course.priceStandard,
+      regionalPrices: course.regionalPrices
+    },
     disclaimer: text.disclaimer,
     guarantee: text.guarantee,
     modulesTitle: text.modulesTitle
