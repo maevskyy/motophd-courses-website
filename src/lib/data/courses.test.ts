@@ -41,12 +41,24 @@ type LocalizedValues = Record<string, unknown>;
 // То, что делает afterRead в Payload: значение запрошенной локали, а если его
 // нет — из fallbackLocale. Fake нужен, чтобы тест читался как сценарий, а не
 // как проверка аргументов.
-const findWithFallback = ({ fallbackLocale, locale }: { fallbackLocale: string; locale: string }) => ({
+// Как Payload: первый непустой язык — запрошенный, потом цепочка фолбэков.
+const findWithFallback = ({
+  fallbackLocale,
+  locale
+}: {
+  fallbackLocale: string[];
+  locale: string;
+}) => ({
   docs: [
     Object.fromEntries(
       Object.entries(storedLesson).map(([key, value]) =>
         typeof value === 'object'
-          ? [key, (value as LocalizedValues)[locale] ?? (value as LocalizedValues)[fallbackLocale] ?? null]
+          ? [
+              key,
+              [locale, ...fallbackLocale]
+                .map((code) => (value as LocalizedValues)[code])
+                .find((localized) => localized != null) ?? null
+            ]
           : [key, value]
       )
     )
@@ -65,7 +77,7 @@ describe('course data access', () => {
     const [lesson] = await getCourseLessons(11, 'uk', user);
 
     expect(mocks.find).toHaveBeenCalledWith(
-      expect.objectContaining({ collection: 'lessons', fallbackLocale: 'ru', locale: 'uk' })
+      expect.objectContaining({ collection: 'lessons', fallbackLocale: ['ru', 'en'], locale: 'uk' })
     );
     expect(lesson).toMatchObject({
       pdf: 22,
@@ -82,11 +94,11 @@ describe('course data access', () => {
 
     expect(mocks.find).toHaveBeenNthCalledWith(
       1,
-      expect.objectContaining({ fallbackLocale: 'en', locale: 'ru' })
+      expect.objectContaining({ fallbackLocale: ['en', 'uk'], locale: 'ru' })
     );
     expect(mocks.find).toHaveBeenNthCalledWith(
       2,
-      expect.objectContaining({ fallbackLocale: 'ru', locale: 'en' })
+      expect.objectContaining({ fallbackLocale: ['ru', 'uk'], locale: 'en' })
     );
   });
 

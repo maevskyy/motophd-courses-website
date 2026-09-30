@@ -51,7 +51,7 @@ describe('getPurchaseHistory', () => {
     await getPurchaseHistory('uk', user);
 
     expect(mocks.find).toHaveBeenCalledWith(
-      expect.objectContaining({ collection: 'purchases', fallbackLocale: 'ru', locale: 'uk' })
+      expect.objectContaining({ collection: 'purchases', fallbackLocale: ['ru', 'en'], locale: 'uk' })
     );
   });
 

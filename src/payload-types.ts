@@ -225,7 +225,7 @@ export interface Course {
       }[]
     | null;
   /**
-   * Not shown on the site. Messengers and social networks show it when someone shares the course link.
+   * Photo on the course card. Also shown when someone shares the course link. Landscape, about 1200×630.
    */
   cover?: (number | null) | Media;
   priceStandard: number;

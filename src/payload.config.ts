@@ -45,7 +45,7 @@ export default buildConfig({
   editor: lexicalEditor(),
   // Коды, подписи и фолбэки — из src/i18n/locales.ts: у сайта и админки один
   // список. Пустое поле читается с запасного языка (localeFallbacks):
-  // uk → ru, en ↔ ru.
+  // список языков по порядку, см. комментарий там.
   localization: {
     defaultLocale,
     fallback: true,
