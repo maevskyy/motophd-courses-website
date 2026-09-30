@@ -242,21 +242,6 @@ export interface Lesson {
   streamVideoId?: string | null;
   cover?: (number | null) | Media;
   pdf?: (number | null) | Media;
-  body?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
   isFreePreview?: boolean | null;
   updatedAt: string;
   createdAt: string;
@@ -540,7 +525,6 @@ export interface LessonsSelect<T extends boolean = true> {
   streamVideoId?: T;
   cover?: T;
   pdf?: T;
-  body?: T;
   isFreePreview?: T;
   updatedAt?: T;
   createdAt?: T;

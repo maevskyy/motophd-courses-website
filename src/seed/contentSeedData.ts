@@ -1,4 +1,4 @@
-import type { Lesson } from '@/payload-types';
+import type { LegalPage } from '@/payload-types';
 import { salesContent } from './fixtures/coursePages';
 import { localizedCourses } from './fixtures/courses';
 import { getCurriculumForCourse } from './fixtures/curriculum';
@@ -72,7 +72,7 @@ export const legalPageSeeds: LegalPageSeed[] = [
   }
 ];
 
-export const toRichText = (text: string): NonNullable<Lesson['body']> => ({
+export const toRichText = (text: string): NonNullable<LegalPage['body']> => ({
   root: {
     children: text.split('\n\n').map((paragraph) => ({
       children: [

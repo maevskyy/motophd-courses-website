@@ -148,7 +148,6 @@ export const toPlayerContent = (
     courseSlug: course.slug,
     courseTitle: course.title,
     lessons: sortLessonsByOrder(lessons).map<PlayerLesson>((lesson) => ({
-      body: lesson.body,
       download: toPlayerDownloads([lesson], locale)[0] || null,
       durationSec: lesson.durationSec ?? null,
       id: lesson.id,

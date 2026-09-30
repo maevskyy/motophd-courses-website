@@ -223,18 +223,6 @@ export const Lessons: CollectionConfig = {
       }
     },
     {
-      name: 'body',
-      type: 'richText',
-      localized: true,
-      access: {
-        read: canReadLessonContent
-      },
-      label: {
-        en: 'Body',
-        ru: 'Текст урока'
-      }
-    },
-    {
       name: 'isFreePreview',
       type: 'checkbox',
       defaultValue: false,

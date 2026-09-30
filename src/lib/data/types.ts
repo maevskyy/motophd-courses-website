@@ -69,7 +69,6 @@ export type PlayerDownload = {
 };
 
 export type PlayerLesson = {
-  body: Lesson['body'];
   download: PlayerDownload | null;
   durationSec?: number | null;
   id: number;

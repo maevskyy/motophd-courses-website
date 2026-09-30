@@ -351,7 +351,6 @@ const seedCourses = async () => {
           const localizedCourse = courseSeed[locale];
           const localizedLesson = flatLessonsByLocale[locale][lessonIndex];
           const data = {
-            body: null,
             course: courseId,
             order,
             title: localizedLesson.name,

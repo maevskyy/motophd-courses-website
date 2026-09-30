@@ -19,13 +19,7 @@ interface Props {
 // Оглавление курса на общей колонке AppSidebar (как в кабинете): шапка со
 // ссылкой «← Мой курс», названием и прогрессом, список уроков. Другого выхода
 // здесь нет: на сайт уводят логотип и пункты верхней шапки.
-export function PlayerSidebar({
-  activeOrder,
-  narrow,
-  onClose,
-  player,
-  progress
-}: Props) {
+export function PlayerSidebar({ activeOrder, narrow, onClose, player, progress }: Props) {
   const t = useTranslations();
   const summary = getProgressSummary(player.lessons, progress);
 
@@ -62,11 +56,7 @@ export function PlayerSidebar({
 
   return (
     <AppSidebar header={header} navLabel={t('player.contents')}>
-      <PlayerModules
-        activeOrder={activeOrder}
-        player={player}
-        progress={progress}
-      />
+      <PlayerModules activeOrder={activeOrder} player={player} progress={progress} />
     </AppSidebar>
   );
 }

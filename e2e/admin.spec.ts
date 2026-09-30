@@ -239,14 +239,13 @@ test.describe('lessons', () => {
       headers: auth(admin.token)
     });
     const lessons = (await asAdmin.json()).docs as Array<{
-      body?: unknown;
       id: number;
       isFreePreview?: boolean;
       pdf?: unknown;
       streamVideoId?: unknown;
     }>;
     const paid = lessons.find(
-      (lesson) => !lesson.isFreePreview && (lesson.streamVideoId || lesson.pdf || lesson.body)
+      (lesson) => !lesson.isFreePreview && (lesson.streamVideoId || lesson.pdf)
     );
     expect(paid, 'в базе нужен платный урок с видео, PDF или текстом').toBeTruthy();
 
@@ -255,7 +254,7 @@ test.describe('lessons', () => {
     if (anonymous.status() === 200) {
       const lesson = await anonymous.json();
 
-      for (const field of ['streamVideoId', 'video', 'pdf', 'body']) {
+      for (const field of ['streamVideoId', 'video', 'pdf']) {
         expect(lesson[field], `${field} платного урока не отдаём гостю`).toBeFalsy();
       }
     } else {

@@ -8,6 +8,7 @@ import * as migration_20260919_204644_add_lesson_cover from './20260919_204644_a
 import * as migration_20260930_065058_drop_lesson_type from './20260930_065058_drop_lesson_type';
 import * as migration_20260930_070904_add_videos from './20260930_070904_add_videos';
 import * as migration_20260930_125637_promo_code_limits from './20260930_125637_promo_code_limits';
+import * as migration_20260930_143915_drop_lesson_body from './20260930_143915_drop_lesson_body';
 
 export const migrations = [
   {
@@ -59,5 +60,10 @@ export const migrations = [
     up: migration_20260930_125637_promo_code_limits.up,
     down: migration_20260930_125637_promo_code_limits.down,
     name: '20260930_125637_promo_code_limits'
+  },
+  {
+    up: migration_20260930_143915_drop_lesson_body.up,
+    down: migration_20260930_143915_drop_lesson_body.down,
+    name: '20260930_143915_drop_lesson_body'
   }
 ];
