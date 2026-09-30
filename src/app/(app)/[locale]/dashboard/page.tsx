@@ -13,6 +13,8 @@ import {
 } from '@/lib/data';
 import { getPayloadClient } from '@/lib/data/payload';
 import { requireLocale } from '@/i18n/requireLocale';
+import { withRegionalPrice } from '@/lib/pricing/regionalPrice';
+import { getVisitorCountry } from '@/lib/pricing/visitorCountry';
 
 export const dynamic = 'force-dynamic';
 
@@ -32,16 +34,17 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
     getPurchaseHistory(safeLocale, user),
     hasFeedbackAccess(payload, user)
   ]);
+  const country = await getVisitorCountry();
   const purchasedCourseIds = new Set(payloadCourses.map((course) => course.id));
   const availableCourses = publishedCourses
     .filter((course) => !purchasedCourseIds.has(course.id))
-    .map((course, index) => toCourseCardCourse(course, index));
+    .map((course, index) => toCourseCardCourse(withRegionalPrice(course, country), index));
   // Уроки всех купленных курсов — в плоские DTO: объекты Payload в клиент не уезжают.
   const lessonsPerCourse = await Promise.all(
     payloadCourses.map((course) => getCourseLessons(course.id, safeLocale, user))
   );
   const courses = payloadCourses.map((course, index) =>
-    toMyCourse(course, lessonsPerCourse[index], index)
+    toMyCourse(withRegionalPrice(course, country), lessonsPerCourse[index], index)
   );
   // Докупка обратной связи: paid standard без paid feedback — считаем здесь,
   // в клиент уезжает только список slug'ов.

@@ -7,6 +7,8 @@ import type { Where } from 'payload';
 import { toLocale, type Locale } from '@/i18n/locales';
 import { getCurrentUser } from '@/lib/auth/currentUser';
 import { getPayloadClient } from '@/lib/data/payload';
+import { withRegionalPrice } from '@/lib/pricing/regionalPrice';
+import { getVisitorCountry } from '@/lib/pricing/visitorCountry';
 
 import { createOrderReference } from './orderReference';
 import { calculatePrice } from './pricing';
@@ -129,11 +131,14 @@ export const createCheckout = async ({
       and: [{ slug: { equals: courseSlug } }, { status: { equals: 'published' } }]
     }
   });
-  const course = courses.docs[0];
+  const storedCourse = courses.docs[0];
 
-  if (!course) {
+  if (!storedCourse) {
     return { error: 'invalidTier' };
   }
+
+  // Та же цена региона, что посетитель видел на странице курса.
+  const course = withRegionalPrice(storedCourse, await getVisitorCountry());
 
   const { created, user } = await findOrCreateUser(payload, email);
 

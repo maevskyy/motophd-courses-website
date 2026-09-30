@@ -16,18 +16,17 @@ import {
   type AppLocale
 } from '@/lib/data';
 import { getPaymentProvider } from '@/lib/payments';
+import { withRegionalPrice } from '@/lib/pricing/regionalPrice';
+import { getVisitorCountry } from '@/lib/pricing/visitorCountry';
 import { buildPageMetadata, courseCoverImage, resolveSeoLocale } from '@/lib/seo';
 import { requireLocale } from '@/i18n/requireLocale';
 import styles from '@/components/courseSales/CourseSalesPage.module.scss';
 
-export const revalidate = 300;
-
-// Пустой список: страницы рендерятся при первом заходе и кэшируются (ISR),
-// чтобы сборка в CI обходилась без работающей базы. Персональное (логин,
-// ?access=denied) добирают клиентские AccessNotice и PricingBox.
-export function generateStaticParams() {
-  return [];
-}
+// Цены зависят от страны посетителя (regionalPrice.ts), поэтому страница
+// собирается на каждый запрос, а не кэшируется одна на всех.
+// Персональное (логин, ?access=denied) добирают клиентские AccessNotice
+// и PricingBox.
+export const dynamic = 'force-dynamic';
 
 // Один запрос на рендер: generateMetadata и страница читают тот же курс.
 const loadCourse = cache((slug: string, locale: AppLocale) => getCourseBySlug(slug, locale));
@@ -63,12 +62,13 @@ export default async function CourseSalesPage({
 }) {
   const { locale, slug } = await params;
   const safeLocale = requireLocale(locale);
-  const course = await loadCourse(slug, safeLocale);
+  const storedCourse = await loadCourse(slug, safeLocale);
 
-  if (!course) {
+  if (!storedCourse) {
     notFound();
   }
 
+  const course = withRegionalPrice(storedCourse, await getVisitorCountry());
   const lessons = await getCourseCurriculum(course.id, safeLocale);
   const sales = toSalesContent(course, safeLocale);
   const curriculum = toCurriculumModules(course, lessons);

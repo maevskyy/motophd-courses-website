@@ -3,6 +3,7 @@ import { VideoUpload as VideoUpload_2715c725b180b5c6e90f6088ab980713 } from '../
 import { VideoPreview as VideoPreview_dc4474b73d805e12edd54b71e384e64c } from '../../../components/admin/VideoPreview'
 import { VideoUsage as VideoUsage_4fb75a06b4ee1d4382fa978cd15d158f } from '../../../components/admin/VideoUsage'
 import { VideoSyncButton as VideoSyncButton_d7279552da149d2b526053fafad8d402 } from '../../../components/admin/VideoSyncButton'
+import { RegionalPriceRowLabel as RegionalPriceRowLabel_c2a3be5add71db10c5791b79f0da576f } from '../../../components/admin/RegionalPriceRowLabel'
 import { RscEntryLexicalCell as RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
 import { RscEntryLexicalField as RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
 import { LexicalDiffComponent as LexicalDiffComponent_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
@@ -36,6 +37,7 @@ export const importMap = {
   "/components/admin/VideoPreview#VideoPreview": VideoPreview_dc4474b73d805e12edd54b71e384e64c,
   "/components/admin/VideoUsage#VideoUsage": VideoUsage_4fb75a06b4ee1d4382fa978cd15d158f,
   "/components/admin/VideoSyncButton#VideoSyncButton": VideoSyncButton_d7279552da149d2b526053fafad8d402,
+  "/components/admin/RegionalPriceRowLabel#RegionalPriceRowLabel": RegionalPriceRowLabel_c2a3be5add71db10c5791b79f0da576f,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalCell": RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalField": RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e,
   "@payloadcms/richtext-lexical/rsc#LexicalDiffComponent": LexicalDiffComponent_44fe37237e0ebf4470c9990d8cb7b07e,
