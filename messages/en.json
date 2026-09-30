@@ -183,6 +183,7 @@
       "checkoutUnavailable": "We cannot accept payment right now — please contact us.",
       "invalidEmail": "Enter a valid email address.",
       "invalidPromoCode": "This promo code cannot be used.",
+      "promoNotApplicable": "This promo code doesn't apply to this course or plan.",
       "invalidTier": "This purchase option is unavailable.",
       "minimumAmount": "The discounted total must be at least €1.",
       "upgradeUnavailable": "The feedback upgrade requires an existing standard purchase."

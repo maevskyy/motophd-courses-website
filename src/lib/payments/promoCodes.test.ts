@@ -32,3 +32,31 @@ describe('promo code validation', () => {
     expect(validatePromoCode(promo, new Date('2026-08-31T12:00:00Z'))).toEqual({ code, ok: false });
   });
 });
+
+describe('promo codes limited to a course or plan', () => {
+  const now = new Date('2026-08-31T12:00:00Z');
+  const lean = { courseId: 1, tier: 'standard' as const };
+
+  it('works everywhere when no course or plan is chosen', () => {
+    expect(validatePromoCode({ ...validPromo, courses: [], tiers: [] }, now, lean).ok).toBe(true);
+    expect(validatePromoCode({ ...validPromo, courses: null, tiers: null }, now, lean).ok).toBe(
+      true
+    );
+  });
+
+  it('applies only to the chosen courses', () => {
+    expect(validatePromoCode({ ...validPromo, courses: [1, { id: 3 }] }, now, lean).ok).toBe(true);
+    expect(validatePromoCode({ ...validPromo, courses: [2] }, now, lean)).toEqual({
+      code: 'wrongCourse',
+      ok: false
+    });
+  });
+
+  it('applies only to the chosen plans', () => {
+    expect(validatePromoCode({ ...validPromo, tiers: ['standard'] }, now, lean).ok).toBe(true);
+    expect(validatePromoCode({ ...validPromo, tiers: ['feedback'] }, now, lean)).toEqual({
+      code: 'wrongTier',
+      ok: false
+    });
+  });
+});

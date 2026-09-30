@@ -11,18 +11,24 @@ type WayForPayCallback = Record<string, string | number | null | undefined>;
 const sign = (value: string, secret: string) =>
   createHmac('md5', secret).update(value, 'utf8').digest('hex');
 
-const join = (values: Array<string | number | null | undefined>) => values.map((value) => value ?? '').join(';');
+const join = (values: Array<string | number | null | undefined>) =>
+  values.map((value) => value ?? '').join(';');
 
 const isSignatureValid = (received: unknown, value: string, secret: string) => {
   if (typeof received !== 'string') return false;
   const expected = sign(value, secret);
-  return received.length === expected.length && timingSafeEqual(Buffer.from(received), Buffer.from(expected));
+  return (
+    received.length === expected.length &&
+    timingSafeEqual(Buffer.from(received), Buffer.from(expected))
+  );
 };
 
 const parseCallback = (rawBody: string): WayForPayCallback | null => {
   try {
     const value: unknown = JSON.parse(rawBody);
-    return value && typeof value === 'object' && !Array.isArray(value) ? (value as WayForPayCallback) : null;
+    return value && typeof value === 'object' && !Array.isArray(value)
+      ? (value as WayForPayCallback)
+      : null;
   } catch {
     const form = new URLSearchParams(rawBody);
     return form.size ? Object.fromEntries(form.entries()) : null;
@@ -61,7 +67,12 @@ export const wayForPayProvider: PaymentProvider = {
     const time = Math.floor(Date.now() / 1000);
     const secret = process.env.WAYFORPAY_SECRET || '';
     const value = join([callback.orderReference, 'accept', time]);
-    return Response.json({ orderReference: callback.orderReference, status: 'accept', time, signature: sign(value, secret) });
+    return Response.json({
+      orderReference: callback.orderReference,
+      status: 'accept',
+      time,
+      signature: sign(value, secret)
+    });
   },
   createCheckout: async ({
     amount,
@@ -157,7 +168,8 @@ export const wayForPayProvider: PaymentProvider = {
       orderReference,
       payload,
       providerTxnId: String(payload.authCode || orderReference),
-      status: String(payload.transactionStatus || '').toLowerCase() === 'approved' ? 'paid' : 'failed'
+      status:
+        String(payload.transactionStatus || '').toLowerCase() === 'approved' ? 'paid' : 'failed'
     };
   }
 };

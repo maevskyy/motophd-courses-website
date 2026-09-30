@@ -1,10 +1,5 @@
-import type { Locale } from '@/i18n/locales';
-
-// Шаблоны писем написаны только на en и ru. Остальные локали сайта уходят
-// на язык своего фолбэка (uk → ru), как и контент курсов — см. toEmailLocale.
-export const emailLocales = ['en', 'ru'] as const satisfies readonly Locale[];
-
-export type EmailLocale = (typeof emailLocales)[number];
+// Письма всегда на английском, независимо от языка сайта: так решил
+// заказчик 30.09 — один язык проще поддерживать и проверять.
 
 export type PurchaseTier = 'standard' | 'feedback' | 'feedback_upgrade';
 

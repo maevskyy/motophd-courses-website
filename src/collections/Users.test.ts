@@ -1,14 +1,14 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { Users } from './Users';
+import { refuseDeletingBuyer, Users } from './Users';
 
 const admin = { id: 1, role: 'admin' };
 const student = { id: 7, role: 'student' };
 
 const access = Users.access;
-const roleField = Users.fields.find(
-  (field) => 'name' in field && field.name === 'role'
-) as { access?: { create?: unknown; update?: unknown } };
+const roleField = Users.fields.find((field) => 'name' in field && field.name === 'role') as {
+  access?: { create?: unknown; update?: unknown };
+};
 
 const countMock = vi.fn();
 const reqWith = (user: unknown) => ({ req: { payload: { count: countMock }, user } }) as never;
@@ -50,5 +50,23 @@ describe('users collection access', () => {
     expect(update(reqWith(student))).toBe(false);
     expect(create(reqWith(student))).toBe(false);
     expect(update(reqWith(admin))).toBe(true);
+  });
+});
+
+describe('deleting a user with purchases', () => {
+  it('explains which purchases block the deletion', async () => {
+    const find = vi.fn().mockResolvedValue({ docs: [{ id: 4 }, { id: 9 }], totalDocs: 2 });
+
+    await expect(
+      refuseDeletingBuyer({ id: 3, req: { payload: { find } } } as never)
+    ).rejects.toThrow('#4, #9');
+  });
+
+  it('lets a user without purchases go', async () => {
+    const find = vi.fn().mockResolvedValue({ docs: [], totalDocs: 0 });
+
+    await expect(
+      refuseDeletingBuyer({ id: 3, req: { payload: { find } } } as never)
+    ).resolves.toBeUndefined();
   });
 });

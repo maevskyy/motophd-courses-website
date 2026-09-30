@@ -54,12 +54,18 @@ export const calculatePrice = (
     return { amount: roundMoney(basePrice), ok: true };
   }
 
-  if (!Number.isFinite(promo.value) || promo.value < 0 || promo.discountType === 'percent' && promo.value >= 100) {
+  if (
+    !Number.isFinite(promo.value) ||
+    promo.value < 0 ||
+    (promo.discountType === 'percent' && promo.value >= 100)
+  ) {
     return { code: 'invalidDiscount', ok: false };
   }
 
   const discounted =
-    promo.discountType === 'percent' ? basePrice * (1 - promo.value / 100) : basePrice - promo.value;
+    promo.discountType === 'percent'
+      ? basePrice * (1 - promo.value / 100)
+      : basePrice - promo.value;
   const amount = roundMoney(discounted);
 
   return amount >= 1 ? { amount, ok: true } : { code: 'minimumAmount', ok: false };

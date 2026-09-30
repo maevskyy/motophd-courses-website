@@ -1,94 +1,93 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  createAccountCredentialsEmail,
   createFeedbackInstructionsEmail,
   createPasswordResetEmail,
   createPurchaseConfirmationEmail
 } from './templates';
 
 describe('email templates', () => {
+  beforeEach(() => {
+    process.env.APP_URL = 'https://motophd.com';
+  });
+
   afterEach(() => {
     delete process.env.APP_URL;
     delete process.env.FEEDBACK_CONTACT_URL;
   });
 
-  it.each(['en', 'ru'] as const)('renders all required content in %s', (locale) => {
-    process.env.APP_URL = 'https://motophd.com';
-    process.env.FEEDBACK_CONTACT_URL = 'https://t.me/motophd';
-
-    const credentials = createAccountCredentialsEmail({
-      locale,
-      password: 'secure-password',
-      to: 'student@motophd.com'
-    });
-    const purchase = createPurchaseConfirmationEmail({
+  it('confirms a purchase in English with a link to the course', () => {
+    const email = createPurchaseConfirmationEmail({
       courseTitle: 'Cornering Basics',
-      locale,
       tier: 'feedback',
       to: 'student@motophd.com'
     });
-    const feedback = createFeedbackInstructionsEmail({ locale, to: 'student@motophd.com' });
-    const reset = createPasswordResetEmail({
-      locale,
-      resetUrl: 'https://motophd.com/reset?token=test',
+
+    expect(email.subject).toBe('Your MotoPhD course is ready: Cornering Basics');
+    expect(email.text).toContain('Plan: Course + feedback');
+    expect(email.html).toContain('https://motophd.com/en/dashboard');
+    expect(email.html).toContain('<html lang="en"');
+    expect(email.text).not.toContain('Password');
+  });
+
+  it('sends sign-in details with the first purchase', () => {
+    const email = createPurchaseConfirmationEmail({
+      courseTitle: 'Cornering Basics',
+      password: 'abcd-efgh-jkmn',
+      tier: 'standard',
       to: 'student@motophd.com'
     });
 
-    expect(credentials.text).toContain('student@motophd.com');
-    expect(credentials.text).toContain('secure-password');
-    expect(credentials.html).toContain(`https://motophd.com/${locale}/login`);
-    expect(purchase.text).toContain('Cornering Basics');
-    expect(purchase.html).toContain(`https://motophd.com/${locale}/dashboard`);
-    expect(feedback.text).toContain('https://t.me/motophd');
-    expect(feedback.text).toMatch(/45/);
-    expect(reset.text).toContain('https://motophd.com/reset?token=test');
+    for (const body of [email.text, email.html]) {
+      expect(body).toContain('student@motophd.com');
+      expect(body).toContain('abcd-efgh-jkmn');
+      expect(body).toContain('change the password in your account settings');
+    }
   });
 
-  it('falls back to replies and reports an incident when the feedback contact is missing', () => {
+  it('gives feedback buyers the contact link', () => {
+    process.env.FEEDBACK_CONTACT_URL = 'https://t.me/motophd';
+
+    const email = createFeedbackInstructionsEmail({ to: 'student@motophd.com' });
+
+    expect(email.text).toContain('https://t.me/motophd');
+    expect(email.html).toContain('https://t.me/motophd');
+    expect(email.text).toMatch(/45 minutes/);
+  });
+
+  it('falls back to support and reports an incident when the feedback contact is missing', () => {
     const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
-    const email = createFeedbackInstructionsEmail({ locale: 'en', to: 'student@motophd.com' });
+    const email = createFeedbackInstructionsEmail({ to: 'student@motophd.com' });
 
-    expect(email.text).toContain('reply to this email');
-    expect(email.text).not.toMatch(/coming soon|скоро/i);
+    expect(email.text).toContain('support@motophd.com');
     expect(error).toHaveBeenCalled();
 
     error.mockRestore();
   });
 
-  it('signs every email so it does not read as phishing', () => {
-    const email = createAccountCredentialsEmail({
-      locale: 'ru',
-      password: 'secure-password',
+  it('tells how long a reset link stays valid', () => {
+    const email = createPasswordResetEmail({
+      resetUrl: 'https://motophd.com/en/login/reset?token=test',
       to: 'student@motophd.com'
     });
 
-    expect(email.html).toContain('<html lang="ru"');
-    expect(email.html).toContain('charset="utf-8"');
-    expect(email.html).toContain('MotoPhD Online');
-    expect(email.text).toContain('MotoPhD Online');
+    expect(email.text).toContain('https://motophd.com/en/login/reset?token=test');
+    expect(email.text).toContain('valid for 1 hour');
   });
 
-  it('tells the reader how long a reset link stays valid', () => {
-    const en = createPasswordResetEmail({
-      locale: 'en',
-      resetUrl: 'https://motophd.com/reset?token=test',
-      to: 'student@motophd.com'
-    });
-    const ru = createPasswordResetEmail({
-      locale: 'ru',
-      resetUrl: 'https://motophd.com/reset?token=test',
+  it('signs every email with the support address', () => {
+    const email = createPasswordResetEmail({
+      resetUrl: 'https://motophd.com/en/login/reset?token=test',
       to: 'student@motophd.com'
     });
 
-    expect(en.text).toContain('valid for 1 hour');
-    expect(ru.text).toContain('действует 1 час');
+    expect(email.html).toContain('mailto:support@motophd.com');
+    expect(email.text).toContain('support@motophd.com');
   });
 
   it('escapes HTML coming from course titles', () => {
     const email = createPurchaseConfirmationEmail({
       courseTitle: '<img src=x onerror=alert(1)>',
-      locale: 'en',
       tier: 'standard',
       to: 'student@motophd.com'
     });

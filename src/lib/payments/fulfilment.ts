@@ -1,3 +1,4 @@
+import { generatePassword } from '@/lib/auth/generatePassword';
 import { getPayloadClient } from '@/lib/data/payload';
 import type { Purchase } from '@/payload-types';
 
@@ -16,6 +17,49 @@ const hasPaymentDetails = (purchase: Purchase): purchase is PurchaseWithPaymentD
   typeof purchase.user === 'object' &&
   purchase.user !== null &&
   'email' in purchase.user;
+
+const userIdOf = (purchase: Purchase) =>
+  typeof purchase.user === 'number' ? purchase.user : purchase.user.id;
+
+/*
+  Первая оплата аккаунта: аккаунт создан при оформлении заказа со случайным
+  паролем, которого покупатель не знает. Выдаём новый и шлём в письме о
+  покупке. Со второй покупки пароль уже у покупателя — не трогаем.
+  Пароль ставим до отметки «оплачено»: автовход после оплаты ждёт статус
+  paid, и сессия должна появиться уже после смены пароля.
+*/
+const issueFirstPassword = async (
+  payload: Awaited<ReturnType<typeof getPayloadClient>>,
+  purchase: Purchase
+) => {
+  const userId = userIdOf(purchase);
+  const earlierPaid = await payload.count({
+    collection: 'purchases',
+    overrideAccess: true,
+    where: {
+      and: [
+        { user: { equals: userId } },
+        { status: { equals: 'paid' } },
+        { id: { not_equals: purchase.id } }
+      ]
+    }
+  });
+
+  if (earlierPaid.totalDocs > 0) {
+    return undefined;
+  }
+
+  const password = generatePassword();
+
+  await payload.update({
+    collection: 'users',
+    data: { password },
+    id: userId,
+    overrideAccess: true
+  });
+
+  return password;
+};
 
 export const fulfilPayment = async (callback: VerifiedCallback) => {
   const payload = await getPayloadClient();
@@ -39,6 +83,8 @@ export const fulfilPayment = async (callback: VerifiedCallback) => {
   if (callback.status === 'failed') {
     return { found: true, fulfilled: false };
   }
+
+  const password = await issueFirstPassword(payload, purchase);
 
   await payload.update({
     collection: 'purchases',
@@ -75,7 +121,7 @@ export const fulfilPayment = async (callback: VerifiedCallback) => {
     await sendPaymentNotifications({
       courseTitle: String(purchase.course.title),
       email: String(purchase.user.email),
-      locale: purchase.locale,
+      password,
       tier: purchase.tier as PaymentTier
     });
   }

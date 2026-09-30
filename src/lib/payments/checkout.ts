@@ -19,6 +19,7 @@ type CheckoutError =
   | 'checkoutUnavailable'
   | 'invalidEmail'
   | 'invalidPromoCode'
+  | 'promoNotApplicable'
   | 'invalidTier'
   | 'minimumAmount'
   | 'upgradeUnavailable';
@@ -160,10 +161,15 @@ export const createCheckout = async ({
       where: { code: { equals: normalizePromoCode(submittedPromoCode) } }
     });
     const candidate = codes.docs[0];
-    const validation = validatePromoCode(candidate);
+    const validation = validatePromoCode(candidate, new Date(), {
+      courseId: course.id,
+      tier: submittedTier
+    });
 
     if (!validation.ok) {
-      return { error: 'invalidPromoCode' };
+      const notForThis = validation.code === 'wrongCourse' || validation.code === 'wrongTier';
+
+      return { error: notForThis ? 'promoNotApplicable' : 'invalidPromoCode' };
     }
 
     promo = {

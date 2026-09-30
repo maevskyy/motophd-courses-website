@@ -9,7 +9,9 @@ type MockCallbackPayload = {
 };
 
 const signatureFor = (rawBody: string) =>
-  createHmac('sha256', process.env.PAYLOAD_SECRET || '').update(rawBody).digest('hex');
+  createHmac('sha256', process.env.PAYLOAD_SECRET || '')
+    .update(rawBody)
+    .digest('hex');
 
 const isMockPayload = (value: unknown): value is MockCallbackPayload => {
   if (!value || typeof value !== 'object') {

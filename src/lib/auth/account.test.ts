@@ -72,7 +72,9 @@ describe('updateProfileAction', () => {
   it('updates only the signed-in user name', async () => {
     mocks.getCurrentUser.mockResolvedValue(user);
 
-    await expect(updateProfileAction(initialUpdateProfileFormState, createFormData('  Alice  '))).resolves.toEqual({
+    await expect(
+      updateProfileAction(initialUpdateProfileFormState, createFormData('  Alice  '))
+    ).resolves.toEqual({
       status: 'success'
     });
 
@@ -89,7 +91,9 @@ describe('updateProfileAction', () => {
   it('does not update a profile when no user is signed in', async () => {
     mocks.getCurrentUser.mockResolvedValue(null);
 
-    await expect(updateProfileAction(initialUpdateProfileFormState, createFormData('Alice'))).resolves.toEqual({
+    await expect(
+      updateProfileAction(initialUpdateProfileFormState, createFormData('Alice'))
+    ).resolves.toEqual({
       status: 'error'
     });
 
@@ -107,7 +111,10 @@ describe('changePasswordAction', () => {
     mocks.login.mockRejectedValue(new Error('invalid credentials'));
 
     await expect(
-      changePasswordAction(initialChangePasswordFormState, createPasswordFormData('wrong-pass', 'new-password-1'))
+      changePasswordAction(
+        initialChangePasswordFormState,
+        createPasswordFormData('wrong-pass', 'new-password-1')
+      )
     ).resolves.toEqual({ status: 'wrongCurrent' });
 
     expect(mocks.update).not.toHaveBeenCalled();
@@ -128,7 +135,10 @@ describe('changePasswordAction', () => {
 
   it('rejects a short new password', async () => {
     await expect(
-      changePasswordAction(initialChangePasswordFormState, createPasswordFormData('old-pass-123', 'short'))
+      changePasswordAction(
+        initialChangePasswordFormState,
+        createPasswordFormData('old-pass-123', 'short')
+      )
     ).resolves.toEqual({ status: 'tooShort' });
 
     expect(mocks.login).not.toHaveBeenCalled();
@@ -141,7 +151,10 @@ describe('changePasswordAction', () => {
       .mockResolvedValueOnce({ token: 'fresh-session' });
 
     await expect(
-      changePasswordAction(initialChangePasswordFormState, createPasswordFormData('old-pass-123', 'new-password-1'))
+      changePasswordAction(
+        initialChangePasswordFormState,
+        createPasswordFormData('old-pass-123', 'new-password-1')
+      )
     ).resolves.toEqual({ status: 'success' });
 
     expect(mocks.update).toHaveBeenCalledWith({
@@ -188,7 +201,10 @@ describe('deleteAccountAction', () => {
     mocks.getCurrentUser.mockResolvedValue(user);
     mocks.update.mockResolvedValue({});
 
-    await deleteAccountAction(initialDeleteAccountFormState, createDeleteFormData('Student@MotoPhD.com'));
+    await deleteAccountAction(
+      initialDeleteAccountFormState,
+      createDeleteFormData('Student@MotoPhD.com')
+    );
 
     const updateArgs = mocks.update.mock.calls[0][0];
 

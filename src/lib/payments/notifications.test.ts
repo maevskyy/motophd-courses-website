@@ -18,63 +18,38 @@ describe('sendPaymentNotifications', () => {
     await sendPaymentNotifications({
       courseTitle: 'Cornering Basics',
       email: 'student@motophd.com',
-      locale: 'en',
       tier: 'standard'
     });
 
     expect(mocks.sendPurchaseConfirmation).toHaveBeenCalledWith({
       courseTitle: 'Cornering Basics',
-      locale: 'en',
+      password: undefined,
       tier: 'standard',
       to: 'student@motophd.com'
     });
     expect(mocks.sendFeedbackInstructions).not.toHaveBeenCalled();
   });
 
+  it('puts the new password into the purchase email', async () => {
+    await sendPaymentNotifications({
+      courseTitle: 'Cornering Basics',
+      email: 'student@motophd.com',
+      password: 'abcd-efgh-jkmn',
+      tier: 'standard'
+    });
+
+    expect(mocks.sendPurchaseConfirmation).toHaveBeenCalledWith(
+      expect.objectContaining({ password: 'abcd-efgh-jkmn' })
+    );
+  });
+
   it('adds feedback instructions for feedback purchases', async () => {
     await sendPaymentNotifications({
       courseTitle: 'Cornering Basics',
       email: 'student@motophd.com',
-      locale: 'en',
       tier: 'feedback_upgrade'
     });
 
-    expect(mocks.sendFeedbackInstructions).toHaveBeenCalledWith({
-      locale: 'en',
-      to: 'student@motophd.com'
-    });
-  });
-
-  it('sends both emails in the locale the purchase was made in', async () => {
-    await sendPaymentNotifications({
-      courseTitle: 'Cornering Basics',
-      email: 'student@motophd.com',
-      locale: 'ru',
-      tier: 'feedback'
-    });
-
-    expect(mocks.sendPurchaseConfirmation).toHaveBeenCalledWith(
-      expect.objectContaining({ locale: 'ru' })
-    );
-    expect(mocks.sendFeedbackInstructions).toHaveBeenCalledWith({
-      locale: 'ru',
-      to: 'student@motophd.com'
-    });
-  });
-
-  it('falls back to English for purchases created before the locale field existed', async () => {
-    await sendPaymentNotifications({
-      courseTitle: 'Cornering Basics',
-      email: 'student@motophd.com',
-      tier: 'feedback'
-    });
-
-    expect(mocks.sendPurchaseConfirmation).toHaveBeenCalledWith(
-      expect.objectContaining({ locale: 'en' })
-    );
-    expect(mocks.sendFeedbackInstructions).toHaveBeenCalledWith({
-      locale: 'en',
-      to: 'student@motophd.com'
-    });
+    expect(mocks.sendFeedbackInstructions).toHaveBeenCalledWith({ to: 'student@motophd.com' });
   });
 });

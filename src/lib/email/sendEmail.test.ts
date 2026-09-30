@@ -64,7 +64,11 @@ describe('sendEmail', () => {
     await expect(sendEmail(message)).resolves.toEqual({ status: 'sent' });
 
     expect(Resend).toHaveBeenCalledWith('re_test');
-    expect(mocks.send).toHaveBeenCalledWith({ ...message, from: process.env.EMAIL_FROM });
+    expect(mocks.send).toHaveBeenCalledWith({
+      ...message,
+      from: process.env.EMAIL_FROM,
+      replyTo: 'support@motophd.com'
+    });
   });
 
   it('does not throw when Resend reports an error, so a paid webhook still answers 200', async () => {

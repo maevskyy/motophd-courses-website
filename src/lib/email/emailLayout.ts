@@ -1,4 +1,17 @@
-import type { EmailLocale, PurchaseTier } from './types';
+import type { PurchaseTier } from './types';
+
+// Все письма — на английском, в одной обёртке: тёмная шапка с логотипом (он
+// белый), белое поле с текстом, кнопка в цвет сайта, подпись. Вёрстка
+// таблицами и инлайн-стилями: так письмо одинаково выглядит в Gmail, Outlook
+// и на телефоне.
+
+const BRAND = '#e32823';
+const DARK = '#141412';
+const TEXT = '#1b1b19';
+const MUTED = '#6b6b66';
+const LINE = '#e6e6e1';
+
+export const SUPPORT_EMAIL = 'support@motophd.com';
 
 export const escapeHtml = (value: string) =>
   value.replace(/[&<>'"]/g, (character) => {
@@ -15,45 +28,45 @@ export const escapeHtml = (value: string) =>
 
 export const getAppUrl = () => (process.env.APP_URL || 'http://localhost:3000').replace(/\/$/, '');
 
-export const getLoginUrl = (locale: EmailLocale) => `${getAppUrl()}/${locale}/login`;
+export const getDashboardUrl = () => `${getAppUrl()}/en/dashboard`;
 
-export const getDashboardUrl = (locale: EmailLocale) => `${getAppUrl()}/${locale}/dashboard`;
+export const button = (url: string, label: string) =>
+  `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:24px 0"><tr><td style="background:${BRAND};border-radius:8px"><a href="${escapeHtml(url)}" style="display:inline-block;padding:12px 24px;color:#ffffff;font-weight:600;text-decoration:none">${escapeHtml(label)}</a></td></tr></table>`;
 
-export const link = (url: string, label: string) =>
-  `<a href="${escapeHtml(url)}">${escapeHtml(label)}</a>`;
+export const heading = (text: string) =>
+  `<h1 style="margin:0 0 16px;font-size:22px;line-height:1.3;color:${TEXT}">${escapeHtml(text)}</h1>`;
 
-const signatureHtml = (locale: EmailLocale) => {
-  const help =
-    locale === 'ru'
-      ? 'Ответь на это письмо, если нужна помощь.'
-      : 'Reply to this email if you need help.';
+export const paragraph = (html: string) => `<p style="margin:0 0 16px">${html}</p>`;
 
-  return `<p style="color:#666;font-size:13px;margin-top:24px">MotoPhD Online · ${link(getAppUrl(), 'motophd.com')}<br>${help}</p>`;
+export const note = (html: string) =>
+  `<p style="margin:0 0 16px;color:${MUTED};font-size:13px">${html}</p>`;
+
+// «Ключ — значение»: курс и тариф, почта и пароль. Значения экранируются.
+export const details = (rows: Array<[string, string]>) => {
+  const cell = (index: number) =>
+    `padding:10px 14px;${index ? `border-top:1px solid ${LINE};` : ''}`;
+  const body = rows
+    .map(
+      ([label, value], index) =>
+        `<tr><td style="${cell(index)}color:${MUTED};width:110px">${escapeHtml(label)}</td><td style="${cell(index)}font-weight:600">${escapeHtml(value)}</td></tr>`
+    )
+    .join('');
+
+  return `<table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="margin:0 0 16px;border:1px solid ${LINE};border-radius:8px;border-collapse:separate">${body}</table>`;
 };
 
-export const signatureText = (locale: EmailLocale) =>
-  locale === 'ru'
-    ? `\n\n—\nMotoPhD Online · ${getAppUrl()}\nОтветь на это письмо, если нужна помощь.`
-    : `\n\n—\nMotoPhD Online · ${getAppUrl()}\nReply to this email if you need help.`;
+export const emailLayout = (content: string) => {
+  const appUrl = escapeHtml(getAppUrl());
 
-// Письмо без отправителя и контакта читается как фишинг и хуже доставляется,
-// поэтому подпись добавляется здесь, а не в каждом шаблоне.
-export const emailLayout = (content: string, locale: EmailLocale) =>
-  `<!doctype html><html lang="${locale}"><head><meta charset="utf-8"></head><body style="font-family:Arial,sans-serif;line-height:1.5;color:#181818">${content}${signatureHtml(locale)}</body></html>`;
-
-export const tierName = (tier: PurchaseTier, locale: EmailLocale) => {
-  const names = {
-    en: {
-      feedback: 'Course + feedback',
-      feedback_upgrade: 'Feedback added to your course',
-      standard: 'Course only'
-    },
-    ru: {
-      feedback: 'Курс + обратная связь',
-      feedback_upgrade: 'Обратная связь к курсу',
-      standard: 'Только курс'
-    }
-  };
-
-  return names[locale][tier];
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="margin:0;padding:0;background:#f4f4f1"><table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background:#f4f4f1;padding:24px 12px"><tr><td align="center"><table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="max-width:560px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.55;color:${TEXT}"><tr><td style="background:${DARK};padding:20px 28px;border-radius:12px 12px 0 0"><a href="${appUrl}"><img src="${appUrl}/logo.png" alt="MotoPhD" width="144" height="40" style="display:block;border:0;color:#ffffff;font-weight:700"></a></td></tr><tr><td style="background:#ffffff;padding:28px;border-radius:0 0 12px 12px">${content}</td></tr><tr><td style="padding:16px 28px;color:${MUTED};font-size:12px;text-align:center">MotoPhD · <a href="${appUrl}" style="color:${MUTED}">motophd.com</a><br>Questions? Reply to this email or write to <a href="mailto:${SUPPORT_EMAIL}" style="color:${MUTED}">${SUPPORT_EMAIL}</a></td></tr></table></td></tr></table></body></html>`;
 };
+
+export const signatureText = () =>
+  `\n\n—\nMotoPhD · ${getAppUrl()}\nQuestions? Reply to this email or write to ${SUPPORT_EMAIL}`;
+
+export const tierName = (tier: PurchaseTier) =>
+  ({
+    feedback: 'Course + feedback',
+    feedback_upgrade: 'Feedback add-on',
+    standard: 'Course only'
+  })[tier];
