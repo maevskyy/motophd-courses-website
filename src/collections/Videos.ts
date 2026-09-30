@@ -8,6 +8,7 @@ import {
 
 import { locales } from '@/i18n/locales';
 import { isAdminUser } from '@/lib/access/hasPaidAccess';
+import { clearPublicCacheHook } from '@/lib/data/publicCache';
 import {
   addAllowedOrigins,
   createStreamUpload,
@@ -143,7 +144,7 @@ export const Videos: CollectionConfig = {
     update: ({ req: { user } }) => isAdminUser(user)
   },
   hooks: {
-    afterChange: [copyDurationToLessons],
+    afterChange: [copyDurationToLessons, clearPublicCacheHook],
     beforeDelete: [
       async ({ id, req }) => {
         const lessons = await findLessonsUsingVideo(req.payload, id, req);
@@ -162,6 +163,7 @@ export const Videos: CollectionConfig = {
     // Внутри транзакции удаления: Stream не удалил — запись тоже остаётся,
     // и видео не повиснет в Stream невидимым для админки.
     afterDelete: [
+      clearPublicCacheHook,
       async ({ doc, req }) => {
         if (!doc.streamUid) {
           return;

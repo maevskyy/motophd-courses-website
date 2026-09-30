@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload';
 
 import { isAdminUser } from '@/lib/access/hasPaidAccess';
+import { clearPublicCacheHook } from '@/lib/data/publicCache';
 import { countryOptions } from '@/lib/pricing/countries';
 
 const label = (en: string, ru: string) => ({ en, ru });
@@ -44,6 +45,11 @@ export const Courses: CollectionConfig = {
   admin: {
     defaultColumns: ['title', 'slug', 'status', 'order'],
     useAsTitle: 'title'
+  },
+  // Витрина читает курсы из кэша в памяти — сбрасываем при правке.
+  hooks: {
+    afterChange: [clearPublicCacheHook],
+    afterDelete: [clearPublicCacheHook]
   },
   access: {
     create: ({ req: { user } }) => isAdminUser(user),

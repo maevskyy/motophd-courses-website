@@ -12,11 +12,13 @@ vi.mock('./payload', () => ({
 }));
 
 import {
+  getCourseBySlug,
   getCourseCurriculum,
   getCourseLessons,
   getDashboardCourses,
   getPublishedCourses
 } from './courses';
+import { clearPublicCache } from './publicCache';
 
 const user = {
   collection: 'users',
@@ -68,7 +70,24 @@ const findWithFallback = ({
 describe('course data access', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    clearPublicCache();
     mocks.getPayloadClient.mockResolvedValue({ find: mocks.find });
+  });
+
+  it('serves anonymous visitors from the cache and signed-in users from the database', async () => {
+    mocks.find.mockResolvedValue({ docs: [{ id: 1, slug: 'lean' }] });
+
+    await getPublishedCourses('en');
+    await getPublishedCourses('en');
+    await expect(getCourseBySlug('lean', 'en')).resolves.toMatchObject({ id: 1 });
+    await expect(getCourseBySlug('made-up', 'en')).resolves.toBeNull();
+    await getCourseCurriculum(1, 'en');
+    await getCourseCurriculum(1, 'en');
+    expect(mocks.find).toHaveBeenCalledTimes(2);
+
+    await getPublishedCourses('en', user);
+    await getPublishedCourses('en', user);
+    expect(mocks.find).toHaveBeenCalledTimes(4);
   });
 
   it('reads ukrainian lessons with russian as the fallback and keeps ukrainian fields', async () => {
