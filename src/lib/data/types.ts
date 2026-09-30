@@ -26,7 +26,6 @@ export type CurriculumModule = {
   lessons: Array<{
     name: string;
     order?: number;
-    duration: string;
   }>;
 };
 
@@ -76,8 +75,9 @@ export type PlayerLesson = {
   id: number;
   module: number;
   order: number;
+  // Видео есть, когда в уроке указан Stream video ID; PDF — через download.
+  hasVideo: boolean;
   title: string;
-  type: Lesson['type'];
   videoEmbedUrl: string | null;
 };
 

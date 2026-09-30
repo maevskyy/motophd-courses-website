@@ -73,7 +73,7 @@ export const Lessons: CollectionConfig = {
     }
   },
   admin: {
-    defaultColumns: ['title', 'course', 'type', 'order', 'isFreePreview'],
+    defaultColumns: ['title', 'course', 'order', 'isFreePreview'],
     useAsTitle: 'title'
   },
   access: {
@@ -102,39 +102,6 @@ export const Lessons: CollectionConfig = {
       label: {
         en: 'Order',
         ru: 'Порядок'
-      }
-    },
-    {
-      name: 'type',
-      type: 'select',
-      defaultValue: 'video',
-      options: [
-        {
-          label: {
-            en: 'Video',
-            ru: 'Видео'
-          },
-          value: 'video'
-        },
-        {
-          label: {
-            en: 'PDF',
-            ru: 'PDF'
-          },
-          value: 'pdf'
-        },
-        {
-          label: {
-            en: 'Text',
-            ru: 'Текст'
-          },
-          value: 'text'
-        }
-      ],
-      required: true,
-      label: {
-        en: 'Type',
-        ru: 'Тип'
       }
     },
     {

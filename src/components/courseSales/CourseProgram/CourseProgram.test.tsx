@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { CourseProgram } from './CourseProgram';
 
 const modules = [
-  { number: '01', title: 'Level 01 — Theory', open: true, lessons: [{ name: 'Intro', order: 1, duration: '5 min' }] },
+  { number: '01', title: 'Level 01 — Theory', open: true, lessons: [{ name: 'Intro', order: 1 }] },
   { number: '02', title: 'Level 02 — Preparation', open: false, lessons: [] }
 ];
 

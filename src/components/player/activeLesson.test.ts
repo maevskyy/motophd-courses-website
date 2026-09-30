@@ -7,11 +7,11 @@ import { getActiveLesson } from './activeLesson';
 const lessons: PlayerLesson[] = [1, 2, 3].map((order) => ({
   body: null,
   download: null,
+  hasVideo: true,
   id: order,
   module: 1,
   order,
   title: `L${order}`,
-  type: 'video',
   videoEmbedUrl: null
 }));
 

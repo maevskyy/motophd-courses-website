@@ -211,7 +211,6 @@ export interface Lesson {
   id: number;
   course: number | Course;
   order?: number | null;
-  type: 'video' | 'pdf' | 'text';
   title: string;
   durationSec?: number | null;
   streamVideoId?: string | null;
@@ -484,7 +483,6 @@ export interface CoursesSelect<T extends boolean = true> {
 export interface LessonsSelect<T extends boolean = true> {
   course?: T;
   order?: T;
-  type?: T;
   title?: T;
   durationSec?: T;
   streamVideoId?: T;

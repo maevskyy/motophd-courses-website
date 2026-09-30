@@ -20,7 +20,7 @@ const toModules = (course: Course, lessons: Lesson[], locale: AppLocale): MyCour
   const sorted = [...lessons].sort((a, b) => lessonOrder(a) - lessonOrder(b));
   let cursor = 0;
 
-  return toCurriculumModules(course, sorted, locale).map((module) => {
+  return toCurriculumModules(course, sorted).map((module) => {
     const moduleLessons = sorted.slice(cursor, cursor + module.lessons.length);
     cursor += module.lessons.length;
 

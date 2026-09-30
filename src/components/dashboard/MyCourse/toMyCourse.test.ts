@@ -12,14 +12,14 @@ const course = {
 } as Course;
 
 const lesson = (overrides: Partial<Lesson>): Lesson =>
-  ({ course: 1, id: 1, title: 'Lesson', type: 'video', ...overrides }) as Lesson;
+  ({ course: 1, id: 1, title: 'Lesson', ...overrides }) as Lesson;
 
 describe('toMyCourse', () => {
   it('maps lessons into flat DTOs sorted by order', () => {
     const result = toMyCourse(
       course,
       [
-        lesson({ id: 2, order: 2, pdf: 7, title: 'Drill sheet', type: 'pdf' }),
+        lesson({ id: 2, order: 2, pdf: 7, title: 'Drill sheet' }),
         lesson({ durationSec: 300, id: 1, order: 1, title: 'Intro' })
       ],
       'en'

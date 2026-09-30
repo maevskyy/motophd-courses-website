@@ -1,6 +1,6 @@
 import type { Course, Lesson } from '@/payload-types';
 import type { CourseCurriculumLesson } from './courses';
-import { readingLabels, salesText } from './localizedText';
+import { salesText } from './localizedText';
 import type {
   AppLocale,
   CourseCardCourse,
@@ -72,24 +72,14 @@ export const toSalesContent = (course: Course, locale: AppLocale): SalesContent 
   };
 };
 
-const lessonDuration = (lesson: CourseCurriculumLesson, locale: AppLocale) => {
-  if (lesson.type === 'video' || lesson.type === 'pdf') {
-    return '';
-  }
-
-  return readingLabels[locale];
-};
-
-const toCurriculumLesson = (lesson: CourseCurriculumLesson, locale: AppLocale) => ({
+const toCurriculumLesson = (lesson: CourseCurriculumLesson) => ({
   name: lesson.title,
-  order: lesson.order ?? 0,
-  duration: lessonDuration(lesson, locale)
+  order: lesson.order ?? 0
 });
 
 export const toCurriculumModules = (
   course: Course,
-  lessons: CourseCurriculumLesson[],
-  locale: AppLocale
+  lessons: CourseCurriculumLesson[]
 ): CurriculumModule[] => {
   if (lessons.length === 0) {
     return [];
@@ -99,7 +89,7 @@ export const toCurriculumModules = (
     number: String(index + 1).padStart(2, '0'),
     title: lesson.title,
     open: index === 0,
-    lessons: [toCurriculumLesson(lesson, locale)]
+    lessons: [toCurriculumLesson(lesson)]
   }));
 };
 
@@ -142,7 +132,12 @@ export const toPlayerDownloads = (lessons: Lesson[], locale: AppLocale): PlayerD
 export const toPlayerContent = (
   course: Course,
   lessons: Lesson[],
-  { currentLesson, downloads, locale = 'en', videoEmbedUrl }: Pick<PlayerContent, 'downloads' | 'videoEmbedUrl'> & {
+  {
+    currentLesson,
+    downloads,
+    locale = 'en',
+    videoEmbedUrl
+  }: Pick<PlayerContent, 'downloads' | 'videoEmbedUrl'> & {
     currentLesson: Lesson | undefined;
     locale?: AppLocale;
   }
@@ -160,7 +155,7 @@ export const toPlayerContent = (
       module: 1,
       order: lesson.order ?? 0,
       title: lesson.title,
-      type: lesson.type,
+      hasVideo: Boolean(lesson.streamVideoId),
       videoEmbedUrl: lesson.id === currentLesson?.id ? videoEmbedUrl || null : null
     })),
     currentLessonOrder: currentLesson?.order ?? null,

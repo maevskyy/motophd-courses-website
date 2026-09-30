@@ -81,7 +81,7 @@ export const getCourseLessons = async (courseId: number, locale: AppLocale, user
 
 export type CourseCurriculumLesson = Pick<
   Lesson,
-  'id' | 'order' | 'type' | 'title' | 'durationSec' | 'isFreePreview'
+  'id' | 'order' | 'title' | 'durationSec' | 'isFreePreview'
 >;
 
 export const getCourseCurriculum = async (
@@ -102,8 +102,7 @@ export const getCourseCurriculum = async (
       durationSec: true,
       isFreePreview: true,
       order: true,
-      title: true,
-      type: true
+      title: true
     },
     sort: 'order',
     user,
