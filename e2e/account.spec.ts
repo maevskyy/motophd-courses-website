@@ -66,11 +66,11 @@ test('feedback tier owner sees the purchase history and the instructions', async
   await page.getByRole('link', { name: 'Settings' }).click();
   // Тариф и оплата курса — одной строкой в «Plan and purchases».
   await expect(page.getByText('Plan and purchases')).toBeVisible();
-  await expect(page.getByText(/With feedback ·/)).toBeVisible();
+  await expect(page.getByText(/Course \+ Personal Feedback ·/)).toBeVisible();
 
   await page.goto('/en/feedback');
   await expect(page.getByRole('heading', { name: 'Personal Feedback' })).toBeVisible();
-  await expect(page.getByText('1 video review + 1 Zoom call (45 minutes)')).toBeVisible();
+  await expect(page.getByText('a video review after each practical level + 1 Zoom call (45 minutes)', { exact: false })).toBeVisible();
 });
 
 test('anonymous feedback visitors go through login first', async ({ page }) => {

@@ -41,6 +41,8 @@ export type SalesContent = {
   // Цены по умолчанию и по регионам: страница одна на всех (кэш), сумму для
   // страны посетителя считает браузер.
   pricing: Pick<Course, 'priceFeedback' | 'priceStandard' | 'regionalPrices'>;
+  // Что входит в тариф с обратной связью — под тарифами, когда он выбран.
+  feedbackIncludes: { heading: string; items: Array<{ text: string; title: string }> };
   disclaimer: string;
   guarantee: string;
   modulesTitle: string;

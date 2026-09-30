@@ -1,7 +1,7 @@
 import { courseCoverImage } from '@/lib/seo/courseCover';
 import type { Course, Lesson } from '@/payload-types';
 import type { CourseCurriculumLesson } from './courses';
-import { salesText } from './localizedText';
+import { feedbackIncludes, salesText } from './localizedText';
 import type {
   AppLocale,
   CourseCardCourse,
@@ -73,6 +73,7 @@ export const toSalesContent = (course: Course, locale: AppLocale): SalesContent 
       priceStandard: course.priceStandard,
       regionalPrices: course.regionalPrices
     },
+    feedbackIncludes: feedbackIncludes[locale],
     disclaimer: text.disclaimer,
     guarantee: text.guarantee,
     modulesTitle: text.modulesTitle
