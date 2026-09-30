@@ -119,8 +119,7 @@ describe('course data access', () => {
           durationSec: true,
           isFreePreview: true,
           order: true,
-          title: true,
-          type: true
+          title: true
         },
         user
       })

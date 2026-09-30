@@ -2,7 +2,12 @@ import { describe, expect, it } from 'vitest';
 
 import type { Course, Lesson } from '@/payload-types';
 
-import { getPlayerLesson, parseLessonOrder, toCurriculumModules, toPlayerContent } from './adapters';
+import {
+  getPlayerLesson,
+  parseLessonOrder,
+  toCurriculumModules,
+  toPlayerContent
+} from './adapters';
 
 const makeLesson = (order: number, overrides: Partial<Lesson> = {}): Lesson => ({
   course: 1,
@@ -10,7 +15,6 @@ const makeLesson = (order: number, overrides: Partial<Lesson> = {}): Lesson => (
   id: order,
   order,
   title: `Lesson ${order}`,
-  type: 'pdf',
   updatedAt: '2026-01-01T00:00:00.000Z',
   ...overrides
 });
@@ -30,11 +34,7 @@ const course = {
 
 // Список специально не по порядку: плеер не должен зависеть от того, как
 // пришли уроки, а первый — это первый по order.
-const lessons = [
-  makeLesson(3, { type: 'video' }),
-  makeLesson(1, { type: 'pdf' }),
-  makeLesson(2, { type: 'video' })
-];
+const lessons = [makeLesson(3), makeLesson(1), makeLesson(2)];
 
 describe('getPlayerLesson', () => {
   it('opens the first lesson by order when nothing is requested', () => {
@@ -96,9 +96,9 @@ describe('toPlayerContent', () => {
 
 describe('toCurriculumModules', () => {
   it('keeps the lesson order so the sidebar can link to ?lesson=<order>', () => {
-    const modules = toCurriculumModules(course, lessons, 'en');
+    const modules = toCurriculumModules(course, lessons);
 
     expect(modules.map((module) => module.lessons[0].order)).toEqual([3, 1, 2]);
-    expect(modules[0].lessons[0]).toEqual({ duration: '', name: 'Lesson 3', order: 3 });
+    expect(modules[0].lessons[0]).toEqual({ name: 'Lesson 3', order: 3 });
   });
 });

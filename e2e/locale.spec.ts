@@ -135,8 +135,7 @@ test('a Ukrainian title set in the admin stays while empty media still fall back
         course: courseId,
         order: 1,
         streamVideoId: 'probe-en',
-        title: 'Probe',
-        type: 'video'
+        title: 'Probe'
       },
       headers
     });

@@ -8,7 +8,7 @@ const mocks = vi.hoisted(() => ({
 
 vi.mock('@/lib/access/hasPaidAccess', () => mocks);
 
-import { canReadLessonContent } from './Lessons';
+import { canReadLessonContent, syncStreamVideoId } from './Lessons';
 
 const payload = {} as Payload;
 const lesson = {
@@ -17,7 +17,6 @@ const lesson = {
   createdAt: '2026-01-01T00:00:00.000Z',
   id: 5,
   title: 'Lean angle',
-  type: 'video' as const,
   updatedAt: '2026-01-01T00:00:00.000Z'
 };
 
@@ -54,5 +53,38 @@ describe('lesson content field access', () => {
 
     expect(mocks.hasPaidAccess).toHaveBeenCalledTimes(1);
     expect(mocks.hasPaidAccess).toHaveBeenCalledWith(payload, user, 12);
+  });
+});
+
+describe('syncStreamVideoId', () => {
+  const findByID = vi.fn();
+  const req = { payload: { findByID } };
+  const run = (data: Record<string, unknown>, originalDoc?: Record<string, unknown>) =>
+    syncStreamVideoId({ data, originalDoc, req } as never);
+
+  beforeEach(() => {
+    findByID.mockReset();
+  });
+
+  it('copies the Stream ID of the picked video', async () => {
+    findByID.mockResolvedValue({ id: 3, streamUid: 'a'.repeat(32) });
+
+    await expect(run({ video: 3 })).resolves.toMatchObject({ streamVideoId: 'a'.repeat(32) });
+    expect(findByID).toHaveBeenCalledWith(expect.objectContaining({ collection: 'videos', id: 3 }));
+  });
+
+  it('clears the Stream ID when the video is removed from the lesson', async () => {
+    await expect(run({ streamVideoId: 'old', video: null }, { video: 3 })).resolves.toMatchObject({
+      streamVideoId: null
+    });
+  });
+
+  it('keeps an ID written directly when no video was ever picked', async () => {
+    await expect(run({ streamVideoId: 'seeded', video: null }, { video: null })).resolves.toEqual({
+      streamVideoId: 'seeded',
+      video: null
+    });
+    await expect(run({ title: 'Only title' })).resolves.toEqual({ title: 'Only title' });
+    expect(findByID).not.toHaveBeenCalled();
   });
 });

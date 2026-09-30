@@ -14,6 +14,7 @@ import { Media } from './collections/Media';
 import { Purchases } from './collections/Purchases';
 import { PromoCodes } from './collections/PromoCodes';
 import { Users } from './collections/Users';
+import { Videos } from './collections/Videos';
 import { defaultLocale, localeFallbacks, localeLabels, locales } from './i18n/locales';
 import { getR2StorageConfig, isR2StorageEnabled } from './lib/media/r2';
 
@@ -30,7 +31,7 @@ export default buildConfig({
     },
     user: Users.slug
   },
-  collections: [Users, Media, Courses, Lessons, LegalPages, Purchases, PromoCodes],
+  collections: [Users, Media, Videos, Courses, Lessons, LegalPages, Purchases, PromoCodes],
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URI

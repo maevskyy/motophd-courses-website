@@ -1,4 +1,3 @@
-import type { AppLocale } from '@/lib/data';
 // Адаптеры напрямую, не через баррель: тот тянет Payload-клиент, а маппер
 // чистый и нужен в тестах.
 import { toCourseCardCourse, toCurriculumModules } from '@/lib/data/adapters';
@@ -16,11 +15,11 @@ const toLesson = (lesson: Lesson): MyCourseLesson => ({
 // Модули берём из toCurriculumModules (та же разбивка, что на странице
 // продажи), а уроки к ним режем сами: витринный адаптер отдаёт только имена,
 // без `order`, а кабинету нужны ссылки в плеер и прогресс.
-const toModules = (course: Course, lessons: Lesson[], locale: AppLocale): MyCourseModule[] => {
+const toModules = (course: Course, lessons: Lesson[]): MyCourseModule[] => {
   const sorted = [...lessons].sort((a, b) => lessonOrder(a) - lessonOrder(b));
   let cursor = 0;
 
-  return toCurriculumModules(course, sorted, locale).map((module) => {
+  return toCurriculumModules(course, sorted).map((module) => {
     const moduleLessons = sorted.slice(cursor, cursor + module.lessons.length);
     cursor += module.lessons.length;
 
@@ -32,15 +31,10 @@ const toModules = (course: Course, lessons: Lesson[], locale: AppLocale): MyCour
   });
 };
 
-export const toMyCourse = (
-  course: Course,
-  lessons: Lesson[],
-  locale: AppLocale,
-  index?: number
-): MyCourseData => ({
+export const toMyCourse = (course: Course, lessons: Lesson[], index?: number): MyCourseData => ({
   currency: course.currency,
   icon: toCourseCardCourse(course, index).icon,
-  modules: toModules(course, lessons, locale),
+  modules: toModules(course, lessons),
   slug: course.slug,
   title: course.title,
   upgradePrice: Math.max(0, course.priceFeedback - course.priceStandard)

@@ -73,7 +73,7 @@ export function CoursePlayerClient({ activeOrder, player }: Props) {
               {t('contents')}
             </button>
 
-            {lesson.type === 'video' ? (
+            {lesson.hasVideo ? (
               <div className={styles.videoSlot}>
                 <div className={styles.videoContainer}>
                   <LessonVideo lesson={lesson} />

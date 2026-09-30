@@ -58,5 +58,3 @@ export const salesText: Record<AppLocale, SalesText> = {
     studentName: 'Demo Student'
   }
 };
-
-export const readingLabels: Record<AppLocale, string> = { en: 'Reading', ru: 'Чтение', uk: 'Читання' };

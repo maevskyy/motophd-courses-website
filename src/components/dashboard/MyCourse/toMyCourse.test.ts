@@ -12,18 +12,14 @@ const course = {
 } as Course;
 
 const lesson = (overrides: Partial<Lesson>): Lesson =>
-  ({ course: 1, id: 1, title: 'Lesson', type: 'video', ...overrides }) as Lesson;
+  ({ course: 1, id: 1, title: 'Lesson', ...overrides }) as Lesson;
 
 describe('toMyCourse', () => {
   it('maps lessons into flat DTOs sorted by order', () => {
-    const result = toMyCourse(
-      course,
-      [
-        lesson({ id: 2, order: 2, pdf: 7, title: 'Drill sheet', type: 'pdf' }),
-        lesson({ durationSec: 300, id: 1, order: 1, title: 'Intro' })
-      ],
-      'en'
-    );
+    const result = toMyCourse(course, [
+      lesson({ id: 2, order: 2, pdf: 7, title: 'Drill sheet' }),
+      lesson({ durationSec: 300, id: 1, order: 1, title: 'Intro' })
+    ]);
 
     expect(result).toMatchObject({
       currency: 'EUR',
@@ -39,10 +35,10 @@ describe('toMyCourse', () => {
   });
 
   it('returns no modules for a course without lessons', () => {
-    expect(toMyCourse(course, [], 'en').modules).toEqual([]);
+    expect(toMyCourse(course, []).modules).toEqual([]);
   });
 
   it('never returns a negative upgrade price', () => {
-    expect(toMyCourse({ ...course, priceFeedback: 10 }, [], 'en').upgradePrice).toBe(0);
+    expect(toMyCourse({ ...course, priceFeedback: 10 }, []).upgradePrice).toBe(0);
   });
 });

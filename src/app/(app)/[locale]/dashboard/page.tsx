@@ -41,7 +41,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
     payloadCourses.map((course) => getCourseLessons(course.id, safeLocale, user))
   );
   const courses = payloadCourses.map((course, index) =>
-    toMyCourse(course, lessonsPerCourse[index], safeLocale, index)
+    toMyCourse(course, lessonsPerCourse[index], index)
   );
   // Докупка обратной связи: paid standard без paid feedback — считаем здесь,
   // в клиент уезжает только список slug'ов.

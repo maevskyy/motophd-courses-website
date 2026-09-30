@@ -1,4 +1,4 @@
-import type { Access, CollectionConfig, FieldAccess } from 'payload';
+import type { Access, CollectionBeforeChangeHook, CollectionConfig, FieldAccess } from 'payload';
 
 import { hasPaidAccess, isAdminUser } from '@/lib/access/hasPaidAccess';
 import type { Lesson } from '@/payload-types';
@@ -60,6 +60,40 @@ const canReadLessons: Access = async ({ id, req }) => {
   };
 };
 
+const relationId = (value: Lesson['video'] | undefined) =>
+  typeof value === 'object' && value ? value.id : value;
+
+// Урок выбирает видео из раздела «Видео», а плеер и доступы читают
+// streamVideoId. Копируем ID Stream при сохранении того языка, что сохраняют.
+// video не пришёл (частичный PATCH через API) — streamVideoId не трогаем.
+// Пустое video стирает ID, только если видео сняли: ID, записанный напрямую
+// через API или сидом, без выбранного видео сохранение не теряет.
+export const syncStreamVideoId: CollectionBeforeChangeHook<Lesson> = async ({
+  data,
+  originalDoc,
+  req
+}) => {
+  if (data.video === undefined) {
+    return data;
+  }
+
+  const videoId = relationId(data.video);
+
+  if (!videoId) {
+    return relationId(originalDoc?.video) ? { ...data, streamVideoId: null } : data;
+  }
+
+  const video = await req.payload.findByID({
+    collection: 'videos',
+    depth: 0,
+    id: videoId,
+    overrideAccess: true,
+    req
+  });
+
+  return { ...data, streamVideoId: video.streamUid };
+};
+
 export const Lessons: CollectionConfig = {
   slug: 'lessons',
   labels: {
@@ -73,8 +107,11 @@ export const Lessons: CollectionConfig = {
     }
   },
   admin: {
-    defaultColumns: ['title', 'course', 'type', 'order', 'isFreePreview'],
+    defaultColumns: ['title', 'course', 'order', 'isFreePreview'],
     useAsTitle: 'title'
+  },
+  hooks: {
+    beforeChange: [syncStreamVideoId]
   },
   access: {
     create: ({ req: { user } }) => isAdminUser(user),
@@ -105,39 +142,6 @@ export const Lessons: CollectionConfig = {
       }
     },
     {
-      name: 'type',
-      type: 'select',
-      defaultValue: 'video',
-      options: [
-        {
-          label: {
-            en: 'Video',
-            ru: 'Видео'
-          },
-          value: 'video'
-        },
-        {
-          label: {
-            en: 'PDF',
-            ru: 'PDF'
-          },
-          value: 'pdf'
-        },
-        {
-          label: {
-            en: 'Text',
-            ru: 'Текст'
-          },
-          value: 'text'
-        }
-      ],
-      required: true,
-      label: {
-        en: 'Type',
-        ru: 'Тип'
-      }
-    },
-    {
       name: 'title',
       type: 'text',
       localized: true,
@@ -157,11 +161,35 @@ export const Lessons: CollectionConfig = {
       }
     },
     {
+      name: 'video',
+      type: 'relationship',
+      localized: true,
+      relationTo: 'videos',
+      access: {
+        read: canReadLessonContent
+      },
+      label: {
+        en: 'Video',
+        ru: 'Видео'
+      },
+      admin: {
+        description: {
+          en: 'Pick from Videos, or press + to upload a new one. Empty — the lesson has no video.',
+          ru: 'Выберите из раздела «Видео» или нажмите +, чтобы загрузить новое. Пусто — урок без видео.'
+        }
+      }
+    },
+    // Плеер и доступы читают ID отсюда. Руками не заполняется: хук
+    // syncStreamVideoId копирует его из выбранного видео при сохранении.
+    {
       name: 'streamVideoId',
       type: 'text',
       localized: true,
       access: {
         read: canReadLessonContent
+      },
+      admin: {
+        hidden: true
       },
       label: {
         en: 'Stream video ID',

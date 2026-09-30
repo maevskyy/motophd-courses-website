@@ -79,7 +79,12 @@ const seedAdminUser = async (payload: Payload) => {
   const data = { email: 'admin@motophd.com', password: 'admin1234', role: 'admin' as const };
 
   if (existing.docs[0]) {
-    await payload.update({ collection: 'users', data, id: existing.docs[0].id, overrideAccess: true });
+    await payload.update({
+      collection: 'users',
+      data,
+      id: existing.docs[0].id,
+      overrideAccess: true
+    });
     return;
   }
 
@@ -349,7 +354,6 @@ const seedCourses = async () => {
             body: null,
             course: courseId,
             order,
-            type: getLessonType(lesson),
             title: localizedLesson.name,
             durationSec: getDurationSec(lesson.duration),
             streamVideoId:
@@ -467,7 +471,9 @@ const seedCourses = async () => {
       )
     );
 
-    payload.logger.info('Seed complete: courses, lessons, legal pages, and demo accounts are up to date.');
+    payload.logger.info(
+      'Seed complete: courses, lessons, legal pages, and demo accounts are up to date.'
+    );
   } finally {
     await payload.destroy();
   }

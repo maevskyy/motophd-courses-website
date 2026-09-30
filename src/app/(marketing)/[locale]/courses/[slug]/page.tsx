@@ -71,7 +71,7 @@ export default async function CourseSalesPage({
 
   const lessons = await getCourseCurriculum(course.id, safeLocale);
   const sales = toSalesContent(course, safeLocale);
-  const curriculum = toCurriculumModules(course, lessons, safeLocale);
+  const curriculum = toCurriculumModules(course, lessons);
 
   return (
     <>
