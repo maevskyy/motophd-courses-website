@@ -101,7 +101,7 @@ describe('GET /api/lessons/[id]/pdf', () => {
 
     expect(response.status).toBe(200);
     expect(findByID).toHaveBeenCalledWith(
-      expect.objectContaining({ collection: 'lessons', fallbackLocale: 'ru', id: '2', locale: 'uk' })
+      expect.objectContaining({ collection: 'lessons', fallbackLocale: ['ru', 'en'], id: '2', locale: 'uk' })
     );
   });
 
