@@ -52,6 +52,7 @@ describe('email templates', () => {
     expect(email.text).toContain('https://t.me/motophd');
     expect(email.html).toContain('https://t.me/motophd');
     expect(email.text).toMatch(/45 minutes/);
+    expect(email.html).toContain('Message us on Telegram');
   });
 
   it('falls back to support and reports an incident when the feedback contact is missing', () => {
