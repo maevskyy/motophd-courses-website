@@ -3,10 +3,12 @@
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
 import { Icon } from '@/components/ui/Icon';
+import { contactPlatform } from '@/lib/contact/contactPlatform';
 import styles from './FeedbackContent.module.scss';
 
 export function FeedbackContent({ contactUrl }: { contactUrl: string | null }) {
   const t = useTranslations('feedback');
+  const platform = contactPlatform(contactUrl);
 
   return (
     <main className={styles.page}>
@@ -19,7 +21,7 @@ export function FeedbackContent({ contactUrl }: { contactUrl: string | null }) {
         </p>
         {contactUrl ? (
           <a className={styles.contactCta} href={contactUrl} rel="noopener" target="_blank">
-            {t('contactCta')}
+            {platform ? t('contactCta', { platform }) : t('contactCtaGeneric')}
           </a>
         ) : null}
       </section>

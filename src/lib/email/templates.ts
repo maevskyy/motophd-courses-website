@@ -1,3 +1,5 @@
+import { contactPlatform } from '@/lib/contact/contactPlatform';
+
 import {
   button,
   details,
@@ -16,6 +18,12 @@ import type { EmailMessage, PurchaseTier } from './types';
 export { getAppUrl } from './emailLayout';
 
 const RESET_LINK_TTL = '1 hour';
+
+const messageUsLabel = (url: string) => {
+  const platform = contactPlatform(url);
+
+  return platform ? `Message us on ${platform}` : 'Message us';
+};
 
 // Покупка. password есть, только если это первая оплата аккаунта: аккаунт
 // создан при оформлении заказа, и пароля покупатель ещё не знает.
@@ -74,7 +82,7 @@ export const createFeedbackInstructionsEmail = ({ to }: { to: string }): EmailMe
     ? 'Message us using the button below.'
     : `Reply to this email or write to <a href="mailto:${SUPPORT_EMAIL}">${SUPPORT_EMAIL}</a>.`;
   const stepOneText = contactUrl
-    ? `Message us: ${contactUrl}`
+    ? `${messageUsLabel(contactUrl)}: ${contactUrl}`
     : `Reply to this email or write to ${SUPPORT_EMAIL}`;
 
   return {
@@ -87,7 +95,7 @@ export const createFeedbackInstructionsEmail = ({ to }: { to: string }): EmailMe
           'Your plan includes <strong>1 video review</strong> and <strong>1 Zoom call (45 minutes)</strong>.'
         ) +
         `<ol style="margin:0 0 16px;padding-left:20px"><li style="margin-bottom:8px">${stepOneHtml}</li><li>Send a video of your riding and tell us what you want to improve.</li></ol>` +
-        (contactUrl ? button(contactUrl, 'Message us') : '')
+        (contactUrl ? button(contactUrl, messageUsLabel(contactUrl)) : '')
     )
   };
 };
