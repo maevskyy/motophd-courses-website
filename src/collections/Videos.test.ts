@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('@/lib/video/streamApi', () => ({}));
 
-import { findLessonsUsingVideo, readUploadName, Videos } from './Videos';
+import { copyDurationToLessons, findLessonsUsingVideo, readUploadName, Videos } from './Videos';
 
 const b64 = (value: string) => Buffer.from(value, 'utf8').toString('base64');
 
@@ -37,5 +37,34 @@ describe('videos in lessons', () => {
     await expect(beforeDelete({ id: 4, req: { payload: { find } } } as never)).rejects.toThrow(
       /Свешивание/
     );
+  });
+});
+
+describe('copyDurationToLessons', () => {
+  const run = (doc: Record<string, unknown>, previousDoc: Record<string, unknown>) => {
+    const find = vi.fn(async ({ locale }: { locale: string }) => ({
+      docs: locale === 'en' ? [{ id: 9, order: 3, title: 'Hanging off' }] : []
+    }));
+    const update = vi.fn();
+
+    return copyDurationToLessons({
+      doc,
+      previousDoc,
+      req: { payload: { find, update } }
+    } as never).then(() => update);
+  };
+
+  it('writes the duration Stream reported to every lesson with the video', async () => {
+    const update = await run({ durationSec: 412, id: 4 }, { durationSec: null, id: 4 });
+
+    expect(update).toHaveBeenCalledTimes(1);
+    expect(update).toHaveBeenCalledWith(
+      expect.objectContaining({ collection: 'lessons', data: { durationSec: 412 }, id: 9 })
+    );
+  });
+
+  it('leaves lessons alone while the duration is unknown or unchanged', async () => {
+    expect(await run({ durationSec: null, id: 4 }, {})).not.toHaveBeenCalled();
+    expect(await run({ durationSec: 412, id: 4 }, { durationSec: 412 })).not.toHaveBeenCalled();
   });
 });

@@ -1,12 +1,15 @@
 import type { Locale } from '@/i18n/locales';
 
+// Валюта одна на весь сайт: цены курсов и регионов — в евро.
+export const CURRENCY = 'EUR' as const;
+
 export const paymentTiers = ['standard', 'feedback', 'feedback_upgrade'] as const;
 
 export type PaymentTier = (typeof paymentTiers)[number];
 
 export type CheckoutRequest = {
   amount: number;
-  currency: 'EUR';
+  currency: typeof CURRENCY;
   locale: Locale;
   orderReference: string;
   postPaymentToken?: string;

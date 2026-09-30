@@ -10,66 +10,72 @@ import * as migration_20260930_070904_add_videos from './20260930_070904_add_vid
 import * as migration_20260930_125637_promo_code_limits from './20260930_125637_promo_code_limits';
 import * as migration_20260930_143915_drop_lesson_body from './20260930_143915_drop_lesson_body';
 import * as migration_20260930_144348_regional_prices from './20260930_144348_regional_prices';
+import * as migration_20260930_151402_drop_unused_fields from './20260930_151402_drop_unused_fields';
 
 export const migrations = [
   {
     up: migration_20260725_211521_initial_schema.up,
     down: migration_20260725_211521_initial_schema.down,
-    name: '20260725_211521_initial_schema'
+    name: '20260725_211521_initial_schema',
   },
   {
     up: migration_20260819_202728_add_media_prefix.up,
     down: migration_20260819_202728_add_media_prefix.down,
-    name: '20260819_202728_add_media_prefix'
+    name: '20260819_202728_add_media_prefix',
   },
   {
     up: migration_20260819_203905.up,
     down: migration_20260819_203905.down,
-    name: '20260819_203905'
+    name: '20260819_203905',
   },
   {
     up: migration_20260831_193143.up,
     down: migration_20260831_193143.down,
-    name: '20260831_193143'
+    name: '20260831_193143',
   },
   {
     up: migration_20260906_140321_purchase_locale.up,
     down: migration_20260906_140321_purchase_locale.down,
-    name: '20260906_140321_purchase_locale'
+    name: '20260906_140321_purchase_locale',
   },
   {
     up: migration_20260914_175146_add_uk_locale.up,
     down: migration_20260914_175146_add_uk_locale.down,
-    name: '20260914_175146_add_uk_locale'
+    name: '20260914_175146_add_uk_locale',
   },
   {
     up: migration_20260919_204644_add_lesson_cover.up,
     down: migration_20260919_204644_add_lesson_cover.down,
-    name: '20260919_204644_add_lesson_cover'
+    name: '20260919_204644_add_lesson_cover',
   },
   {
     up: migration_20260930_065058_drop_lesson_type.up,
     down: migration_20260930_065058_drop_lesson_type.down,
-    name: '20260930_065058_drop_lesson_type'
+    name: '20260930_065058_drop_lesson_type',
   },
   {
     up: migration_20260930_070904_add_videos.up,
     down: migration_20260930_070904_add_videos.down,
-    name: '20260930_070904_add_videos'
+    name: '20260930_070904_add_videos',
   },
   {
     up: migration_20260930_125637_promo_code_limits.up,
     down: migration_20260930_125637_promo_code_limits.down,
-    name: '20260930_125637_promo_code_limits'
+    name: '20260930_125637_promo_code_limits',
   },
   {
     up: migration_20260930_143915_drop_lesson_body.up,
     down: migration_20260930_143915_drop_lesson_body.down,
-    name: '20260930_143915_drop_lesson_body'
+    name: '20260930_143915_drop_lesson_body',
   },
   {
     up: migration_20260930_144348_regional_prices.up,
     down: migration_20260930_144348_regional_prices.down,
-    name: '20260930_144348_regional_prices'
-  }
+    name: '20260930_144348_regional_prices',
+  },
+  {
+    up: migration_20260930_151402_drop_unused_fields.up,
+    down: migration_20260930_151402_drop_unused_fields.down,
+    name: '20260930_151402_drop_unused_fields'
+  },
 ];

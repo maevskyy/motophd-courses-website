@@ -32,7 +32,6 @@ const toModules = (course: Course, lessons: Lesson[]): MyCourseModule[] => {
 };
 
 export const toMyCourse = (course: Course, lessons: Lesson[], index?: number): MyCourseData => ({
-  currency: course.currency,
   icon: toCourseCardCourse(course, index).icon,
   modules: toModules(course, lessons),
   slug: course.slug,

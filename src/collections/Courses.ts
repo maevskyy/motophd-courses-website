@@ -65,7 +65,13 @@ export const Courses: CollectionConfig = {
       index: true,
       required: true,
       unique: true,
-      label: label('Slug', 'URL-ключ')
+      label: label('Slug', 'URL-ключ'),
+      admin: {
+        description: label(
+          'Course address: motophd.com/en/courses/slug. Latin letters, digits and dashes.',
+          'Адрес курса: motophd.com/en/courses/slug. Латиница, цифры и дефисы.'
+        )
+      }
     },
     {
       name: 'title',
@@ -74,24 +80,68 @@ export const Courses: CollectionConfig = {
       required: true,
       label: label('Title', 'Название')
     },
+    // name остался от первой версии («боль ученика»): переименование поля —
+    // миграция данных ради одного слова. Для админа это Tagline.
     {
       name: 'pain',
       type: 'text',
       localized: true,
-      label: label('Pain', 'Боль')
+      label: label('Tagline', 'Подзаголовок'),
+      admin: {
+        description: label(
+          'Short line above the title on the course page and on the course card, e.g. “Fear → Confidence”.',
+          'Короткая строка над названием на странице курса и в карточке, например «Страх → Уверенность».'
+        )
+      }
     },
     {
       name: 'description',
       type: 'textarea',
       localized: true,
-      label: label('Description', 'Описание')
+      label: label('Description', 'Описание'),
+      admin: {
+        description: label(
+          'Text under the title on the course page and on the course card.',
+          'Текст под названием на странице курса и в карточке.'
+        )
+      }
+    },
+    {
+      name: 'outcomes',
+      type: 'array',
+      localized: true,
+      label: label('What you’ll learn', 'Чему научитесь'),
+      labels: {
+        singular: label('Point', 'Пункт'),
+        plural: label('Points', 'Пункты')
+      },
+      admin: {
+        description: label(
+          'Checkmark list on the course page and on the course card. 3–5 short points.',
+          'Список с галочками на странице курса и в карточке. 3–5 коротких пунктов.'
+        )
+      },
+      fields: [
+        {
+          name: 'text',
+          type: 'text',
+          required: true,
+          label: label('Text', 'Текст')
+        }
+      ]
     },
     {
       name: 'cover',
       type: 'upload',
       localized: true,
       relationTo: 'media',
-      label: label('Cover', 'Обложка')
+      label: label('Link preview image', 'Картинка для превью ссылки'),
+      admin: {
+        description: label(
+          'Not shown on the site. Messengers and social networks show it when someone shares the course link.',
+          'На сайте не показывается. Её показывают мессенджеры и соцсети, когда делятся ссылкой на курс.'
+        )
+      }
     },
     {
       name: 'priceStandard',
@@ -159,63 +209,31 @@ export const Courses: CollectionConfig = {
       ]
     },
     {
-      name: 'currency',
-      type: 'select',
-      defaultValue: 'EUR',
-      options: ['EUR'],
-      required: true,
-      label: label('Currency', 'Валюта')
-    },
-    {
-      name: 'outcomes',
-      type: 'array',
-      localized: true,
-      label: label('Outcomes', 'Результаты'),
-      fields: [
-        {
-          name: 'text',
-          type: 'text',
-          required: true,
-          label: label('Text', 'Текст')
-        }
-      ]
-    },
-    {
-      name: 'keyPoint',
-      type: 'textarea',
-      localized: true,
-      label: label('Key point', 'Ключевой поинт')
-    },
-    {
-      name: 'commonMistakes',
-      type: 'textarea',
-      localized: true,
-      label: label('Common mistakes', 'Частые ошибки')
-    },
-    {
-      name: 'whatYouShouldFeel',
-      type: 'textarea',
-      localized: true,
-      label: label('What you should feel', 'Что нужно почувствовать')
-    },
-    {
-      name: 'teaserVideoId',
-      type: 'text',
-      localized: true,
-      label: label('Teaser video ID', 'ID тизер-видео')
-    },
-    {
       name: 'order',
       type: 'number',
       defaultValue: 0,
       index: true,
-      label: label('Order', 'Порядок')
+      label: label('Order', 'Порядок'),
+      admin: {
+        description: label(
+          'Position in the course list: smaller goes first.',
+          'Место в списке курсов: меньше — выше.'
+        ),
+        position: 'sidebar'
+      }
     },
     {
       name: 'status',
       type: 'select',
       defaultValue: 'draft',
       index: true,
+      admin: {
+        description: label(
+          'Draft — visible only in the admin.',
+          'Черновик виден только в админке.'
+        ),
+        position: 'sidebar'
+      },
       options: [
         {
           label: label('Draft', 'Черновик'),

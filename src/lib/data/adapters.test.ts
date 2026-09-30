@@ -20,7 +20,6 @@ const makeLesson = (order: number, overrides: Partial<Lesson> = {}): Lesson => (
 });
 
 const course = {
-  currency: 'EUR',
   id: 1,
   order: 1,
   priceFeedback: 200,

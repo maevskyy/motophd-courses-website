@@ -192,8 +192,7 @@
   "footer": {
     "tagline": "Premium online motorcycle education. Learn to ride with confidence, understanding, and precision.",
     "coursesHeading": "Courses",
-    "course1": "Motorcycle Leaning Without Fear",
-    "course2": "The Art of Braking",
+    "allCourses": "All courses",
     "platformHeading": "Platform",
     "studentLogin": "Student Login",
     "myDashboard": "My Dashboard",
