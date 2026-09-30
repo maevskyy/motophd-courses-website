@@ -1,10 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import {
+  addAllowedOrigins,
   createStreamUpload,
   deleteStreamVideo,
   getStreamVideo,
   listStreamVideos,
+  needsAllowedOrigins,
   toStatus
 } from './streamApi';
 import { uidFromUploadUrl } from './uploadUrl';
@@ -59,7 +61,7 @@ describe('Cloudflare Stream API', () => {
     );
     expect(init.headers).toMatchObject({ Authorization: 'Bearer token', 'Upload-Length': '1024' });
     expect(decodeMetadata(init.headers['Upload-Metadata'])).toEqual({
-      allowedorigins: 'motophd.com,www.motophd.com',
+      allowedorigins: 'motophd.com,www.motophd.com,admin.motophd.com',
       name: 'lean · урок 01 · RU',
       requiresignedurls: true
     });
@@ -86,6 +88,7 @@ describe('Cloudflare Stream API', () => {
     fetchMock.mockResolvedValueOnce(new Response(null, { status: 404 }));
 
     await expect(getStreamVideo(UID)).resolves.toEqual({
+      allowedOrigins: [],
       durationSec: 515,
       name: 'lean-en-05',
       protected: true,
@@ -112,7 +115,14 @@ describe('Cloudflare Stream API', () => {
     );
 
     await expect(listStreamVideos()).resolves.toEqual([
-      { durationSec: null, name: null, protected: false, status: 'uploading', uid: UID }
+      {
+        allowedOrigins: [],
+        durationSec: null,
+        name: null,
+        protected: false,
+        status: 'uploading',
+        uid: UID
+      }
     ]);
   });
 
@@ -124,6 +134,33 @@ describe('Cloudflare Stream API', () => {
     await listStreamVideos();
 
     expect(fetchMock.mock.calls[0][0]).toContain(`/accounts/${'a'.repeat(32)}/stream`);
+  });
+
+  it('adds the admin domain to protected videos only', async () => {
+    const video = {
+      allowedOrigins: ['motophd.com', 'www.motophd.com'],
+      durationSec: 10,
+      name: 'lean-en-01',
+      protected: true,
+      status: 'ready' as const,
+      uid: UID
+    };
+    fetchMock.mockResolvedValue(Response.json({ success: true }));
+
+    expect(needsAllowedOrigins(video)).toBe(true);
+    expect(needsAllowedOrigins({ ...video, protected: false })).toBe(false);
+    expect(
+      needsAllowedOrigins({
+        ...video,
+        allowedOrigins: [...video.allowedOrigins, 'admin.motophd.com']
+      })
+    ).toBe(false);
+
+    await addAllowedOrigins(video);
+
+    expect(JSON.parse(fetchMock.mock.calls[0][1].body)).toEqual({
+      allowedOrigins: ['motophd.com', 'www.motophd.com', 'admin.motophd.com']
+    });
   });
 
   it('refuses to work without a token', async () => {

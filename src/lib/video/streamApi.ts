@@ -11,6 +11,7 @@ const TIMEOUT_MS = 30_000;
 export type StreamVideoStatus = 'error' | 'missing' | 'processing' | 'ready' | 'uploading';
 
 export type StreamVideo = {
+  allowedOrigins: string[];
   durationSec: number | null;
   name: string | null;
   protected: boolean;
@@ -19,6 +20,7 @@ export type StreamVideo = {
 };
 
 type StreamApiVideo = {
+  allowedOrigins?: string[];
   duration?: number;
   meta?: { name?: string };
   requireSignedURLs?: boolean;
@@ -54,9 +56,10 @@ const streamFetch = (path: string, init: RequestInit = {}) => {
   });
 };
 
-// Домены, с которых плеер Stream согласится играть видео.
+// Домены, с которых плеер Stream согласится играть видео. admin — чтобы видео
+// можно было посмотреть в карточке раздела «Видео».
 export const getAllowedOrigins = () =>
-  (process.env.STREAM_ALLOWED_ORIGINS || 'motophd.com,www.motophd.com')
+  (process.env.STREAM_ALLOWED_ORIGINS || 'motophd.com,www.motophd.com,admin.motophd.com')
     .split(',')
     .map((origin) => origin.trim())
     .filter(Boolean);
@@ -77,6 +80,7 @@ export const toStatus = (state: string | undefined): StreamVideoStatus => {
 };
 
 const toVideo = (video: StreamApiVideo): StreamVideo => ({
+  allowedOrigins: video.allowedOrigins ?? [],
   durationSec: video.duration && video.duration > 0 ? Math.round(video.duration) : null,
   name: video.meta?.name || null,
   protected: Boolean(video.requireSignedURLs),
@@ -130,6 +134,25 @@ export const getStreamVideo = async (uid: string): Promise<StreamVideo | null> =
   const body = (await response.json()) as { result: StreamApiVideo };
 
   return toVideo(body.result);
+};
+
+// Защищённому видео, которому не хватает доменов из getAllowedOrigins
+// (например, залитому до появления admin.motophd.com), дописываем их.
+// Публичные видео (тизеры) не трогаем: у них защиты нет намеренно.
+export const needsAllowedOrigins = (video: StreamVideo) =>
+  video.protected && getAllowedOrigins().some((origin) => !video.allowedOrigins.includes(origin));
+
+export const addAllowedOrigins = async (video: StreamVideo) => {
+  const allowedOrigins = [...new Set([...video.allowedOrigins, ...getAllowedOrigins()])];
+  const response = await streamFetch(`/${encodeURIComponent(video.uid)}`, {
+    body: JSON.stringify({ allowedOrigins }),
+    headers: { 'Content-Type': 'application/json' },
+    method: 'POST'
+  });
+
+  if (!response.ok) {
+    throw new Error(`Stream не обновил домены видео ${video.uid}: ${response.status}`);
+  }
 };
 
 // Уже удалённое в Stream — не ошибка: цель «видео нет» достигнута.
