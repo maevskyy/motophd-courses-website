@@ -18,7 +18,7 @@ const ACCOUNT_ID =
   process.env.CF_ACCOUNT_ID || process.env.R2_ENDPOINT?.match(/^https:\/\/([0-9a-f]{32})\./)?.[1];
 const API_TOKEN = process.env.CF_API_TOKEN;
 const APPLY = process.argv.includes('--apply');
-const ORIGINS = (process.env.STREAM_ALLOWED_ORIGINS || 'motophd.com,www.motophd.com')
+const ORIGINS = (process.env.STREAM_ALLOWED_ORIGINS || 'motophd.com,www.motophd.com,admin.motophd.com')
   .split(',')
   .map((origin) => origin.trim())
   .filter(Boolean);

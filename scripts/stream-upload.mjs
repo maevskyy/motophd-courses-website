@@ -27,7 +27,7 @@ const CHUNK_TIMEOUT = 300_000; // один кусок в 50 МБ; при обр�
 const API_TOKEN = process.env.CF_API_TOKEN;
 const ACCOUNT_ID =
   process.env.CF_ACCOUNT_ID || process.env.R2_ENDPOINT?.match(/^https:\/\/([0-9a-f]{32})\./)?.[1];
-const ORIGINS = process.env.STREAM_ALLOWED_ORIGINS || 'motophd.com,www.motophd.com';
+const ORIGINS = process.env.STREAM_ALLOWED_ORIGINS || 'motophd.com,www.motophd.com,admin.motophd.com';
 const args = process.argv.slice(2);
 const isPublic = args.includes('--public');
 const files = args.filter((arg) => arg !== '--public');

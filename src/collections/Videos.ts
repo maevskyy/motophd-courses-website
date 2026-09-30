@@ -3,11 +3,13 @@ import { APIError, type CollectionConfig, type Payload, type PayloadRequest } fr
 import { locales } from '@/i18n/locales';
 import { isAdminUser } from '@/lib/access/hasPaidAccess';
 import {
+  addAllowedOrigins,
   createStreamUpload,
   deleteStreamVideo,
   getStreamVideo,
   isStreamApiConfigured,
   listStreamVideos,
+  needsAllowedOrigins,
   type StreamVideo
 } from '@/lib/video/streamApi';
 
@@ -200,6 +202,10 @@ export const Videos: CollectionConfig = {
         try {
           const doc = await req.payload.findByID({ collection: 'videos', depth: 0, id, req });
           const video = await getStreamVideo(doc.streamUid);
+
+          if (video && needsAllowedOrigins(video)) {
+            await addAllowedOrigins(video);
+          }
           const updated = await req.payload.update({
             collection: 'videos',
             data: video ? toVideoFields(video) : { status: 'missing' },
@@ -241,6 +247,10 @@ export const Videos: CollectionConfig = {
 
           for (const video of streamVideos) {
             const doc = byUid.get(video.uid);
+
+            if (needsAllowedOrigins(video)) {
+              await addAllowedOrigins(video);
+            }
 
             if (doc) {
               await req.payload.update({
@@ -309,6 +319,15 @@ export const Videos: CollectionConfig = {
       admin: {
         components: {
           Field: '/components/admin/VideoUpload#VideoUpload'
+        }
+      }
+    },
+    {
+      name: 'preview',
+      type: 'ui',
+      admin: {
+        components: {
+          Field: '/components/admin/VideoPreview#VideoPreview'
         }
       }
     },
