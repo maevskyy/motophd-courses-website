@@ -173,3 +173,33 @@ test.describe('phone layout', () => {
     }
   });
 });
+
+// Панель выбора файла открыта на весь экран — её закрывают «назад» в
+// браузере. Раньше это уводило со страницы, и несохранённый курс пропадал.
+test('browser back closes an admin drawer and keeps the unsaved form', async ({ page }) => {
+  await adminSignIn(page);
+  await page.goto('/admin/collections/courses');
+  await page.goto('/admin/collections/courses/create');
+  await page.locator('#field-title').fill('Unsaved course');
+
+  const chooseCover = page.getByRole('button', { name: 'Choose from existing' });
+  const drawerTitle = page.getByRole('heading', { name: 'Media' });
+
+  await chooseCover.click();
+  await expect(drawerTitle).toBeVisible();
+  await page.goBack();
+
+  await expect(drawerTitle).toBeHidden();
+  await expect(page).toHaveURL(/\/admin\/collections\/courses\/create/);
+  await expect(page.locator('#field-title')).toHaveValue('Unsaved course');
+
+  // Закрыли крестиком — лишней записи в истории нет: один «назад» ведёт
+  // туда, откуда пришли.
+  await chooseCover.click();
+  await expect(drawerTitle).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(drawerTitle).toBeHidden();
+  await expect(page.locator('#field-title')).toHaveValue('Unsaved course');
+  await page.goBack();
+  await expect(page).toHaveURL(/\/admin\/collections\/courses(\?.*)?$/);
+});

@@ -23,6 +23,9 @@ const dirname = path.dirname(filename);
 
 export default buildConfig({
   admin: {
+    components: {
+      providers: ['/components/admin/BackClosesDrawer#BackClosesDrawer']
+    },
     importMap: {
       // База — src: пути к своим компонентам админки пишутся от него
       // ('/components/admin/...'), как в остальном коде проекта.
