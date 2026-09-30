@@ -1,4 +1,7 @@
 import { UserLockState as UserLockState_c7742476713888b5dbb29a100e2e9d83 } from '../../../components/admin/UserLockState'
+import { VideoUpload as VideoUpload_2715c725b180b5c6e90f6088ab980713 } from '../../../components/admin/VideoUpload'
+import { VideoUsage as VideoUsage_4fb75a06b4ee1d4382fa978cd15d158f } from '../../../components/admin/VideoUsage'
+import { VideoSyncButton as VideoSyncButton_d7279552da149d2b526053fafad8d402 } from '../../../components/admin/VideoSyncButton'
 import { RscEntryLexicalCell as RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
 import { RscEntryLexicalField as RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
 import { LexicalDiffComponent as LexicalDiffComponent_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
@@ -28,6 +31,9 @@ import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } f
 /** @type import('payload').ImportMap */
 export const importMap = {
   "/components/admin/UserLockState#UserLockState": UserLockState_c7742476713888b5dbb29a100e2e9d83,
+  "/components/admin/VideoUpload#VideoUpload": VideoUpload_2715c725b180b5c6e90f6088ab980713,
+  "/components/admin/VideoUsage#VideoUsage": VideoUsage_4fb75a06b4ee1d4382fa978cd15d158f,
+  "/components/admin/VideoSyncButton#VideoSyncButton": VideoSyncButton_d7279552da149d2b526053fafad8d402,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalCell": RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalField": RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e,
   "@payloadcms/richtext-lexical/rsc#LexicalDiffComponent": LexicalDiffComponent_44fe37237e0ebf4470c9990d8cb7b07e,

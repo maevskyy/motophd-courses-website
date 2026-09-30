@@ -69,6 +69,7 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    videos: Video;
     courses: Course;
     lessons: Lesson;
     legalPages: LegalPage;
@@ -83,20 +84,23 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    videos: VideosSelect<false> | VideosSelect<true>;
     courses: CoursesSelect<false> | CoursesSelect<true>;
     lessons: LessonsSelect<false> | LessonsSelect<true>;
     legalPages: LegalPagesSelect<false> | LegalPagesSelect<true>;
     purchases: PurchasesSelect<false> | PurchasesSelect<true>;
     promoCodes: PromoCodesSelect<false> | PromoCodesSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
-    'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
+    'payload-locked-documents':
+      PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
   };
   db: {
     defaultIDType: number;
   };
-  fallbackLocale: ('false' | 'none' | 'null') | false | null | ('en' | 'ru' | 'uk') | ('en' | 'ru' | 'uk')[];
+  fallbackLocale:
+    ('false' | 'none' | 'null') | false | null | ('en' | 'ru' | 'uk') | ('en' | 'ru' | 'uk')[];
   globals: {};
   globalsSelect: {};
   locale: 'en' | 'ru' | 'uk';
@@ -176,6 +180,26 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "videos".
+ */
+export interface Video {
+  id: number;
+  /**
+   * How the video is listed here, e.g. «lean · lesson 03 · RU». Students do not see it.
+   */
+  title: string;
+  /**
+   * Filled in automatically after the upload.
+   */
+  streamUid: string;
+  status?: ('uploading' | 'processing' | 'ready' | 'error' | 'missing') | null;
+  durationSec?: number | null;
+  protected?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "courses".
  */
 export interface Course {
@@ -213,6 +237,10 @@ export interface Lesson {
   order?: number | null;
   title: string;
   durationSec?: number | null;
+  /**
+   * Pick from Videos, or press + to upload a new one. Empty — the lesson has no video.
+   */
+  video?: (number | null) | Video;
   streamVideoId?: string | null;
   cover?: (number | null) | Media;
   pdf?: (number | null) | Media;
@@ -344,6 +372,10 @@ export interface PayloadLockedDocument {
         value: number | Media;
       } | null)
     | ({
+        relationTo: 'videos';
+        value: number | Video;
+      } | null)
+    | ({
         relationTo: 'courses';
         value: number | Course;
       } | null)
@@ -450,6 +482,19 @@ export interface MediaSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "videos_select".
+ */
+export interface VideosSelect<T extends boolean = true> {
+  title?: T;
+  streamUid?: T;
+  status?: T;
+  durationSec?: T;
+  protected?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "courses_select".
  */
 export interface CoursesSelect<T extends boolean = true> {
@@ -485,6 +530,7 @@ export interface LessonsSelect<T extends boolean = true> {
   order?: T;
   title?: T;
   durationSec?: T;
+  video?: T;
   streamVideoId?: T;
   cover?: T;
   pdf?: T;
@@ -601,7 +647,6 @@ export interface CollectionsWidget {
 export interface Auth {
   [k: string]: unknown;
 }
-
 
 declare module 'payload' {
   export interface GeneratedTypes extends Config {}

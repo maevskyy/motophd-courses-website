@@ -2,7 +2,7 @@ import { expect, test, type APIRequestContext } from '@playwright/test';
 
 /*
   Админка ходит в те же REST-ручки Payload, что и этот файл, поэтому тесты
-  проверяют её поведение без браузера: быстро и на все семь коллекций сразу.
+  проверяют её поведение без браузера: быстро и на все восемь коллекций сразу.
 
   Порядок последовательный (serial): тесты создают и удаляют документы в общей
   базе, а вход по одному аккаунту выбивает предыдущую сессию (keepOnlyCurrentSession),
@@ -255,7 +255,7 @@ test.describe('lessons', () => {
     if (anonymous.status() === 200) {
       const lesson = await anonymous.json();
 
-      for (const field of ['streamVideoId', 'pdf', 'body']) {
+      for (const field of ['streamVideoId', 'video', 'pdf', 'body']) {
         expect(lesson[field], `${field} платного урока не отдаём гостю`).toBeFalsy();
       }
     } else {
@@ -275,6 +275,70 @@ test.describe('lessons', () => {
     });
 
     expect(response.status()).toBe(403);
+  });
+});
+
+test.describe('videos', () => {
+  // ID, которого нет в Stream: удаление записи сходит в Stream и получит 404 —
+  // это «уже удалено», не ошибка. Настоящие видео тест не трогает.
+  const fakeUid = () =>
+    Array.from({ length: 32 }, () => Math.floor(Math.random() * 16).toString(16)).join('');
+
+  test('видео видит и загружает только админ', async ({ request }) => {
+    expect((await guest.get('/api/videos')).status()).toBe(403);
+    expect((await request.get('/api/videos', { headers: auth(student.token) })).status()).toBe(403);
+
+    for (const headers of [{}, auth(student.token)]) {
+      const upload = await request.post('/api/videos/upload', {
+        headers: { ...headers, 'Tus-Resumable': '1.0.0', 'Upload-Length': '1024' }
+      });
+      expect(upload.status(), 'ссылку на загрузку в Stream получает только админ').toBe(403);
+    }
+  });
+
+  test('урок играет выбранное видео, а видео из урока не удалить', async ({ request }) => {
+    const headers = auth(admin.token);
+    const uid = fakeUid();
+    const video = await request.post('/api/videos', {
+      data: { status: 'ready', streamUid: uid, title: 'Видео из теста' },
+      headers
+    });
+    expect(video.status()).toBe(201);
+    const videoId = (await video.json()).doc.id as number;
+
+    const course = await request.post('/api/courses', {
+      data: {
+        currency: 'EUR',
+        priceFeedback: 200,
+        priceStandard: 100,
+        slug: `admin-test-video-${Date.now()}`,
+        status: 'draft',
+        title: 'Курс для видео'
+      },
+      headers
+    });
+    const courseId = track('courses', (await course.json()).doc.id);
+    const lesson = await request.post('/api/lessons?locale=ru', {
+      data: { course: courseId, order: 1, title: 'Урок с видео', video: videoId },
+      headers
+    });
+    expect(lesson.status()).toBe(201);
+    const lessonDoc = (await lesson.json()).doc;
+    track('lessons', lessonDoc.id);
+    expect(lessonDoc.streamVideoId, 'плеер берёт ID Stream из выбранного видео').toBe(uid);
+
+    const refused = await request.delete(`/api/videos/${videoId}`, { headers });
+    expect(refused.status()).toBe(400);
+    expect(JSON.stringify(await refused.json())).toContain('Урок с видео');
+
+    const cleared = await request.patch(`/api/lessons/${lessonDoc.id}?locale=ru`, {
+      data: { video: null },
+      headers
+    });
+    expect((await cleared.json()).doc.streamVideoId, 'сняли видео — урок без видео').toBeFalsy();
+
+    const deleted = await request.delete(`/api/videos/${videoId}`, { headers });
+    expect(deleted.status()).toBe(200);
   });
 });
 

@@ -100,7 +100,8 @@ test('admin signs in and opens a course with its prices', async ({ page }) => {
   test.slow();
   await adminSignIn(page);
 
-  await page.goto('/admin/collections/courses');
+  // Админка запоминает последнюю локаль пользователя — задаём явно.
+  await page.goto('/admin/collections/courses?locale=en');
   await page.getByRole('link', { name: 'Motorcycle Leaning Without Fear' }).first().click();
 
   await expect(page).toHaveURL(/\/admin\/collections\/courses\/\d+/);
