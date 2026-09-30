@@ -17,14 +17,16 @@ export const localeLabels: Record<Locale, string> = {
 };
 
 // Откуда Payload берёт значение, если поле в запрошенной локали пустое.
-// Украинского контента (видео, PDF) нет — uk читает русское; остальные
-// локали по умолчанию падают на defaultLocale.
-export const localeFallbacks: Partial<Record<Locale, Locale>> = {
+// Украинского контента (видео, PDF) нет — uk читает русское. en и ru
+// подстраховывают друг друга: курс, заполненный в админке на одном языке,
+// иначе выходил на другом без названия и описания.
+export const localeFallbacks: Record<Locale, Locale> = {
+  en: 'ru',
+  ru: 'en',
   uk: 'ru'
 };
 
-export const getFallbackLocale = (locale: Locale): Locale =>
-  localeFallbacks[locale] ?? defaultLocale;
+export const getFallbackLocale = (locale: Locale): Locale => localeFallbacks[locale];
 
 export const isLocale = (value: unknown): value is Locale =>
   (locales as readonly unknown[]).includes(value);

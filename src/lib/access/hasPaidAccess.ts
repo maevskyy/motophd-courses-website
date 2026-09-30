@@ -1,6 +1,10 @@
 import type { DefaultDocumentIDType, Payload } from 'payload';
 
-type RelationValue = DefaultDocumentIDType | { id?: DefaultDocumentIDType } | null | undefined;
+type RelationValue =
+  | DefaultDocumentIDType
+  | { id?: DefaultDocumentIDType; role?: string }
+  | null
+  | undefined;
 
 const getId = (value: RelationValue) => {
   if (value && typeof value === 'object') {
@@ -12,11 +16,17 @@ const getId = (value: RelationValue) => {
 
 export const isAdminUser = (user: { role?: string } | null | undefined) => user?.role === 'admin';
 
+// Админ видит любой курс без покупки: иначе проверить курс можно было бы
+// только купив его.
 export const hasPaidAccess = async (
   payload: Payload,
   user: RelationValue,
   course: RelationValue
 ) => {
+  if (user && typeof user === 'object' && isAdminUser(user)) {
+    return true;
+  }
+
   const userId = getId(user);
   const courseId = getId(course);
 

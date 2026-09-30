@@ -18,12 +18,12 @@ describe('locales', () => {
 });
 
 describe('getFallbackLocale', () => {
-  // Украинского контента нет: uk читает русские поля. Для ru поведение
-  // прежнее — пустое поле показывает английское.
-  it('sends ukrainian to russian and everything else to the default locale', () => {
+  // Украинского контента нет: uk читает русские поля. en и ru подстраховывают
+  // друг друга, чтобы курс не выходил без названия.
+  it('sends ukrainian to russian, english and russian to each other', () => {
     expect(getFallbackLocale('uk')).toBe('ru');
     expect(getFallbackLocale('ru')).toBe('en');
-    expect(getFallbackLocale('en')).toBe('en');
+    expect(getFallbackLocale('en')).toBe('ru');
   });
 });
 

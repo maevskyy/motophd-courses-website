@@ -74,7 +74,7 @@ describe('course data access', () => {
     });
   });
 
-  it('keeps english as the fallback for russian and english readers', async () => {
+  it('lets english and russian readers fall back to each other', async () => {
     mocks.find.mockImplementation(findWithFallback);
 
     await getCourseLessons(11, 'ru', user);
@@ -86,7 +86,7 @@ describe('course data access', () => {
     );
     expect(mocks.find).toHaveBeenNthCalledWith(
       2,
-      expect.objectContaining({ fallbackLocale: 'en', locale: 'en' })
+      expect.objectContaining({ fallbackLocale: 'ru', locale: 'en' })
     );
   });
 

@@ -26,6 +26,13 @@ describe('hasPaidAccess', () => {
     expect(find).not.toHaveBeenCalled();
   });
 
+  it('opens every course to an admin without querying purchases', async () => {
+    const { payload, find } = makePayload(0);
+
+    await expect(hasPaidAccess(payload, { id: 1, role: 'admin' }, 3)).resolves.toBe(true);
+    expect(find).not.toHaveBeenCalled();
+  });
+
   it('returns false without querying when course is missing', async () => {
     const { payload, find } = makePayload(1);
 

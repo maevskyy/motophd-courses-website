@@ -26,6 +26,12 @@ describe('hasFeedbackAccess', () => {
     expect(find).not.toHaveBeenCalled();
   });
 
+  it('lets an admin in without a purchase', async () => {
+    await expect(hasFeedbackAccess(payload, { ...user, role: 'admin' })).resolves.toBe(true);
+
+    expect(find).not.toHaveBeenCalled();
+  });
+
   it('requires a paid feedback tier purchase of the signed-in user', async () => {
     find.mockResolvedValue({ totalDocs: 0 });
 
