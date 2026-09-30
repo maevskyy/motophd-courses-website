@@ -1,6 +1,7 @@
 import type { Access, CollectionBeforeChangeHook, CollectionConfig, FieldAccess } from 'payload';
 
 import { hasPaidAccess, isAdminUser } from '@/lib/access/hasPaidAccess';
+import { clearPublicCacheHook } from '@/lib/data/publicCache';
 import type { Lesson } from '@/payload-types';
 
 const contentAccessByRequest = new WeakMap<object, Map<number, Promise<boolean>>>();
@@ -116,6 +117,8 @@ export const Lessons: CollectionConfig = {
     useAsTitle: 'title'
   },
   hooks: {
+    afterChange: [clearPublicCacheHook],
+    afterDelete: [clearPublicCacheHook],
     beforeChange: [syncStreamVideoId]
   },
   access: {

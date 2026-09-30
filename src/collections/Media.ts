@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload';
 
 import { isAdminUser } from '@/lib/access/hasPaidAccess';
+import { clearPublicCacheHook } from '@/lib/data/publicCache';
 
 export const Media: CollectionConfig = {
   slug: 'media',
@@ -16,6 +17,11 @@ export const Media: CollectionConfig = {
   },
   admin: {
     defaultColumns: ['filename', 'alt', 'mimeType', 'createdAt']
+  },
+  // Обложки курсов в кэше витрины — сбрасываем при правке файла.
+  hooks: {
+    afterChange: [clearPublicCacheHook],
+    afterDelete: [clearPublicCacheHook]
   },
   access: {
     create: ({ req: { user } }) => isAdminUser(user),
