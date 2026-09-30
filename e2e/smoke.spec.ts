@@ -135,7 +135,7 @@ test('lesson API exposes protected content only to previews or paid students', a
 
   expect(lockedResponse.ok()).toBe(true);
   expect(lockedLesson).not.toHaveProperty('streamVideoId');
-  expect(lockedLesson).not.toHaveProperty('body');
+  expect(lockedLesson).not.toHaveProperty('video');
   expect(lockedLesson).not.toHaveProperty('pdf');
 
   const previewResponse = await request.get(previewLessonsUrl);
@@ -143,7 +143,7 @@ test('lesson API exposes protected content only to previews or paid students', a
 
   expect(previewResponse.ok()).toBe(true);
   expect(previewLesson).toHaveProperty('streamVideoId');
-  expect(previewLesson).toHaveProperty('body');
+  expect(previewLesson).toHaveProperty('video');
 
   const loginResponse = await request.post('/api/users/login', {
     data: {
@@ -161,7 +161,7 @@ test('lesson API exposes protected content only to previews or paid students', a
 
   expect(paidResponse.ok()).toBe(true);
   expect(paidLesson).toHaveProperty('streamVideoId');
-  expect(paidLesson).toHaveProperty('body');
+  expect(paidLesson).toHaveProperty('video');
 });
 
 test('PDF lessons are served only through the protected lesson route', async ({

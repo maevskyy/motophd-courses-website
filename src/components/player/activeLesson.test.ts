@@ -5,7 +5,6 @@ import { EMPTY_PROGRESS } from '@/lib/progress';
 import { getActiveLesson } from './activeLesson';
 
 const lessons: PlayerLesson[] = [1, 2, 3].map((order) => ({
-  body: null,
   download: null,
   hasVideo: true,
   id: order,

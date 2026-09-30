@@ -5,12 +5,14 @@ const mocks = vi.hoisted(() => ({
   find: vi.fn(),
   getCurrentUser: vi.fn(),
   getPayloadClient: vi.fn(),
-  getPaymentProvider: vi.fn()
+  getPaymentProvider: vi.fn(),
+  getVisitorCountry: vi.fn()
 }));
 
 vi.mock('@/lib/auth/currentUser', () => ({ getCurrentUser: mocks.getCurrentUser }));
 vi.mock('@/lib/data/payload', () => ({ getPayloadClient: mocks.getPayloadClient }));
 vi.mock('./registry', () => ({ getPaymentProvider: mocks.getPaymentProvider }));
+vi.mock('@/lib/pricing/visitorCountry', () => ({ getVisitorCountry: mocks.getVisitorCountry }));
 
 import { createCheckout } from './checkout';
 
@@ -27,6 +29,7 @@ describe('checkout', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     mocks.getCurrentUser.mockResolvedValue(null);
+    mocks.getVisitorCountry.mockResolvedValue(null);
     mocks.getPayloadClient.mockResolvedValue({ create: mocks.create, find: mocks.find });
     mocks.getPaymentProvider.mockReturnValue({
       createCheckout: vi.fn().mockReturnValue({ redirectUrl: '/en/checkout/mock?order=order' }),
@@ -84,6 +87,28 @@ describe('checkout', () => {
       expect.objectContaining({
         data: expect.objectContaining({ amount: 29, course: course.id, user: user.id })
       })
+    );
+  });
+
+  it('charges the regional price to a visitor from a listed country', async () => {
+    mocks.getVisitorCountry.mockResolvedValue('UA');
+    mocks.find
+      .mockResolvedValueOnce({
+        docs: [
+          {
+            ...course,
+            regionalPrices: [{ countries: ['UA', 'MD'], priceFeedback: 60, priceStandard: 15 }]
+          }
+        ]
+      })
+      .mockResolvedValueOnce({ docs: [user] })
+      .mockResolvedValueOnce({ docs: [], totalDocs: 0 });
+    mocks.create.mockResolvedValue({ id: 11 });
+
+    await createCheckout({ courseSlug: 'lean', email: user.email, locale: 'en', tier: 'standard' });
+
+    expect(mocks.create).toHaveBeenCalledWith(
+      expect.objectContaining({ data: expect.objectContaining({ amount: 15 }) })
     );
   });
 

@@ -1,8 +1,39 @@
 import type { CollectionConfig } from 'payload';
 
 import { isAdminUser } from '@/lib/access/hasPaidAccess';
+import { countryOptions } from '@/lib/pricing/countries';
 
 const label = (en: string, ru: string) => ({ en, ru });
+
+type RegionalPriceRow = { countries?: null | string[] };
+
+// Страна в двух строках — непонятно, какая цена её: запрещаем сразу при
+// сохранении, а не выясняем на оплате.
+export const oneRowPerCountry = (rows: unknown) => {
+  const seen = new Map<string, number>();
+
+  for (const [index, row] of ((rows as RegionalPriceRow[] | null) ?? []).entries()) {
+    for (const country of row?.countries ?? []) {
+      const first = seen.get(country);
+
+      if (first !== undefined) {
+        return `${country} is listed in rows ${first + 1} and ${index + 1}. Keep each country in one row.`;
+      }
+
+      seen.set(country, index);
+    }
+  }
+
+  return true;
+};
+
+export const higherThanStandard = (value: unknown, { siblingData }: { siblingData: unknown }) => {
+  const standard = (siblingData as { priceStandard?: number } | undefined)?.priceStandard;
+
+  return typeof value === 'number' && typeof standard === 'number' && value <= standard
+    ? 'Course + feedback must cost more than course only.'
+    : true;
+};
 
 export const Courses: CollectionConfig = {
   slug: 'courses',
@@ -68,7 +99,7 @@ export const Courses: CollectionConfig = {
       defaultValue: 29,
       min: 0,
       required: true,
-      label: label('Standard price', 'Цена стандарт')
+      label: label('Course only, € — default', 'Только курс, € — по умолчанию')
     },
     {
       name: 'priceFeedback',
@@ -76,7 +107,56 @@ export const Courses: CollectionConfig = {
       defaultValue: 129,
       min: 0,
       required: true,
-      label: label('Feedback price', 'Цена с разбором')
+      label: label('Course + feedback, € — default', 'Курс + обратная связь, € — по умолчанию')
+    },
+    {
+      name: 'regionalPrices',
+      type: 'array',
+      label: label('Regional prices', 'Цены по регионам'),
+      labels: {
+        singular: label('Region', 'Регион'),
+        plural: label('Regions', 'Регионы')
+      },
+      validate: oneRowPerCountry,
+      admin: {
+        description: label(
+          'Visitors from these countries see and pay these prices. Everyone else gets the prices above.',
+          'Посетители из этих стран видят и платят эти цены. Все остальные — цены выше.'
+        ),
+        components: {
+          RowLabel: '/components/admin/RegionalPriceRowLabel#RegionalPriceRowLabel'
+        }
+      },
+      fields: [
+        {
+          name: 'countries',
+          type: 'select',
+          hasMany: true,
+          options: countryOptions,
+          required: true,
+          label: label('Countries', 'Страны')
+        },
+        {
+          type: 'row',
+          fields: [
+            {
+              name: 'priceStandard',
+              type: 'number',
+              min: 1,
+              required: true,
+              label: label('Course only, €', 'Только курс, €')
+            },
+            {
+              name: 'priceFeedback',
+              type: 'number',
+              min: 1,
+              required: true,
+              validate: higherThanStandard,
+              label: label('Course + feedback, €', 'Курс + обратная связь, €')
+            }
+          ]
+        }
+      ]
     },
     {
       name: 'currency',

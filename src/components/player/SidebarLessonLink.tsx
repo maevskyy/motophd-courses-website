@@ -30,7 +30,9 @@ export function SidebarLessonLink({ active, done, href, label, pdf }: Props) {
         ) : null}
       </span>
       <span className={styles.lessonLabel}>{label}</span>
-      {pdf ? <Icon className={styles.lessonDoc} name="document" size={16} title={t('pdf')} /> : null}
+      {pdf ? (
+        <Icon className={styles.lessonDoc} name="document" size={16} title={t('pdf')} />
+      ) : null}
     </Link>
   );
 }

@@ -4,16 +4,14 @@ import { LandingBottom } from '@/components/landing/LandingBottom';
 import { LandingTop } from '@/components/landing/LandingTop';
 import { homeContent } from '@/lib/content';
 import { getPublishedCourses, toCourseCardCourse } from '@/lib/data';
+import { withRegionalPrice } from '@/lib/pricing/regionalPrice';
+import { getVisitorCountry } from '@/lib/pricing/visitorCountry';
 import { buildPageMetadata, resolveSeoLocale, SITE_NAME } from '@/lib/seo';
 import { requireLocale } from '@/i18n/requireLocale';
 
-export const revalidate = 300;
-
-// Пустой список: страницы рендерятся при первом заходе и кэшируются (ISR),
-// чтобы сборка в CI обходилась без работающей базы.
-export function generateStaticParams() {
-  return [];
-}
+// Цены зависят от страны посетителя (regionalPrice.ts), поэтому страница
+// собирается на каждый запрос, а не кэшируется одна на всех.
+export const dynamic = 'force-dynamic';
 
 // Title/description лендинга — из существующего контента hero
 // (src/lib/content): бейдж и подзаголовок, без новых полей.
@@ -46,7 +44,10 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const actions = await getTranslations({ locale: safeLocale, namespace: 'actions' });
   const content = homeContent[safeLocale];
   const payloadCourses = await getPublishedCourses(safeLocale);
-  const courses = payloadCourses.map((course, index) => toCourseCardCourse(course, index));
+  const country = await getVisitorCountry();
+  const courses = payloadCourses.map((course, index) =>
+    toCourseCardCourse(withRegionalPrice(course, country), index)
+  );
 
   return (
     <>

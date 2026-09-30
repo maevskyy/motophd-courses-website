@@ -24,14 +24,7 @@ vi.mock('next-intl', () => ({
     values ? `${key} ${JSON.stringify(values)}` : key
 }));
 
-vi.mock('@payloadcms/richtext-lexical/react', () => ({
-  RichText: ({ className }: { className?: string }) => (
-    <div className={className} data-testid="rich-text" />
-  )
-}));
-
 const makeLesson = (order: number, overrides: Partial<PlayerLesson> = {}): PlayerLesson => ({
-  body: null,
   download: null,
   hasVideo: true,
   id: order,
@@ -42,17 +35,13 @@ const makeLesson = (order: number, overrides: Partial<PlayerLesson> = {}): Playe
   ...overrides
 });
 
-const body: NonNullable<PlayerLesson['body']> = {
-  root: { children: [], direction: null, format: '', indent: 0, type: 'root', version: 1 }
-};
-
 const player: PlayerContent = {
   courseSlug: 'lean',
   courseTitle: 'Lean',
   lessons: [
     makeLesson(1),
     makeLesson(2),
-    makeLesson(3, { body }),
+    makeLesson(3),
     makeLesson(4, {
       download: { fileName: 'lesson-4.pdf', id: 4, title: 'Видеоролик', url: '/api/lessons/4/pdf' },
       hasVideo: false
