@@ -50,14 +50,9 @@ const createFormData = (name: string) => {
   return formData;
 };
 
-const createPasswordFormData = (
-  currentPassword: string,
-  newPassword: string,
-  confirmPassword = newPassword
-) => {
+const createPasswordFormData = (newPassword: string, confirmPassword = newPassword) => {
   const formData = new FormData();
 
-  formData.set('currentPassword', currentPassword);
   formData.set('newPassword', newPassword);
   formData.set('confirmPassword', confirmPassword);
 
@@ -106,26 +101,11 @@ describe('changePasswordAction', () => {
     vi.clearAllMocks();
   });
 
-  it('rejects a wrong current password without touching the account', async () => {
-    mocks.getCurrentUser.mockResolvedValue(user);
-    mocks.login.mockRejectedValue(new Error('invalid credentials'));
-
-    await expect(
-      changePasswordAction(
-        initialChangePasswordFormState,
-        createPasswordFormData('wrong-pass', 'new-password-1')
-      )
-    ).resolves.toEqual({ status: 'wrongCurrent' });
-
-    expect(mocks.update).not.toHaveBeenCalled();
-    expect(mocks.cookieSet).not.toHaveBeenCalled();
-  });
-
   it('rejects mismatched new passwords before any payload call', async () => {
     await expect(
       changePasswordAction(
         initialChangePasswordFormState,
-        createPasswordFormData('old-pass-123', 'new-password-1', 'new-password-2')
+        createPasswordFormData('new-password-1', 'new-password-2')
       )
     ).resolves.toEqual({ status: 'mismatch' });
 
@@ -137,7 +117,7 @@ describe('changePasswordAction', () => {
     await expect(
       changePasswordAction(
         initialChangePasswordFormState,
-        createPasswordFormData('old-pass-123', 'short')
+        createPasswordFormData('short')
       )
     ).resolves.toEqual({ status: 'tooShort' });
 
@@ -146,14 +126,12 @@ describe('changePasswordAction', () => {
 
   it('changes the password as the user and refreshes the session cookie', async () => {
     mocks.getCurrentUser.mockResolvedValue(user);
-    mocks.login
-      .mockResolvedValueOnce({ token: 'old-session' })
-      .mockResolvedValueOnce({ token: 'fresh-session' });
+    mocks.login.mockResolvedValueOnce({ token: 'fresh-session' });
 
     await expect(
       changePasswordAction(
         initialChangePasswordFormState,
-        createPasswordFormData('old-pass-123', 'new-password-1')
+        createPasswordFormData('new-password-1')
       )
     ).resolves.toEqual({ status: 'success' });
 

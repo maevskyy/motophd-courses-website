@@ -12,7 +12,7 @@ export const initialUpdateProfileFormState: UpdateProfileFormState = {
 export const MIN_PASSWORD_LENGTH = 8;
 
 export type ChangePasswordFormState = {
-  status: 'error' | 'idle' | 'mismatch' | 'success' | 'tooShort' | 'wrongCurrent';
+  status: 'error' | 'idle' | 'mismatch' | 'success' | 'tooShort';
 };
 
 export const initialChangePasswordFormState: ChangePasswordFormState = {

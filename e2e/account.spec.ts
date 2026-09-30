@@ -15,19 +15,14 @@ test('password change: the old password dies, the new one works', async ({ page 
   await signIn(page, 'passwd@motophd.com', 'passwd1234');
   await expect(page).toHaveURL(/\/en\/dashboard$/);
 
-  // Неверный текущий пароль — здесь же, на выделенном аккаунте: Payload
-  // ведёт сессии в базе, и неверные попытки на общем student@ инвалидируют
-  // сессии параллельных тестов.
+  // Текущий пароль форма не спрашивает — только новый дважды.
   await page.getByRole('link', { name: 'Settings' }).click();
-  // Поля пароля свёрнуты в строку «Password •••••••• [Edit]» — сначала раскрываем.
-  await page.getByRole('button', { name: 'Edit' }).click();
-  await page.locator('#current-password').fill('not-the-password');
+  await expect(page.locator('#current-password')).toHaveCount(0);
   await page.locator('#new-password').fill('whatever123');
-  await page.locator('#confirm-password').fill('whatever123');
+  await page.locator('#confirm-password').fill('whatever124');
   await page.getByRole('button', { name: 'Change Password' }).click();
-  await expect(page.getByText('Current password is incorrect.')).toBeVisible();
+  await expect(page.getByText('New passwords do not match.')).toBeVisible();
 
-  await page.locator('#current-password').fill('passwd1234');
   await page.locator('#new-password').fill('passwd5678x');
   await page.locator('#confirm-password').fill('passwd5678x');
   await page.getByRole('button', { name: 'Change Password' }).click();
@@ -48,8 +43,6 @@ test('password change: the old password dies, the new one works', async ({ page 
   await signIn(page, 'passwd@motophd.com', 'passwd5678x');
   await expect(page).toHaveURL(/\/en\/dashboard$/);
   await page.getByRole('link', { name: 'Settings' }).click();
-  await page.getByRole('button', { name: 'Edit' }).click();
-  await page.locator('#current-password').fill('passwd5678x');
   await page.locator('#new-password').fill('passwd1234');
   await page.locator('#confirm-password').fill('passwd1234');
   await page.getByRole('button', { name: 'Change Password' }).click();

@@ -54,7 +54,6 @@ export async function changePasswordAction(
   _previousState: ChangePasswordFormState,
   formData: FormData
 ): Promise<ChangePasswordFormState> {
-  const currentPassword = String(formData.get('currentPassword') || '');
   const newPassword = String(formData.get('newPassword') || '');
   const confirmPassword = String(formData.get('confirmPassword') || '');
 
@@ -74,17 +73,9 @@ export async function changePasswordAction(
 
   const payload = await getPayloadClient();
 
-  // Текущий пароль проверяется настоящим логином: неверные попытки считает
-  // штатный локаут Payload, из угнанной сессии пароль не подобрать.
-  try {
-    await payload.login({
-      collection: 'users',
-      data: { email: user.email, password: currentPassword }
-    });
-  } catch {
-    return { status: 'wrongCurrent' };
-  }
-
+  // Текущий пароль не спрашиваем (решение Димы 30.09): покупатель входит
+  // автовходом после оплаты и пароль из письма может не помнить. Смену
+  // защищает сама сессия: она одна на аккаунт, httpOnly-кука.
   let token: string | undefined;
 
   try {
