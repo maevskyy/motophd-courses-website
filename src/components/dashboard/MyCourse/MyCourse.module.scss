@@ -103,6 +103,9 @@
 .modules {
   display: grid;
   gap: var(--sp-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .module {

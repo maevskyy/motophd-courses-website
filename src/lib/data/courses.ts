@@ -1,4 +1,5 @@
 import { getFallbackLocale, toLocale } from '@/i18n/locales';
+import { isAdminUser } from '@/lib/access/hasPaidAccess';
 import type { LegalPage, Lesson, User } from '@/payload-types';
 import { getPayloadClient } from './payload';
 import type { AppLocale } from './types';
@@ -116,8 +117,14 @@ export const getCourseCurriculum = async (
   return lessons.docs;
 };
 
+// Купленные курсы; админу — все опубликованные, как купленные.
 export const getDashboardCourses = async (locale: AppLocale, user: User) => {
   const payload = await getPayloadClient();
+
+  if (isAdminUser(user)) {
+    return getPublishedCourses(locale, user);
+  }
+
   const purchases = await payload.find({
     collection: 'purchases',
     depth: 0,

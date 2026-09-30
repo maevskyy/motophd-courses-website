@@ -135,11 +135,11 @@ export const Courses: CollectionConfig = {
       type: 'upload',
       localized: true,
       relationTo: 'media',
-      label: label('Link preview image', 'Картинка для превью ссылки'),
+      label: label('Cover', 'Обложка'),
       admin: {
         description: label(
-          'Not shown on the site. Messengers and social networks show it when someone shares the course link.',
-          'На сайте не показывается. Её показывают мессенджеры и соцсети, когда делятся ссылкой на курс.'
+          'Photo on the course card. Also shown when someone shares the course link. Landscape, about 1200×630.',
+          'Фото на карточке курса. Его же показывают мессенджеры, когда делятся ссылкой на курс. Горизонтальное, около 1200×630.'
         )
       }
     },

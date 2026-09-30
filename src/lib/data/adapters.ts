@@ -1,3 +1,4 @@
+import { courseCoverImage } from '@/lib/seo/courseCover';
 import type { Course, Lesson } from '@/payload-types';
 import type { CourseCurriculumLesson } from './courses';
 import { salesText } from './localizedText';
@@ -12,10 +13,13 @@ import type {
   SalesContent
 } from './types';
 
+// Иконка и тон — заглушка, пока у курса нет обложки. Фото карточки — только
+// обложка курса: раньше фото шли по месту курса в списке и доставались
+// чужим курсам.
 const visualByIndex = [
-  { icon: 'motorcycle' as const, imageTone: 'red' as const, image: '/course-lean.jpg' },
-  { icon: 'flag' as const, imageTone: 'green' as const, image: '/course-braking.jpg' },
-  { icon: 'wrench' as const, imageTone: 'blue' as const, image: undefined }
+  { icon: 'motorcycle' as const, imageTone: 'red' as const },
+  { icon: 'flag' as const, imageTone: 'green' as const },
+  { icon: 'wrench' as const, imageTone: 'blue' as const }
 ];
 
 export const toCourseCardCourse = (
@@ -28,7 +32,7 @@ export const toCourseCardCourse = (
   return {
     slug: course.slug,
     icon: visual.icon,
-    image: visual.image,
+    image: courseCoverImage(course)?.url,
     imageTone: visual.imageTone,
     featured: index === 0,
     pain: course.pain || '',
