@@ -55,7 +55,12 @@ describe('checkout', () => {
       .mockResolvedValueOnce({ docs: [], totalDocs: 0 });
 
     await expect(
-      createCheckout({ courseSlug: 'lean', email: user.email, locale: 'en', tier: 'feedback_upgrade' })
+      createCheckout({
+        courseSlug: 'lean',
+        email: user.email,
+        locale: 'en',
+        tier: 'feedback_upgrade'
+      })
     ).resolves.toEqual({ error: 'upgradeUnavailable' });
   });
 
@@ -66,12 +71,14 @@ describe('checkout', () => {
       .mockResolvedValueOnce({ docs: [], totalDocs: 0 });
     mocks.create.mockResolvedValue({ id: 11 });
 
-    await expect(createCheckout({
-      courseSlug: 'lean',
-      email: user.email,
-      locale: 'en',
-      tier: 'standard'
-    })).resolves.toEqual({ redirectUrl: '/en/checkout/mock?order=order' });
+    await expect(
+      createCheckout({
+        courseSlug: 'lean',
+        email: user.email,
+        locale: 'en',
+        tier: 'standard'
+      })
+    ).resolves.toEqual({ redirectUrl: '/en/checkout/mock?order=order' });
 
     expect(mocks.create).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -108,7 +115,10 @@ describe('checkout', () => {
 
     expect(mocks.create).toHaveBeenCalledWith(
       expect.objectContaining({
-        data: expect.objectContaining({ postPaymentToken: undefined, postPaymentTokenExpiresAt: undefined })
+        data: expect.objectContaining({
+          postPaymentToken: undefined,
+          postPaymentTokenExpiresAt: undefined
+        })
       })
     );
   });

@@ -1,6 +1,36 @@
-import type { CollectionConfig, PayloadRequest } from 'payload';
+import {
+  APIError,
+  type CollectionBeforeDeleteHook,
+  type CollectionConfig,
+  type PayloadRequest
+} from 'payload';
 
 import { keepOnlyCurrentSession } from '@/lib/auth/singleSession';
+
+// purchases.user обязателен, и база не даёт удалить пользователя с покупками —
+// админка показывала «An unknown error has occurred». Говорим, в чём дело.
+// Покупки сами не удаляем: это история платежей.
+export const refuseDeletingBuyer: CollectionBeforeDeleteHook = async ({ id, req }) => {
+  const purchases = await req.payload.find({
+    collection: 'purchases',
+    depth: 0,
+    limit: 20,
+    overrideAccess: true,
+    req,
+    where: { user: { equals: id } }
+  });
+
+  if (purchases.totalDocs > 0) {
+    const numbers = purchases.docs.map((purchase) => `#${purchase.id}`).join(', ');
+
+    throw new APIError(
+      `У пользователя есть покупки (${numbers}). Сначала удалите их в разделе Purchases, потом пользователя.`,
+      400,
+      undefined,
+      true
+    );
+  }
+};
 
 const canAccessAdmin = ({ req: { user } }: { req: PayloadRequest }) => user?.role === 'admin';
 
@@ -64,6 +94,7 @@ export const Users: CollectionConfig = {
   hooks: {
     // Одна активная сессия: вход с компа выбивает телефон (см. singleSession.ts).
     afterLogin: [keepOnlyCurrentSession],
+    beforeDelete: [refuseDeletingBuyer],
     beforeChange: [
       async ({ data, operation, req }) => {
         if (operation !== 'create') {

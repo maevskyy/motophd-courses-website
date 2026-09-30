@@ -40,7 +40,6 @@ export async function forgotPasswordAction(
 
     if (token) {
       await sendPasswordReset({
-        locale,
         resetUrl: `${getAppUrl()}/${locale}/login/reset?token=${token}`,
         to: email
       });

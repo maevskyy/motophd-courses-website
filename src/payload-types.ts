@@ -91,16 +91,14 @@ export interface Config {
     purchases: PurchasesSelect<false> | PurchasesSelect<true>;
     promoCodes: PromoCodesSelect<false> | PromoCodesSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
-    'payload-locked-documents':
-      PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
+    'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
   };
   db: {
     defaultIDType: number;
   };
-  fallbackLocale:
-    ('false' | 'none' | 'null') | false | null | ('en' | 'ru' | 'uk') | ('en' | 'ru' | 'uk')[];
+  fallbackLocale: ('false' | 'none' | 'null') | false | null | ('en' | 'ru' | 'uk') | ('en' | 'ru' | 'uk')[];
   globals: {};
   globalsSelect: {};
   locale: 'en' | 'ru' | 'uk';
@@ -331,6 +329,14 @@ export interface PromoCode {
   code: string;
   discountType: 'percent' | 'fixed';
   value: number;
+  /**
+   * Leave empty to allow any course.
+   */
+  courses?: (number | Course)[] | null;
+  /**
+   * Leave empty to allow any plan.
+   */
+  tiers?: ('standard' | 'feedback' | 'feedback_upgrade')[] | null;
   maxUses?: number | null;
   usedCount: number;
   validFrom?: string | null;
@@ -582,6 +588,8 @@ export interface PromoCodesSelect<T extends boolean = true> {
   code?: T;
   discountType?: T;
   value?: T;
+  courses?: T;
+  tiers?: T;
   maxUses?: T;
   usedCount?: T;
   validFrom?: T;
@@ -647,6 +655,7 @@ export interface CollectionsWidget {
 export interface Auth {
   [k: string]: unknown;
 }
+
 
 declare module 'payload' {
   export interface GeneratedTypes extends Config {}

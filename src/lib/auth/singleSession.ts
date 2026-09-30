@@ -1,7 +1,11 @@
 import type { CollectionAfterLoginHook } from 'payload';
 
 type SessionRecord = { id: string };
-type UserWithSessions = { id: number | string; sessions?: null | SessionRecord[]; updatedAt?: null | string };
+type UserWithSessions = {
+  id: number | string;
+  sessions?: null | SessionRecord[];
+  updatedAt?: null | string;
+};
 
 // Читаем sid из JWT без проверки подписи: токен только что выписан самим
 // Payload в этом же запросе, проверять нечего.

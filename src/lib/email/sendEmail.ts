@@ -1,4 +1,6 @@
 import { Resend } from 'resend';
+
+import { SUPPORT_EMAIL } from './emailLayout';
 import type { EmailMessage } from './types';
 
 export type SendEmailResult = { status: 'sent' | 'skipped' | 'failed' };
@@ -26,6 +28,8 @@ export const sendEmail = async (message: EmailMessage): Promise<SendEmailResult>
     const { error } = await resend.emails.send({
       from,
       html: message.html,
+      // Ответ на любое письмо уходит в поддержку, а не на адрес отправителя.
+      replyTo: SUPPORT_EMAIL,
       subject: message.subject,
       text: message.text,
       to: message.to

@@ -76,7 +76,6 @@ describe('forgotPasswordAction', () => {
       disableEmail: true
     });
     expect(mocks.sendPasswordReset).toHaveBeenCalledWith({
-      locale: 'en',
       resetUrl: expect.stringContaining('/en/login/reset?token=tok-123'),
       to: 'student@motophd.com'
     });
@@ -113,7 +112,10 @@ describe('resetPasswordAction', () => {
       resetPasswordAction(initialResetPasswordFormState, resetFormData('tok', 'short'))
     ).resolves.toEqual({ status: 'tooShort' });
     await expect(
-      resetPasswordAction(initialResetPasswordFormState, resetFormData('tok', 'new-password-1', 'other-pass-2'))
+      resetPasswordAction(
+        initialResetPasswordFormState,
+        resetFormData('tok', 'new-password-1', 'other-pass-2')
+      )
     ).resolves.toEqual({ status: 'mismatch' });
 
     expect(mocks.resetPassword).not.toHaveBeenCalled();
@@ -132,7 +134,10 @@ describe('resetPasswordAction', () => {
   it('signs the user in with the fresh token and opens the dashboard', async () => {
     mocks.resetPassword.mockResolvedValue({ token: 'fresh-session', user: {} });
 
-    await resetPasswordAction(initialResetPasswordFormState, resetFormData('tok-123', 'new-password-1'));
+    await resetPasswordAction(
+      initialResetPasswordFormState,
+      resetFormData('tok-123', 'new-password-1')
+    );
 
     expect(mocks.resetPassword).toHaveBeenCalledWith({
       collection: 'users',

@@ -1,8 +1,13 @@
 import type { PromoDiscount } from './pricing';
 
+type PromoTier = 'feedback' | 'feedback_upgrade' | 'standard';
+
 export type PromoCodeRecord = PromoDiscount & {
   active: boolean;
   code: string;
+  // Пусто или нет — действует на все курсы / тарифы.
+  courses?: Array<number | { id: number }> | null;
+  tiers?: PromoTier[] | null;
   maxUses?: number | null;
   usedCount: number;
   validFrom?: string | null;
@@ -15,7 +20,14 @@ export type PromoCodeValidation =
       ok: true;
     }
   | {
-      code: 'inactive' | 'notFound' | 'notStarted' | 'expired' | 'exhausted';
+      code:
+        | 'exhausted'
+        | 'expired'
+        | 'inactive'
+        | 'notFound'
+        | 'notStarted'
+        | 'wrongCourse'
+        | 'wrongTier';
       ok: false;
     };
 
@@ -23,7 +35,8 @@ export const normalizePromoCode = (code: string) => code.trim().toUpperCase();
 
 export const validatePromoCode = (
   promo: PromoCodeRecord | null | undefined,
-  now = new Date()
+  now = new Date(),
+  purchase?: { courseId: number; tier: PromoTier }
 ): PromoCodeValidation => {
   if (!promo) {
     return { code: 'notFound', ok: false };
@@ -43,6 +56,18 @@ export const validatePromoCode = (
 
   if (promo.validTo && new Date(promo.validTo) < now) {
     return { code: 'expired', ok: false };
+  }
+
+  const courseIds = (promo.courses ?? []).map((course) =>
+    typeof course === 'number' ? course : course.id
+  );
+
+  if (purchase && courseIds.length > 0 && !courseIds.includes(purchase.courseId)) {
+    return { code: 'wrongCourse', ok: false };
+  }
+
+  if (purchase && promo.tiers?.length && !promo.tiers.includes(purchase.tier)) {
+    return { code: 'wrongTier', ok: false };
   }
 
   return {

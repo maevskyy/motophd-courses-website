@@ -47,6 +47,31 @@ export const PromoCodes: CollectionConfig = {
       required: true,
       label: label('Value', 'Значение')
     },
+    // Пусто — промокод действует на всё. Заполнено — только на выбранное.
+    {
+      name: 'courses',
+      type: 'relationship',
+      hasMany: true,
+      relationTo: 'courses',
+      label: label('Courses', 'Курсы'),
+      admin: {
+        description: label('Leave empty to allow any course.', 'Пусто — действует на любой курс.')
+      }
+    },
+    {
+      name: 'tiers',
+      type: 'select',
+      hasMany: true,
+      options: [
+        { label: label('Course only', 'Только курс'), value: 'standard' },
+        { label: label('Course + feedback', 'Курс + обратная связь'), value: 'feedback' },
+        { label: label('Feedback add-on', 'Докупка обратной связи'), value: 'feedback_upgrade' }
+      ],
+      label: label('Plans', 'Тарифы'),
+      admin: {
+        description: label('Leave empty to allow any plan.', 'Пусто — действует на любой тариф.')
+      }
+    },
     {
       name: 'maxUses',
       type: 'number',
