@@ -36,8 +36,7 @@ export const toCourseCardCourse = (
     description: course.description || '',
     includes,
     priceStandard: course.priceStandard,
-    priceFeedback: course.priceFeedback,
-    currency: course.currency
+    priceFeedback: course.priceFeedback
   };
 };
 

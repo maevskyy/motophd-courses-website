@@ -30,11 +30,10 @@ export function Footer({ compact = false, socialLinks }: Props) {
             </div>
             <div>
               <h2 className={styles.footer__heading}>{t('coursesHeading')}</h2>
-              <Link className={styles.footer__link} href="/courses/lean">
-                {t('course1')}
-              </Link>
-              <Link className={styles.footer__link} href="/courses/counter-steering">
-                {t('course2')}
+              {/* Список, а не курсы поимённо: жёстко прописанные ссылки вели на
+                  404, когда курс удаляли или меняли ему slug. */}
+              <Link className={styles.footer__link} href="/courses">
+                {t('allCourses')}
               </Link>
             </div>
             <div>

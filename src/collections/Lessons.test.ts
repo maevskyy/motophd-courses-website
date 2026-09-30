@@ -73,6 +73,14 @@ describe('syncStreamVideoId', () => {
     expect(findByID).toHaveBeenCalledWith(expect.objectContaining({ collection: 'videos', id: 3 }));
   });
 
+  it('copies the duration once Stream knows it', async () => {
+    findByID.mockResolvedValueOnce({ durationSec: 412, id: 3, streamUid: 'a'.repeat(32) });
+    await expect(run({ video: 3 })).resolves.toMatchObject({ durationSec: 412 });
+
+    findByID.mockResolvedValueOnce({ durationSec: null, id: 3, streamUid: 'a'.repeat(32) });
+    await expect(run({ durationSec: 300, video: 3 })).resolves.toMatchObject({ durationSec: 300 });
+  });
+
   it('clears the Stream ID when the video is removed from the lesson', async () => {
     await expect(run({ streamVideoId: 'old', video: null }, { video: 3 })).resolves.toMatchObject({
       streamVideoId: null

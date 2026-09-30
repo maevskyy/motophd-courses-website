@@ -202,10 +202,31 @@ export interface Video {
  */
 export interface Course {
   id: number;
+  /**
+   * Course address: motophd.com/en/courses/slug. Latin letters, digits and dashes.
+   */
   slug: string;
   title: string;
+  /**
+   * Short line above the title on the course page and on the course card, e.g. “Fear → Confidence”.
+   */
   pain?: string | null;
+  /**
+   * Text under the title on the course page and on the course card.
+   */
   description?: string | null;
+  /**
+   * Checkmark list on the course page and on the course card. 3–5 short points.
+   */
+  outcomes?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Not shown on the site. Messengers and social networks show it when someone shares the course link.
+   */
   cover?: (number | null) | Media;
   priceStandard: number;
   priceFeedback: number;
@@ -471,18 +492,13 @@ export interface Course {
         id?: string | null;
       }[]
     | null;
-  currency: 'EUR';
-  outcomes?:
-    | {
-        text: string;
-        id?: string | null;
-      }[]
-    | null;
-  keyPoint?: string | null;
-  commonMistakes?: string | null;
-  whatYouShouldFeel?: string | null;
-  teaserVideoId?: string | null;
+  /**
+   * Position in the course list: smaller goes first.
+   */
   order?: number | null;
+  /**
+   * Draft — visible only in the admin.
+   */
   status: 'draft' | 'published';
   updatedAt: string;
   createdAt: string;
@@ -496,6 +512,9 @@ export interface Lesson {
   course: number | Course;
   order?: number | null;
   title: string;
+  /**
+   * Taken from the video automatically.
+   */
   durationSec?: number | null;
   /**
    * Pick from Videos, or press + to upload a new one. Empty — the lesson has no video.
@@ -550,7 +569,6 @@ export interface Purchase {
   orderReference?: string | null;
   promoCode?: (number | null) | PromoCode;
   status: 'pending' | 'paid' | 'failed' | 'refunded';
-  locale: 'en' | 'ru' | 'uk';
   paidAt?: string | null;
   providerPayload?:
     | {
@@ -755,6 +773,12 @@ export interface CoursesSelect<T extends boolean = true> {
   title?: T;
   pain?: T;
   description?: T;
+  outcomes?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
   cover?: T;
   priceStandard?: T;
   priceFeedback?: T;
@@ -766,17 +790,6 @@ export interface CoursesSelect<T extends boolean = true> {
         priceFeedback?: T;
         id?: T;
       };
-  currency?: T;
-  outcomes?:
-    | T
-    | {
-        text?: T;
-        id?: T;
-      };
-  keyPoint?: T;
-  commonMistakes?: T;
-  whatYouShouldFeel?: T;
-  teaserVideoId?: T;
   order?: T;
   status?: T;
   updatedAt?: T;
@@ -825,7 +838,6 @@ export interface PurchasesSelect<T extends boolean = true> {
   orderReference?: T;
   promoCode?: T;
   status?: T;
-  locale?: T;
   paidAt?: T;
   providerPayload?: T;
   postPaymentToken?: T;

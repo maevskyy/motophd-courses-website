@@ -1,7 +1,6 @@
 import config from '@payload-config';
 import { getPayload, type DefaultDocumentIDType, type Payload } from 'payload';
 
-import { defaultLocale } from '../i18n/locales';
 import {
   getCourseSeeds,
   getDurationSec,
@@ -119,7 +118,6 @@ const upsertPurchase = async (
     amount: 0,
     course,
     currency: 'EUR' as const,
-    locale: defaultLocale,
     provider: 'manual' as const,
     providerTxnId,
     status: 'paid' as const,
@@ -278,9 +276,7 @@ const seedCourses = async () => {
           description: course.description,
           priceStandard: 29,
           priceFeedback: 129,
-          currency: 'EUR' as const,
           outcomes: getOutcomes(course, locale),
-          teaserVideoId: `${course.slug}-${locale}-teaser`,
           order: courseIndex + 1,
           status: 'published' as const
         };

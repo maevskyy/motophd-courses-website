@@ -16,7 +16,6 @@ export type CourseCardCourse = {
   includes: string[];
   priceStandard: number;
   priceFeedback: number;
-  currency: Course['currency'];
 };
 
 export type CurriculumModule = {

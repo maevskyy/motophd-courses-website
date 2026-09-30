@@ -64,7 +64,8 @@ const relationId = (value: Lesson['video'] | undefined) =>
   typeof value === 'object' && value ? value.id : value;
 
 // Урок выбирает видео из раздела «Видео», а плеер и доступы читают
-// streamVideoId. Копируем ID Stream при сохранении того языка, что сохраняют.
+// streamVideoId. Копируем ID Stream при сохранении того языка, что сохраняют,
+// и длительность, если Stream её уже знает (иначе её допишет хук видео).
 // video не пришёл (частичный PATCH через API) — streamVideoId не трогаем.
 // Пустое video стирает ID, только если видео сняли: ID, записанный напрямую
 // через API или сидом, без выбранного видео сохранение не теряет.
@@ -91,7 +92,11 @@ export const syncStreamVideoId: CollectionBeforeChangeHook<Lesson> = async ({
     req
   });
 
-  return { ...data, streamVideoId: video.streamUid };
+  return {
+    ...data,
+    ...(video.durationSec == null ? {} : { durationSec: video.durationSec }),
+    streamVideoId: video.streamUid
+  };
 };
 
 export const Lessons: CollectionConfig = {
@@ -158,6 +163,14 @@ export const Lessons: CollectionConfig = {
       label: {
         en: 'Duration, sec',
         ru: 'Длительность, сек'
+      },
+      admin: {
+        description: {
+          en: 'Taken from the video automatically.',
+          ru: 'Берётся из видео автоматически.'
+        },
+        position: 'sidebar',
+        readOnly: true
       }
     },
     {

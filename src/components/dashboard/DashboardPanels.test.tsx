@@ -32,7 +32,6 @@ vi.mock('@/lib/payments/checkout', () => ({
 }));
 
 const lean: MyCourseData = {
-  currency: 'EUR',
   icon: 'motorcycle',
   modules: [
     {
@@ -68,7 +67,6 @@ const braking: MyCourseData = {
 };
 
 const available: CourseCardCourse = {
-  currency: 'EUR',
   description: '',
   icon: 'flag',
   imageTone: 'green',

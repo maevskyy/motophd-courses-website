@@ -14,7 +14,7 @@ import { createOrderReference } from './orderReference';
 import { calculatePrice } from './pricing';
 import { normalizePromoCode, validatePromoCode } from './promoCodes';
 import { getPaymentProvider } from './registry';
-import { paymentTiers, type PaymentTier } from './types';
+import { CURRENCY, paymentTiers, type PaymentTier } from './types';
 
 type CheckoutError =
   | 'alreadyPurchased'
@@ -205,8 +205,7 @@ export const createCheckout = async ({
     data: {
       amount: pricing.amount,
       course: course.id,
-      currency: course.currency,
-      locale,
+      currency: CURRENCY,
       orderReference,
       postPaymentToken,
       postPaymentTokenExpiresAt,
@@ -221,7 +220,7 @@ export const createCheckout = async ({
 
   const checkout = await provider.createCheckout({
     amount: pricing.amount,
-    currency: course.currency,
+    currency: CURRENCY,
     locale,
     orderReference,
     postPaymentToken,

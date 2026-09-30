@@ -1,12 +1,13 @@
 import { useLocale, useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
 import { Icon } from '@/components/ui/Icon';
+import { CURRENCY } from '@/lib/payments/types';
 import { FeedbackUpgradeButton } from '../FeedbackUpgradeButton';
 import type { FeedbackStatus, MyCourseData } from './MyCourse.types';
 import styles from './MyCourse.module.scss';
 
 interface Props {
-  course: Pick<MyCourseData, 'currency' | 'slug' | 'upgradePrice'>;
+  course: Pick<MyCourseData, 'slug' | 'upgradePrice'>;
   // Якорь `#upgrade` из настроек — только у первой карточки на странице.
   id?: string;
   status: FeedbackStatus;
@@ -18,7 +19,7 @@ export function FeedbackCard({ course, id, status }: Props) {
   const t = useTranslations('dashboard');
   const locale = useLocale();
   const price = new Intl.NumberFormat(locale, {
-    currency: course.currency,
+    currency: CURRENCY,
     maximumFractionDigits: 0,
     style: 'currency'
   }).format(course.upgradePrice);

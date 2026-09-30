@@ -17,7 +17,6 @@ vi.mock('@/lib/pricing/visitorCountry', () => ({ getVisitorCountry: mocks.getVis
 import { createCheckout } from './checkout';
 
 const course = {
-  currency: 'EUR' as const,
   id: 4,
   priceFeedback: 129,
   priceStandard: 29,
@@ -109,23 +108,6 @@ describe('checkout', () => {
 
     expect(mocks.create).toHaveBeenCalledWith(
       expect.objectContaining({ data: expect.objectContaining({ amount: 15 }) })
-    );
-  });
-
-  it('stores the checkout locale on the pending purchase', async () => {
-    mocks.find
-      .mockResolvedValueOnce({ docs: [course] })
-      .mockResolvedValueOnce({ docs: [user] })
-      .mockResolvedValueOnce({ docs: [], totalDocs: 0 });
-    mocks.create.mockResolvedValue({ id: 11 });
-
-    await createCheckout({ courseSlug: 'lean', email: user.email, locale: 'ru', tier: 'standard' });
-
-    expect(mocks.create).toHaveBeenCalledWith(
-      expect.objectContaining({
-        collection: 'purchases',
-        data: expect.objectContaining({ locale: 'ru' })
-      })
     );
   });
 

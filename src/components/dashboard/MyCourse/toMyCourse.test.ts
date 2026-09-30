@@ -3,7 +3,6 @@ import type { Course, Lesson } from '@/payload-types';
 import { toMyCourse } from './toMyCourse';
 
 const course = {
-  currency: 'EUR',
   id: 1,
   priceFeedback: 129,
   priceStandard: 29,
@@ -22,7 +21,6 @@ describe('toMyCourse', () => {
     ]);
 
     expect(result).toMatchObject({
-      currency: 'EUR',
       slug: 'braking',
       title: 'The Art of Braking',
       upgradePrice: 100

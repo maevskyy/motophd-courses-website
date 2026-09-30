@@ -1,4 +1,10 @@
-import { APIError, type CollectionConfig, type Payload, type PayloadRequest } from 'payload';
+import {
+  APIError,
+  type CollectionAfterChangeHook,
+  type CollectionConfig,
+  type Payload,
+  type PayloadRequest
+} from 'payload';
 
 import { locales } from '@/i18n/locales';
 import { isAdminUser } from '@/lib/access/hasPaidAccess';
@@ -83,6 +89,32 @@ export const findLessonsUsingVideo = async (
   return [...found.entries()].map(([id, label]) => ({ id, label }));
 };
 
+// Длительность урока берётся из его видео. Stream узнаёт её, только когда
+// обработает файл, — часто уже после того, как видео выбрали в уроке
+// (загрузка через «+» прямо из урока), поэтому дописываем её урокам здесь.
+export const copyDurationToLessons: CollectionAfterChangeHook = async ({
+  doc,
+  previousDoc,
+  req
+}) => {
+  if (doc.durationSec == null || doc.durationSec === previousDoc?.durationSec) {
+    return doc;
+  }
+
+  for (const { id } of await findLessonsUsingVideo(req.payload, doc.id, req)) {
+    await req.payload.update({
+      collection: 'lessons',
+      data: { durationSec: doc.durationSec },
+      depth: 0,
+      id,
+      overrideAccess: true,
+      req
+    });
+  }
+
+  return doc;
+};
+
 export const Videos: CollectionConfig = {
   slug: 'videos',
   labels: {
@@ -111,6 +143,7 @@ export const Videos: CollectionConfig = {
     update: ({ req: { user } }) => isAdminUser(user)
   },
   hooks: {
+    afterChange: [copyDurationToLessons],
     beforeDelete: [
       async ({ id, req }) => {
         const lessons = await findLessonsUsingVideo(req.payload, id, req);

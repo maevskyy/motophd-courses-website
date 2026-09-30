@@ -1,6 +1,5 @@
 import type { CollectionConfig } from 'payload';
 
-import { defaultLocale, locales } from '@/i18n/locales';
 import { isAdminUser } from '@/lib/access/hasPaidAccess';
 
 export const Purchases: CollectionConfig = {
@@ -144,19 +143,6 @@ export const Purchases: CollectionConfig = {
       label: {
         en: 'Status',
         ru: 'Статус'
-      }
-    },
-    {
-      // Язык чекаута: письма о покупке уходят на нём (MOT-38). Дефолт 'en' —
-      // для покупок, созданных до появления поля.
-      name: 'locale',
-      type: 'select',
-      defaultValue: defaultLocale,
-      options: [...locales],
-      required: true,
-      label: {
-        en: 'Checkout language',
-        ru: 'Язык оформления'
       }
     },
     {
