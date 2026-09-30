@@ -99,7 +99,7 @@
     "billing": "Plan and purchases",
     "billingSub": "Your plan for each course and the payment history.",
     "courseTierStandard": "Course only",
-    "courseTierFeedback": "With feedback",
+    "courseTierFeedback": "Course + Personal Feedback",
     "feedbackUpgrade": "Add personal feedback",
     "feedbackUpgradePending": "Redirecting to checkout…",
     "feedbackUpgradeHint": "Pay only the difference between the tiers.",
@@ -111,7 +111,7 @@
     "lessonDone": "Completed",
     "lessonPdf": "PDF",
     "feedbackTitle": "Personal feedback from the instructor",
-    "feedbackText": "A personal review of your riding: send a video and get a video review plus a 45-minute Zoom call.",
+    "feedbackText": "Get access to the chat and send videos from your training for review.",
     "feedbackPrice": "Upgrade for {price}",
     "feedbackConnected": "Included",
     "feedbackSend": "Send a video for review",
@@ -216,8 +216,8 @@
     "contactCta": "Message us on {platform}",
     "contactCtaGeneric": "Message us",
     "stepTwo": "Step 2 — Send your video",
-    "stepVideo": "Send a video of your riding and tell us briefly what you want to work on.",
-    "included": "Included in your tier: 1 video review + 1 Zoom call (45 minutes).",
+    "stepVideo": "Send videos from your training to the chat and briefly describe how it felt: what worked and where you feel problems.",
+    "included": "Included in your plan: a video review after each practical level + 1 Zoom call (45 minutes).",
     "backToDashboard": "Back to dashboard"
   }
 }

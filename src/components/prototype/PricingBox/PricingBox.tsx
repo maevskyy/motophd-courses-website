@@ -84,6 +84,22 @@ export function PricingBox({ checkoutEnabled, className, courseSlug, locale, sal
             </button>
           ))}
         </div>
+        {sales.options[selected].tier === 'feedback' ? (
+          <div className={styles.includes}>
+            <p className={styles.includesHeading}>{sales.feedbackIncludes.heading}</p>
+            <ul className={styles.includesList}>
+              {sales.feedbackIncludes.items.map((item) => (
+                <li className={styles.includesItem} key={item.title}>
+                  <Icon className={styles.includesIcon} name="check" size={14} />
+                  <span>
+                    <strong className={styles.includesTitle}>{item.title}</strong>
+                    <span className={styles.includesText}>{item.text}</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
         <label className={styles.fieldLabel} htmlFor="checkout-email">
           {t('checkout.email')}
         </label>

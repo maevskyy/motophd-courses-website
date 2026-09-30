@@ -23,7 +23,7 @@ describe('email templates', () => {
     });
 
     expect(email.subject).toBe('Your MotoPhD course is ready: Cornering Basics');
-    expect(email.text).toContain('Plan: Course + feedback');
+    expect(email.text).toContain('Plan: Course + Personal Feedback');
     expect(email.html).toContain('https://motophd.com/en/dashboard');
     expect(email.html).toContain('<html lang="en"');
     expect(email.text).not.toContain('Password');

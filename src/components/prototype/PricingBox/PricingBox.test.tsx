@@ -26,6 +26,10 @@ const sales = {
     { desc: 'Feedback', name: 'Course + feedback', tier: 'feedback' as const }
   ],
   pricing: { priceFeedback: 129, priceStandard: 29, regionalPrices: [] },
+  feedbackIncludes: {
+    heading: 'Everything in Course only, plus:',
+    items: [{ text: 'One call to review your progress.', title: '1-on-1 video call' }]
+  },
   outcomes: [],
   pain: '',
   priceNote: 'No subscription',
@@ -78,6 +82,15 @@ describe('PricingBox', () => {
     );
 
     expect(screen.getAllByText('€31')).toHaveLength(2);
+  });
+
+  it('lists what the feedback plan includes only while it is selected', () => {
+    render(<PricingBox checkoutEnabled courseSlug="lean" locale="en" sales={sales} />);
+
+    expect(screen.queryByText('1-on-1 video call')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /Course \+ feedback/ }));
+    expect(screen.getByText('Everything in Course only, plus:')).toBeVisible();
+    expect(screen.getByText('1-on-1 video call')).toBeVisible();
   });
 
   it('shows the price of the visitor country once the browser knows it', async () => {

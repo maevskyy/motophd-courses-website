@@ -88,13 +88,13 @@ export const createFeedbackInstructionsEmail = ({ to }: { to: string }): EmailMe
   return {
     to,
     subject: 'How to get your riding feedback',
-    text: `Your plan includes 1 video review and 1 Zoom call (45 minutes).\n\n1. ${stepOneText}\n2. Send a video of your riding and tell us what you want to improve.${signatureText()}`,
+    text: `Your plan includes a video review after each practical level and 1 Zoom call (45 minutes).\n\n1. ${stepOneText}\n2. Send videos from your training and briefly describe how it felt: what worked and where you feel problems.${signatureText()}`,
     html: emailLayout(
       heading('How to get your feedback') +
         paragraph(
-          'Your plan includes <strong>1 video review</strong> and <strong>1 Zoom call (45 minutes)</strong>.'
+          'Your plan includes <strong>a video review after each practical level</strong> and <strong>1 Zoom call (45 minutes)</strong>.'
         ) +
-        `<ol style="margin:0 0 16px;padding-left:20px"><li style="margin-bottom:8px">${stepOneHtml}</li><li>Send a video of your riding and tell us what you want to improve.</li></ol>` +
+        `<ol style="margin:0 0 16px;padding-left:20px"><li style="margin-bottom:8px">${stepOneHtml}</li><li>Send videos from your training and briefly describe how it felt: what worked and where you feel problems.</li></ol>` +
         (contactUrl ? button(contactUrl, messageUsLabel(contactUrl)) : '')
     )
   };

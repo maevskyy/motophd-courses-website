@@ -66,7 +66,7 @@ export const signatureText = () =>
 
 export const tierName = (tier: PurchaseTier) =>
   ({
-    feedback: 'Course + feedback',
+    feedback: 'Course + Personal Feedback',
     feedback_upgrade: 'Feedback add-on',
     standard: 'Course only'
   })[tier];
