@@ -17,6 +17,8 @@ export interface MyCourseModule {
 
 export interface MyCourseData {
   icon: IconName;
+  // Обложка курса; нет — на её месте иконка.
+  image?: string;
   modules: MyCourseModule[];
   slug: string;
   title: string;

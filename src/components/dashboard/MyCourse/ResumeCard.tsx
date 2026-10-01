@@ -1,6 +1,7 @@
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
 import { Icon } from '@/components/ui/Icon';
+import { cx } from '@/lib/classNames';
 import { lessonHref, type ProgressSummary } from '@/lib/progress';
 import type { MyCourseData, MyCourseLesson } from './MyCourse.types';
 import styles from './MyCourse.module.scss';
@@ -28,8 +29,13 @@ export function ResumeCard({ course, next, started, summary }: Props) {
 
   return (
     <article className={styles.resume}>
-      <div className={styles.resume__cover}>
-        <Icon name={course.icon} size={40} />
+      <div className={cx(styles.resume__cover, course.image && styles.resume__coverPhoto)}>
+        {course.image ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img alt="" className={styles.resume__photo} src={course.image} />
+        ) : (
+          <Icon name={course.icon} size={40} />
+        )}
       </div>
       <div className={styles.resume__body}>
         <h2 className={styles.resume__title} id={`course-${course.slug}`}>

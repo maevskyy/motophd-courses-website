@@ -1,6 +1,12 @@
-import type { CollectionConfig } from 'payload';
+import type { CollectionBeforeChangeHook, CollectionConfig } from 'payload';
 
 import { isAdminUser } from '@/lib/access/hasPaidAccess';
+
+// Покупку перевели в paid руками — дата оплаты проставляется сама.
+export const stampPaidAt: CollectionBeforeChangeHook = ({ data, originalDoc }) =>
+  data.status === 'paid' && !data.paidAt && originalDoc?.status !== 'paid'
+    ? { ...data, paidAt: new Date().toISOString() }
+    : data;
 
 export const Purchases: CollectionConfig = {
   slug: 'purchases',
@@ -15,7 +21,7 @@ export const Purchases: CollectionConfig = {
     }
   },
   admin: {
-    defaultColumns: ['user', 'course', 'tier', 'status', 'amount', 'currency', 'provider'],
+    defaultColumns: ['user', 'course', 'tier', 'status', 'amount', 'provider', 'createdAt'],
     useAsTitle: 'providerTxnId'
   },
   access: {
@@ -40,6 +46,12 @@ export const Purchases: CollectionConfig = {
     },
     update: ({ req: { user } }) => isAdminUser(user)
   },
+  hooks: {
+    beforeChange: [stampPaidAt]
+  },
+  // Руками админ заполняет четыре поля (кому, какой курс, тариф, статус) —
+  // так выдают курс бесплатно. Остальное пишет сайт при оплате; у
+  // сохранённой покупки это видно в свёрнутом блоке только для чтения.
   fields: [
     {
       name: 'user',
@@ -66,7 +78,17 @@ export const Purchases: CollectionConfig = {
     {
       name: 'tier',
       type: 'select',
-      options: ['standard', 'feedback', 'feedback_upgrade'],
+      options: [
+        { label: { en: 'Course only', ru: 'Только курс' }, value: 'standard' },
+        {
+          label: { en: 'Course + Personal Feedback', ru: 'Курс + персональная обратная связь' },
+          value: 'feedback'
+        },
+        {
+          label: { en: 'Feedback add-on (bought later)', ru: 'Докупка обратной связи' },
+          value: 'feedback_upgrade'
+        }
+      ],
       required: true,
       label: {
         en: 'Tier',
@@ -74,117 +96,187 @@ export const Purchases: CollectionConfig = {
       }
     },
     {
-      name: 'amount',
-      type: 'number',
-      min: 0,
-      required: true,
-      label: {
-        en: 'Amount',
-        ru: 'Сумма'
-      }
-    },
-    {
-      name: 'currency',
-      type: 'select',
-      defaultValue: 'EUR',
-      options: ['EUR'],
-      required: true,
-      label: {
-        en: 'Currency',
-        ru: 'Валюта'
-      }
-    },
-    {
-      name: 'provider',
-      type: 'select',
-      defaultValue: 'manual',
-      options: ['wayforpay', 'paypal', 'mock', 'manual'],
-      required: true,
-      label: {
-        en: 'Provider',
-        ru: 'Провайдер'
-      }
-    },
-    {
-      name: 'providerTxnId',
-      type: 'text',
-      index: true,
-      label: {
-        en: 'Provider transaction ID',
-        ru: 'ID транзакции провайдера'
-      }
-    },
-    {
-      name: 'orderReference',
-      type: 'text',
-      index: true,
-      unique: true,
-      label: {
-        en: 'Order reference',
-        ru: 'Номер заказа'
-      }
-    },
-    {
-      name: 'promoCode',
-      type: 'relationship',
-      relationTo: 'promoCodes',
-      label: {
-        en: 'Promo code',
-        ru: 'Промокод'
-      }
-    },
-    {
       name: 'status',
       type: 'select',
-      defaultValue: 'pending',
+      // Сайт создаёт заказ со статусом pending сам; в админке покупку
+      // заводят, чтобы выдать курс, — поэтому по умолчанию paid.
+      defaultValue: 'paid',
       index: true,
-      options: ['pending', 'paid', 'failed', 'refunded'],
+      options: [
+        {
+          label: {
+            en: 'pending — started paying, did not finish',
+            ru: 'pending — начал оплату и бросил'
+          },
+          value: 'pending'
+        },
+        { label: { en: 'paid — access open', ru: 'paid — доступ открыт' }, value: 'paid' },
+        {
+          label: { en: 'failed — payment failed', ru: 'failed — оплата не прошла' },
+          value: 'failed'
+        },
+        { label: { en: 'refunded — money returned', ru: 'refunded — возврат' }, value: 'refunded' }
+      ],
       required: true,
       label: {
         en: 'Status',
         ru: 'Статус'
+      },
+      admin: {
+        description: {
+          en: 'Course access is open only while the status is paid.',
+          ru: 'Доступ к курсу открыт, только пока статус paid.'
+        }
       }
     },
     {
-      name: 'paidAt',
-      type: 'date',
+      type: 'collapsible',
       label: {
-        en: 'Paid at',
-        ru: 'Дата оплаты'
-      }
-    },
-    {
-      name: 'providerPayload',
-      type: 'json',
-      label: {
-        en: 'Provider payload',
-        ru: 'Данные провайдера'
-      }
-    },
-    {
-      name: 'postPaymentToken',
-      type: 'text',
-      index: true,
-      label: {
-        en: 'Post-payment token',
-        ru: 'Токен после оплаты'
-      }
-    },
-    {
-      name: 'postPaymentTokenExpiresAt',
-      type: 'date',
-      label: {
-        en: 'Post-payment token expiry',
-        ru: 'Срок токена после оплаты'
-      }
-    },
-    {
-      name: 'postPaymentTokenUsedAt',
-      type: 'date',
-      label: {
-        en: 'Post-payment token used at',
-        ru: 'Использован токен после оплаты'
-      }
+        en: 'Payment details — filled in by the site',
+        ru: 'Данные оплаты — заполняет сайт'
+      },
+      admin: {
+        // При создании вручную блок не нужен; у сохранённой покупки свёрнут.
+        condition: (data) => Boolean(data?.id),
+        initCollapsed: true
+      },
+      fields: [
+        {
+          name: 'amount',
+          type: 'number',
+          defaultValue: 0,
+          min: 0,
+          required: true,
+          label: {
+            en: 'Amount',
+            ru: 'Сумма'
+          },
+          admin: {
+            readOnly: true
+          }
+        },
+        {
+          name: 'currency',
+          type: 'select',
+          defaultValue: 'EUR',
+          options: ['EUR'],
+          required: true,
+          label: {
+            en: 'Currency',
+            ru: 'Валюта'
+          },
+          admin: {
+            readOnly: true
+          }
+        },
+        {
+          name: 'provider',
+          type: 'select',
+          defaultValue: 'manual',
+          options: ['wayforpay', 'paypal', 'mock', 'manual'],
+          required: true,
+          label: {
+            en: 'Provider',
+            ru: 'Провайдер'
+          },
+          admin: {
+            readOnly: true
+          }
+        },
+        {
+          name: 'providerTxnId',
+          type: 'text',
+          index: true,
+          label: {
+            en: 'Provider transaction ID',
+            ru: 'ID транзакции провайдера'
+          },
+          admin: {
+            readOnly: true
+          }
+        },
+        {
+          name: 'orderReference',
+          type: 'text',
+          index: true,
+          unique: true,
+          label: {
+            en: 'Order reference',
+            ru: 'Номер заказа'
+          },
+          admin: {
+            readOnly: true
+          }
+        },
+        {
+          name: 'promoCode',
+          type: 'relationship',
+          relationTo: 'promoCodes',
+          label: {
+            en: 'Promo code',
+            ru: 'Промокод'
+          },
+          admin: {
+            readOnly: true
+          }
+        },
+        {
+          name: 'paidAt',
+          type: 'date',
+          label: {
+            en: 'Paid at',
+            ru: 'Дата оплаты'
+          },
+          admin: {
+            readOnly: true
+          }
+        },
+        {
+          name: 'providerPayload',
+          type: 'json',
+          label: {
+            en: 'Provider payload',
+            ru: 'Данные провайдера'
+          },
+          admin: {
+            readOnly: true
+          }
+        },
+        {
+          name: 'postPaymentToken',
+          type: 'text',
+          index: true,
+          label: {
+            en: 'Post-payment token',
+            ru: 'Токен после оплаты'
+          },
+          admin: {
+            readOnly: true
+          }
+        },
+        {
+          name: 'postPaymentTokenExpiresAt',
+          type: 'date',
+          label: {
+            en: 'Post-payment token expiry',
+            ru: 'Срок токена после оплаты'
+          },
+          admin: {
+            readOnly: true
+          }
+        },
+        {
+          name: 'postPaymentTokenUsedAt',
+          type: 'date',
+          label: {
+            en: 'Post-payment token used at',
+            ru: 'Использован токен после оплаты'
+          },
+          admin: {
+            readOnly: true
+          }
+        }
+      ]
     }
   ]
 };

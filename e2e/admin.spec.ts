@@ -408,22 +408,21 @@ test.describe('purchases', () => {
 
     const buyer = await login(request, email, password);
 
+    // Как в админке: только кому, какой курс и тариф — остальное по умолчанию.
     const purchase = await request.post('/api/purchases', {
-      data: {
-        amount: 100,
-        course: course.id,
-        currency: 'EUR',
-        locale: 'ru',
-        paidAt: new Date().toISOString(),
-        provider: 'manual',
-        status: 'paid',
-        tier: 'standard',
-        user: userId
-      },
+      data: { course: course.id, tier: 'standard', user: userId },
       headers: auth(admin.token)
     });
     expect(purchase.status(), 'админ выписывает покупку вручную').toBe(201);
-    track('purchases', (await purchase.json()).doc.id);
+    const granted = (await purchase.json()).doc;
+    track('purchases', granted.id);
+    expect(granted).toMatchObject({
+      amount: 0,
+      currency: 'EUR',
+      provider: 'manual',
+      status: 'paid'
+    });
+    expect(granted.paidAt, 'дата оплаты проставилась сама').toBeTruthy();
 
     const mine = await request.get('/api/purchases?limit=100&depth=0', {
       headers: auth(buyer.token)
@@ -461,4 +460,21 @@ test.describe('promoCodes', () => {
     });
     expect(duplicate.status(), 'два промокода с одним кодом').toBe(400);
   });
+});
+
+// Форма новой покупки в админке: только то, что заполняет человек.
+test('admin purchase form asks only for user, course, tier and status', async ({ page }) => {
+  await page.goto('/admin/login');
+  await page.locator('#field-email').fill(ADMIN.email);
+  await page.locator('#field-password').fill(ADMIN.password);
+  await page.locator('button[type="submit"]').click();
+  await expect(page).toHaveURL(/\/admin\/?$/);
+
+  await page.goto('/admin/collections/purchases/create');
+  for (const field of ['user', 'course', 'tier', 'status']) {
+    await expect(page.locator(`#field-${field}`)).toBeVisible();
+  }
+  for (const field of ['amount', 'orderReference', 'providerTxnId', 'postPaymentToken']) {
+    await expect(page.locator(`#field-${field}`)).toHaveCount(0);
+  }
 });

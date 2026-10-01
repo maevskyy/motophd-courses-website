@@ -98,7 +98,10 @@ describe('MyCoursesPanel', () => {
     render(<MyCoursesPanel courses={[lean]} name="Student" />);
 
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('dashboard.welcomeTitle');
-    expect(screen.getByRole('link', { name: 'startCourse' })).toHaveAttribute('href', '/learn/lean/1');
+    expect(screen.getByRole('link', { name: 'startCourse' })).toHaveAttribute(
+      'href',
+      '/learn/lean/1'
+    );
     expect(screen.getByRole('link', { name: /lean with confidence/i })).toHaveAttribute(
       'href',
       '/learn/lean/1'
@@ -115,7 +118,10 @@ describe('MyCoursesPanel', () => {
       '/learn/lean/2'
     );
     expect(screen.getByRole('progressbar')).toHaveAttribute('value', '1');
-    expect(screen.getByRole('link', { name: /video lesson/i })).toHaveAttribute('href', '/learn/lean/1');
+    expect(screen.getByRole('link', { name: /video lesson/i })).toHaveAttribute(
+      'href',
+      '/learn/lean/1'
+    );
     expect(screen.getByRole('link', { name: /motorcycle preparation/i })).toHaveAttribute(
       'href',
       '/learn/lean/3'

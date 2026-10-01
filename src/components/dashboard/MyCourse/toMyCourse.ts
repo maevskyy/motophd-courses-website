@@ -31,10 +31,15 @@ const toModules = (course: Course, lessons: Lesson[]): MyCourseModule[] => {
   });
 };
 
-export const toMyCourse = (course: Course, lessons: Lesson[], index?: number): MyCourseData => ({
-  icon: toCourseCardCourse(course, index).icon,
-  modules: toModules(course, lessons),
-  slug: course.slug,
-  title: course.title,
-  upgradePrice: Math.max(0, course.priceFeedback - course.priceStandard)
-});
+export const toMyCourse = (course: Course, lessons: Lesson[], index?: number): MyCourseData => {
+  const card = toCourseCardCourse(course, index);
+
+  return {
+    icon: card.icon,
+    image: card.image,
+    modules: toModules(course, lessons),
+    slug: course.slug,
+    title: course.title,
+    upgradePrice: Math.max(0, course.priceFeedback - course.priceStandard)
+  };
+};
