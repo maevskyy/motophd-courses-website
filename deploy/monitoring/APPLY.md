@@ -24,7 +24,7 @@
 ⚠️ **Порядок важен.** Новый `docker-compose.prod.yml` требует переменные с
 `:?` (`TG_BOT_TOKEN`, `TG_CHAT_ID`, `BACKUP_R2_*`, `HEALTHCHECKS_BACKUP_URL`).
 Если положить compose раньше, чем заполнен `.env`, то `docker compose config
---quiet` начнёт падать — а именно эту команду выполняет шаг **Preflight VPS** в
+--quiet` начнёт падать — а именно эту команду выполняет шаг **Verify VPS prerequisites** в
 `Deploy`. Кнопка Deploy перестанет работать до тех пор, пока переменные не
 появятся. Поэтому сначала правим `.env`.
 

@@ -87,9 +87,18 @@ jobs:
           echo "::error::Timed out waiting for CI of $SHA"
           exit 1
 
-  preflight:
-    name: Preflight VPS
+  # Единственный джоб, который ходит на сервер. Окружение production держит
+  # SSH-ключ деплоя и требует ручного Approve Димы: без клика в браузере
+  # деплой не начнётся, кто бы его ни запустил (замок 2, 01.10).
+  deploy:
+    name: Deploy to VPS
+    needs:
+      - resolve-tag
+      - await-ci
     runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://motophd.com
     steps:
       - name: Verify required secrets
         env:
@@ -138,14 +147,6 @@ jobs:
             test "$available_kb" -ge 5242880 || { echo "Less than 5 GiB is available on the VPS"; exit 1; }
             echo "${{ secrets.GHCR_READ_TOKEN }}" | docker login ghcr.io -u "${{ github.repository_owner }}" --password-stdin
 
-  deploy:
-    name: Deploy to VPS
-    needs:
-      - resolve-tag
-      - await-ci
-      - preflight
-    runs-on: ubuntu-latest
-    steps:
       - name: Deploy image over SSH
         uses: appleboy/ssh-action@v1.2.2
         with:
@@ -167,6 +168,13 @@ jobs:
             docker compose -f docker-compose.prod.yml up -d --remove-orphans
             docker compose -f docker-compose.prod.yml exec -T caddy caddy reload --config /etc/caddy/Caddyfile || docker compose -f docker-compose.prod.yml restart caddy
             curl -fsS --retry 30 --retry-delay 3 --retry-all-errors http://127.0.0.1:3000/api/health
+            # Тег пишем в .env: ручной `docker compose up -d app` на боксе читает
+            # IMAGE_TAG оттуда и без этого откатывал прод на старый образ.
+            if grep -q '^IMAGE_TAG=' .env; then
+              sed -i "s/^IMAGE_TAG=.*/IMAGE_TAG=${IMAGE_TAG}/" .env
+            else
+              printf '\nIMAGE_TAG=%s\n' "$IMAGE_TAG" >> .env
+            fi
 
       - name: Production smoke check
         run: |
