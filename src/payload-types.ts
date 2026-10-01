@@ -562,13 +562,16 @@ export interface Purchase {
   user: number | User;
   course: number | Course;
   tier: 'standard' | 'feedback' | 'feedback_upgrade';
+  /**
+   * Course access is open only while the status is paid.
+   */
+  status: 'pending' | 'paid' | 'failed' | 'refunded';
   amount: number;
   currency: 'EUR';
   provider: 'wayforpay' | 'paypal' | 'mock' | 'manual';
   providerTxnId?: string | null;
   orderReference?: string | null;
   promoCode?: (number | null) | PromoCode;
-  status: 'pending' | 'paid' | 'failed' | 'refunded';
   paidAt?: string | null;
   providerPayload?:
     | {
@@ -831,13 +834,13 @@ export interface PurchasesSelect<T extends boolean = true> {
   user?: T;
   course?: T;
   tier?: T;
+  status?: T;
   amount?: T;
   currency?: T;
   provider?: T;
   providerTxnId?: T;
   orderReference?: T;
   promoCode?: T;
-  status?: T;
   paidAt?: T;
   providerPayload?: T;
   postPaymentToken?: T;

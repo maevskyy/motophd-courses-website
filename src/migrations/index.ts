@@ -11,6 +11,7 @@ import * as migration_20260930_125637_promo_code_limits from './20260930_125637_
 import * as migration_20260930_143915_drop_lesson_body from './20260930_143915_drop_lesson_body';
 import * as migration_20260930_144348_regional_prices from './20260930_144348_regional_prices';
 import * as migration_20260930_151402_drop_unused_fields from './20260930_151402_drop_unused_fields';
+import * as migration_20261001_151256_purchase_defaults from './20261001_151256_purchase_defaults';
 
 export const migrations = [
   {
@@ -76,6 +77,11 @@ export const migrations = [
   {
     up: migration_20260930_151402_drop_unused_fields.up,
     down: migration_20260930_151402_drop_unused_fields.down,
-    name: '20260930_151402_drop_unused_fields'
+    name: '20260930_151402_drop_unused_fields',
+  },
+  {
+    up: migration_20261001_151256_purchase_defaults.up,
+    down: migration_20261001_151256_purchase_defaults.down,
+    name: '20261001_151256_purchase_defaults'
   },
 ];

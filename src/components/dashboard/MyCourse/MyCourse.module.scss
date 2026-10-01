@@ -29,6 +29,21 @@
   justify-content: center;
 }
 
+/* Обложка курса вместо иконки — горизонтальная, как фото на карточках курсов. */
+.resume__coverPhoto {
+  aspect-ratio: 16 / 10;
+  block-size: auto;
+  inline-size: 168px;
+  overflow: hidden;
+}
+
+.resume__photo {
+  block-size: 100%;
+  inline-size: 100%;
+  object-fit: cover;
+  object-position: center 40%;
+}
+
 .resume__body {
   display: flex;
   flex: 1;
@@ -298,6 +313,10 @@
   .resume,
   .feedback {
     flex-direction: column;
+  }
+
+  .resume__coverPhoto {
+    inline-size: 100%;
   }
 
   .feedback__aside {

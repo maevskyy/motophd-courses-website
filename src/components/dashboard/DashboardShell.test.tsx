@@ -67,6 +67,9 @@ describe('DashboardShell', () => {
 
     expect(screen.getByRole('complementary')).toHaveTextContent('student@motophd.com');
     expect(screen.getByRole('button', { name: 'actions.signOut' })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'actions.backToWebsite' })).toHaveAttribute('href', '/');
+    expect(screen.getByRole('link', { name: 'actions.backToWebsite' })).toHaveAttribute(
+      'href',
+      '/'
+    );
   });
 });
