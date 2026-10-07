@@ -54,8 +54,11 @@ test('bank return redirects to the public site, never to the container address',
 }) => {
   // За Caddy request.url — это https://0.0.0.0:3000 (MOT-98): после оплаты
   // покупатель уходил на недоступный адрес.
+  // Заказа e2e-order в базе нет: «Approved» без оплаты в базе — ждать
+  // подтверждения банка на странице ожидания, а не объявлять успех.
   for (const [transactionStatus, page] of [
-    ['Approved', 'success'],
+    ['Approved', 'pending'],
+    ['Pending', 'pending'],
     ['Declined', 'fail']
   ]) {
     const response = await request.post('/api/payments/wayforpay/return?locale=ru&order=e2e-order', {
@@ -158,7 +161,8 @@ test.describe('phone layout', () => {
       '/en/login',
       '/en/privacy',
       '/en/checkout/success?order=x',
-      '/en/checkout/fail?order=x'
+      '/en/checkout/fail?order=x',
+      '/en/checkout/pending?order=x'
     ]) {
       await expectNoHorizontalScroll(page, path);
     }

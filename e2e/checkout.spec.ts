@@ -58,6 +58,34 @@ test('guest payment creates one paid mock purchase and opens the course', async 
   ]);
 });
 
+// 07.10.2026: банк держал оплату на проверке, сайт сказал «не прошла».
+// Теперь покупатель ждёт на странице ожидания, и она открывает курс сама,
+// как только банк одобрит.
+test('the waiting page signs the buyer in as soon as the bank approves', async ({
+  context,
+  page
+}) => {
+  await startCheckout(page, createGuestEmail('later'));
+
+  const checkoutUrl = new URL(page.url());
+  const order = checkoutUrl.searchParams.get('order') || '';
+  const token = checkoutUrl.searchParams.get('t') || '';
+
+  await page.goto(`/en/checkout/pending?order=${order}&t=${token}`);
+  await expect(page.getByRole('heading', { name: 'Payment is processing' })).toBeVisible();
+
+  // Банк одобряет позже: его уведомление приходит, пока покупатель ждёт.
+  const bank = await context.newPage();
+
+  await bank.goto(`/en/checkout/mock?order=${order}`);
+  await bank.getByRole('button', { name: 'Pay', exact: true }).click();
+  await expect(bank).toHaveURL(/\/en\/checkout\/success/);
+
+  await expect(page).toHaveURL(/\/en\/checkout\/success\?order=.*signedIn=1/, { timeout: 15_000 });
+  await page.goto('/en/learn/lean');
+  await expect(page.getByText('Lesson 1 of 5')).toBeVisible();
+});
+
 test('MOTO10 applies the server-side amount of 26.10', async ({ page }) => {
   await startCheckout(page, createGuestEmail('promo'), 'MOTO10');
   await pay(page);

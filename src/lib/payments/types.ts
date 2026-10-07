@@ -21,10 +21,13 @@ export type CheckoutResponse = {
   redirectUrl: string;
 };
 
+// pending — банк ещё решает (антифрод, 3-D Secure): ни доступа, ни отказа.
+export type PaymentState = 'failed' | 'paid' | 'pending';
+
 export type VerifiedCallback = {
   orderReference: string;
   providerTxnId: string;
-  status: 'paid' | 'failed';
+  status: PaymentState;
   payload: unknown;
 };
 
@@ -33,4 +36,7 @@ export interface PaymentProvider {
   buildAck: (callback: VerifiedCallback) => Response;
   createCheckout: (request: CheckoutRequest) => Promise<CheckoutResponse>;
   verifyCallback: (rawBody: string, signature: string | null) => VerifiedCallback | null;
+  // Спросить у банка статус заказа самим, не дожидаясь его уведомления.
+  // Ответ проверяется так же, как уведомление; null — не удалось узнать.
+  checkStatus?: (orderReference: string) => Promise<VerifiedCallback | null>;
 }

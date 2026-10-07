@@ -61,7 +61,9 @@ const issueFirstPassword = async (
   return password;
 };
 
-export const fulfilPayment = async (callback: VerifiedCallback) => {
+type FulfilResult = { found: boolean; fulfilled: boolean };
+
+const fulfilOnce = async (callback: VerifiedCallback): Promise<FulfilResult> => {
   const payload = await getPayloadClient();
   const purchases = await payload.find({
     collection: 'purchases',
@@ -80,7 +82,7 @@ export const fulfilPayment = async (callback: VerifiedCallback) => {
     return { found: true, fulfilled: false };
   }
 
-  if (callback.status === 'failed') {
+  if (callback.status !== 'paid') {
     return { found: true, fulfilled: false };
   }
 
@@ -127,4 +129,33 @@ export const fulfilPayment = async (callback: VerifiedCallback) => {
   }
 
   return { found: true, fulfilled: true };
+};
+
+/*
+  Об одной оплате сайт узнаёт несколькими путями: уведомление банка (банк
+  повторяет его, пока не получит ответ), страница «оплата обрабатывается»,
+  фоновая досверка. Если два пути придут одновременно, оба прочитали бы
+  pending — и покупатель получил бы два письма с разными паролями.
+  Поэтому оплаты одного заказа обрабатываются строго по очереди: следующая
+  перечитывает покупку, видит paid и ничего не делает.
+  Очередь в памяти процесса — приложение работает одним процессом
+  (как и кэш витрины, см. publicCache.ts).
+*/
+const queues = new Map<string, Promise<FulfilResult>>();
+
+export const fulfilPayment = (callback: VerifiedCallback): Promise<FulfilResult> => {
+  const key = callback.orderReference;
+  const previous = queues.get(key) ?? Promise.resolve();
+  const run = previous.catch(() => undefined).then(() => fulfilOnce(callback));
+
+  queues.set(key, run);
+  run
+    .finally(() => {
+      if (queues.get(key) === run) {
+        queues.delete(key);
+      }
+    })
+    .catch(() => undefined);
+
+  return run;
 };
