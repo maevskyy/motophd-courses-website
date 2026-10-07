@@ -96,4 +96,38 @@ describe('fulfilPayment', () => {
       expect.objectContaining({ password: undefined })
     );
   });
+
+  it('sends one password when the bank notification and a status check arrive together', async () => {
+    // Покупка в «базе»: update переводит её в paid, следующий find видит это.
+    // Запись в базу не мгновенная — пока первая обработка пишет, вторая читает.
+    let stored = { ...pendingPurchase };
+    mocks.find.mockImplementation(async () => ({ docs: [stored] }));
+    mocks.update.mockImplementation(async ({ collection, data }) => {
+      await new Promise((resolve) => setTimeout(resolve, 5));
+
+      if (collection === 'purchases') {
+        stored = { ...stored, ...data };
+      }
+    });
+    mocks.count.mockResolvedValue({ totalDocs: 0 });
+
+    const results = await Promise.all([fulfilPayment(callback), fulfilPayment(callback)]);
+
+    expect(results).toEqual([
+      { found: true, fulfilled: true },
+      { found: true, fulfilled: false }
+    ]);
+    expect(mocks.sendPaymentNotifications).toHaveBeenCalledTimes(1);
+    expect(mocks.update.mock.calls.filter(([args]) => args.collection === 'users')).toHaveLength(1);
+  });
+
+  it('keeps a pending purchase pending while the bank is still checking it', async () => {
+    mocks.find.mockResolvedValue({ docs: [pendingPurchase] });
+
+    await expect(fulfilPayment({ ...callback, status: 'pending' })).resolves.toEqual({
+      found: true,
+      fulfilled: false
+    });
+    expect(mocks.update).not.toHaveBeenCalled();
+  });
 });

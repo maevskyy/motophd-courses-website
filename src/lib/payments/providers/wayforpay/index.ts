@@ -1,7 +1,7 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
 
 import type { Locale } from '@/i18n/locales';
-import type { PaymentProvider } from '../../types';
+import type { PaymentProvider, PaymentState, VerifiedCallback } from '../../types';
 
 // Язык платёжной страницы WayForPay: у банка украинский — это 'UA'.
 const wayForPayLanguage: Record<Locale, string> = { en: 'EN', ru: 'RU', uk: 'UA' };
@@ -45,6 +45,59 @@ const callbackAmountLiteral = (rawBody: string, fallback: unknown) => {
 
   return match ? match[1] : String(fallback ?? '');
 };
+
+// Окончательный отказ. Остальное, кроме Approved (InProcessing, Pending —
+// проверка антифродом, WaitingAuthComplete), — банк ещё не решил.
+const finalFailures = new Set(['declined', 'expired', 'refunded', 'refundinprocessing', 'voided']);
+
+export const wayForPayState = (transactionStatus: unknown): PaymentState => {
+  const status = String(transactionStatus || '').toLowerCase();
+
+  if (status === 'approved') {
+    return 'paid';
+  }
+
+  return finalFailures.has(status) ? 'failed' : 'pending';
+};
+
+// Уведомление банка на serviceUrl и ответ CHECK_STATUS подписаны одинаково.
+const verifyMessage = (rawBody: string): VerifiedCallback | null => {
+  const payload = parseCallback(rawBody);
+  const secret = process.env.WAYFORPAY_SECRET || '';
+  const signatureFields = payload && [
+    payload.merchantAccount,
+    payload.orderReference,
+    callbackAmountLiteral(rawBody, payload.amount),
+    payload.currency,
+    payload.authCode,
+    payload.cardPan,
+    payload.transactionStatus,
+    payload.reasonCode
+  ];
+
+  if (
+    !payload ||
+    !secret ||
+    !isSignatureValid(payload.merchantSignature, join(signatureFields || []), secret)
+  ) {
+    return null;
+  }
+
+  const orderReference = String(payload.orderReference || '');
+
+  if (!orderReference) {
+    return null;
+  }
+
+  return {
+    orderReference,
+    payload,
+    providerTxnId: String(payload.authCode || orderReference),
+    status: wayForPayState(payload.transactionStatus)
+  };
+};
+
+const CHECK_STATUS_TIMEOUT_MS = 10_000;
 
 type CreateInvoiceResponse = { reasonCode?: number | string; url?: string };
 
@@ -136,42 +189,31 @@ export const wayForPayProvider: PaymentProvider = {
 
     return { redirectUrl: result.url };
   },
-  verifyCallback: (rawBody) => {
-    const payload = parseCallback(rawBody);
+  checkStatus: async (orderReference) => {
+    const merchantAccount = process.env.WAYFORPAY_MERCHANT_ACCOUNT || '';
     const secret = process.env.WAYFORPAY_SECRET || '';
-    const signatureFields = payload && [
-      payload.merchantAccount,
-      payload.orderReference,
-      callbackAmountLiteral(rawBody, payload.amount),
-      payload.currency,
-      payload.authCode,
-      payload.cardPan,
-      payload.transactionStatus,
-      payload.reasonCode
-    ];
 
-    if (
-      !payload ||
-      !secret ||
-      !isSignatureValid(payload.merchantSignature, join(signatureFields || []), secret)
-    ) {
+    if (!merchantAccount || !secret) {
       return null;
     }
 
-    const orderReference = String(payload.orderReference || '');
+    const response = await fetch('https://api.wayforpay.com/api', {
+      body: JSON.stringify({
+        apiVersion: 1,
+        merchantAccount,
+        merchantSignature: sign(join([merchantAccount, orderReference]), secret),
+        orderReference,
+        transactionType: 'CHECK_STATUS'
+      }),
+      headers: { 'content-type': 'application/json' },
+      method: 'POST',
+      signal: AbortSignal.timeout(CHECK_STATUS_TIMEOUT_MS)
+    });
+    const verified = verifyMessage(await response.text());
 
-    if (!orderReference) {
-      return null;
-    }
-
-    return {
-      orderReference,
-      payload,
-      providerTxnId: String(payload.authCode || orderReference),
-      status:
-        String(payload.transactionStatus || '').toLowerCase() === 'approved' ? 'paid' : 'failed'
-    };
-  }
+    return verified?.orderReference === orderReference ? verified : null;
+  },
+  verifyCallback: (rawBody) => verifyMessage(rawBody)
 };
 
 export const wayForPaySign = sign;

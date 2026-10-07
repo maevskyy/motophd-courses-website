@@ -172,7 +172,9 @@
     "successSignedIn": "You are signed in and your course is ready.",
     "successLogin": "Payment is complete. Sign in to access your course.",
     "failTitle": "Payment was not completed",
-    "failDescription": "Your order is still pending. You can try again later.",
+    "failDescription": "The bank did not approve the payment. You can try again or write to us at support@motophd.com.",
+    "pendingTitle": "Payment is processing",
+    "pendingDescription": "Your bank is checking the payment — usually it takes a few minutes. As soon as it is approved, this page will open your course, and the login details will arrive by email. You can close the page: the email will come anyway.",
     "errors": {
       "alreadyPurchased": "This course is already in your purchases.",
       "checkoutUnavailable": "We cannot accept payment right now — please contact us.",

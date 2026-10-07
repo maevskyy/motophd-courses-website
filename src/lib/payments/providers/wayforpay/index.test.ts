@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { wayForPayJoin, wayForPayProvider, wayForPaySign } from './index';
+import { wayForPayJoin, wayForPayProvider, wayForPaySign, wayForPayState } from './index';
 
 // Публичные реквизиты WayForPay из их страницы Test details; боевые ключи
 // сюда не попадают.
@@ -131,7 +131,7 @@ describe('WayForPay signatures', () => {
 
     expect(wayForPayProvider.verifyCallback(raw, null)).toMatchObject({
       orderReference: 'ORD-1002',
-      status: 'failed'
+      status: 'pending'
     });
     expect(wayForPayProvider.verifyCallback(raw.replace('1100', '1101'), null)).toBeNull();
   });
@@ -177,5 +177,88 @@ describe('WayForPay signatures', () => {
       time: 1700000100,
       signature: '1e425f731eda97710b61419cb8fcc72a'
     });
+  });
+
+  it.each([
+    ['Approved', 'paid'],
+    ['Pending', 'pending'],
+    ['InProcessing', 'pending'],
+    ['WaitingAuthComplete', 'pending'],
+    ['Declined', 'failed'],
+    ['Expired', 'failed'],
+    ['Refunded', 'failed']
+  ])('treats %s as %s', (transactionStatus, state) =>
+    expect(wayForPayState(transactionStatus)).toBe(state)
+  );
+
+  // Ответ CHECK_STATUS снят с тестового мерчанта WayForPay (07.10.2026) и
+  // переподписан под заказ теста: подписан так же, как уведомление банка.
+  const checkStatusResponse = (orderReference: string, transactionStatus: string) => {
+    const fields = {
+      merchantAccount: 'test_merch_n1',
+      reason: 'Ok',
+      reasonCode: 1100,
+      orderReference,
+      amount: 49,
+      currency: 'EUR',
+      authCode: 'VKTEVW',
+      cardPan: '47****9269',
+      transactionStatus,
+      refundAmount: 0,
+      fee: 0
+    };
+
+    return JSON.stringify({
+      ...fields,
+      merchantSignature: sign([
+        fields.merchantAccount,
+        fields.orderReference,
+        fields.amount,
+        fields.currency,
+        fields.authCode,
+        fields.cardPan,
+        fields.transactionStatus,
+        fields.reasonCode
+      ])
+    });
+  };
+
+  it('asks the bank for the order status with a signed CHECK_STATUS request', async () => {
+    process.env.WAYFORPAY_MERCHANT_ACCOUNT = 'test_merch_n1';
+    process.env.WAYFORPAY_SECRET = secret;
+    const fetch = vi
+      .fn()
+      .mockResolvedValue({ text: async () => checkStatusResponse('ORD-49', 'Approved') });
+    vi.stubGlobal('fetch', fetch);
+
+    await expect(wayForPayProvider.checkStatus?.('ORD-49')).resolves.toMatchObject({
+      orderReference: 'ORD-49',
+      providerTxnId: 'VKTEVW',
+      status: 'paid'
+    });
+    expect(fetch.mock.calls[0][0]).toBe('https://api.wayforpay.com/api');
+    expect(JSON.parse(fetch.mock.calls[0][1].body)).toEqual({
+      apiVersion: 1,
+      merchantAccount: 'test_merch_n1',
+      merchantSignature: sign(['test_merch_n1', 'ORD-49']),
+      orderReference: 'ORD-49',
+      transactionType: 'CHECK_STATUS'
+    });
+  });
+
+  it('ignores a status answer that is unsigned or about another order', async () => {
+    process.env.WAYFORPAY_MERCHANT_ACCOUNT = 'test_merch_n1';
+    process.env.WAYFORPAY_SECRET = secret;
+    const forged = checkStatusResponse('ORD-49', 'Approved').replace('"Approved"', '"approved"');
+    const fetch = vi
+      .fn()
+      .mockResolvedValueOnce({ text: async () => forged })
+      .mockResolvedValueOnce({ text: async () => checkStatusResponse('ORD-OTHER', 'Approved') })
+      .mockResolvedValueOnce({ text: async () => '{"reasonCode":1112,"reason":"No transaction"}' });
+    vi.stubGlobal('fetch', fetch);
+
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      await expect(wayForPayProvider.checkStatus?.('ORD-49')).resolves.toBeNull();
+    }
   });
 });
