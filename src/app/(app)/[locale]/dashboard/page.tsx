@@ -1,4 +1,5 @@
 import { connection } from 'next/server';
+import { CommunityCard } from '@/components/dashboard/CommunityCard';
 import { AvailableCoursesSection, MyCoursesPanel } from '@/components/dashboard/DashboardPanels';
 import { toMyCourse } from '@/components/dashboard/MyCourse';
 import { getFeedbackUpgradeCourseSlugs } from '@/lib/access/feedbackUpgrade';
@@ -58,6 +59,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
         hasFeedback={hasFeedback}
         name={user.name || user.email}
       />
+      {courses.length > 0 ? <CommunityCard locale={safeLocale} /> : null}
       <AvailableCoursesSection availableCourses={availableCourses} />
     </>
   );

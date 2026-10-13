@@ -43,9 +43,13 @@ export type SalesContent = {
   pricing: Pick<Course, 'priceFeedback' | 'priceStandard' | 'regionalPrices'>;
   // Что входит в тариф с обратной связью — под тарифами, когда он выбран.
   feedbackIncludes: { heading: string; items: Array<{ text: string; title: string }> };
+  // Подсказка на невыбранном тарифе с обратной связью: нажми — увидишь, что входит.
+  feedbackMore: string;
   disclaimer: string;
   guarantee: string;
   modulesTitle: string;
+  // Сноска под программой курса; пусто — сноски нет (есть только у uk: видео на русском).
+  modulesNote: string;
 };
 
 export type DashboardContent = {

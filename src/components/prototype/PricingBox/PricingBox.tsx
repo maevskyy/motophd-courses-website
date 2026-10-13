@@ -81,6 +81,12 @@ export function PricingBox({ checkoutEnabled, className, courseSlug, locale, sal
                 </span>
               </span>
               <span className={styles.optionDesc}>{option.desc}</span>
+              {option.tier === 'feedback' && selected !== index ? (
+                <span className={styles.optionMore}>
+                  {sales.feedbackMore}
+                  <Icon name="chevronDown" size={14} />
+                </span>
+              ) : null}
             </button>
           ))}
         </div>

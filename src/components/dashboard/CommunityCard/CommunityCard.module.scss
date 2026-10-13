@@ -1,0 +1,45 @@
+@use '@/styles/mixins' as *;
+
+/* Та же форма, что у карточки обратной связи: текст слева, действие справа. */
+.community {
+  @include card;
+
+  align-items: center;
+  display: flex;
+  gap: var(--sp-5);
+  margin-block-end: var(--sp-7);
+  padding: var(--sp-5);
+}
+
+.community__body {
+  display: grid;
+  flex: 1;
+  gap: var(--sp-2);
+  min-inline-size: 0;
+}
+
+.community__title {
+  @include h3;
+
+  margin: 0;
+}
+
+.community__text {
+  color: var(--text-2);
+  font-size: var(--fs-small);
+  line-height: var(--lh-normal);
+  margin: 0;
+}
+
+.community__link {
+  @include btn-secondary;
+
+  flex: none;
+}
+
+@media (max-width: 600px) {
+  .community {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}

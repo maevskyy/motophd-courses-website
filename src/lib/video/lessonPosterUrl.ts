@@ -1,7 +1,7 @@
 import type { Lesson } from '@/payload-types';
 import { getSiteUrl } from '@/lib/seo/siteUrl';
 
-// Абсолютный URL обложки урока для постера Stream-плеера. Media.read для
+// Абсолютный URL обложки урока (или курса — для трейлера) для постера Stream-плеера. Media.read для
 // анонимов — allowlist image/*, поэтому картинка публична по своему url;
 // Stream грузит её из своего iframe без куки сайта. Не картинка или не
 // загружена (depth 0) — null, плеер покажет кадр из видео как раньше.

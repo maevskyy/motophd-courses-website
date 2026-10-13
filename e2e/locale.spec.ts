@@ -25,7 +25,7 @@ test('ukrainian home page renders the header and content in Ukrainian', async ({
     page.getByRole('navigation').getByRole('link', { exact: true, name: 'Курси' })
   ).toBeVisible();
   await expect(
-    page.getByRole('group', { name: 'Мова' }).getByRole('link', { name: 'UK' })
+    page.getByRole('group', { name: 'Мова' }).getByRole('link', { name: 'UA' })
   ).toHaveAttribute('aria-current', 'true');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('райдерів');
 });

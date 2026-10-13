@@ -32,7 +32,7 @@ describe('LocaleSelect', () => {
     expect(screen.getAllByRole('option').map((option) => option.textContent)).toEqual([
       'EN — English',
       'RU — Русский',
-      'UK — Українська'
+      'UA — Українська'
     ]);
   });
 

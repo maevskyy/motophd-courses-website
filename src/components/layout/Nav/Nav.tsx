@@ -6,7 +6,7 @@ import { Link, usePathname, useRouter } from '@/i18n/routing';
 import { useAuthStatus } from '@/components/providers/AuthStatusProvider';
 import { Icon } from '@/components/ui/Icon';
 import { cx } from '@/lib/classNames';
-import { locales, type Locale } from '@/i18n/locales';
+import { localeShortLabels, locales, type Locale } from '@/i18n/locales';
 import styles from './Nav.module.scss';
 
 export function Nav() {
@@ -83,7 +83,7 @@ export function Nav() {
             router.replace(`${pathname}${window.location.search}`, { locale: item });
           }}
         >
-          {item.toUpperCase()}
+          {localeShortLabels[item]}
         </Link>
       ))}
     </div>

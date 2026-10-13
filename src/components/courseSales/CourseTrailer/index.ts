@@ -1,0 +1,1 @@
+export { CourseTrailer } from './CourseTrailer';

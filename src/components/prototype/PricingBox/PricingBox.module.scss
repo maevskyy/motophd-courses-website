@@ -81,6 +81,18 @@
   line-height: var(--lh-normal);
 }
 
+/* Подсказка «Подробнее» у невыбранного тарифа с обратной связью: без неё
+   короткое описание не намекает, что по нажатию откроется список. */
+.optionMore {
+  align-items: center;
+  color: var(--brand);
+  display: inline-flex;
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  gap: var(--sp-1);
+  margin-block-start: var(--sp-2);
+}
+
 /* Что входит в тариф с обратной связью: список под тарифами, пока он выбран. */
 .includes {
   border-block-start: 1px solid var(--border);

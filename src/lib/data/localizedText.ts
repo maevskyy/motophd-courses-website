@@ -9,10 +9,12 @@ export type SalesText = Record<
   | 'courseOnlyDesc'
   | 'feedback'
   | 'feedbackDesc'
+  | 'feedbackMore'
   | 'guarantee'
   | 'lifetime'
   | 'disclaimer'
   | 'modulesTitle'
+  | 'modulesNote'
   | 'studentName',
   string
 >;
@@ -106,11 +108,13 @@ export const salesText: Record<AppLocale, SalesText> = {
     courseOnlyDesc: 'Videos + PDFs. Learn at your pace.',
     feedback: 'Course + Personal Feedback',
     feedbackDesc: 'Reviews of your riding videos and a call with Vlad.',
+    feedbackMore: 'See what’s included',
     guarantee: 'Instant access · Secure checkout · Lifetime access',
     lifetime: 'Lifetime access. No subscription.',
     disclaimer:
       'I understand that motorcycle riding involves risk and I am responsible for my own safety when applying course material.',
     modulesTitle: 'COURSE MODULES',
+    modulesNote: '',
     studentName: 'Demo Student'
   },
   ru: {
@@ -119,11 +123,13 @@ export const salesText: Record<AppLocale, SalesText> = {
     courseOnlyDesc: 'Видео + PDF. Учись в своём темпе.',
     feedback: 'Курс + персональная обратная связь',
     feedbackDesc: 'Разборы ваших видео и созвон с Владом.',
+    feedbackMore: 'Подробнее',
     guarantee: 'Мгновенный доступ · Безопасная оплата · Доступ навсегда',
     lifetime: 'Доступ навсегда. Без подписки.',
     disclaimer:
       'Я понимаю, что езда на мотоцикле связана с риском, и сам отвечаю за безопасность при применении материалов курса.',
     modulesTitle: 'МОДУЛИ КУРСА',
+    modulesNote: '',
     studentName: 'Demo Student'
   },
   uk: {
@@ -132,11 +138,13 @@ export const salesText: Record<AppLocale, SalesText> = {
     courseOnlyDesc: 'Відео + PDF. Вчися у своєму темпі.',
     feedback: 'Курс + персональний зворотний зв’язок',
     feedbackDesc: 'Розбори ваших відео та дзвінок із Владом.',
+    feedbackMore: 'Детальніше',
     guarantee: 'Миттєвий доступ · Безпечна оплата · Доступ назавжди',
     lifetime: 'Доступ назавжди. Без підписки.',
     disclaimer:
       'Я розумію, що їзда на мотоциклі пов’язана з ризиком, і сам відповідаю за безпеку під час застосування матеріалів курсу.',
     modulesTitle: 'МОДУЛІ КУРСУ',
+    modulesNote: '*Відео та PDF-матеріали викладено російською мовою.',
     studentName: 'Demo Student'
   }
 };

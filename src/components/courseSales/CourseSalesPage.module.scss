@@ -112,6 +112,14 @@
   margin-block-end: var(--sp-6);
 }
 
+/* Сноска к звёздочке у «Модулі курсу»: видео и PDF есть только на русском. */
+.modulesNote {
+  color: var(--text-3);
+  font-size: var(--fs-small);
+  line-height: var(--lh-normal);
+  margin-block-start: var(--sp-4);
+}
+
 @media (max-width: 900px) {
   /* Блок цены поднимается сразу под вступление: до программы курса на телефоне
      ещё надо долистать, а решение о покупке зреет выше. */

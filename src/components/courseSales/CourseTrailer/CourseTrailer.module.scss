@@ -1,0 +1,98 @@
+@use '@/styles/mixins' as *;
+
+.trailer {
+  margin-block-start: var(--sp-5);
+}
+
+.screen {
+  aspect-ratio: 16 / 9;
+  background: #000;
+  border-radius: var(--radius);
+  inline-size: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.frame {
+  block-size: 100%;
+  border: 0;
+  inline-size: 100%;
+}
+
+.facade {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  color: var(--text-1);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  inset: 0;
+  justify-content: center;
+  padding: 0;
+  position: absolute;
+
+  @include focus-ring;
+
+  &:disabled {
+    cursor: progress;
+  }
+
+  /* Затемнение поверх обложки: белая кнопка читается на любом фото. */
+  &::after {
+    background: linear-gradient(to top, rgb(0 0 0 / 55%), rgb(0 0 0 / 15%));
+    content: '';
+    inset: 0;
+    position: absolute;
+  }
+}
+
+.poster {
+  block-size: 100%;
+  inline-size: 100%;
+  inset: 0;
+  object-fit: cover;
+  position: absolute;
+}
+
+.playIcon,
+.label {
+  position: relative;
+  z-index: 1;
+}
+
+.playIcon {
+  align-items: center;
+  background: var(--brand);
+  block-size: 64px;
+  border-radius: var(--radius-full);
+  color: var(--text-on-brand);
+  display: flex;
+  inline-size: 64px;
+  justify-content: center;
+  padding-inline-start: 4px;
+  transition:
+    background var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
+
+  .facade:hover & {
+    background: var(--brand-hover);
+    transform: scale(1.06);
+  }
+
+  .facade:disabled & {
+    opacity: 0.7;
+  }
+}
+
+.label {
+  font-size: var(--fs-small);
+  font-weight: 600;
+}
+
+.error {
+  color: var(--text-3);
+  font-size: var(--fs-small);
+  margin-block-start: var(--sp-2);
+}

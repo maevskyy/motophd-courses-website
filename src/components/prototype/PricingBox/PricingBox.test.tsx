@@ -19,7 +19,9 @@ import { PricingBox } from './PricingBox';
 const sales = {
   breadcrumb: 'Courses',
   disclaimer: 'Riding disclaimer',
+  feedbackMore: 'See what’s included',
   guarantee: 'Lifetime access',
+  modulesNote: '',
   modulesTitle: 'Modules',
   options: [
     { desc: 'Videos', name: 'Course only', tier: 'standard' as const },
@@ -91,6 +93,19 @@ describe('PricingBox', () => {
     fireEvent.click(screen.getByRole('button', { name: /Course \+ feedback/ }));
     expect(screen.getByText('Everything in Course only, plus:')).toBeVisible();
     expect(screen.getByText('1-on-1 video call')).toBeVisible();
+  });
+
+  it('hints that the feedback plan opens a list until it is selected', () => {
+    render(<PricingBox checkoutEnabled courseSlug="lean" locale="en" sales={sales} />);
+
+    const feedback = screen.getByRole('button', { name: /Course \+ feedback/ });
+
+    expect(feedback).toHaveTextContent('See what’s included');
+    expect(screen.getAllByText('See what’s included')).toHaveLength(1);
+
+    fireEvent.click(feedback);
+
+    expect(screen.queryByText('See what’s included')).not.toBeInTheDocument();
   });
 
   it('shows the price of the visitor country once the browser knows it', async () => {

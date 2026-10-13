@@ -2,14 +2,11 @@
 
 import { useEffect, useId, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { Icon } from '@/components/ui/Icon';
 import { cx } from '@/lib/classNames';
 import type { HomeContent } from '@/lib/content';
 import styles from './Testimonials.module.scss';
 
 type Testimonial = HomeContent['testimonials'][number];
-
-const STARS = [0, 1, 2, 3, 4];
 
 interface Props {
   items: HomeContent['testimonials'];
@@ -63,11 +60,6 @@ function TestimonialCard({ item }: { item: Testimonial }) {
 
   return (
     <li className={styles.card}>
-      <p aria-label={t('rating')} className={styles.stars} role="img">
-        {STARS.map((star) => (
-          <Icon key={star} name="starFilled" size={14} />
-        ))}
-      </p>
       <blockquote
         className={cx(styles.quote, open && styles.quoteOpen)}
         id={quoteId}
@@ -75,31 +67,31 @@ function TestimonialCard({ item }: { item: Testimonial }) {
       >
         {item.quote}
       </blockquote>
+      {clamped ? (
+        <button
+          aria-controls={quoteId}
+          aria-expanded={open}
+          className={styles.readMore}
+          onClick={() => setOpen((current) => !current)}
+          type="button"
+        >
+          {open ? t('showLess') : t('readFull')}
+          {/* Одинаковых кнопок на странице до одиннадцати — уточняем, чей это отзыв. */}
+          <span className="srOnly">{item.name}</span>
+        </button>
+      ) : null}
       {/*
-        Подвал карточки: автор и «Читать целиком» в одной строке под цитатой.
-        Отдельная строка под кнопку стоила бы ~96px высоты секции на двух рядах.
+        Автор — отдельной строкой у самого низа карточки. Кнопка «Читать целиком»
+        есть не у всех отзывов, поэтому она стоит под цитатой, а не рядом с
+        автором: иначе у длинных имён она переносилась под подпись, и авторы в
+        ряду висели на разной высоте (Влад, 12.10.2026).
       */}
-      <div className={styles.footer}>
-        <p className={styles.author}>
-          <span aria-hidden className={styles.avatar}>
-            {item.initial}
-          </span>
-          <span>{item.name}</span>
-        </p>
-        {clamped ? (
-          <button
-            aria-controls={quoteId}
-            aria-expanded={open}
-            className={styles.readMore}
-            onClick={() => setOpen((current) => !current)}
-            type="button"
-          >
-            {open ? t('showLess') : t('readFull')}
-            {/* Одинаковых кнопок на странице до одиннадцати — уточняем, чей это отзыв. */}
-            <span className="srOnly">{item.name}</span>
-          </button>
-        ) : null}
-      </div>
+      <p className={styles.author}>
+        <span aria-hidden className={styles.avatar}>
+          {item.initial}
+        </span>
+        <span>{item.name}</span>
+      </p>
     </li>
   );
 }

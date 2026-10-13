@@ -33,12 +33,6 @@
   scroll-snap-align: start;
 }
 
-.stars {
-  color: var(--brand);
-  display: flex;
-  gap: var(--sp-1);
-}
-
 /*
   Цитата занимает ровно пять строк в свёрнутом виде: и обрезает длинные отзывы,
   и добирает высоту коротким — иначе подписи авторов в ряду висят на разной высоте.
@@ -58,20 +52,9 @@
 }
 
 /*
-  Подвал прижат к низу карточки: в ряду карточки равной высоты, и подписи
-  авторов стоят на одной линии независимо от длины цитаты.
+  Автор прижат к низу карточки: в ряду карточки равной высоты, и подписи
+  стоят на одной линии независимо от длины цитаты и наличия кнопки.
 */
-.footer {
-  align-items: center;
-  column-gap: var(--sp-3);
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  margin-block-start: auto;
-  padding-block-start: var(--sp-1);
-  row-gap: var(--sp-2);
-}
-
 .author {
   align-items: center;
   color: var(--text-1);
@@ -79,15 +62,17 @@
   font-size: var(--fs-small);
   font-weight: 600;
   gap: var(--sp-3);
+  margin-block-start: auto;
+  padding-block-start: var(--sp-1);
 }
 
-/* Отрицательный отступ гасит внутренний padding третичной кнопки: подпись встаёт по краю карточки. */
+/* Отрицательный отступ гасит внутренний padding третичной кнопки: подпись встаёт по краю цитаты. */
 .readMore {
   @include btn-tertiary;
   @include btn-sm;
 
-  flex: none;
-  margin-inline-end: calc(var(--sp-3) * -1);
+  align-self: flex-start;
+  margin-inline-start: calc(var(--sp-3) * -1);
 }
 
 /* Круг — только там, где сущность действительно круглая: аватар. */

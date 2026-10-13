@@ -228,6 +228,10 @@ export interface Course {
    * Photo on the course card. Also shown when someone shares the course link. Landscape, about 1200×630.
    */
   cover?: (number | null) | Media;
+  /**
+   * Shown under the title on the course page; anyone can watch it, no purchase needed. Set it in one language and the others show it too. Empty — no trailer.
+   */
+  teaser?: (number | null) | Video;
   priceStandard: number;
   priceFeedback: number;
   /**
@@ -783,6 +787,7 @@ export interface CoursesSelect<T extends boolean = true> {
         id?: T;
       };
   cover?: T;
+  teaser?: T;
   priceStandard?: T;
   priceFeedback?: T;
   regionalPrices?:

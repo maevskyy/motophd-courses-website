@@ -149,6 +149,22 @@ export const Courses: CollectionConfig = {
         )
       }
     },
+    // Публичное видео под названием курса. Ссылку на него страница берёт
+    // по нажатию play (api/courses/[slug]/teaser): страница живёт в кэше
+    // дольше, чем бесплатный токен Stream.
+    {
+      name: 'teaser',
+      type: 'relationship',
+      localized: true,
+      relationTo: 'videos',
+      label: label('Trailer', 'Трейлер'),
+      admin: {
+        description: label(
+          'Shown under the title on the course page; anyone can watch it, no purchase needed. Set it in one language and the others show it too. Empty — no trailer.',
+          'Показывается под названием на странице курса, смотреть может любой, без покупки. Достаточно выбрать на одном языке — остальные покажут его же. Пусто — трейлера нет.'
+        )
+      }
+    },
     {
       name: 'priceStandard',
       type: 'number',

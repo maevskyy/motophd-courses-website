@@ -12,6 +12,7 @@ import * as migration_20260930_143915_drop_lesson_body from './20260930_143915_d
 import * as migration_20260930_144348_regional_prices from './20260930_144348_regional_prices';
 import * as migration_20260930_151402_drop_unused_fields from './20260930_151402_drop_unused_fields';
 import * as migration_20261001_151256_purchase_defaults from './20261001_151256_purchase_defaults';
+import * as migration_20261013_204238_add_course_teaser from './20261013_204238_add_course_teaser';
 
 export const migrations = [
   {
@@ -82,6 +83,11 @@ export const migrations = [
   {
     up: migration_20261001_151256_purchase_defaults.up,
     down: migration_20261001_151256_purchase_defaults.down,
-    name: '20261001_151256_purchase_defaults'
+    name: '20261001_151256_purchase_defaults',
+  },
+  {
+    up: migration_20261013_204238_add_course_teaser.up,
+    down: migration_20261013_204238_add_course_teaser.down,
+    name: '20261013_204238_add_course_teaser'
   },
 ];

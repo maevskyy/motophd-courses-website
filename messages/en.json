@@ -36,8 +36,7 @@
     "readFull": "Read full review",
     "showMore": "Show more",
     "showLess": "Show less",
-    "reviewsSource": "All reviews on Instagram",
-    "rating": "Rated 5 out of 5"
+    "reviewsSource": "All reviews on Instagram"
   },
   "login": {
     "tagline": "Sign in to continue your course",
@@ -71,6 +70,12 @@
   "course": {
     "lessonCount": "{count, plural, one {# lesson} other {# lessons}}",
     "priceFrom": "from {price}"
+  },
+  "courseTrailer": {
+    "label": "Watch the trailer",
+    "play": "Watch the trailer for “{course}”",
+    "title": "Trailer for “{course}”",
+    "error": "Couldn't load the trailer. Please try again."
   },
   "dashboard": {
     "myCourses": "My Courses",
@@ -115,6 +120,9 @@
     "feedbackPrice": "Upgrade for {price}",
     "feedbackConnected": "Included",
     "feedbackSend": "Send a video for review",
+    "communityTitle": "MotoPhD community",
+    "communityText": "A group for MotoPhD students to share riding knowledge and experience.",
+    "communityJoin": "Join on {platform}",
     "dangerZone": "Danger zone",
     "dangerZoneSub": "Irreversible actions for your account.",
     "deleteAccount": "Delete Account",

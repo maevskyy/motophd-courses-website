@@ -36,8 +36,7 @@
     "readFull": "Читать целиком",
     "showMore": "Показать ещё",
     "showLess": "Свернуть",
-    "reviewsSource": "Все отзывы в Instagram",
-    "rating": "Оценка 5 из 5"
+    "reviewsSource": "Все отзывы в Instagram"
   },
   "login": {
     "tagline": "Войдите, чтобы продолжить курс",
@@ -71,6 +70,12 @@
   "course": {
     "lessonCount": "{count, plural, one {# урок} few {# урока} many {# уроков} other {# урока}}",
     "priceFrom": "от {price}"
+  },
+  "courseTrailer": {
+    "label": "Смотреть трейлер",
+    "play": "Смотреть трейлер курса «{course}»",
+    "title": "Трейлер курса «{course}»",
+    "error": "Не получилось загрузить трейлер. Попробуй ещё раз."
   },
   "dashboard": {
     "myCourses": "Мои курсы",
@@ -115,6 +120,9 @@
     "feedbackPrice": "Доплата {price}",
     "feedbackConnected": "Подключена",
     "feedbackSend": "Отправить видео на разбор",
+    "communityTitle": "Комьюнити MotoPhD",
+    "communityText": "Сообщество студентов MotoPhD: делимся опытом, задаём вопросы, разбираем езду вместе.",
+    "communityJoin": "Вступить в {platform}",
     "dangerZone": "Опасная зона",
     "dangerZoneSub": "Необратимые действия с аккаунтом.",
     "deleteAccount": "Удаление аккаунта",

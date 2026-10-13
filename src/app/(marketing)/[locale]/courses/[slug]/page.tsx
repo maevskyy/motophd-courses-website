@@ -4,6 +4,7 @@ import { cache } from 'react';
 import { Link } from '@/i18n/routing';
 import { AccessNotice } from '@/components/courseSales/AccessNotice';
 import { CourseProgram } from '@/components/courseSales/CourseProgram';
+import { CourseTrailer } from '@/components/courseSales/CourseTrailer';
 import { StickyBuyBar } from '@/components/courseSales/StickyBuyBar';
 import { Footer } from '@/components/prototype/Footer';
 import { PricingBox } from '@/components/prototype/PricingBox';
@@ -90,6 +91,14 @@ export default async function CourseSalesPage({
             <AccessNotice />
             <p className={styles.tag}>{sales.tag}</p>
             <h1 className={styles.title}>{sales.title.join(' ')}</h1>
+            {course.teaser ? (
+              <CourseTrailer
+                courseSlug={course.slug}
+                courseTitle={course.title}
+                locale={safeLocale}
+                poster={courseCoverImage(course)?.url ?? null}
+              />
+            ) : null}
             <p className={styles.pain}>{sales.pain}</p>
             <ul className={styles.outcomes}>
               {sales.outcomes.map((outcome) => (
@@ -108,8 +117,12 @@ export default async function CourseSalesPage({
             sales={sales}
           />
           <div className={styles.modules}>
-            <h2 className={styles.sectionTitle}>{sales.modulesTitle}</h2>
+            <h2 className={styles.sectionTitle}>
+              {sales.modulesTitle}
+              {sales.modulesNote ? '*' : null}
+            </h2>
             <CourseProgram modules={curriculum} />
+            {sales.modulesNote ? <p className={styles.modulesNote}>{sales.modulesNote}</p> : null}
           </div>
         </div>
       </section>

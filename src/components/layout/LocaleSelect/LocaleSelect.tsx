@@ -2,7 +2,7 @@
 
 import { useLocale, useTranslations } from 'next-intl';
 import type { ChangeEvent } from 'react';
-import { localeLabels, locales, type Locale } from '@/i18n/locales';
+import { localeLabels, localeShortLabels, locales, type Locale } from '@/i18n/locales';
 import { usePathname, useRouter } from '@/i18n/routing';
 import styles from './LocaleSelect.module.scss';
 
@@ -32,7 +32,7 @@ export function LocaleSelect() {
     >
       {locales.map((code) => (
         <option key={code} value={code}>
-          {`${code.toUpperCase()} — ${localeLabels[code]}`}
+          {`${localeShortLabels[code]} — ${localeLabels[code]}`}
         </option>
       ))}
     </select>

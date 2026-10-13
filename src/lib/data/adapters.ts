@@ -74,9 +74,11 @@ export const toSalesContent = (course: Course, locale: AppLocale): SalesContent 
       regionalPrices: course.regionalPrices
     },
     feedbackIncludes: feedbackIncludes[locale],
+    feedbackMore: text.feedbackMore,
     disclaimer: text.disclaimer,
     guarantee: text.guarantee,
-    modulesTitle: text.modulesTitle
+    modulesTitle: text.modulesTitle,
+    modulesNote: text.modulesNote
   };
 };
 
