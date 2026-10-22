@@ -360,6 +360,13 @@ test('legal documents are served as PDFs in the page language', async ({ page, r
   expect(response.headers()['content-type']).toContain('application/pdf');
 });
 
+test('old legal page addresses from search results lead to the PDFs', async ({ request }) => {
+  const response = await request.get('/uk/terms', { maxRedirects: 0 });
+
+  expect(response.status()).toBe(308);
+  expect(response.headers().location).toBe('/legal/public-offer-uk.pdf');
+});
+
 test('admin panel responds', async ({ request }) => {
   const response = await request.get('/admin');
 

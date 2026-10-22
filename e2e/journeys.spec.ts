@@ -159,7 +159,7 @@ test.describe('phone layout', () => {
       '/en/courses',
       '/en/courses/lean',
       '/en/login',
-      '/en/privacy',
+      '/en/contact',
       '/en/checkout/success?order=x',
       '/en/checkout/fail?order=x',
       '/en/checkout/pending?order=x'
