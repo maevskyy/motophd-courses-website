@@ -12,6 +12,7 @@ export type { PageMetadataInput, SeoImage } from './pageMetadata';
 export { buildRobots } from './robots';
 export { DEFAULT_SITE_URL, getSiteUrl } from './siteUrl';
 export { buildSitemapEntries } from './sitemap';
+export { buildHomeStructuredData, serializeJsonLd } from './structuredData';
 export type { SitemapDocument, SitemapSource } from './sitemap';
 export {
   buildLanguageAlternates,

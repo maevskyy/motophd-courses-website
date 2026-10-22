@@ -4,7 +4,14 @@ import { LandingBottom } from '@/components/landing/LandingBottom';
 import { LandingTop } from '@/components/landing/LandingTop';
 import { homeContent } from '@/lib/content';
 import { getPublishedCourses, toCourseCardCourse } from '@/lib/data';
-import { buildPageMetadata, resolveSeoLocale, SITE_NAME } from '@/lib/seo';
+import {
+  buildHomeStructuredData,
+  buildPageMetadata,
+  getSiteUrl,
+  resolveSeoLocale,
+  serializeJsonLd,
+  SITE_NAME
+} from '@/lib/seo';
 import { requireLocale } from '@/i18n/requireLocale';
 
 // Одна страница на всех, из кэша (ISR + кэш Cloudflare): цену для страны
@@ -54,6 +61,13 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
   return (
     <>
+      {/* Разметка WebSite/Organization: Google по ней узнаёт бренд в выдаче. */}
+      <script
+        dangerouslySetInnerHTML={{
+          __html: serializeJsonLd(buildHomeStructuredData(safeLocale, getSiteUrl()))
+        }}
+        type="application/ld+json"
+      />
       <LandingTop
         content={content}
         courses={courses}
