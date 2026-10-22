@@ -1,6 +1,7 @@
 import createNextIntlPlugin from 'next-intl/plugin';
 import type { NextConfig } from 'next';
 import { withPayload } from '@payloadcms/next/withPayload';
+import { legacyLegalRedirects } from './src/lib/legal/legacyRedirects';
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
@@ -11,7 +12,9 @@ const nextConfig: NextConfig = {
   // canonical уезжал в <body>, где поисковики его не учитывают.
   htmlLimitedBots: /.*/,
   output: 'standalone',
-  reactStrictMode: true
+  reactStrictMode: true,
+  // Старые адреса юр-страниц из выдачи Google → PDF (см. legacyRedirects.ts).
+  redirects: async () => legacyLegalRedirects
 };
 
 export default withPayload(withNextIntl(nextConfig));
